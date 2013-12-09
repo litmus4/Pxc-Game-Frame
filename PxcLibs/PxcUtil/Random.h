@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 namespace PxcUtil
 {
@@ -15,6 +16,11 @@ public:
 	static float Rand_0To100_Float();
 	static float Rand_0To360_Float();
 	static float Rand_0To2PI_Float();
+
+	static int DrawLots(std::vector<int>& vecLots);
+	static int DrawLots(std::vector<std::pair<int, float>>& vecLots);
+	static bool DrawLots(std::vector<int>& vecLots, int iNum, std::vector<int>& vecResults);
+	static bool DrawLots(std::vector<std::pair<int, float>>& vecLots, int iNum, std::vector<int>& vecResults);
 
 	static void SetReseedCycle(int iCycle);
 

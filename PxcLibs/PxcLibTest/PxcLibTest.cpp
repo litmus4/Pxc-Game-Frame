@@ -178,6 +178,32 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::cout << "RandomFloat : " << Random::RandFloat(0.1f, 0.5f) << ", " << Random::RandFloat(-10.0f, 10.0f) << ", " <<
 		Random::RandFloat(0.1f, 0.5f) << ", " << Random::RandFloat(-10.0f, 10.0f) << ", " <<
 		Random::RandFloat(0.000001f, 0.0000015f) << ", " << Random::RandFloat(0.0f, 66666.6f) << std::endl;
+	{
+		std::vector<int> vecNormLots;
+		for (int i = 0; i < 10; ++i)
+			vecNormLots.push_back(i);
+		std::cout << "DrawLots : " << Random::DrawLots(vecNormLots);
+
+		std::vector<std::pair<int, float>> vecProbLots;
+		vecProbLots.push_back(std::make_pair(0, -1.0f));
+		vecProbLots.push_back(std::make_pair(1, 0.5f));
+		vecProbLots.push_back(std::make_pair(2, 0.5f));
+		vecProbLots.push_back(std::make_pair(3, 0.1f));
+		std::cout << ", " << Random::DrawLots(vecProbLots);
+
+		std::vector<int> vecResult;
+		bool bRet = Random::DrawLots(vecNormLots, 3, vecResult);
+		std::cout << ",";
+		for (int i = 0, iSize = vecResult.size(); i < iSize; ++i)
+			std::cout << " " << vecResult[i];
+
+		vecResult.clear();
+		bRet = Random::DrawLots(vecProbLots, 2, vecResult);
+		std::cout << ",";
+		for (int i = 0, iSize = vecResult.size(); i < iSize; ++i)
+			std::cout << " " << vecResult[i];
+		std::cout << std::endl;
+	}
 
 	return 0;
 }

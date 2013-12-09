@@ -48,12 +48,14 @@ float Random::RandFloat(float fMin, float fMax)
 		return 0.0f;
 
 	float fUnitMin = fMin, fUnitMax = fMax;
-	if ((fMax - fMin) > 1.0f)
+	float fRange = fMax - fMin;
+	if (fRange > 1.0f)
 	{
-		int iTimes = RandInt(0, (int)(fMax - fMin));
-		fUnitMin = fMin + (float)iTimes;
-		if (fMax - fUnitMin >= 1.0f)
-			fUnitMax = fUnitMin + 1.0f;
+		float fUnit = fRange / (int)ceil(fRange);
+		int iTimes = RandInt(0, (int)fRange);
+		fUnitMin = fMin + iTimes * fUnit;
+		if (fMax - fUnitMin >= fUnit)
+			fUnitMax = fUnitMin + fUnit;
 	}
 	return fUnitMin + RandBase() * (fUnitMax - fUnitMin);
 }
@@ -89,6 +91,114 @@ float Random::Rand_0To360_Float()
 float Random::Rand_0To2PI_Float()
 {
 	return RandFloat(0.0f, 2.0f * PXCU_PI);
+}
+
+int Random::DrawLots(std::vector<int>& vecLots)
+{
+	int iSize = vecLots.size();
+	if (iSize == 0)
+		return 0;
+	int iIndex = RandInt(0, iSize - 1);
+	return vecLots[iIndex];
+}
+
+int Random::DrawLots(std::vector<std::pair<int, float>>& vecLots)
+{
+	float fTotalProb = 0.0f;
+	std::vector<std::pair<int, float>>::iterator iter = vecLots.begin();
+	for (; iter != vecLots.end(); iter++)
+	{
+		if (iter->second >= 0.0f)
+			fTotalProb += iter->second;
+	}
+	if (fTotalProb == 0.0f)
+		return 0;
+
+	float fRand = RandFloat(0.0f, fTotalProb);
+	float fCurMin = 0.0f;
+	for (iter = vecLots.begin(); iter != vecLots.end(); iter++)
+	{
+		if (iter->second >= 0.0f)
+		{
+			float fCurMax = fCurMin + iter->second;
+			if (fRand >= fCurMin && fRand < fCurMax)
+				return iter->first;
+			fCurMin = fCurMax;
+		}
+	}
+	return 0;
+}
+
+bool Random::DrawLots(std::vector<int>& vecLots, int iNum, std::vector<int>& vecResults)
+{
+	int iSize = vecLots.size();
+	if (iNum >= iSize)
+	{
+		vecResults = vecLots;
+		return !vecResults.empty();
+	}
+
+	std::vector<int> vecLocal = vecLots;
+	for (int i = 0; i < iNum; ++i)
+	{
+		int iIndex = RandInt(0, iSize - 1);
+		vecResults.push_back(vecLocal[iIndex]);
+		std::vector<int>::iterator iter = vecLocal.begin() + iIndex;
+		vecLocal.erase(iter);
+		iSize--;
+	}
+	return !vecResults.empty();
+}
+
+bool Random::DrawLots(std::vector<std::pair<int, float>>& vecLots, int iNum, std::vector<int>& vecResults)
+{
+	int iSize = vecLots.size();
+	if (iNum >= iSize)
+	{
+		for (int i = 0; i < iSize; ++i)
+		{
+			if (vecLots[i].second >= 0.0f)
+				vecResults.push_back(vecLots[i].first);
+		}
+		return !vecResults.empty();
+	}
+
+	std::vector<std::pair<int, float>> vecLocal = vecLots;
+	float fTotalProb = 0.0f;
+	std::vector<std::pair<int, float>>::iterator iter = vecLocal.begin();
+	for (; iter != vecLocal.end(); iter++)
+	{
+		if (iter->second >= 0.0f)
+			fTotalProb += iter->second;
+	}
+	if (fTotalProb == 0.0f)
+		return false;
+
+	for (int i = 0; i < iNum; ++i)
+	{
+		if (fTotalProb <= 0.0f)
+			break;
+
+		float fRand = RandFloat(0.0f, fTotalProb);
+		float fCurMin = 0.0f;
+		for (iter = vecLocal.begin(); iter != vecLocal.end(); iter++)
+		{
+			if (iter->second >= 0.0f)
+			{
+				float fCurMax = fCurMin + iter->second;
+				if (fRand >= fCurMin && fRand < fCurMax)
+				{
+					vecResults.push_back(iter->first);
+					fTotalProb -= iter->second;
+					vecLocal.erase(iter);
+					iSize--;
+					break;
+				}
+				fCurMin = fCurMax;
+			}
+		}
+	}
+	return !vecResults.empty();
 }
 
 void Random::SetReseedCycle(int iCycle)

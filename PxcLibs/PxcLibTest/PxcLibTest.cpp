@@ -137,6 +137,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::cout << ", " << ExactTime::GetTime(ExactTime::ELevel_Second);
 	std::cout << ", " << ExactTime::GetTime(ExactTime::ELevel_Milli);
 	std::cout << ", " << ExactTime::GetTime(ExactTime::ELevel_Micro) << std::endl;
+	DateTimeInfo info;
+	long long lDateTime = DateTime::GetDateTime();
+	std::cout << "DateTime: " << lDateTime;
+	if (DateTime::InformDateTime(lDateTime, info))
+	{
+		std::cout << " " << info.date.getYear() << "Äê" << info.date.getMonth() << "ÔÂ" << info.date.getDay() << "ÈÕ ";
+		std::cout << info.iHour << ":" << info.iMin << ":" << info.iSec << " " << info.date.getWeekday() << " " << info.date.getDaysPassedOfYear();
+		/*
+		info.date.addDays(-2);
+		std::cout << " " << info.date.getWeekday();
+		//*/
+		std::cout << " " << DateTime::IntegrateDateTime(info);
+	}
+	std::cout << std::endl;
 
 	std::cout << "=====================" << std::endl;
 	CSubRun subRun;

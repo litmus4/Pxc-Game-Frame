@@ -155,7 +155,7 @@ Date::Date(int yy,int mm,int dd)
 
 Date::Date(const tm& t)
 {
-	y=t.tm_yday+1990;
+	y=t.tm_year+1900;
 	m=t.tm_mon+1;
 	d=t.tm_mday;
 }
@@ -179,7 +179,7 @@ void Date::setDate(int yy,int mm,int dd)
 
 void Date::setDate(const tm& t)
 {
-	y=t.tm_yday+1990;
+	y=t.tm_year+1900;
 	m=t.tm_mon+1;
 	d=t.tm_mday;
 }
@@ -542,5 +542,42 @@ std::ostream& operator<<(std::ostream &os,const Date &rhs)
 	std::cout<<rhs.y<<"-"<<rhs.m<<"-"<<rhs.d;
 	return std::cout;
 }
+
+
+namespace DateTime
+{
+
+long long GetDateTime()
+{
+	return (long long)time(NULL);
+}
+
+bool InformDateTime(long long lDateTime, DateTimeInfo& outInfo)
+{
+	if (lDateTime < 0)
+		return false;
+
+	struct tm* pTime = localtime((time_t*)&lDateTime);
+	outInfo.date.setDate(*pTime);
+	outInfo.iHour = pTime->tm_hour;
+	outInfo.iMin = pTime->tm_min;
+	outInfo.iSec = pTime->tm_sec;
+	return true;
+}
+
+long long IntegrateDateTime(DateTimeInfo& info)
+{
+	struct tm sTime;
+	sTime.tm_year = info.date.getYear() - 1900;
+	sTime.tm_mon = info.date.getMonth() - 1;
+	sTime.tm_mday = info.date.getDay();
+	sTime.tm_hour = info.iHour;
+	sTime.tm_min = info.iMin;
+	sTime.tm_sec = info.iSec;
+	return (long long)mktime(&sTime);
+}
+
+}
+
 
 }

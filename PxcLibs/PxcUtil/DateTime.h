@@ -51,6 +51,9 @@ public:
 	//yy年第nn个星期ww
 	void setDateAsWeekday(int yy,int n,int w);
 
+	int getYear() { return y; }
+	int getMonth() { return m;}
+	int getDay() { return d; }
 	bool isLeapYear() const;
 	bool isValidDate() const;
 	int getWeekday() const;
@@ -90,5 +93,32 @@ public:
 
 	friend std::ostream& operator<<(std::ostream &os,const Date &rhs);
 };
+
+struct DateTimeInfo
+{
+	DateTimeInfo()
+	{
+		Reset();
+	}
+	void Reset()
+	{
+		date.setDate(1900);
+		iHour = iMin = iSec = 0;
+	}
+	Date date;
+	int iHour;
+	int iMin;
+	int iSec;
+};
+
+namespace DateTime
+{
+
+long long GetDateTime();
+bool InformDateTime(long long lDateTime, DateTimeInfo& outInfo);
+long long IntegrateDateTime(DateTimeInfo& info);
+
+}
+
 
 }

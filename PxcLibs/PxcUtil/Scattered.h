@@ -5,7 +5,7 @@
 #define SAFE_DELETE(p) if (p){ delete p; p = NULL; }
 #define SAFE_DELETE_ARRAY(p) if (p){ delete[] p; p = NULL; }
 
-#define FLOAT_PRECISION 0.000001
+#define FLOAT_PRECISION 0.000001f
 
 #define PXCU_PI 3.14159265f
 

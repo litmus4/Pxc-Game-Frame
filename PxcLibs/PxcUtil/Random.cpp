@@ -21,14 +21,17 @@ int Random::RandInt(int iMin, int iMax)
 	else if (iMin == iMax)
 		return iMin;
 
-	if ((iMax - iMin) > RAND_MAX)
+	int iRange = iMax - iMin + 1;
+	if (iRange > (RAND_MAX + 1))
 	{
-		int iTimes = RandInt(0, (iMax - iMin) / (RAND_MAX + 1));
-		int iBlockMin = iMin + iTimes * (RAND_MAX + 1);
-		if (iMax - iBlockMin < RAND_MAX)
+		int iMaxTime = iRange / (RAND_MAX + 1);
+		int iBlock = iRange / (iMaxTime + 1);
+		int iTimes = RandInt(0, iMaxTime);
+		int iBlockMin = iMin + iTimes * iBlock;
+		if (iTimes == iMaxTime || iMax - iBlockMin + 1 < iBlock)
 			return RandInt(iBlockMin, iMax);
 		else
-			return RandInt(iBlockMin, iBlockMin + RAND_MAX);
+			return RandInt(iBlockMin, iBlockMin + iBlock - 1);
 	}
 	else
 		return iMin + (int)(RandBase() * (iMax - iMin + 1));

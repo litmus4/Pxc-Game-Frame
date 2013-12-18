@@ -79,6 +79,7 @@
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="FileManage.h" />
     <ClInclude Include="IDPool.h" />
+    <ClInclude Include="LogCenter.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Scattered.h" />
     <ClInclude Include="Singleton.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="FileManage.cpp" />
     <ClCompile Include="IDPool.cpp" />
+    <ClCompile Include="LogCenter.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Thread.cpp" />
   </ItemGroup>

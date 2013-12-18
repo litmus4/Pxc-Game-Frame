@@ -539,8 +539,8 @@ Date& Date::operator -=(const int& n)
 
 std::ostream& operator<<(std::ostream &os,const Date &rhs)
 {
-	std::cout<<rhs.y<<"-"<<rhs.m<<"-"<<rhs.d;
-	return std::cout;
+	os<<rhs.y<<"-"<<rhs.m<<"-"<<rhs.d;
+	return os;
 }
 
 

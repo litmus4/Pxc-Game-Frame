@@ -119,12 +119,10 @@ CLogCenter& CLogCenter::WriteStreamDesc(int iFileID, ELogLevel eLevel, const cha
 {
 	CRI_SEC(m_lock)
 	WriteStream(iFileID, eLevel) << szDesc;
-	if (m_pWritingStream && eLevel != ELogLevel_Info)
+	if (m_pWritingStream && (int)eLevel > (int)ELogLevel_Info)
 	{
 		switch (eLevel)
 		{
-		case ELogLevel_Debug:
-			std::cout << "Log Debug: ";
 		case ELogLevel_Warning:
 			std::cout << "Log Warning: ";
 		case ELogLevel_Assert:

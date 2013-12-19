@@ -44,4 +44,13 @@ private:
 	Lock m_lock;
 };
 
+#define PXCU_LOGINST PxcUtil::CLogCenter::GetInstance()
+#define PXCU_LOGLV(levelWord) PxcUtil::CLogCenter::ELogLevel_##levelWord
+
+#define PXCU_LOG(fileId) PXCU_LOGINST->WriteStream(fileId, PXCU_LOGLV(Info))
+#define PXCU_LOG_DEBUG(fileId) PXCU_LOGINST->WriteStream(fileId, PXCU_LOGLV(Debug))
+#define PXCU_LOG_WARNING(fileId, desc) PXCU_LOGINST->WriteStreamDesc(fileId, PXCU_LOGLV(Warning), desc)
+#define PXCU_LOG_ASSERT(fileId, expr) PXCU_LOGINST->WriteAssert(fileId, __FILE__, __LINE__, #expr, (bool)(expr))
+#define PXCU_LOG_ERROR(fileId, desc) PXCU_LOGINST->WriteStreamDesc(fileId, PXCU_LOGLV(Error), desc)
+
 }

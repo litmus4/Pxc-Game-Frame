@@ -1,5 +1,6 @@
 #pragma once
 #include "Singleton.h"
+#include "Scattered.h"
 #include <map>
 #include <fstream>
 
@@ -25,7 +26,9 @@ public:
 	bool AddFile(int iFileID, const char* szFileName);
 	void RemoveFile(int iFileID);
 
-	CLogCenter& WriteInStream(int iFileID, ELogLevel eLevel, bool bAssert = true);
+	CLogCenter& WriteStream(int iFileID, ELogLevel eLevel);
+	CLogCenter& WriteAssert(int iFileID, const char* szAsFileName, int iAsLine, const char* szExp, bool bAssert);
+	CLogCenter& WriteStreamDesc(int iFileID, ELogLevel eLevel, const char* szDesc);
 
 	template<typename T>
 	CLogCenter& operator << (const T value)
@@ -38,6 +41,7 @@ public:
 private:
 	std::map<int, std::ofstream> m_mapFiles;
 	std::ofstream* m_pWritingStream;
+	Lock m_lock;
 };
 
 }

@@ -1,6 +1,5 @@
 #include "LogCenter.h"
 #include "DateTime.h"
-#include "Scattered.h"
 
 namespace PxcUtil
 {
@@ -62,17 +61,78 @@ void CLogCenter::RemoveFile(int iFileID)
 	}
 }
 
-CLogCenter& CLogCenter::WriteInStream(int iFileID, ELogLevel eLevel, bool bAssert)
+CLogCenter& CLogCenter::WriteStream(int iFileID, ELogLevel eLevel)
 {
+	CRI_SEC(m_lock)
+#ifndef _DEBUG
+	if (eLevel == ELogLevel_Debug)
+	{
+		m_pWritingStream = NULL;
+		return *this;
+	}
+#endif
 	std::map<int, std::ofstream>::iterator iter = m_mapFiles.find(iFileID);
 	if (iter != m_mapFiles.end())
 	{
 		m_pWritingStream = &iter->second;
-		*m_pWritingStream << std::endl;//TODO
-		//switch (eLevel)
-		//{
-		//	//
-		//}
+		*m_pWritingStream << std::endl;
+
+		DateTimeInfo timeInfo;
+		if (DateTime::InformDateTime(DateTime::GetDateTime(), timeInfo))
+			*m_pWritingStream << "[" << timeInfo.date << " " << timeInfo.iHour << ":" << timeInfo.iMin << ":" << timeInfo.iSec << "] ";
+
+		switch (eLevel)
+		{
+		case ELogLevel_Debug:
+			*m_pWritingStream << "DEBUG: ";
+		case ELogLevel_Warning:
+			*m_pWritingStream << "WARNING: ";
+		case ELogLevel_Assert:
+			*m_pWritingStream << "ASSERT: ";
+		case ELogLevel_Error:
+			*m_pWritingStream << "ERROR: ";
+		}
+	}
+	else
+		m_pWritingStream = NULL;
+	return *this;
+}
+
+CLogCenter& CLogCenter::WriteAssert(int iFileID, const char* szAsFileName, int iAsLine, const char* szExp, bool bAssert)
+{
+	CRI_SEC(m_lock)
+	WriteStream(iFileID, ELogLevel_Assert) << "(File:" << szAsFileName << " Line:" << iAsLine << " Expression:" << szExp;
+	if (m_pWritingStream)
+	{
+		if (!bAssert)
+		{
+			*m_pWritingStream << " False) ";
+			std::cout << "Log Assert False! File:" << szAsFileName << " Line:" << iAsLine << " Expression:" << szExp << std::endl;
+		}
+		else
+			*m_pWritingStream << " True) ";
+	}
+	return *this;
+}
+
+CLogCenter& CLogCenter::WriteStreamDesc(int iFileID, ELogLevel eLevel, const char* szDesc)
+{
+	CRI_SEC(m_lock)
+	WriteStream(iFileID, eLevel) << szDesc;
+	if (m_pWritingStream && eLevel != ELogLevel_Info)
+	{
+		switch (eLevel)
+		{
+		case ELogLevel_Debug:
+			std::cout << "Log Debug: ";
+		case ELogLevel_Warning:
+			std::cout << "Log Warning: ";
+		case ELogLevel_Assert:
+			std::cout << "Log Simple Assert! ";
+		case ELogLevel_Error:
+			std::cout << "Log Error! ";
+		}
+		std::cout << szDesc << std::endl;
 	}
 	return *this;
 }

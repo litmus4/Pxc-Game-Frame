@@ -84,6 +84,7 @@
     <ClInclude Include="Scattered.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="StringParser.h" />
+    <ClInclude Include="StringTools.h" />
     <ClInclude Include="Thread.h" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +95,7 @@
     <ClCompile Include="IDPool.cpp" />
     <ClCompile Include="LogCenter.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="StringTools.cpp" />
     <ClCompile Include="Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

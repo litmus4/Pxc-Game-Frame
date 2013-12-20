@@ -7,6 +7,7 @@
 #include "PxcUtil/DateTime.h"
 #include "PxcUtil/IDPool.h"
 #include "PxcUtil/Random.h"
+#include "PxcUtil/LogCenter.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -30,6 +31,9 @@ void OutputArray(std::vector<T>& vec)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	PXCU_LOGINST->Init(1, "logtest.txt");
+
+	std::cout << "=====================" << std::endl;
 	std::string strFile = "test.csv";
 	CCSVOperator csvop;
 	if (csvop.LoadCSV(strFile.c_str()))
@@ -218,6 +222,15 @@ int _tmain(int argc, _TCHAR* argv[])
 			std::cout << " " << vecResult[i];
 		std::cout << std::endl;
 	}
+
+	std::cout << "=====================" << std::endl;
+	PXCU_LOG_DEBUG(1) << "debug";
+	PXCU_LOG(1) << "info";
+	PXCU_LOG_WARNING(1, "warning") << "warning";
+	PXCU_LOG_ASSERT(1, 1 == 1) << "true";
+	PXCU_LOG_ASSERT(1, 1 == 2) << "false";
+	PXCU_LOG_ERROR(1, "error") << "error";
+	PXCU_LOGINST->Release();
 
 	return 0;
 }

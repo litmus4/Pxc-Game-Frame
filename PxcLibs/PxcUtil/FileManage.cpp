@@ -61,6 +61,16 @@ void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std:
 
 }
 
+bool IsFileExist(LPCTSTR lpszFileName)
+{
+	WIN32_FIND_DATA wfd;
+	HANDLE hFile = FindFirstFileExW(lpszFileName, FindExInfoStandard, &wfd, FindExSearchNameMatch, NULL, 0);
+	if (hFile == INVALID_HANDLE_VALUE)
+		return false;
+	FindClose(hFile);
+	return true;
+}
+
 }
 
 

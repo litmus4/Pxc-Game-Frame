@@ -1,5 +1,9 @@
 #include "LogCenter.h"
 #include "DateTime.h"
+#include "FileManage.h"
+#include "StringTools.h"
+
+#define STR_LOG_FILE_HEAD "==========This Is Log File : %s=========="
 
 namespace PxcUtil
 {
@@ -14,13 +18,25 @@ bool CLogCenter::Init(int iFileID, const char* szFileName)
 	if (!m_mapFiles.empty())
 		return false;
 
+	bool bCreate = true;
+	if (FileManage::IsFileExist(StringTools::StrToWstr(szFileName).c_str()))
+		bCreate = false;
+
 	m_mapFiles[iFileID] = std::ofstream();
 	std::ofstream& stream = m_mapFiles[iFileID];
 	stream.open(szFileName, std::ios_base::out | std::ios_base::app);
-	if (!stream)
+	if (stream.bad())
 	{
+		std::cout << "Log Initialized Failed!" << std::endl;
 		m_mapFiles.erase(iFileID);
 		return false;
+	}
+
+	if (bCreate)
+	{
+		char szHead[MAX_PATH * 2];
+		sprintf(szHead, STR_LOG_FILE_HEAD, szFileName);
+		stream << szHead << std::endl;
 	}
 	return true;
 }
@@ -40,13 +56,25 @@ bool CLogCenter::AddFile(int iFileID, const char* szFileName)
 	if (m_mapFiles.find(iFileID) != m_mapFiles.end())
 		return false;
 
+	bool bCreate = true;
+	if (FileManage::IsFileExist(StringTools::StrToWstr(szFileName).c_str()))
+		bCreate = false;
+
 	m_mapFiles[iFileID] = std::ofstream();
 	std::ofstream& stream = m_mapFiles[iFileID];
 	stream.open(szFileName, std::ios_base::out | std::ios_base::app);
-	if (!stream)
+	if (stream.bad())
 	{
+		std::cout << "Log Added Failed!" << std::endl;
 		m_mapFiles.erase(iFileID);
 		return false;
+	}
+
+	if (bCreate)
+	{
+		char szHead[MAX_PATH * 2];
+		sprintf(szHead, STR_LOG_FILE_HEAD, szFileName);
+		stream << szHead << std::endl;
 	}
 	return true;
 }
@@ -84,13 +112,13 @@ CLogCenter& CLogCenter::WriteStream(int iFileID, ELogLevel eLevel)
 		switch (eLevel)
 		{
 		case ELogLevel_Debug:
-			*m_pWritingStream << "DEBUG: ";
+			*m_pWritingStream << "DEBUG: "; break;
 		case ELogLevel_Warning:
-			*m_pWritingStream << "WARNING: ";
+			*m_pWritingStream << "WARNING: "; break;
 		case ELogLevel_Assert:
-			*m_pWritingStream << "ASSERT: ";
+			*m_pWritingStream << "ASSERT: "; break;
 		case ELogLevel_Error:
-			*m_pWritingStream << "ERROR: ";
+			*m_pWritingStream << "ERROR: "; break;
 		}
 	}
 	else
@@ -124,11 +152,11 @@ CLogCenter& CLogCenter::WriteStreamDesc(int iFileID, ELogLevel eLevel, const cha
 		switch (eLevel)
 		{
 		case ELogLevel_Warning:
-			std::cout << "Log Warning: ";
+			std::cout << "Log Warning: "; break;
 		case ELogLevel_Assert:
-			std::cout << "Log Simple Assert! ";
+			std::cout << "Log Simple Assert! "; break;
 		case ELogLevel_Error:
-			std::cout << "Log Error! ";
+			std::cout << "Log Error! "; break;
 		}
 		std::cout << szDesc << std::endl;
 	}

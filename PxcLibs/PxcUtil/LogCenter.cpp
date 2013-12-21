@@ -146,7 +146,7 @@ CLogCenter& CLogCenter::WriteAssert(int iFileID, const char* szAsFileName, int i
 CLogCenter& CLogCenter::WriteStreamDesc(int iFileID, ELogLevel eLevel, const char* szDesc)
 {
 	CRI_SEC(m_lock)
-	WriteStream(iFileID, eLevel) << szDesc;
+	WriteStream(iFileID, eLevel) << szDesc << " ";
 	if (m_pWritingStream && (int)eLevel > (int)ELogLevel_Info)
 	{
 		switch (eLevel)

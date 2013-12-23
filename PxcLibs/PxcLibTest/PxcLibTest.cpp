@@ -8,6 +8,7 @@
 #include "PxcUtil/IDPool.h"
 #include "PxcUtil/Random.h"
 #include "PxcUtil/LogCenter.h"
+#include "PxcUtil/StringTools.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -232,6 +233,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	PXCU_LOG_ASSERT(1, 1 == 2) << "false";
 	PXCU_LOG_ERROR(1, "error") << "error";
 	PXCU_LOGINST->Release();
+
+	std::cout << "=====================" << std::endl;
+	std::string strStrTest = StringTools::Trim(StringTools::Format("  1%d1%.2f\t", 1, 1.222f));
+	float fStrTest = StringTools::StrToBasic<float>(strStrTest);
+	strStrTest = StringTools::BasicToStr(fStrTest);
+	std::cout << strStrTest << std::endl;
+	std::wstring wstrStrTest = StringTools::Trim(StringTools::Format(L"  1%d1%.2f\t", 1, 1.222f));
+	fStrTest = StringTools::WstrToBasic<float>(wstrStrTest);
+	wstrStrTest = StringTools::BasicToWstr(fStrTest);
+	strStrTest = StringTools::WstrToStr(wstrStrTest);
+	std::cout << strStrTest << std::endl;
+	std::cout << StringTools::Format("", 1, 2) << std::endl;
 
 	return 0;
 }

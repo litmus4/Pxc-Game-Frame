@@ -47,6 +47,8 @@ inline T WstrToBasic(const std::wstring& wstr)
 	return basic;
 }
 
+std::string Format(const char* szForm, ...);
+std::wstring Format(const wchar_t* wszForm, ...);
 std::string Trim(const std::string& str);
 std::wstring Trim(const std::wstring& wstr);
 

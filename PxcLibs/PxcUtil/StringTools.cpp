@@ -40,6 +40,40 @@ std::string WstrToStr(const std::wstring& wstr)
 	return strRet;
 }
 
+std::string Format(const char* szForm, ...)
+{
+	std::string strRet;
+	va_list args;
+	va_start(args, szForm);
+	int iSize = _vscprintf(szForm, args);
+	if (iSize > 0)
+	{
+		char* szBuf = new char[iSize + 1];
+		vsprintf(szBuf, szForm, args);
+		strRet = szBuf;
+		delete []szBuf;
+	}
+	va_end(args);
+	return strRet;
+}
+
+std::wstring Format(const wchar_t* wszForm, ...)
+{
+	std::wstring wstrRet;
+	va_list args;
+	va_start(args, wszForm);
+	int iSize = _vscwprintf(wszForm, args);
+	if (iSize > 0)
+	{
+		wchar_t* wszBuf = new wchar_t[iSize + 1];
+		vswprintf(wszBuf, wszForm, args);
+		wstrRet = wszBuf;
+		delete []wszBuf;
+	}
+	va_end(args);
+	return wstrRet;
+}
+
 std::string Trim(const std::string& str)
 {
 	if (str.empty())

@@ -3,7 +3,7 @@
 #include "FileManage.h"
 #include "StringTools.h"
 
-#define STR_LOG_FILE_HEAD "==========This Is Log File : %s=========="
+#define STR_LOG_FILE_HEAD "==========日志文件 : %s=========="
 
 namespace PxcUtil
 {
@@ -27,7 +27,7 @@ bool CLogCenter::Init(int iFileID, const char* szFileName)
 	stream.open(szFileName, std::ios_base::out | std::ios_base::app);
 	if (stream.bad())
 	{
-		std::cout << "Log Initialized Failed!" << std::endl;
+		std::cout << "日志初始化失败!" << std::endl;
 		m_mapFiles.erase(iFileID);
 		return false;
 	}
@@ -65,7 +65,7 @@ bool CLogCenter::AddFile(int iFileID, const char* szFileName)
 	stream.open(szFileName, std::ios_base::out | std::ios_base::app);
 	if (stream.bad())
 	{
-		std::cout << "Log Added Failed!" << std::endl;
+		std::cout << "日志文件添加失败!" << std::endl;
 		m_mapFiles.erase(iFileID);
 		return false;
 	}
@@ -135,7 +135,7 @@ CLogCenter& CLogCenter::WriteAssert(int iFileID, const char* szAsFileName, int i
 		if (!bAssert)
 		{
 			*m_pWritingStream << " False) ";
-			std::cout << "Log Assert False! File:" << szAsFileName << " Line:" << iAsLine << " Expression:" << szExp << std::endl;
+			std::cout << "日志 断言为否! 文件:" << szAsFileName << " 行号:" << iAsLine << " 表达式:" << szExp << std::endl;
 		}
 		else
 			*m_pWritingStream << " True) ";
@@ -152,11 +152,11 @@ CLogCenter& CLogCenter::WriteStreamDesc(int iFileID, ELogLevel eLevel, const cha
 		switch (eLevel)
 		{
 		case ELogLevel_Warning:
-			std::cout << "Log Warning: "; break;
+			std::cout << "日志 警告: "; break;
 		case ELogLevel_Assert:
-			std::cout << "Log Simple Assert! "; break;
+			std::cout << "日志 非正式断言! "; break;
 		case ELogLevel_Error:
-			std::cout << "Log Error! "; break;
+			std::cout << "日志 错误! "; break;
 		}
 		std::cout << szDesc << std::endl;
 	}

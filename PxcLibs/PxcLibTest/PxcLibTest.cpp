@@ -9,6 +9,7 @@
 #include "PxcUtil/Random.h"
 #include "PxcUtil/LogCenter.h"
 #include "PxcUtil/StringTools.h"
+#include "PxcUtil/md5.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -245,6 +246,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	strStrTest = StringTools::WstrToStr(wstrStrTest);
 	std::cout << strStrTest << std::endl;
 	std::cout << StringTools::Format("", 1, 2) << std::endl;
+
+	std::cout << "=====================" << std::endl;
+	CMd5 md5;
+	md5.TargetStr("sb");
+	std::cout << md5.GetDigestKey() << std::endl;
 
 	return 0;
 }

@@ -10,6 +10,7 @@
 #include "PxcUtil/LogCenter.h"
 #include "PxcUtil/StringTools.h"
 #include "PxcUtil/md5.h"
+#include "PxcUtil/IniFile.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -251,6 +252,20 @@ int _tmain(int argc, _TCHAR* argv[])
 	CMd5 md5;
 	md5.TargetStr("sb");
 	std::cout << md5.GetDigestKey() << std::endl;
+
+	std::cout << "=====================" << std::endl;
+	IniFile ini;
+	ini.SetValue("section1", "int1", 1);
+	ini.SetValue("section1", "string1", "test");
+	ini.SetValue("section2", "int2", 2);
+	ini.SetValue("section2", "string2", "test");
+	ini.SetPath("testini.ini");
+	ini.Save();
+	ini.ClearAll();
+	ini.Load("testini.ini");
+	bool bValue = 0;
+	if (ini.GetValue("section1", "int1", bValue))
+		std::cout << "INI:" << (bValue ? "true" : "false") << std::endl;
 
 	return 0;
 }

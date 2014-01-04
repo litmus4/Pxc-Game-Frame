@@ -24,6 +24,9 @@
     <ClCompile Include="StringTools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="FileManage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PxcUtilRT.h" />
@@ -39,6 +42,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="StringTools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManage.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

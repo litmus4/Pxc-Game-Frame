@@ -7,6 +7,14 @@ namespace PxcUtil
 namespace FileManage
 {
 
+std::wstring GetAbsPath()
+{
+	wchar_t wszPath[MAX_PATH];
+	memset(wszPath, 0, sizeof(wszPath));
+	GetCurrentDirectoryW(MAX_PATH, wszPath);
+	return wszPath;
+}
+
 BOOL IsRoot(LPCTSTR lpszPath)
 {
 	TCHAR szRoot[4];
@@ -69,6 +77,47 @@ bool IsFileExist(LPCTSTR lpszFileName)
 		return false;
 	FindClose(hFile);
 	return true;
+}
+
+bool RemoveFile(LPCTSTR lpszFileName)
+{
+	if (DeleteFileW(lpszFileName))
+		return true;
+	return false;
+}
+
+bool CreateFolder(LPCTSTR lpszPath)
+{
+	if (!CreateDirectoryW(lpszPath, NULL))
+	{
+		DWORD dwError = GetLastError();
+		if (dwError == ERROR_PATH_NOT_FOUND)
+		{
+			std::wstring wstrParent = lpszPath;
+			int iParentLen = wstrParent.find_last_of(L'\\');
+			if (iParentLen != std::wstring::npos)
+			{
+				if (CreateFolder(wstrParent.substr(0 , iParentLen).c_str()))
+					return (bool)CreateDirectoryW(lpszPath, NULL);
+				else
+					return false;
+			}
+			else
+				return false;
+		}
+		else if (dwError == ERROR_ALREADY_EXISTS)
+			return true;
+		else
+			return false;
+	}
+	return true;
+}
+
+bool RemoveFolder(LPCTSTR lpszPath)
+{
+	if (RemoveDirectoryW(lpszPath))
+		return true;
+	return false;
 }
 
 }

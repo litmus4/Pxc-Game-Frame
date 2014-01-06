@@ -132,6 +132,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		std::wcout << *itFile << std::endl;
 	}
+	std::wcout << FileManage::GetAbsPath() << std::endl;
+	if (FileManage::CreateFolder(L"testdir2\\testdir2in"))
+	{
+		IniFile inifm;
+		inifm.SetValue("section1", "int1", 1);
+		inifm.SetPath("testdir2\\testdir2in\\testinifm.ini");
+		inifm.Save();
+	}
 
 	std::cout << "=====================" << std::endl;
 	CSingleTest::GetInstance()->Do();
@@ -266,6 +274,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	bool bValue = 0;
 	if (ini.GetValue("section1", "int1", bValue))
 		std::cout << "INI:" << (bValue ? "true" : "false") << std::endl;
+
+	std::cout << "=====================" << std::endl;
+	if (FileManage::RemoveFile(L"testdir2\\testdir2in\\testinifm.ini"))
+		std::cout << "testdir2\\testdir2in\\testinifm.ini 删除成功" << std::endl;
+	if (FileManage::RemoveFolder(L"testdir2\\testdir2in"))
+		std::cout << "testdir2\\testdir2in 删除成功" << std::endl;
+	if (FileManage::RemoveFolder(L"testdir2"))
+		std::cout << "testdir2 删除成功" << std::endl;
 
 	return 0;
 }

@@ -11,6 +11,7 @@
 #include "PxcUtil/StringTools.h"
 #include "PxcUtil/md5.h"
 #include "PxcUtil/IniFile.h"
+#include "tinyxml/tinyxml.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -282,6 +283,35 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cout << "testdir2\\testdir2in 删除成功" << std::endl;
 	if (FileManage::RemoveFolder(L"testdir2"))
 		std::cout << "testdir2 删除成功" << std::endl;
+
+	std::cout << "==========XML==========" << std::endl;
+	TiXmlDocument doc;
+	if (doc.LoadFile("testxml.xml"))
+	{
+		TiXmlElement* pRoot = doc.RootElement();
+		if (pRoot)
+		{
+			int iValue = 0;
+			TiXmlElement* pItem = pRoot->FirstChildElement("ItemInt");
+			while (pItem)
+			{
+				pItem->QueryIntAttribute("Value", &iValue);
+				std::cout << iValue << std::endl;
+				pItem = pItem->NextSiblingElement("ItemInt");
+			}
+			pItem = pRoot->FirstChildElement("ItemStr");
+			while (pItem)
+			{
+				std::string strValue = pItem->Attribute("Value");
+				std::cout << strValue << std::endl;
+				pItem = pItem->NextSiblingElement("ItemStr");
+			}
+			TiXmlElement eleNew("ItemInt");
+			eleNew.SetAttribute("Value", iValue + 1);
+			pRoot->InsertEndChild(eleNew);
+			doc.SaveFile("testxml2.xml");
+		}
+	}
 
 	return 0;
 }

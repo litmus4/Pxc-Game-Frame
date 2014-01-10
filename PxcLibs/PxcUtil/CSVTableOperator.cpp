@@ -1,7 +1,5 @@
 #include "CSVTableOperator.h"
 
-#define STR_EMPTY "[empty]"
-
 namespace PxcUtil
 {
 
@@ -79,17 +77,11 @@ bool CCSVTableOperator::ReadRow()
 		std::map<std::string, ColHead>::iterator iter = m_mapColHeads.begin();
 		for (; iter != m_mapColHeads.end(); iter++)
 		{
-			std::string* pstrValue = NULL;
 			std::map<u32, std::string>::iterator itCol = m_itRow->second.find(iter->second.uKey);
-			if (itCol != m_itRow->second.end())
-				pstrValue = &itCol->second;
+			if (itCol != m_itRow->second.end() && !itCol->second.empty())
+				iter->second.strCurValue = itCol->second;
 			else
-				pstrValue = &(*m_pmapDefaults)[iter->second.uKey];
-
-			if (iter->second.eType == ECol_String && *pstrValue == STR_EMPTY)
-				iter->second.strCurValue.clear();
-			else
-				iter->second.strCurValue = *pstrValue;
+				iter->second.strCurValue = (*m_pmapDefaults)[iter->second.uKey];
 		}
 		m_itRow++;
 		return true;

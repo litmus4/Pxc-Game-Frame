@@ -29,61 +29,87 @@ namespace StringParser{
 //从分隔符中获得数据
 inline int GetParamFromString(std::string Str, std::vector<i32>& IntVec, char Delim = ',')
 {
-    char* p = strtok((char*)Str.c_str(), &Delim); 
-    while (p)
-    {
-        IntVec.push_back(atoi(p));
-        p = strtok(NULL, &Delim); 
-    }
-    return IntVec.size();
+	int ipos = Str.find_first_of(Delim), ilastpos = 0;
+	while (ipos != std::string::npos)
+	{
+		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
+		IntVec.push_back(atoi(strSub.c_str()));
+		ilastpos = ipos + 1;
+		ipos = Str.find_first_of(Delim, ilastpos);
+	}
+	std::string strSub = Str.substr(ilastpos);
+	IntVec.push_back(atoi(strSub.c_str()));
+	return IntVec.size();
 }
 
 inline int GetParamFromString(std::string Str, std::vector<float>& FloatVec, char Delim = ',')
 {
-    char* p = strtok((char*)Str.c_str(), &Delim); 
-    while (p)
-    {
-        FloatVec.push_back(atof(p));
-        p = strtok(NULL, &Delim); 
-    }
-    return FloatVec.size();
+	int ipos = Str.find_first_of(Delim), ilastpos = 0;
+	while (ipos != std::string::npos)
+	{
+		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
+		FloatVec.push_back(atof(strSub.c_str()));
+		ilastpos = ipos + 1;
+		ipos = Str.find_first_of(Delim, ilastpos);
+	}
+	std::string strSub = Str.substr(ilastpos);
+	FloatVec.push_back(atof(strSub.c_str()));
+	return FloatVec.size();
 }
 
 inline int GetParamFromString(std::string Str, std::vector<u32>& uiIntVec, char Delim = ',')
 {
-    char* p = strtok((char*)Str.c_str(), &Delim); 
-    while (p)
-    {
-        uiIntVec.push_back(strtoul(p, NULL, 10));
-        p = strtok(NULL, &Delim); 
-    }
-    return uiIntVec.size();
+	int ipos = Str.find_first_of(Delim), ilastpos = 0;
+	while (ipos != std::string::npos)
+	{
+		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
+		uiIntVec.push_back(strtoul(strSub.c_str(), NULL, 10));
+		ilastpos = ipos + 1;
+		ipos = Str.find_first_of(Delim, ilastpos);
+	}
+	std::string strSub = Str.substr(ilastpos);
+	uiIntVec.push_back(strtoul(strSub.c_str(), NULL, 10));
+	return uiIntVec.size();
 }
 
 inline int GetParamFromString(std::string Str, std::vector<std::string>& StringVec, char Delim = ',')
 {
-    char* p = strtok((char*)Str.c_str(), &Delim); 
-    while (p)
-    {
-        std::string buffer = p;
-        StringVec.push_back(buffer);
-        p = strtok(NULL, &Delim); 
-    }
-    return StringVec.size();
+	int ipos = Str.find_first_of(Delim), ilastpos = 0;
+	while (ipos != std::string::npos)
+	{
+		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
+		StringVec.push_back(strSub);
+		ilastpos = ipos + 1;
+		ipos = Str.find_first_of(Delim, ilastpos);
+	}
+	std::string strSub = Str.substr(ilastpos);
+	StringVec.push_back(strSub);
+	return StringVec.size();
 }
 
 template<typename T>
 inline int GetParamFromStringEx(std::string Str, std::vector<T>& vec, char Delim = ',')
 {
-	char* p = strtok((char*)Str.c_str(), &Delim); 
-	while (p)
+	int ipos = Str.find_first_of(Delim), ilastpos = 0;
+	while (ipos != std::string::npos)
 	{
+		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
 		std::stringstream stream;
-		stream << p;
+		stream << strSub;
 		T v;
 		stream >> v;
 		vec.push_back(v);
-		p = strtok(NULL, &Delim); 
+		ilastpos = ipos + 1;
+		ipos = Str.find_first_of(Delim, ilastpos);
+	}
+	if (ilastpos < Str.size())
+	{
+		std::string strSub = Str.substr(ilastpos);
+		std::stringstream stream;
+		stream << strSub;
+		T v;
+		stream >> v;
+		vec.push_back(v);
 	}
 	return vec.size();
 }

@@ -146,7 +146,8 @@ int GetParamFromArea(std::string Str, std::vector<std::vector<T> >& IntVec, char
 template<typename T>
 std::string SetParamToSimpleArea(std::vector<T>& vecParams, char left = '[', char right = ']', char Delim = ';')
 {
-	std::string strRet = left;
+	std::string strRet;
+	strRet += left;
 	std::vector<T>::iterator iter = vecParams.begin();
 	for (; iter != vecParams.end(); iter++)
 	{

@@ -98,7 +98,7 @@ public:
 	}
 
 	template<typename T>
-	bool SetArray(const std::string& strColName, const std::vector<T>& vecValues)
+	bool SetArray(const std::string& strColName, std::vector<T>& vecValues)
 	{
 		if (m_iRowNum < 0)
 			return false;

@@ -119,6 +119,17 @@ int _tmain(int argc, _TCHAR* argv[])
 				std::cout << std::endl;
 			}
 		}
+
+		tabop.AddColumn("ColEx", CCSVTableOperator::ECol_Int, "-1", "扩展列(已有数据行无法扩展)");
+		tabop.SetValue("ID", 5);
+		tabop.SetValue<std::string>("Name", "E");
+		tabop.SetValue("Haha", 5.5f);
+		std::vector<int> vecZu1Save;
+		vecZu1Save.push_back(5);
+		vecZu1Save.push_back(5);
+		tabop.SetArray("Zu1", vecZu1Save);
+		tabop.WriteRow();
+		tabop.Save("test3.csv");
 	}
 	else
 	{

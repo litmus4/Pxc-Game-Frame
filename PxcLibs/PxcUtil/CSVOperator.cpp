@@ -197,4 +197,9 @@ bool CCSVOperator::SaveCSV(const char* path)
     return true;
 }
 
+bool CCSVOperator::IsNoName()
+{
+	return m_CSVName.empty();
+}
+
 }

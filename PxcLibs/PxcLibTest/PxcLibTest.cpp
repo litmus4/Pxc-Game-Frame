@@ -177,6 +177,15 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cout << " " << info.date.getWeekday();
 		//*/
 		std::cout << " " << DateTime::IntegrateDateTime(info);
+
+		FILE* pTimeFile = FileManage::OpenFileWithCreate(L"testdir3\\testtimefm.txt");
+		if (pTimeFile)
+		{
+			char szBuf[128];
+			sprintf(szBuf, "%d:%d:%d", info.iHour, info.iMin, info.iSec);
+			fwrite(szBuf, strlen(szBuf), 1, pTimeFile);
+			fclose(pTimeFile);
+		}
 	}
 	std::cout << std::endl;
 

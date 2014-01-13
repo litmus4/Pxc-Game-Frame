@@ -79,6 +79,19 @@ bool IsFileExist(LPCTSTR lpszFileName)
 	return true;
 }
 
+FILE* OpenFileWithCreate(LPCTSTR lpszFileName)
+{
+	std::wstring wstrFolder = lpszFileName;
+	int ipos = wstrFolder.find_last_of(L'\\');
+	if (ipos != std::wstring::npos)
+	{
+		if (!CreateFolder(wstrFolder.substr(0, ipos).c_str()))
+			return NULL;
+	}
+	FILE* pf = _wfopen(lpszFileName, L"w");
+	return pf;
+}
+
 bool RemoveFile(LPCTSTR lpszFileName)
 {
 	if (DeleteFileW(lpszFileName))

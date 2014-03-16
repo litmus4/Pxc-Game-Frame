@@ -42,6 +42,8 @@ public:
 	void ResetIter();
 
 	bool ReadRow();
+	bool AddColumn(const std::string& strName, ECol_Type eType, const std::string& strDefault, const std::string& strDesc = "");
+	bool WriteRow();
 	ECol_Type GetType(const std::string& strColName);
 
 	template<typename T>
@@ -79,7 +81,38 @@ public:
 		return false;
 	}
 
+	template<typename T>
+	bool SetValue(const std::string& strColName, const T& value)
+	{
+		if (m_iRowNum < 0)
+			return false;
+		std::map<std::string, ColHead>::iterator iter = m_mapColHeads.find(strColName);
+		if (iter != m_mapColHeads.end())
+		{
+			std::stringstream stream;
+			stream << value;
+			iter->second.strCurValue = stream.str().c_str();
+			return true;
+		}
+		return false;
+	}
+
+	template<typename T>
+	bool SetArray(const std::string& strColName, std::vector<T>& vecValues)
+	{
+		if (m_iRowNum < 0)
+			return false;
+		std::map<std::string, ColHead>::iterator iter = m_mapColHeads.find(strColName);
+		if (iter != m_mapColHeads.end() && iter->second.eType >= ECol_IntArray)
+		{
+			iter->second.strCurValue = StringParser::SetParamToSimpleArea(vecValues);
+			return true;
+		}
+		return false;
+	}
+
 	static ECol_Type ColTypeStringToEnum(const std::string& str);
+	static std::string ColTypeEnumToString(ECol_Type eType);
 
 private:
 	CCSVOperator m_Core;

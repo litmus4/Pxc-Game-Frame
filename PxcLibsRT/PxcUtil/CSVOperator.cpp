@@ -180,8 +180,10 @@ bool CCSVOperator::SaveCSV(const char* path)
             std::map<u32, std::string>::iterator it = rStringMap.begin();
             for (; it != rStringMap.end(); ++it)
             {
-                std::string key = it->second;
-                key += ',';
+				std::string key;
+				if (it != rStringMap.begin())
+					key += ',';
+                key += it->second;
                 fwrite(key.c_str(), 1, key.size(), pfile);
             }
             char Delim = '\n';
@@ -195,6 +197,11 @@ bool CCSVOperator::SaveCSV(const char* path)
     }
 
     return true;
+}
+
+bool CCSVOperator::IsNoName()
+{
+	return m_CSVName.empty();
 }
 
 }

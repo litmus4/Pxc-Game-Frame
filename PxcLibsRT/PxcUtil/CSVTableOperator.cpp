@@ -1,7 +1,5 @@
 #include "CSVTableOperator.h"
 
-#define STR_EMPTY "[empty]"
-
 namespace PxcUtil
 {
 
@@ -50,8 +48,9 @@ bool CCSVTableOperator::Load(const char* szFile)
 
 bool CCSVTableOperator::Save(const char* szFile)
 {
-	//
-	return false;
+	if (szFile == NULL && m_Core.IsNoName())
+		return false;
+	return m_Core.SaveCSV(szFile);
 }
 
 void CCSVTableOperator::Reset()
@@ -79,23 +78,90 @@ bool CCSVTableOperator::ReadRow()
 		std::map<std::string, ColHead>::iterator iter = m_mapColHeads.begin();
 		for (; iter != m_mapColHeads.end(); iter++)
 		{
-			std::string* pstrValue = NULL;
 			std::map<u32, std::string>::iterator itCol = m_itRow->second.find(iter->second.uKey);
-			if (itCol != m_itRow->second.end())
-				pstrValue = &itCol->second;
+			if (itCol != m_itRow->second.end() && !itCol->second.empty())
+				iter->second.strCurValue = itCol->second;
 			else
-				pstrValue = &(*m_pmapDefaults)[iter->second.uKey];
-
-			if (iter->second.eType == ECol_String && *pstrValue == STR_EMPTY)
-				iter->second.strCurValue.clear();
-			else
-				iter->second.strCurValue = *pstrValue;
+				iter->second.strCurValue = (*m_pmapDefaults)[iter->second.uKey];
 		}
 		m_itRow++;
 		return true;
 	}
 	else
 		return false;
+}
+
+bool CCSVTableOperator::AddColumn(const std::string& strName, ECol_Type eType, const std::string& strDefault, const std::string& strDesc)
+{
+	if (m_mapColHeads.find(strName) != m_mapColHeads.end())
+		return false;
+	ColHead head;
+	head.eType = eType;
+
+	std::map<u32, std::map<u32, std::string>>::iterator itRowName = m_Core.GetCSVMap().find(ERowForColHead_Name);
+	if (itRowName != m_Core.GetCSVMap().end())
+	{
+		std::map<u32, std::string>& mapDescs = m_Core.GetCSVMap()[ERowForColHead_Desc];
+		std::map<u32, std::string>& mapNames = itRowName->second;
+		std::map<u32, std::string>& mapTypes = m_Core.GetCSVMap()[ERowForColHead_Type];
+		if (m_pmapDefaults == NULL)
+			m_pmapDefaults = &(m_Core.GetCSVMap()[ERowForColHead_Default]);
+
+		std::map<u32, std::string>::iterator itColNameMax = mapNames.end();
+		itColNameMax--;
+		u32 uNewKey = itColNameMax->first + 1;
+		mapDescs.insert(std::make_pair(uNewKey, strDesc));
+		mapNames.insert(std::make_pair(uNewKey, strName));
+		mapTypes.insert(std::make_pair(uNewKey, ColTypeEnumToString(eType)));
+		m_pmapDefaults->insert(std::make_pair(uNewKey, strDefault));
+
+		head.uKey = uNewKey;
+	}
+	else
+	{
+		std::map<u32, std::string> mapDescs;
+		mapDescs.insert(std::make_pair(1, strDesc));
+		m_Core.GetCSVMap().insert(std::make_pair(ERowForColHead_Desc, mapDescs));
+
+		std::map<u32, std::string> mapNames;
+		mapNames.insert(std::make_pair(1, strName));
+		m_Core.GetCSVMap().insert(std::make_pair(ERowForColHead_Name, mapNames));
+
+		std::map<u32, std::string> mapTypes;
+		mapTypes.insert(std::make_pair(1, ColTypeEnumToString(eType)));
+		m_Core.GetCSVMap().insert(std::make_pair(ERowForColHead_Type, mapTypes));
+
+		std::map<u32, std::string> mapDefaults;
+		mapDefaults.insert(std::make_pair(1, strDefault));
+		std::pair<std::map<u32, std::map<u32, std::string>>::iterator, bool> pairRet =
+			m_Core.GetCSVMap().insert(std::make_pair(ERowForColHead_Default, mapDefaults));
+
+		m_pmapDefaults = &pairRet.first->second;
+		head.uKey = 1;
+	}
+
+	m_mapColHeads.insert(std::make_pair(strName, head));
+	if (m_iRowNum < 0)
+	{
+		m_iRowNum = 0;
+		m_itRow = m_Core.GetCSVMap().end();
+	}
+	return true;
+}
+
+bool CCSVTableOperator::WriteRow()
+{
+	if (m_iRowNum < 0)
+		return false;
+
+	std::map<u32, std::string> mapRow;
+	std::map<std::string, ColHead>::iterator iter = m_mapColHeads.begin();
+	for (; iter != m_mapColHeads.end(); iter++)
+		mapRow.insert(std::make_pair(iter->second.uKey, iter->second.strCurValue));
+	std::map<u32, std::map<u32, std::string>>::iterator itRowMax = m_Core.GetCSVMap().end();
+	itRowMax--;
+	m_Core.GetCSVMap().insert(std::make_pair(itRowMax->first + 1, mapRow));
+	return true;
 }
 
 CCSVTableOperator::ECol_Type CCSVTableOperator::GetType(const std::string& strColName)
@@ -126,6 +192,20 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::ColTypeStringToEnum(const std::s
 		}
 	}
 	return ECol_String;
+}
+
+std::string CCSVTableOperator::ColTypeEnumToString(ECol_Type eType)
+{
+	switch (eType)
+	{
+	case ECol_Int: return "int";
+	case ECol_Float: return "float";
+	case ECol_String: return "string";
+	case ECol_IntArray: return "array[int]";
+	case ECol_FloatArray: return "array[float]";
+	case ECol_StringArray: return "array[string]";
+	}
+	return "";
 }
 
 }

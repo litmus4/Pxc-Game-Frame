@@ -15,6 +15,7 @@ public:
 
     bool LoadCSV(const char* path);
     bool SaveCSV(const char* path = NULL);
+	bool IsNoName();
 
     bool GetInt(u32 uiLine, u32 uiRow, int& iValue);
     bool GetFloat(u32 uiLine, u32 uiRow, float& fValue);

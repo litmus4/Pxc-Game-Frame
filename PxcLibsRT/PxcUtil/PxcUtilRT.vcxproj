@@ -113,8 +113,11 @@
     <ClInclude Include="CSVOperator.h" />
     <ClInclude Include="CSVTableOperator.h" />
     <ClInclude Include="FileManage.h" />
+    <ClInclude Include="IniFile.h" />
     <ClInclude Include="PxcUtilRT.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Scattered.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="StringParser.h" />
     <ClInclude Include="StringTools.h" />
     <ClInclude Include="targetver.h" />
@@ -123,6 +126,7 @@
     <ClCompile Include="CSVOperator.cpp" />
     <ClCompile Include="CSVTableOperator.cpp" />
     <ClCompile Include="FileManage.cpp" />
+    <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="PxcUtilRT.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

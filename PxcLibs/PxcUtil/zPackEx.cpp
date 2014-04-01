@@ -33,4 +33,14 @@ zp::IReadFile* zPackFOpen(const char* szComboPath)
 	return NULL;
 }
 
+void zPackRelease()
+{
+	std::map<std::string, zp::IPackage*>::iterator iter = g_mapOpenZPacks.begin();
+	for (; iter != g_mapOpenZPacks.end(); iter++)
+	{
+		zp::close(iter->second);
+	}
+	g_mapOpenZPacks.clear();
+}
+
 }

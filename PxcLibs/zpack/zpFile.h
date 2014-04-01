@@ -26,6 +26,8 @@ public:
 
 	virtual u32 read(u8* buffer, u32 size);
 
+	virtual void deleteMe();
+
 private:
 	void seekInPackage();
 

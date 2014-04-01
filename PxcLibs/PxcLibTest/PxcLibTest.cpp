@@ -12,6 +12,7 @@
 #include "PxcUtil/md5.h"
 #include "PxcUtil/IniFile.h"
 #include "tinyxml/tinyxml.h"
+#include "PxcUtil/zPackEx.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -332,6 +333,17 @@ int _tmain(int argc, _TCHAR* argv[])
 			doc.SaveFile("testxml2.xml");
 		}
 	}
+
+	std::cout << "==========zpack==========" << std::endl;
+	tabop.Reset();
+	if (tabop.Load("testzpk.zpk#dir\\test2.csv"))
+	{
+		tabop.ReadRow();
+		std::string strName;
+		if (tabop.GetValue("Name", strName))
+			std::cout << strName << std::endl;
+	}
+	zPackRelease();
 
 	return 0;
 }

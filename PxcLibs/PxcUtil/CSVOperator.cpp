@@ -24,6 +24,7 @@ bool CCSVOperator::LoadCSV(const char* path)
 		char* filebuffer = NULL;
 		if (pZFile)
 		{
+			filebuffer = new char[pZFile->size()];
 			pZFile->read((zp::u8*)filebuffer, pZFile->size());
 		}
 		else
@@ -66,7 +67,10 @@ bool CCSVOperator::LoadCSV(const char* path)
             }
             m_StringKeyMap[iter->first] = l_StringMap;
         }
-        fclose(pfile);
+		if (pZFile)
+			zPackFClose(pZFile);
+		else
+			fclose(pfile);
         m_CSVName = path;
         return true;
     }

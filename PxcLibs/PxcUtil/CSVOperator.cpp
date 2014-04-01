@@ -22,10 +22,14 @@ bool CCSVOperator::LoadCSV(const char* path)
     if (pZFile || pfile)
     {
 		char* filebuffer = NULL;
+		char cnl = '\n';
+		int inl = 1;
 		if (pZFile)
 		{
 			filebuffer = new char[pZFile->size()];
 			pZFile->read((zp::u8*)filebuffer, pZFile->size());
+			cnl = '\r';
+			inl++;
 		}
 		else
 		{
@@ -39,7 +43,7 @@ bool CCSVOperator::LoadCSV(const char* path)
 
         std::map<u32, std::string> StringMap;
         char* pBegin = filebuffer;
-        char* pEnd = strchr(filebuffer, '\n');
+        char* pEnd = strchr(filebuffer, cnl);
         u32 uiIndex = 1;
         while (pEnd != NULL)
         {
@@ -49,8 +53,8 @@ bool CCSVOperator::LoadCSV(const char* path)
             {
                 StringMap[uiIndex] = strbuff;
             }
-            pBegin = pEnd + 1;
-            pEnd = strchr(pEnd + 1, '\n');
+            pBegin = pEnd + inl;
+            pEnd = strchr(pEnd + inl, cnl);
             ++uiIndex;
         }
         delete[] filebuffer;

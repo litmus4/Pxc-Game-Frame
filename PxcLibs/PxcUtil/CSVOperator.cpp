@@ -1,4 +1,5 @@
 #include "CSVOperator.h"
+#include "zPackEx.h"
 
 namespace PxcUtil
 {
@@ -13,15 +14,27 @@ CCSVOperator::CCSVOperator(const char* path)
 
 bool CCSVOperator::LoadCSV(const char* path)
 {
-    FILE* pfile = fopen(path, "r");
-    if (pfile)
-    {
-        fseek(pfile,0,SEEK_END);
-        u32 dwsize = ftell(pfile);
-        rewind(pfile);
+	zp::IReadFile* pZFile = zPackFOpen(path);
+	FILE* pfile = NULL;
+	if (pZFile == NULL)
+		pfile = fopen(path, "r");
 
-        char* filebuffer = new char[dwsize];
-        fread(filebuffer, 1, dwsize, pfile);
+    if (pZFile || pfile)
+    {
+		char* filebuffer = NULL;
+		if (pZFile)
+		{
+			pZFile->read((zp::u8*)filebuffer, pZFile->size());
+		}
+		else
+		{
+			fseek(pfile,0,SEEK_END);
+			u32 dwsize = ftell(pfile);
+			rewind(pfile);
+
+			filebuffer = new char[dwsize];
+			fread(filebuffer, 1, dwsize, pfile);
+		}
 
         std::map<u32, std::string> StringMap;
         char* pBegin = filebuffer;

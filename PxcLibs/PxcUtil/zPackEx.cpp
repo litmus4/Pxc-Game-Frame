@@ -1,5 +1,6 @@
 #include "zPackEx.h"
 #include "StringTools.h"
+#include <map>
 
 namespace PxcUtil
 {

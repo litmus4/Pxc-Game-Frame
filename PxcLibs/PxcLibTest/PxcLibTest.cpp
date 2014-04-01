@@ -343,6 +343,21 @@ int _tmain(int argc, _TCHAR* argv[])
 		if (tabop.GetValue("Name", strName))
 			std::cout << strName << std::endl;
 	}
+	doc.Clear();
+	if (doc.LoadFile("testzpk.zpk#dir\\testxml.xml"))
+	{
+		TiXmlElement* pRoot = doc.RootElement();
+		if (pRoot)
+		{
+			int iValue = 0;
+			TiXmlElement* pItem = pRoot->FirstChildElement("ItemInt");
+			if (pItem)
+			{
+				pItem->QueryIntAttribute("Value", &iValue);
+				std::cout << iValue << std::endl;
+			}
+		}
+	}
 	zPackRelease();
 
 	return 0;

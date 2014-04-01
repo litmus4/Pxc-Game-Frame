@@ -88,6 +88,10 @@ class TiXmlAttribute;
 class TiXmlText;
 class TiXmlDeclaration;
 class TiXmlParsingData;
+namespace zp
+{
+	class IReadFile;
+}
 
 const int TIXML_MAJOR_VERSION = 2;
 const int TIXML_MINOR_VERSION = 6;
@@ -1424,7 +1428,7 @@ public:
 		will be interpreted as an XML file. TinyXML doesn't stream in XML from the current
 		file location. Streaming may be added in the future.
 	*/
-	bool LoadFile( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+	bool LoadFile( FILE*, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING, zp::IReadFile* pZFile = NULL );
 	/// Save a file using the given FILE*. Returns true if successful.
 	bool SaveFile( FILE* ) const;
 

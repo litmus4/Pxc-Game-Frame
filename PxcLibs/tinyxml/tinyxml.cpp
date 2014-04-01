@@ -30,6 +30,7 @@ distribution.
 #endif
 
 #include "tinyxml.h"
+#include "PxcUtil/zPackEx.h"
 
 FILE* TiXmlFOpen( const char* filename, const char* mode );
 
@@ -967,13 +968,21 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	TIXML_STRING filename( _filename );
 	value = filename;
 
-	// reading in binary mode so that tinyxml can normalize the EOL
-	FILE* file = TiXmlFOpen( value.c_str (), "rb" );	
-
-	if ( file )
+	zp::IReadFile* pZFile = NULL;
+	FILE* file = NULL;
+	if (PxcUtil::zPackFOpen(_filename, &pZFile) == PxcUtil::EzPOpen_SimplePath)
 	{
-		bool result = LoadFile( file, encoding );
-		fclose( file );
+		// reading in binary mode so that tinyxml can normalize the EOL
+		file = TiXmlFOpen( value.c_str (), "rb" );
+	}
+
+	if ( pZFile || file )
+	{
+		bool result = LoadFile( file, encoding, pZFile );
+		if (pZFile)
+			zPackFClose(pZFile);
+		else
+			fclose( file );
 		return result;
 	}
 	else
@@ -983,9 +992,9 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 	}
 }
 
-bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
+bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding, zp::IReadFile* pZFile )
 {
-	if ( !file ) 
+	if ( !file && !pZFile ) 
 	{
 		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
 		return false;
@@ -995,47 +1004,62 @@ bool TiXmlDocument::LoadFile( FILE* file, TiXmlEncoding encoding )
 	Clear();
 	location.Clear();
 
-	// Get the file size, so we can pre-allocate the string. HUGE speed impact.
 	long length = 0;
-	fseek( file, 0, SEEK_END );
-	length = ftell( file );
-	fseek( file, 0, SEEK_SET );
-
-	// Strange case, but good to handle up front.
-	if ( length <= 0 )
+	char* buf = NULL;
+	if (pZFile)
 	{
-		SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN );
-		return false;
+		length = pZFile->size();
+		if (length <= 0)
+		{
+			SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN );
+			return false;
+		}
+		buf = new char[length + 1];
+		pZFile->read((zp::u8*)buf, length);
 	}
-
-	// Subtle bug here. TinyXml did use fgets. But from the XML spec:
-	// 2.11 End-of-Line Handling
-	// <snip>
-	// <quote>
-	// ...the XML processor MUST behave as if it normalized all line breaks in external 
-	// parsed entities (including the document entity) on input, before parsing, by translating 
-	// both the two-character sequence #xD #xA and any #xD that is not followed by #xA to 
-	// a single #xA character.
-	// </quote>
-	//
-	// It is not clear fgets does that, and certainly isn't clear it works cross platform. 
-	// Generally, you expect fgets to translate from the convention of the OS to the c/unix
-	// convention, and not work generally.
-
-	/*
-	while( fgets( buf, sizeof(buf), file ) )
+	else
 	{
-		data += buf;
-	}
-	*/
+		// Get the file size, so we can pre-allocate the string. HUGE speed impact.
+		fseek( file, 0, SEEK_END );
+		length = ftell( file );
+		fseek( file, 0, SEEK_SET );
 
-	char* buf = new char[ length+1 ];
-	buf[0] = 0;
+		// Strange case, but good to handle up front.
+		if ( length <= 0 )
+		{
+			SetError( TIXML_ERROR_DOCUMENT_EMPTY, 0, 0, TIXML_ENCODING_UNKNOWN );
+			return false;
+		}
 
-	if ( fread( buf, length, 1, file ) != 1 ) {
-		delete [] buf;
-		SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
-		return false;
+		// Subtle bug here. TinyXml did use fgets. But from the XML spec:
+		// 2.11 End-of-Line Handling
+		// <snip>
+		// <quote>
+		// ...the XML processor MUST behave as if it normalized all line breaks in external 
+		// parsed entities (including the document entity) on input, before parsing, by translating 
+		// both the two-character sequence #xD #xA and any #xD that is not followed by #xA to 
+		// a single #xA character.
+		// </quote>
+		//
+		// It is not clear fgets does that, and certainly isn't clear it works cross platform. 
+		// Generally, you expect fgets to translate from the convention of the OS to the c/unix
+		// convention, and not work generally.
+
+		/*
+		while( fgets( buf, sizeof(buf), file ) )
+		{
+			data += buf;
+		}
+		*/
+
+		buf = new char[ length+1 ];
+		buf[0] = 0;
+
+		if ( fread( buf, length, 1, file ) != 1 ) {
+			delete [] buf;
+			SetError( TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
+			return false;
+		}
 	}
 
 	// Process the buffer in place to normalize new lines. (See comment above.)

@@ -1,6 +1,5 @@
 #pragma once
 #include "zpack/zpack.h"
-#include <map>
 
 #define zPackFClose(rfile) rfile->deleteMe()
 

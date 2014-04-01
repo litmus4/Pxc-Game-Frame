@@ -6,12 +6,12 @@ namespace PxcUtil
 
 std::map<std::string, zp::IPackage*> g_mapOpenZPacks;
 
-zp::IReadFile* zPackFOpen(const char* szComboPath)
+EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
 {
 	std::string strComboPath = szComboPath;
 	int ipos = strComboPath.find_first_of('#');
 	if (ipos == std::string::npos)
-		return NULL;
+		return EzPOpen_SimplePath;
 	std::string strPack = strComboPath.substr(0, ipos);
 	std::string strFile = strComboPath.substr(ipos + 1, strComboPath.size() - ipos - 1);
 
@@ -28,9 +28,15 @@ zp::IReadFile* zPackFOpen(const char* szComboPath)
 	if (pPackage)
 	{
 		zp::IReadFile* pFile = pPackage->openFile(PxcUtil::StringTools::StrToWstr(strFile).c_str());
-		return pFile;
+		if (pFile)
+		{
+			*ppReadFile = pFile;
+			return EzPOpen_Ok;
+		}
+		else
+			return EzPOpen_NoFile;
 	}
-	return NULL;
+	return EzPOpen_NoPack;
 }
 
 void zPackRelease()

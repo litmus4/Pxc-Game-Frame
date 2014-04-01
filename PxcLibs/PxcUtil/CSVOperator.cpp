@@ -14,9 +14,9 @@ CCSVOperator::CCSVOperator(const char* path)
 
 bool CCSVOperator::LoadCSV(const char* path)
 {
-	zp::IReadFile* pZFile = zPackFOpen(path);
+	zp::IReadFile* pZFile = NULL;
 	FILE* pfile = NULL;
-	if (pZFile == NULL)
+	if (zPackFOpen(path, &pZFile) == EzPOpen_SimplePath)
 		pfile = fopen(path, "r");
 
     if (pZFile || pfile)

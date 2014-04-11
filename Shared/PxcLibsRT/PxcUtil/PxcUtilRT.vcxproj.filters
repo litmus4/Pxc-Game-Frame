@@ -30,6 +30,9 @@
     <ClCompile Include="IniFile.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="DateTime.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PxcUtilRT.h" />
@@ -57,6 +60,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Scattered.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DateTime.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

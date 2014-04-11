@@ -112,6 +112,7 @@
   <ItemGroup>
     <ClInclude Include="CSVOperator.h" />
     <ClInclude Include="CSVTableOperator.h" />
+    <ClInclude Include="DateTime.h" />
     <ClInclude Include="FileManage.h" />
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="PxcUtilRT.h" />
@@ -125,6 +126,7 @@
   <ItemGroup>
     <ClCompile Include="CSVOperator.cpp" />
     <ClCompile Include="CSVTableOperator.cpp" />
+    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="FileManage.cpp" />
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="PxcUtilRT.cpp" />

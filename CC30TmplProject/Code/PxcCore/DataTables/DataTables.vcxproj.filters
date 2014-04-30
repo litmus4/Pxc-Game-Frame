@@ -27,9 +27,15 @@
     <ClInclude Include="TextTable\TextTableCenter.h">
       <Filter>TextTable</Filter>
     </ClInclude>
+    <ClInclude Include="TextTable\TextRow.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
+      <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\TextRow.cpp">
       <Filter>TextTable</Filter>
     </ClCompile>
   </ItemGroup>

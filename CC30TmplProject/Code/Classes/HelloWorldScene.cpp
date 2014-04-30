@@ -1,4 +1,9 @@
 #include "HelloWorldScene.h"
+//*²âÊÔÁÙÊ±
+#include "PxcUtil/LogCenter.h"
+#include "PublicDefinitions/SpecialFileDef.h"
+#include "DataTables/TextTable/TextTableCenter.h"
+//*/
 
 USING_NS_CC;
 
@@ -54,7 +59,13 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
     
-    auto label = LabelTTF::create("Hello World", "Arial", 24);
+	//*²âÊÔÁÙÊ±
+	PXCU_LOGINST->Init(SpecialFileDef::ELogFile_AssetsTables, "log_assetstables.txt");
+	CTextTableCenter::GetInstance()->Init();
+	std::string strText5 = "Hello World ";
+	strText5 += CTextTableCenter::GetInstance()->GetText(5);
+	//*/
+    auto label = LabelTTF::create(strText5, "Arial", 24);
     
     // position the label on the center of the screen
     label->setPosition(Point(origin.x + visibleSize.width/2,
@@ -83,6 +94,10 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     return;
 #endif
 
+	//*²âÊÔÁÙÊ±
+	CTextTableCenter::GetInstance()->Release();
+	PXCU_LOGINST->Release();
+	//*/
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)

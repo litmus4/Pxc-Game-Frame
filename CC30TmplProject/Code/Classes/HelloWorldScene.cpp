@@ -3,6 +3,9 @@
 #include "PxcUtil/LogCenter.h"
 #include "PublicDefinitions/SpecialFileDef.h"
 #include "DataTables/TextTable/TextTableCenter.h"
+#include "tinyxml/tinyxml.h"
+#include "PxcUtil/StringTools.h"
+#include "PxcUtil/zPackEx.h"
 //*/
 
 USING_NS_CC;
@@ -41,8 +44,8 @@ bool HelloWorld::init()
 
     // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
+                                           "CloseNormal.tga",
+                                           "CloseSelected.tga",
                                            CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
     
 	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
@@ -64,6 +67,31 @@ bool HelloWorld::init()
 	CTextTableCenter::GetInstance()->Init();
 	std::string strText5 = "Hello World ";
 	strText5 += CTextTableCenter::GetInstance()->GetText(5);
+
+	PxcUtil::CCSVTableOperator tabop;
+	if (tabop.Load("testzpk.zpk#dir\\test2.csv"))
+	{
+		tabop.ReadRow();
+		std::string strName;
+		if (tabop.GetValue("Name", strName))
+			strText5 += strName;
+	}
+	TiXmlDocument doc;
+	if (doc.LoadFile("testzpk.zpk#dir\\testxml.xml"))
+	{
+		TiXmlElement* pRoot = doc.RootElement();
+		if (pRoot)
+		{
+			int iValue = 0;
+			TiXmlElement* pItem = pRoot->FirstChildElement("ItemInt");
+			if (pItem)
+			{
+				pItem->QueryIntAttribute("Value", &iValue);
+				strText5 += PxcUtil::StringTools::BasicToStr(iValue);
+			}
+		}
+	}
+	PxcUtil::zPackRelease();
 	//*/
     auto label = LabelTTF::create(strText5, "Arial", 24);
     
@@ -75,7 +103,7 @@ bool HelloWorld::init()
     this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    auto sprite = Sprite::create("HelloWorld.tga");
 
     // position the sprite on the center of the screen
     sprite->setPosition(Point(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));

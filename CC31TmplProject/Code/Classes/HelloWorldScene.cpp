@@ -1,4 +1,12 @@
 #include "HelloWorldScene.h"
+//*²âÊÔÁÙÊ±
+#include "PxcUtil/LogCenter.h"
+#include "PublicDefinitions/SpecialFileDef.h"
+#include "DataTables/TextTable/TextTableCenter.h"
+#include "tinyxml/tinyxml.h"
+#include "PxcUtil/StringTools.h"
+#include "PxcUtil/zPackEx.h"
+//*/
 
 USING_NS_CC;
 
@@ -54,7 +62,38 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
     
-    auto label = LabelTTF::create("Hello World", "Arial", 24);
+	//*²âÊÔÁÙÊ±
+	PXCU_LOGINST->Init(SpecialFileDef::ELogFile_AssetsTables, "log_assetstables.txt");
+	CTextTableCenter::GetInstance()->Init();
+	std::string strText5 = "Hello World ";
+	strText5 += CTextTableCenter::GetInstance()->GetText(5);
+
+	PxcUtil::CCSVTableOperator tabop;
+	if (tabop.Load("testzpk.zpk#dir\\test2.csv"))
+	{
+		tabop.ReadRow();
+		std::string strName;
+		if (tabop.GetValue("Name", strName))
+			strText5 += strName;
+	}
+	TiXmlDocument doc;
+	if (doc.LoadFile("testzpk.zpk#dir\\testxml.xml"))
+	{
+		TiXmlElement* pRoot = doc.RootElement();
+		if (pRoot)
+		{
+			int iValue = 0;
+			TiXmlElement* pItem = pRoot->FirstChildElement("ItemInt");
+			if (pItem)
+			{
+				pItem->QueryIntAttribute("Value", &iValue);
+				strText5 += PxcUtil::StringTools::BasicToStr(iValue);
+			}
+		}
+	}
+	PxcUtil::zPackRelease();
+	//*/
+    auto label = LabelTTF::create(strText5, "Arial", 24);
     
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,
@@ -83,6 +122,10 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     return;
 #endif
 
+	//*²âÊÔÁÙÊ±
+	CTextTableCenter::GetInstance()->Release();
+	PXCU_LOGINST->Release();
+	//*/
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)

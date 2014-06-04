@@ -3,9 +3,11 @@
 #include "PxcUtil/LogCenter.h"
 #include "PublicDefinitions/SpecialFileDef.h"
 #include "DataTables/TextTable/TextTableCenter.h"
-#include "tinyxml/tinyxml.h"
-#include "PxcUtil/StringTools.h"
 #include "PxcUtil/zPackEx.h"
+
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
+#define USE_ZPACK
+#endif
 //*/
 
 USING_NS_CC;
@@ -64,34 +66,15 @@ bool HelloWorld::init()
     
 	//*²âÊÔÁÙÊ±
 	PXCU_LOGINST->Init(SpecialFileDef::ELogFile_AssetsTables, "log_assetstables.txt");
+#ifdef USE_ZPACK
+	PxcUtil::zPackPathSwitch(true);
+	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
+#endif
 	CTextTableCenter::GetInstance()->Init();
+	PxcUtil::zPackRelease();
+
 	std::string strText5 = "Hello World ";
 	strText5 += CTextTableCenter::GetInstance()->GetText(5);
-
-	PxcUtil::CCSVTableOperator tabop;
-	if (tabop.Load("testzpk.zpk#dir\\test2.csv"))
-	{
-		tabop.ReadRow();
-		std::string strName;
-		if (tabop.GetValue("Name", strName))
-			strText5 += strName;
-	}
-	TiXmlDocument doc;
-	if (doc.LoadFile("testzpk.zpk#dir\\testxml.xml"))
-	{
-		TiXmlElement* pRoot = doc.RootElement();
-		if (pRoot)
-		{
-			int iValue = 0;
-			TiXmlElement* pItem = pRoot->FirstChildElement("ItemInt");
-			if (pItem)
-			{
-				pItem->QueryIntAttribute("Value", &iValue);
-				strText5 += PxcUtil::StringTools::BasicToStr(iValue);
-			}
-		}
-	}
-	PxcUtil::zPackRelease();
 	//*/
     auto label = LabelTTF::create(strText5, "Arial", 24);
     
@@ -124,6 +107,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 	//*²âÊÔÁÙÊ±
 	CTextTableCenter::GetInstance()->Release();
+	PxcUtil::zPackClearPathAims();
 	PXCU_LOGINST->Release();
 	//*/
     Director::getInstance()->end();

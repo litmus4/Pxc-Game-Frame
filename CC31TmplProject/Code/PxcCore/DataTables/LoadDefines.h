@@ -1,10 +1,10 @@
 #pragma once
 #include "PxcUtil\CSVTableOperator.h"
+#include "PxcUtil\zPackEx.h"
 #include "PxcUtil\LogCenter.h"
 #include "PublicDefinitions\SpecialFileDef.h"
 #include <string>
 
-//TODO zpack”≥…‰
 #define LOADTABLE(Name, Folder, Container, IDMbr)\
 {\
 	std::string strFile = "DataTables\\";\
@@ -12,6 +12,7 @@
 	strFile += "\\";\
 	strFile += #Name;\
 	strFile += ".csv";\
+	PxcUtil::zPackCombinePath(strFile);\
 	PxcUtil::CCSVTableOperator tabop;\
 	if (tabop.Load(strFile.c_str()))\
 	{\

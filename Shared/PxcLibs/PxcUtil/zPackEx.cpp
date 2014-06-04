@@ -6,6 +6,8 @@ namespace PxcUtil
 {
 
 std::map<std::string, zp::IPackage*> g_mapOpenZPacks;
+bool g_bZPackPath = false;
+std::map<std::string, std::string> g_mapZPackPathAims;
 
 EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
 {
@@ -48,6 +50,44 @@ void zPackRelease()
 		zp::close(iter->second);
 	}
 	g_mapOpenZPacks.clear();
+}
+
+void zPackPathSwitch(bool bFlag)
+{
+	g_bZPackPath = bFlag;
+}
+
+void zPackAddPathAim(const char* szPack, const char* szPath)
+{
+	if (!g_bZPackPath)
+		return;
+
+	std::string strPath = szPath;
+	int ipos = strPath.find_first_of('\\');
+	if (ipos != std::string::npos)
+		strPath = strPath.substr(0, ipos);
+
+	g_mapZPackPathAims.insert(std::pair<std::string, std::string>(strPath, szPack));
+}
+
+void zPackCombinePath(std::string& strPath)
+{
+	if (!g_bZPackPath)
+		return;
+
+	std::string strPathKey = strPath;
+	int ipos = strPathKey.find_first_of('\\');
+	if (ipos != std::string::npos)
+		strPathKey = strPathKey.substr(0, ipos);
+
+	std::map<std::string, std::string>::iterator iter = g_mapZPackPathAims.find(strPathKey);
+	if (iter != g_mapZPackPathAims.end())
+		strPath = iter->second + "#" + strPath;
+}
+
+void zPackClearPathAims()
+{
+	g_mapZPackPathAims.clear();
 }
 
 }

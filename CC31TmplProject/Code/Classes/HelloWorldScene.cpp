@@ -3,7 +3,9 @@
 #include "PxcUtil/LogCenter.h"
 #include "PublicDefinitions/SpecialFileDef.h"
 #include "DataTables/TextTable/TextTableCenter.h"
+#include "DataTables/OtherTable/OtherTableCenter.h"
 #include "PxcUtil/zPackEx.h"
+#include "PxcUtil/StringTools.h"
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 #define USE_ZPACK
@@ -71,10 +73,21 @@ bool HelloWorld::init()
 	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
 #endif
 	CTextTableCenter::GetInstance()->Init();
+	COtherTableCenter::GetInstance()->Init();
 	PxcUtil::zPackRelease();
 
 	std::string strText5 = "Hello World ";
 	strText5 += CTextTableCenter::GetInstance()->GetText(5);
+	CGlobalParamRow* pParamRow = COtherTableCenter::GetInstance()->GetGlobalParamRow(4);
+	if (pParamRow)
+		strText5 += PxcUtil::StringTools::BasicToStr(pParamRow->GetLeave<LEAVECOL_I>("Int1"));
+	pParamRow = COtherTableCenter::GetInstance()->GetGlobalParamRow(5);
+	if (pParamRow)
+	{
+		std::vector<std::string>& vecValues = pParamRow->GetLeave<LEAVECOL_SA>("Descs");
+		if (!vecValues.empty())
+			strText5 += vecValues[0];
+	}
 	//*/
     auto label = LabelTTF::create(strText5, "Arial", 24);
     
@@ -107,6 +120,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 	//*²âÊÔÁÙÊ±
 	CTextTableCenter::GetInstance()->Release();
+	COtherTableCenter::GetInstance()->Release();
 	PxcUtil::zPackClearPathAims();
 	PXCU_LOGINST->Release();
 	//*/

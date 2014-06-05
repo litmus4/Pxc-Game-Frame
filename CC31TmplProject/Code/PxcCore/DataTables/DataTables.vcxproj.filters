@@ -16,6 +16,9 @@
     <Filter Include="TextTable">
       <UniqueIdentifier>{3d3ec385-3fa0-4340-8e4c-90f6754a9883}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OtherTable">
+      <UniqueIdentifier>{db376783-1820-4f38-bcdb-881ac5a263b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,6 +33,12 @@
     <ClInclude Include="TextTable\TextRow.h">
       <Filter>TextTable</Filter>
     </ClInclude>
+    <ClInclude Include="OtherTable\GlobalParamRow.h">
+      <Filter>OtherTable</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherTable\OtherTableCenter.h">
+      <Filter>OtherTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
@@ -37,6 +46,15 @@
     </ClCompile>
     <ClCompile Include="TextTable\TextRow.cpp">
       <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTable\GlobalParamRow.cpp">
+      <Filter>OtherTable</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTable\OtherTableCenter.cpp">
+      <Filter>OtherTable</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadDefines.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

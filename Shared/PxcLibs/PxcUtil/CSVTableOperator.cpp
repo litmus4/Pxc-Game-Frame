@@ -176,6 +176,35 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::GetType(const std::string& strCo
 		return ECol_String;
 }
 
+void CCSVTableOperator::ColIter::Next()
+{
+	iter++;
+}
+
+bool CCSVTableOperator::ColIter::Ok()
+{
+	return (iter != itEnd);
+}
+
+std::string CCSVTableOperator::ColIter::GetName()
+{
+	return iter->first;
+}
+
+CCSVTableOperator::ECol_Type CCSVTableOperator::ColIter::GetType()
+{
+	return iter->second.eType;
+}
+
+CCSVTableOperator::ColIter CCSVTableOperator::Begin(const std::string& strColName)
+{
+	ColIter colit;
+	colit.iter = colit.itEnd = m_mapColHeads.end();
+	if (m_iRowNum >= 0)
+		colit.iter = m_mapColHeads.find(strColName);
+	return colit;
+}
+
 CCSVTableOperator::ECol_Type CCSVTableOperator::ColTypeStringToEnum(const std::string& str)
 {
 	if (str == "int") return ECol_Int;

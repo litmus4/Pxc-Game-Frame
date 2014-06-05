@@ -1,7 +1,6 @@
 #pragma once
 #include "PxcUtil/Singleton.h"
 #include "TextRow.h"
-#include <map>
 
 class CTextTableCenter : public PxcUtil::Singleton<CTextTableCenter>
 {

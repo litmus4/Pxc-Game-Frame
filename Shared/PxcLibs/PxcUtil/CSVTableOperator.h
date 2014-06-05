@@ -111,6 +111,43 @@ public:
 		return false;
 	}
 
+	struct ColIter
+	{
+		void Next();
+		bool Ok();
+		std::string GetName();
+		ECol_Type GetType();
+
+		template<typename T>
+		bool GetValue(T& outValue)
+		{
+			std::stringstream stream;
+			stream << iter->second.strCurValue;
+			stream >> outValue;
+			if (iter->second.strCurValue.empty())
+				return true;
+			else
+				return !(stream.fail()||stream.bad());
+		}
+
+		template<typename T>
+		bool GetArray(std::vector<T>& vecOut)
+		{
+			if (iter->second.eType >= ECol_IntArray)
+			{
+				std::vector<std::vector<T>> vecMid;
+				if (StringParser::GetParamFromArea(iter->second.strCurValue, vecMid) > 0)
+					vecOut = vecMid[0];
+				return true;
+			}
+			return false;
+		}
+
+		std::map<std::string, ColHead>::iterator iter;
+		std::map<std::string, ColHead>::iterator itEnd;
+	};
+	ColIter Begin(const std::string& strColName);
+
 	static ECol_Type ColTypeStringToEnum(const std::string& str);
 	static std::string ColTypeEnumToString(ECol_Type eType);
 

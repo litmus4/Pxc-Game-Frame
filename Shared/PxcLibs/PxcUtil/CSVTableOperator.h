@@ -30,6 +30,7 @@ public:
 		u32 uKey;
 		ECol_Type eType;
 		std::string strCurValue;
+		bool bGet;
 	};
 
 public:
@@ -57,6 +58,7 @@ public:
 			std::stringstream stream;
 			stream << iter->second.strCurValue;
 			stream >> outValue;
+			iter->second.bGet = true;
 			if (iter->second.strCurValue.empty())
 				return true;
 			else
@@ -76,6 +78,7 @@ public:
 			std::vector<std::vector<T>> vecMid;
 			if (StringParser::GetParamFromArea(iter->second.strCurValue, vecMid) > 0)
 				vecOut = vecMid[0];
+			iter->second.bGet = true;
 			return true;
 		}
 		return false;
@@ -146,7 +149,7 @@ public:
 		std::map<std::string, ColHead>::iterator iter;
 		std::map<std::string, ColHead>::iterator itEnd;
 	};
-	ColIter Begin(const std::string& strColName);
+	ColIter Begin();
 
 	static ECol_Type ColTypeStringToEnum(const std::string& str);
 	static std::string ColTypeEnumToString(ECol_Type eType);

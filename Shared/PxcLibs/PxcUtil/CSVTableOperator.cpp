@@ -32,6 +32,7 @@ bool CCSVTableOperator::Load(const char* szFile)
 				ColHead head;
 				head.uKey = iter->first;
 				head.eType = ColTypeStringToEnum(mapTypes[iter->first]);
+				head.bGet = false;
 				m_mapColHeads.insert(std::make_pair(iter->second, head));
 			}
 
@@ -83,6 +84,7 @@ bool CCSVTableOperator::ReadRow()
 				iter->second.strCurValue = itCol->second;
 			else
 				iter->second.strCurValue = (*m_pmapDefaults)[iter->second.uKey];
+			iter->second.bGet = false;
 		}
 		m_itRow++;
 		return true;
@@ -97,6 +99,7 @@ bool CCSVTableOperator::AddColumn(const std::string& strName, ECol_Type eType, c
 		return false;
 	ColHead head;
 	head.eType = eType;
+	head.bGet = false;
 
 	std::map<u32, std::map<u32, std::string>>::iterator itRowName = m_Core.GetCSVMap().find(ERowForColHead_Name);
 	if (itRowName != m_Core.GetCSVMap().end())
@@ -178,7 +181,10 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::GetType(const std::string& strCo
 
 void CCSVTableOperator::ColIter::Next()
 {
-	iter++;
+	do 
+	{
+		iter++;
+	} while (Ok() && iter->second.bGet);
 }
 
 bool CCSVTableOperator::ColIter::Ok()
@@ -196,12 +202,16 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::ColIter::GetType()
 	return iter->second.eType;
 }
 
-CCSVTableOperator::ColIter CCSVTableOperator::Begin(const std::string& strColName)
+CCSVTableOperator::ColIter CCSVTableOperator::Begin()
 {
 	ColIter colit;
 	colit.iter = colit.itEnd = m_mapColHeads.end();
 	if (m_iRowNum >= 0)
-		colit.iter = m_mapColHeads.find(strColName);
+	{
+		colit.iter = m_mapColHeads.begin();
+		while (colit.Ok() && colit.iter->second.bGet)
+			colit.iter++;
+	}
 	return colit;
 }
 

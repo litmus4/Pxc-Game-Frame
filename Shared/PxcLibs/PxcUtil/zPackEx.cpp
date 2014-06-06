@@ -1,5 +1,6 @@
 #include "zPackEx.h"
 #include "StringTools.h"
+#include "FileManage.h"
 #include <map>
 
 namespace PxcUtil
@@ -7,6 +8,7 @@ namespace PxcUtil
 
 std::map<std::string, zp::IPackage*> g_mapOpenZPacks;
 bool g_bZPackPath = false;
+bool g_bZPackPathFileFirst = true;
 std::map<std::string, std::string> g_mapZPackPathAims;
 
 EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
@@ -22,7 +24,7 @@ EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
 	std::map<std::string, zp::IPackage*>::iterator iter = g_mapOpenZPacks.find(strPack);
 	if (iter == g_mapOpenZPacks.end())
 	{
-		pPackage = zp::open(PxcUtil::StringTools::StrToWstr(strPack).c_str(), zp::OPEN_READONLY);
+		pPackage = zp::open(StringTools::StrToWstr(strPack).c_str(), zp::OPEN_READONLY);
 		if (pPackage)
 			g_mapOpenZPacks.insert(std::make_pair(strPack, pPackage));
 	}
@@ -30,7 +32,7 @@ EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
 		pPackage = iter->second;
 	if (pPackage)
 	{
-		zp::IReadFile* pFile = pPackage->openFile(PxcUtil::StringTools::StrToWstr(strFile).c_str());
+		zp::IReadFile* pFile = pPackage->openFile(StringTools::StrToWstr(strFile).c_str());
 		if (pFile)
 		{
 			*ppReadFile = pFile;
@@ -52,9 +54,10 @@ void zPackRelease()
 	g_mapOpenZPacks.clear();
 }
 
-void zPackPathSwitch(bool bFlag)
+void zPackPathSwitch(bool bFlag, bool bFileFirst)
 {
 	g_bZPackPath = bFlag;
+	g_bZPackPathFileFirst = bFileFirst;
 }
 
 void zPackAddPathAim(const char* szPack, const char* szPath)
@@ -74,6 +77,11 @@ void zPackCombinePath(std::string& strPath)
 {
 	if (!g_bZPackPath)
 		return;
+	if (g_bZPackPathFileFirst)
+	{
+		if (FileManage::IsFileExist(StringTools::StrToWstr(strPath).c_str()))
+			return;
+	}
 
 	std::string strPathKey = strPath;
 	int ipos = strPathKey.find_first_of('\\');

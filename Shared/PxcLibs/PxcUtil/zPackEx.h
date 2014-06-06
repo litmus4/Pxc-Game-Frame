@@ -16,7 +16,7 @@ enum EzPOpen_Result
 
 EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile);
 void zPackRelease();
-void zPackPathSwitch(bool bFlag);
+void zPackPathSwitch(bool bFlag, bool bFileFirst = true);
 void zPackAddPathAim(const char* szPack, const char* szPath);
 void zPackCombinePath(std::string& strPath);
 void zPackClearPathAims();

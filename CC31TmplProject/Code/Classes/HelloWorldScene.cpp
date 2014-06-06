@@ -8,7 +8,7 @@
 #include "PxcUtil/StringTools.h"
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-#define USE_ZPACK
+#define USE_ZPACK 2
 #endif
 //*/
 
@@ -69,7 +69,11 @@ bool HelloWorld::init()
 	//*²âÊÔÁÙÊ±
 	PXCU_LOGINST->Init(SpecialFileDef::ELogFile_AssetsTables, "log_assetstables.txt");
 #ifdef USE_ZPACK
+#if USE_ZPACK == 2
+	PxcUtil::zPackPathSwitch(true, false);
+#else
 	PxcUtil::zPackPathSwitch(true);
+#endif
 	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
 #endif
 	CTextTableCenter::GetInstance()->Init();

@@ -109,8 +109,9 @@ std::hash_map<std::string, TabColValue*> m_hmapLeaveCols;
 	m_hmapLeaveCols.clear();\
 }
 
-#define READ_LEAVECOLS {\
-	PxcUtil::CCSVTableOperator::ColIter colit = tabop.Begin();\
+#define READ_LEAVECOLS(Tabop)\
+{\
+	PxcUtil::CCSVTableOperator::ColIter colit = Tabop.Begin();\
 	while (colit.Ok())\
 	{\
 		TabColValue* pValue = NULL;\

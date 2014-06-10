@@ -15,5 +15,5 @@ void CGlobalParamRow::Read(PxcUtil::CCSVTableOperator& tabop)
 	tabop.GetValue("ID", m_iID);
 	tabop.GetValue("Name", m_strName);
 
-	READ_LEAVECOLS
+	READ_LEAVECOLS(tabop)
 }

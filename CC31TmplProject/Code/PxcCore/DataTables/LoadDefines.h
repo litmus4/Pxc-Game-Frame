@@ -27,7 +27,7 @@
 	}\
 	else\
 	{\
-		PXCU_LOG_ERROR(SpecialFileDef::ELogFile_AssetsTables, "数据表加载失败 ") << strFile;\
+		PXCU_LOG_ERROR(SpecialFileDef::ELogFile_AssetsTables, "数据表加载失败") << strFile;\
 		return false;\
 	}\
 }

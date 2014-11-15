@@ -10,3 +10,25 @@ void CSubRun::Run()
 		Sleep(1000);
 	}
 }
+
+CDali::CDali()
+{
+	//
+}
+
+CDali::~CDali()
+{
+	//
+}
+
+bool CDali::DynFunc(int i)
+{
+	std::cout << "CDali::DynFunc arg=" << i << std::endl;
+	return true;
+}
+
+bool CDali::StaFunc(int i)
+{
+	std::cout << "CDali::StaFunc arg=" << i << std::endl;
+	return false;
+}

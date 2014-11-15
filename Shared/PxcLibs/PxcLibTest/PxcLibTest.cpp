@@ -360,6 +360,17 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	zPackRelease();
 
+	std::cout << "==========delegate==========" << std::endl;
+	CDali dali;
+	tDaliGate::FuncObjSta funcObjSta(&CDali::StaFunc);
+	tDaliGate::FuncObjDyn<CDali> funcObjDyn(&CDali::DynFunc, &dali);
+	tDaliGate daliGate;
+	daliGate.Register(&funcObjSta);
+	daliGate.Register(&funcObjDyn);
+	std::cout << "EventReturn : " << (daliGate(1) ? 1 : 0) << std::endl;
+	daliGate.UnRegister(&funcObjDyn);
+	std::cout << "EventReturn : " << (daliGate(2) ? 1 : 0) << std::endl;
+
 	return 0;
 }
 

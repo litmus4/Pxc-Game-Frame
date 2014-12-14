@@ -1,0 +1,14 @@
+ID,名称,整数1,浮点数1,整数2,浮点数2,说明组
+ID,Name,Int1,Float1,Int2,Float2,Descs
+int,string,int,float,int,float,array[string]
+-1,,-1,-1,-1,-1,
+1,Param1,,,,,
+2,Param2,,,,,
+3,Param3,,,,,
+4,Param4,,,,,
+5,Param5,1,1.1,2,2.2,[a;b]
+6,Param6,,,,,
+7,Param7,,,,,
+8,Param8,,,,,
+9,Param9,,,,,
+10,Param10,,,,,

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{77c00a6f-a3e1-4551-abed-7782552aeab6}</ItemsProjectGuid>
+    <ItemsRootNamespace>PxcUtilRT</ItemsRootNamespace>
+    <ItemsProjectName>PxcUtilRT.Shared</ItemsProjectName>
+    <CodeSharingProject>248F659F-DAC5-46E8-AC09-60EC9FC95053</CodeSharingProject>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\CSVOperator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\CSVTableOperator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\DateTime.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\FileManage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\IniFile.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Scattered.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\Singleton.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\StringParser.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\StringTools.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PxcUtilRT.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)targetver.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\CSVOperator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\CSVTableOperator.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\DateTime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\FileManage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\IniFile.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\StringTools.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PxcUtilRT.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+</Project>

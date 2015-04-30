@@ -74,16 +74,50 @@ inline int GetParamFromString(std::string Str, std::vector<u32>& uiIntVec, char 
 
 inline int GetParamFromString(std::string Str, std::vector<std::string>& StringVec, char Delim = ',')
 {
-	int ipos = Str.find_first_of(Delim), ilastpos = 0;
+	int ipos = 0, ilastpos = 0, iquotpos = std::string::npos;
+	if (ilastpos >= Str.size())
+		return 0;
+	if (Str.at(ilastpos) == '\"')
+	{
+		iquotpos = Str.find_first_of('\"', ilastpos + 1);
+		if (iquotpos != std::string::npos)
+			ipos = Str.find_first_of(Delim, iquotpos);
+		else
+			ipos = Str.find_first_of(Delim, ilastpos);
+	}
+	else
+		ipos = Str.find_first_of(Delim, ilastpos);
+
 	while (ipos != std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
+		if (iquotpos != std::string::npos)
+			strSub = strSub.substr(1, strSub.size() - 2);
 		StringVec.push_back(strSub);
+
 		ilastpos = ipos + 1;
-		ipos = Str.find_first_of(Delim, ilastpos);
+		if (ilastpos >= Str.size())
+			break;
+		if (Str.at(ilastpos) == '\"')
+		{
+			iquotpos = Str.find_first_of('\"', ilastpos + 1);
+			if (iquotpos != std::string::npos)
+				ipos = Str.find_first_of(Delim, iquotpos);
+			else
+				ipos = Str.find_first_of(Delim, ilastpos);
+		}
+		else
+		{
+			iquotpos = std::string::npos;
+			ipos = Str.find_first_of(Delim, ilastpos);
+		}
 	}
+
 	std::string strSub = Str.substr(ilastpos);
+	if (iquotpos != std::string::npos)
+		strSub = strSub.substr(1, strSub.size() - 2);
 	StringVec.push_back(strSub);
+
 	return StringVec.size();
 }
 

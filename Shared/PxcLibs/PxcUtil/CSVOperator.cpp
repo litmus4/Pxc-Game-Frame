@@ -204,7 +204,13 @@ bool CCSVOperator::SaveCSV(const char* path)
 				std::string key;
 				if (it != rStringMap.begin())
 					key += ',';
-                key += it->second;
+				if (it->second.find_first_of(',') != std::string::npos)
+				{
+					std::string strSec = "\"" + it->second + "\"";
+					key += strSec;
+				}
+				else
+					key += it->second;
                 fwrite(key.c_str(), 1, key.size(), pfile);
             }
             char Delim = '\n';

@@ -13,6 +13,7 @@
 #include "PxcUtil/IniFile.h"
 #include "tinyxml/tinyxml.h"
 #include "PxcUtil/zPackEx.h"
+#include "PxcUtil/StateMachine.h"
 #include "SingletonTest.h"
 #include "TestClasses.h"
 #include <iostream>
@@ -370,6 +371,39 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::cout << "EventReturn : " << (daliGate(1) ? 1 : 0) << std::endl;
 	daliGate.UnRegister(&funcObjDyn);
 	std::cout << "EventReturn : " << (daliGate(2) ? 1 : 0) << std::endl;
+
+	std::cout << "==========StateMachine==========" << std::endl;
+	std::vector<std::string> vecStrs;
+	vecStrs.push_back("A");
+	vecStrs.push_back("B");
+	vecStrs.push_back("C");
+	CStateMachine<std::string, int> fsm;
+	std::vector<std::string>::iterator iter = vecStrs.begin();
+	for (; iter != vecStrs.end(); iter++)
+	{
+		fsm.AddState(&(*iter));
+	}
+	iter = vecStrs.begin();
+	int i = 0;
+	for (; iter != vecStrs.end(); iter++)
+	{
+		std::vector<std::string>::iterator iter2 = iter + 1;
+		if (iter2 == vecStrs.end())
+			iter2 = vecStrs.begin();
+		fsm.AddTransfer(&(*iter), i, &(*iter2));
+		i++;
+	}
+	if (fsm.SetState(&vecStrs[0], true))
+		std::cout << "Init OK, Current State : " << *fsm.GetCurrentState() << std::endl;
+	if (fsm.SetState(&vecStrs[1]))
+		std::cout << "Set OK, Current State : " << *fsm.GetCurrentState() << std::endl;
+	if (!fsm.SetState(&vecStrs[0]))
+		std::cout << "Set Fail, Current State : " << *fsm.GetCurrentState() << std::endl;
+	if (fsm.TriggerEvent(1))
+		std::cout << "Transfer Ok, Current State : " << *fsm.GetCurrentState() << std::endl;
+	if (!fsm.TriggerEvent(1))
+		std::cout << "Transfer Fail, Current State : " << *fsm.GetCurrentState() << std::endl;
+	fsm.Clear();
 
 	return 0;
 }

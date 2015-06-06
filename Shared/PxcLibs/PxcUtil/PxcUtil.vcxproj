@@ -96,6 +96,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="Scattered.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="StateMachine.h" />
     <ClInclude Include="StringParser.h" />
     <ClInclude Include="StringTools.h" />
     <ClInclude Include="Thread.h" />

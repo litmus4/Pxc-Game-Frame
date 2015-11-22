@@ -95,9 +95,11 @@ bool CSpriteProduct::Load()
 
 void CSpriteProduct::UnLoad()
 {
-	if (IsLoaded() && m_pSprite)
+	if (IsLoaded())
 	{
-		m_pSprite->release();
+		if (m_pSprite)
+			m_pSprite->release();
+		CBaseProduct::UnLoad();
 	}
 }
 
@@ -130,5 +132,6 @@ cocos2d::Sprite* CSpriteProduct::GetSprite()
 
 void CSpriteProduct::OnLoadComplete()
 {
+	CBaseProduct::OnLoadComplete();
 	//TODO
 }

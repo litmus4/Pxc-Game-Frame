@@ -24,12 +24,18 @@
     <ClInclude Include="BaseLine.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseProduct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BaseLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteProduct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

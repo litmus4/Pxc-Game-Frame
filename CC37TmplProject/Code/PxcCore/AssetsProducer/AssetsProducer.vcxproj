@@ -153,10 +153,12 @@
   <ItemGroup>
     <ClInclude Include="BaseLine.h" />
     <ClInclude Include="BaseProduct.h" />
+    <ClInclude Include="SpriteProduct.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseLine.cpp" />
     <ClCompile Include="BaseProduct.cpp" />
+    <ClCompile Include="SpriteProduct.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

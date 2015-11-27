@@ -28,10 +28,7 @@ bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 	if (!tabop.GetValue("ID", m_iID))
 		return false;
 
-	int isf = 0;
-	if (tabop.GetValue("IsSpriteFrame", isf))
-		m_bSpriteFrame = (bool)isf;
-	else
+	if (!tabop.GetValue("IsSpriteFrame", m_bSpriteFrame))
 		return false;
 
 	if (m_bSpriteFrame)

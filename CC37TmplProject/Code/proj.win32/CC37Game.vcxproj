@@ -94,8 +94,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy $(SolutionDir)$(Configuration).win32\*.dll $(OutDir)</Command>
     </PostBuildEvent>
     <PreLinkEvent>
       <Command>
@@ -137,8 +136,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy $(SolutionDir)$(Configuration).win32\*.dll $(OutDir)</Command>
     </PostBuildEvent>
     <PreLinkEvent>
       <Command>

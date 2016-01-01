@@ -22,7 +22,7 @@ public:
 	virtual bool Read(PxcUtil::CCSVTableOperator& tabop);
 	virtual bool Load();
 	virtual void UnLoad();
-	virtual CBaseProduct* Clone() { return NULL; };// = 0;//TODO 继承后改为纯虚函数
+	virtual CBaseProduct* Clone() = 0;
 
 	bool IsAsynLoad();
 	void SetAsynLoad(bool b);

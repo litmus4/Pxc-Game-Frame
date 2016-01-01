@@ -1,7 +1,10 @@
 #pragma once
-#include "cocos2d.h"
 #include "BaseProduct.h"
 
+namespace cocos2d
+{
+	class Sprite;
+}
 class CSpriteProduct : public CBaseProduct
 {
 public:

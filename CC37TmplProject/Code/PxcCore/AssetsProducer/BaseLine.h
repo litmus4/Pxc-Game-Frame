@@ -44,7 +44,7 @@ public:
 
 protected:
 	virtual CBaseProduct* FetchProduct(int iID, CBaseProduct::ELoadType eLoadType, bool bAsyn = false);
-	virtual CBaseProduct* CreateProduct() { return NULL; };// = 0;//TODO 继承后改为纯虚函数
+	virtual CBaseProduct* CreateProduct() = 0;
 
 protected:
 	std::map<int, ProductTmpl> m_mapTemplates;

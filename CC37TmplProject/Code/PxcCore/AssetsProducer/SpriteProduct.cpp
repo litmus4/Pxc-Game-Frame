@@ -1,4 +1,3 @@
-#include "cocos2d.h"
 #include "SpriteProduct.h"
 
 CSpriteProduct::CSpriteProduct()
@@ -118,9 +117,12 @@ void CSpriteProduct::Update(float dt)
 	//TODO
 }
 
-void CSpriteProduct::Draw()
+void CSpriteProduct::Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags)
 {
-	//TODO
+	if (!IsComplete())
+		return;
+	if (m_pSprite)
+		m_pSprite->visit(renderer, parentTrans, parentFlags);
 }
 
 cocos2d::Sprite* CSpriteProduct::GetSprite()
@@ -128,8 +130,27 @@ cocos2d::Sprite* CSpriteProduct::GetSprite()
 	return m_pSprite;
 }
 
+void CSpriteProduct::SetTransform(cocos2d::Vec4& v4Trans)
+{
+	m_v4Trans = v4Trans;
+	if (IsComplete())
+	{
+		if (!m_pSprite || m_pSprite->getNumberOfRunningActions() > 0)
+			return;
+
+		m_pSprite->setPosition(cocos2d::Vec2(v4Trans.x, v4Trans.y));
+		m_pSprite->setRotation(v4Trans.z);
+		m_pSprite->setScale(v4Trans.w);
+	}
+}
+
+cocos2d::Vec4 CSpriteProduct::GetTransform()
+{
+	return m_v4Trans;
+}
+
 void CSpriteProduct::OnLoadComplete()
 {
 	CBaseProduct::OnLoadComplete();
-	//TODO
+	SetTransform(m_v4Trans);
 }

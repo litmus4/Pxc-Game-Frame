@@ -1,5 +1,5 @@
-#include "SpriteLine.h"
 #include "SpriteProduct.h"
+#include "SpriteLine.h"
 
 CSpriteLine::CSpriteLine()
 {

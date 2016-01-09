@@ -1,10 +1,7 @@
 #pragma once
+#include "cocos2d.h"
 #include "BaseProduct.h"
 
-namespace cocos2d
-{
-	class Sprite;
-}
 class CSpriteProduct : public CBaseProduct
 {
 public:
@@ -20,8 +17,10 @@ public:
 	virtual CBaseProduct* Clone();
 
 	void Update(float dt);
-	void Draw();
+	void Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags);
 	cocos2d::Sprite* GetSprite();
+	void SetTransform(cocos2d::Vec4& v4Trans);
+	cocos2d::Vec4 GetTransform();
 
 	virtual void OnLoadComplete();
 
@@ -33,4 +32,5 @@ private:
 	CSpriteProduct* m_pTmpl;
 
 	cocos2d::Sprite* m_pSprite;
+	cocos2d::Vec4 m_v4Trans;
 };

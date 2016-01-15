@@ -130,13 +130,18 @@ cocos2d::Sprite* CSpriteProduct::GetSprite()
 	return m_pSprite;
 }
 
-void CSpriteProduct::SetTransform(cocos2d::Vec4& v4Trans)
+void CSpriteProduct::SetTransform(cocos2d::Vec4& v4Trans, bool bForceStopAct)
 {
 	m_v4Trans = v4Trans;
-	if (IsComplete())
+	if (IsComplete() && m_pSprite)
 	{
-		if (!m_pSprite || m_pSprite->getNumberOfRunningActions() > 0)
-			return;
+		if (m_pSprite->getNumberOfRunningActions() > 0)
+		{
+			if (bForceStopAct)
+				m_pSprite->stopAllActions();
+			else
+				return;
+		}
 
 		m_pSprite->setPosition(cocos2d::Vec2(v4Trans.x, v4Trans.y));
 		m_pSprite->setRotation(v4Trans.z);

@@ -19,7 +19,7 @@ public:
 	void Update(float dt);
 	void Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags);
 	cocos2d::Sprite* GetSprite();
-	void SetTransform(cocos2d::Vec4& v4Trans);
+	void SetTransform(cocos2d::Vec4& v4Trans, bool bForceStopAct = false);
 	cocos2d::Vec4 GetTransform();
 
 	virtual void OnLoadComplete();

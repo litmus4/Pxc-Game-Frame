@@ -2,6 +2,7 @@
 #include "cocos2d.h"
 #include "BaseProduct.h"
 
+class CAnimateProduct;
 class CSpriteProduct : public CBaseProduct
 {
 public:
@@ -21,8 +22,12 @@ public:
 	cocos2d::Sprite* GetSprite();
 	void SetTransform(cocos2d::Vec4& v4Trans, bool bForce = false);
 	cocos2d::Vec4 GetTransform();
+	void AddAnimate(CAnimateProduct* pAnimPro);
+	void RemoveAnimate(std::string strAnimName);
+	CAnimateProduct* GetAnimate(std::string strAnimName);
 
 	virtual void OnLoadComplete();
+	virtual void OnBeforeUnLoad();
 
 private:
 	std::string m_strName;
@@ -33,4 +38,5 @@ private:
 
 	cocos2d::Sprite* m_pSprite;
 	cocos2d::Vec4 m_v4Trans;
+	std::map<std::string, CAnimateProduct*> m_mapAnims;
 };

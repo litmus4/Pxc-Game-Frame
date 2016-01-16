@@ -1,4 +1,5 @@
 #include "SpriteProduct.h"
+#include "AnimateProduct.h"
 
 CSpriteProduct::CSpriteProduct()
 {
@@ -149,8 +150,39 @@ cocos2d::Vec4 CSpriteProduct::GetTransform()
 	return m_v4Trans;
 }
 
+void CSpriteProduct::AddAnimate(CAnimateProduct* pAnimPro)
+{
+	if (pAnimPro)
+		m_mapAnims.insert(std::make_pair(pAnimPro->GetName(), pAnimPro));
+}
+
+void CSpriteProduct::RemoveAnimate(std::string strAnimName)
+{
+	m_mapAnims.erase(strAnimName);
+}
+
+CAnimateProduct* CSpriteProduct::GetAnimate(std::string strAnimName)
+{
+	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.find(strAnimName);
+	if (iter != m_mapAnims.end())
+		return iter->second;
+	return NULL;
+}
+
 void CSpriteProduct::OnLoadComplete()
 {
 	CBaseProduct::OnLoadComplete();
+	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.begin();
+	for (; iter != m_mapAnims.end(); iter++)
+		iter->second->SetSprite(this);
 	SetTransform(m_v4Trans);
+}
+
+void CSpriteProduct::OnBeforeUnLoad()
+{
+	CBaseProduct::OnBeforeUnLoad();
+	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.begin();
+	for (; iter != m_mapAnims.end(); iter++)
+		iter->second->SetSprite(NULL);
+	m_mapAnims.clear();
 }

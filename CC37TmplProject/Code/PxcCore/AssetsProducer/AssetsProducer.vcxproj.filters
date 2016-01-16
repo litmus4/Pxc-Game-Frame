@@ -30,6 +30,9 @@
     <ClInclude Include="SpriteLine.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AnimateProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseProduct.cpp">
@@ -42,6 +45,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SpriteLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimateProduct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

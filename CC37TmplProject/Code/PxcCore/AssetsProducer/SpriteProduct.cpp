@@ -108,7 +108,7 @@ CBaseProduct* CSpriteProduct::Clone()
 	pProduct->m_bSpriteFrame = m_bSpriteFrame;
 	pProduct->m_strPlistFileName = m_strPlistFileName;
 	pProduct->m_strAtlasFileName = m_strAtlasFileName;
-	pProduct->m_pTmpl = m_pTmpl;
+	pProduct->m_pTmpl = this;
 	return pProduct;
 }
 
@@ -130,18 +130,13 @@ cocos2d::Sprite* CSpriteProduct::GetSprite()
 	return m_pSprite;
 }
 
-void CSpriteProduct::SetTransform(cocos2d::Vec4& v4Trans, bool bForceStopAct)
+void CSpriteProduct::SetTransform(cocos2d::Vec4& v4Trans, bool bForce)
 {
 	m_v4Trans = v4Trans;
 	if (IsComplete() && m_pSprite)
 	{
-		if (m_pSprite->getNumberOfRunningActions() > 0)
-		{
-			if (bForceStopAct)
-				m_pSprite->stopAllActions();
-			else
-				return;
-		}
+		if (!bForce && m_pSprite->getNumberOfRunningActions() > 0)
+			return;
 
 		m_pSprite->setPosition(cocos2d::Vec2(v4Trans.x, v4Trans.y));
 		m_pSprite->setRotation(v4Trans.z);

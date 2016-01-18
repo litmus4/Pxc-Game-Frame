@@ -53,6 +53,13 @@ struct TabColIntValue : public TabColValue
 	static int svalue;
 };
 
+struct TabColInt64Value : public TabColValue
+{
+	TabColInt64Value();
+	long long value;
+	static long long svalue;
+};
+
 struct TabColFloatValue : public TabColValue
 {
 	TabColFloatValue();
@@ -72,6 +79,13 @@ struct TabColIntArray : public TabColValue
 	TabColIntArray();
 	std::vector<int> value;
 	static std::vector<int> svalue;
+};
+
+struct TabColInt64Array : public TabColValue
+{
+	TabColInt64Array();
+	std::vector<long long> value;
+	static std::vector<long long> svalue;
 };
 
 struct TabColFloatArray : public TabColValue
@@ -124,6 +138,13 @@ std::hash_map<std::string, TabColValue*> m_hmapLeaveCols;
 				pValue = pIntValue;\
 			}\
 			break;\
+		case PxcUtil::CCSVTableOperator::ECol_Int64:\
+			{\
+				TabColInt64Value* pInt64Value = new TabColInt64Value();\
+				colit.GetValue(pInt64Value->value);\
+				pValue = pInt64Value;\
+			}\
+			break;\
 		case PxcUtil::CCSVTableOperator::ECol_Float:\
 			{\
 				TabColFloatValue* pFloatValue = new TabColFloatValue();\
@@ -143,6 +164,13 @@ std::hash_map<std::string, TabColValue*> m_hmapLeaveCols;
 				TabColIntArray* pIntArray = new TabColIntArray();\
 				colit.GetArray(pIntArray->value);\
 				pValue = pIntArray;\
+			}\
+			break;\
+		case PxcUtil::CCSVTableOperator::ECol_Int64Array:\
+			{\
+				TabColInt64Array* pInt64Array = new TabColInt64Array();\
+				colit.GetArray(pInt64Array->value);\
+				pValue = pInt64Array;\
 			}\
 			break;\
 		case PxcUtil::CCSVTableOperator::ECol_FloatArray:\
@@ -166,8 +194,10 @@ std::hash_map<std::string, TabColValue*> m_hmapLeaveCols;
 }
 
 #define LEAVECOL_I int, TabColIntValue
+#define LEAVECOL_L long long, TabColInt64Value
 #define LEAVECOL_F float, TabColFloatValue
 #define LEAVECOL_S std::string, TabColStringValue
 #define LEAVECOL_IA std::vector<int>&, TabColIntArray
+#define LEAVECOL_LA std::vector<long long>&, TabColInt64Array
 #define LEAVECOL_FA std::vector<float>&, TabColFloatArray
 #define LEAVECOL_SA std::vector<std::string>&, TabColStringArray

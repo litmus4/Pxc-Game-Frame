@@ -218,6 +218,7 @@ CCSVTableOperator::ColIter CCSVTableOperator::Begin()
 CCSVTableOperator::ECol_Type CCSVTableOperator::ColTypeStringToEnum(const std::string& str)
 {
 	if (str == "int") return ECol_Int;
+	else if (str == "int64") return ECol_Int64;
 	else if (str == "float") return ECol_Float;
 	else if (str == "string") return ECol_String;
 	else if (str.size() > 7)
@@ -226,6 +227,7 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::ColTypeStringToEnum(const std::s
 		{
 			std::string strSub = str.substr(6, str.size() - 7);
 			if (strSub == "int") return ECol_IntArray;
+			else if (strSub == "int64") return ECol_Int64Array;
 			else if (strSub == "float") return ECol_FloatArray;
 			else if (strSub == "string") return ECol_StringArray;
 		}
@@ -238,9 +240,11 @@ std::string CCSVTableOperator::ColTypeEnumToString(ECol_Type eType)
 	switch (eType)
 	{
 	case ECol_Int: return "int";
+	case ECol_Int64: return "int64";
 	case ECol_Float: return "float";
 	case ECol_String: return "string";
 	case ECol_IntArray: return "array[int]";
+	case ECol_Int64Array: return "array[int64]";
 	case ECol_FloatArray: return "array[float]";
 	case ECol_StringArray: return "array[string]";
 	}

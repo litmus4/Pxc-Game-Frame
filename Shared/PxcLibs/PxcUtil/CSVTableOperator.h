@@ -11,9 +11,11 @@ public:
 	enum ECol_Type
 	{
 		ECol_Int = 0,
+		ECol_Int64,
 		ECol_Float,
 		ECol_String,
 		ECol_IntArray,
+		ECol_Int64Array,
 		ECol_FloatArray,
 		ECol_StringArray,
 	};

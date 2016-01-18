@@ -6,6 +6,12 @@ TabColIntValue::TabColIntValue()
 	eType = PxcUtil::CCSVTableOperator::ECol_Int;
 }
 
+long long TabColInt64Value::svalue = -1;
+TabColInt64Value::TabColInt64Value()
+{
+	eType = PxcUtil::CCSVTableOperator::ECol_Int64;
+}
+
 float TabColFloatValue::svalue = -1.0f;
 TabColFloatValue::TabColFloatValue()
 {
@@ -22,6 +28,12 @@ std::vector<int> TabColIntArray::svalue = std::vector<int>();
 TabColIntArray::TabColIntArray()
 {
 	eType = PxcUtil::CCSVTableOperator::ECol_IntArray;
+}
+
+std::vector<long long> TabColInt64Array::svalue = std::vector<long long>();
+TabColInt64Array::TabColInt64Array()
+{
+	eType = PxcUtil::CCSVTableOperator::ECol_Int64Array;
 }
 
 std::vector<float> TabColFloatArray::svalue = std::vector<float>();

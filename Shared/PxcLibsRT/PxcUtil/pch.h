@@ -1,11 +1,9 @@
-﻿//
-// pch.h
-// 标准系统包含文件的标头。
-//
-
-#pragma once
+﻿#pragma once
 
 #include "targetver.h"
 
-// Windows 头文件:
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <windows.h>

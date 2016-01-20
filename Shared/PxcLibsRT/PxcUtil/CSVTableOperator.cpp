@@ -32,6 +32,7 @@ bool CCSVTableOperator::Load(const char* szFile)
 				ColHead head;
 				head.uKey = iter->first;
 				head.eType = ColTypeStringToEnum(mapTypes[iter->first]);
+				head.bGet = false;
 				m_mapColHeads.insert(std::make_pair(iter->second, head));
 			}
 
@@ -83,6 +84,7 @@ bool CCSVTableOperator::ReadRow()
 				iter->second.strCurValue = itCol->second;
 			else
 				iter->second.strCurValue = (*m_pmapDefaults)[iter->second.uKey];
+			iter->second.bGet = false;
 		}
 		m_itRow++;
 		return true;
@@ -97,6 +99,7 @@ bool CCSVTableOperator::AddColumn(const std::string& strName, ECol_Type eType, c
 		return false;
 	ColHead head;
 	head.eType = eType;
+	head.bGet = false;
 
 	std::map<u32, std::map<u32, std::string>>::iterator itRowName = m_Core.GetCSVMap().find(ERowForColHead_Name);
 	if (itRowName != m_Core.GetCSVMap().end())
@@ -176,9 +179,46 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::GetType(const std::string& strCo
 		return ECol_String;
 }
 
+void CCSVTableOperator::ColIter::Next()
+{
+	do 
+	{
+		iter++;
+	} while (Ok() && iter->second.bGet);
+}
+
+bool CCSVTableOperator::ColIter::Ok()
+{
+	return (iter != itEnd);
+}
+
+std::string CCSVTableOperator::ColIter::GetName()
+{
+	return iter->first;
+}
+
+CCSVTableOperator::ECol_Type CCSVTableOperator::ColIter::GetType()
+{
+	return iter->second.eType;
+}
+
+CCSVTableOperator::ColIter CCSVTableOperator::Begin()
+{
+	ColIter colit;
+	colit.iter = colit.itEnd = m_mapColHeads.end();
+	if (m_iRowNum >= 0)
+	{
+		colit.iter = m_mapColHeads.begin();
+		while (colit.Ok() && colit.iter->second.bGet)
+			colit.iter++;
+	}
+	return colit;
+}
+
 CCSVTableOperator::ECol_Type CCSVTableOperator::ColTypeStringToEnum(const std::string& str)
 {
 	if (str == "int") return ECol_Int;
+	else if (str == "int64") return ECol_Int64;
 	else if (str == "float") return ECol_Float;
 	else if (str == "string") return ECol_String;
 	else if (str.size() > 7)
@@ -187,6 +227,7 @@ CCSVTableOperator::ECol_Type CCSVTableOperator::ColTypeStringToEnum(const std::s
 		{
 			std::string strSub = str.substr(6, str.size() - 7);
 			if (strSub == "int") return ECol_IntArray;
+			else if (strSub == "int64") return ECol_Int64Array;
 			else if (strSub == "float") return ECol_FloatArray;
 			else if (strSub == "string") return ECol_StringArray;
 		}
@@ -199,9 +240,11 @@ std::string CCSVTableOperator::ColTypeEnumToString(ECol_Type eType)
 	switch (eType)
 	{
 	case ECol_Int: return "int";
+	case ECol_Int64: return "int64";
 	case ECol_Float: return "float";
 	case ECol_String: return "string";
 	case ECol_IntArray: return "array[int]";
+	case ECol_Int64Array: return "array[int64]";
 	case ECol_FloatArray: return "array[float]";
 	case ECol_StringArray: return "array[string]";
 	}

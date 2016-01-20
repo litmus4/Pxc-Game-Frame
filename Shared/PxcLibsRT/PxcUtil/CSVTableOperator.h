@@ -11,9 +11,11 @@ public:
 	enum ECol_Type
 	{
 		ECol_Int = 0,
+		ECol_Int64,
 		ECol_Float,
 		ECol_String,
 		ECol_IntArray,
+		ECol_Int64Array,
 		ECol_FloatArray,
 		ECol_StringArray,
 	};
@@ -30,6 +32,7 @@ public:
 		u32 uKey;
 		ECol_Type eType;
 		std::string strCurValue;
+		bool bGet;
 	};
 
 public:
@@ -57,6 +60,7 @@ public:
 			std::stringstream stream;
 			stream << iter->second.strCurValue;
 			stream >> outValue;
+			iter->second.bGet = true;
 			if (iter->second.strCurValue.empty())
 				return true;
 			else
@@ -76,6 +80,7 @@ public:
 			std::vector<std::vector<T>> vecMid;
 			if (StringParser::GetParamFromArea(iter->second.strCurValue, vecMid) > 0)
 				vecOut = vecMid[0];
+			iter->second.bGet = true;
 			return true;
 		}
 		return false;
@@ -110,6 +115,43 @@ public:
 		}
 		return false;
 	}
+
+	struct ColIter
+	{
+		void Next();
+		bool Ok();
+		std::string GetName();
+		ECol_Type GetType();
+
+		template<typename T>
+		bool GetValue(T& outValue)
+		{
+			std::stringstream stream;
+			stream << iter->second.strCurValue;
+			stream >> outValue;
+			if (iter->second.strCurValue.empty())
+				return true;
+			else
+				return !(stream.fail()||stream.bad());
+		}
+
+		template<typename T>
+		bool GetArray(std::vector<T>& vecOut)
+		{
+			if (iter->second.eType >= ECol_IntArray)
+			{
+				std::vector<std::vector<T>> vecMid;
+				if (StringParser::GetParamFromArea(iter->second.strCurValue, vecMid) > 0)
+					vecOut = vecMid[0];
+				return true;
+			}
+			return false;
+		}
+
+		std::map<std::string, ColHead>::iterator iter;
+		std::map<std::string, ColHead>::iterator itEnd;
+	};
+	ColIter Begin();
 
 	static ECol_Type ColTypeStringToEnum(const std::string& str);
 	static std::string ColTypeEnumToString(ECol_Type eType);

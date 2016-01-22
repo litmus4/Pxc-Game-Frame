@@ -151,6 +151,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimateLine.h" />
     <ClInclude Include="AnimateProduct.h" />
     <ClInclude Include="BaseLine.h" />
     <ClInclude Include="BaseProduct.h" />
@@ -158,6 +159,7 @@
     <ClInclude Include="SpriteProduct.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimateLine.cpp" />
     <ClCompile Include="AnimateProduct.cpp" />
     <ClCompile Include="BaseLine.cpp" />
     <ClCompile Include="BaseProduct.cpp" />

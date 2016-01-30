@@ -135,10 +135,11 @@ Date::Date()
 	//y=m=d=1;
 	// 2013-01-31 ÐÞ¸Ä
 	const time_t timer=time(0);
-	struct tm *now=localtime(&timer);
-	y=now->tm_year+1900;
-	m=now->tm_mon+1;
-	d=now->tm_mday;
+	struct tm now;
+	localtime_s(&now, &timer);
+	y=now.tm_year+1900;
+	m=now.tm_mon+1;
+	d=now.tm_mday;
 }
 
 Date::Date(int yy,int mm,int dd)
@@ -187,10 +188,11 @@ void Date::setDate(const tm& t)
 void Date::setDateAsToday()
 {
 	const time_t timer=time(0);
-	struct tm *now=localtime(&timer);
-	y=now->tm_year+1900;
-	m=now->tm_mon+1;
-	d=now->tm_mday;
+	struct tm now;
+	localtime_s(&now, &timer);
+	y=now.tm_year+1900;
+	m=now.tm_mon+1;
+	d=now.tm_mday;
 }
 
 void Date::setDateAsWeekday(int yy,int mm,int nn,int ww)
@@ -557,11 +559,12 @@ bool InformDateTime(long long lDateTime, DateTimeInfo& outInfo)
 	if (lDateTime < 0)
 		return false;
 
-	struct tm* pTime = localtime((time_t*)&lDateTime);
-	outInfo.date.setDate(*pTime);
-	outInfo.iHour = pTime->tm_hour;
-	outInfo.iMin = pTime->tm_min;
-	outInfo.iSec = pTime->tm_sec;
+	struct tm valTime;
+	localtime_s(&valTime, (time_t*)&lDateTime);
+	outInfo.date.setDate(valTime);
+	outInfo.iHour = valTime.tm_hour;
+	outInfo.iMin = valTime.tm_min;
+	outInfo.iSec = valTime.tm_sec;
 	return true;
 }
 

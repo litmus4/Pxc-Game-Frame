@@ -113,14 +113,14 @@ bool IniFile::Save()
     for(int i=0; i<size; i++)
     {
         //write line with section name
-        snprintf(szBuffer, sizeof(szBuffer), "[%s]\n", m_contents[i].m_name.c_str());
+        _snprintf_s(szBuffer, sizeof(szBuffer), "[%s]\n", m_contents[i].m_name.c_str());
         iniFile.write(szBuffer, strlen(szBuffer));
 
         int count = m_contents[i].m_Keys.size();
         for(int j=0; j<count; j++)
         {
             //write "key = value"
-            snprintf(szBuffer, sizeof(szBuffer), "%s=%s\n",
+            _snprintf_s(szBuffer, sizeof(szBuffer), "%s=%s\n",
                 m_contents[i].m_Keys[j].m_name.c_str(),
                 m_contents[i].m_Keys[j].m_value.c_str());
             iniFile.write(szBuffer, strlen(szBuffer));
@@ -202,7 +202,7 @@ bool IniFile::GetValue(const char *szSection, const char *szKey, bool &bValue, i
 bool IniFile::SetValue(const char *szSection, const char *szKey, const int nValue)
 {
     char szNumber[30] = "";
-    snprintf(szNumber, sizeof(szNumber), "%d", nValue);
+    _snprintf_s(szNumber, sizeof(szNumber), "%d", nValue);
 
     return SetValue(szSection, szKey, szNumber);
 }

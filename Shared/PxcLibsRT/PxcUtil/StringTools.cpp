@@ -49,7 +49,7 @@ std::string Format(const char* szForm, ...)
 	if (iSize > 0)
 	{
 		char* szBuf = new char[iSize + 1];
-		vsprintf(szBuf, szForm, args);
+		vsprintf_s(szBuf, iSize + 1, szForm, args);
 		strRet = szBuf;
 		delete []szBuf;
 	}
@@ -66,7 +66,7 @@ std::wstring Format(const wchar_t* wszForm, ...)
 	if (iSize > 0)
 	{
 		wchar_t* wszBuf = new wchar_t[iSize + 1];
-		vswprintf(wszBuf, wszForm, args);
+		vswprintf_s(wszBuf, iSize + 1, wszForm, args);
 		wstrRet = wszBuf;
 		delete []wszBuf;
 	}

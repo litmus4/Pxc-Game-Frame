@@ -18,19 +18,20 @@ std::wstring GetAbsPath()
 
 BOOL IsRoot(LPCTSTR lpszPath)
 {
-	char szRoot[4];
-	std::string strPath = StringTools::WstrToStr(lpszPath);
-	sprintf(szRoot, "%c:\\", strPath.c_str());
-	return (strcmp(szRoot, strPath.c_str()) == 0);
+	//char szRoot[4];
+	//std::string strPath = StringTools::WstrToStr(lpszPath);
+	//sprintf_s(szRoot, "%c:\\", strPath.c_str());
+	//return (strcmp(szRoot, strPath.c_str()) == 0);
+	return (wcslen(lpszPath) == 0);
 }
 
 void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std::wstring>& vecOut)
 {
 	char szFind[MAX_PATH];
-	strcpy(szFind, StringTools::WstrToStr(lpszPath).c_str());
+	strcpy_s(szFind, StringTools::WstrToStr(lpszPath).c_str());
 	if (!IsRoot(lpszPath))
-		strcat(szFind, "\\");
-	strcat(szFind, "*.*"); // 找所有文件
+		strcat_s(szFind, "\\");
+	strcat_s(szFind, "*.*"); // 找所有文件
 	int iExtLen = StringTools::WstrToStr(szExt).size();
 
 	WIN32_FIND_DATA wfd;
@@ -49,9 +50,9 @@ void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std:
 		{
 			char szFile[MAX_PATH];
 			if (IsRoot(lpszPath))
-				sprintf(szFile, "%s%s", strPath.c_str(), strFileName.c_str());
+				sprintf_s(szFile, "%s%s", strPath.c_str(), strFileName.c_str());
 			else
-				sprintf(szFile, "%s\\%s", strPath.c_str(), strFileName.c_str());
+				sprintf_s(szFile, "%s\\%s", strPath.c_str(), strFileName.c_str());
 			FindFilesRecursive(StringTools::StrToWstr(szFile).c_str(), szExt, vecOut); // 如果找到的是目录，则进入此目录进行递归
 		}
 		else
@@ -63,9 +64,9 @@ void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std:
 			{
 				char szFile[MAX_PATH];
 				if (IsRoot(lpszPath))
-					sprintf(szFile, "%s%s", strPath.c_str(), strFileName.c_str());
+					sprintf_s(szFile, "%s%s", strPath.c_str(), strFileName.c_str());
 				else
-					sprintf(szFile, "%s\\%s", strPath.c_str(), strFileName.c_str());
+					sprintf_s(szFile, "%s\\%s", strPath.c_str(), strFileName.c_str());
 				//printf("%s\n",szFile);
 				vecOut.push_back(StringTools::StrToWstr(szFile));
 			}
@@ -94,7 +95,8 @@ FILE* OpenFileWithCreate(LPCTSTR lpszFileName)
 		if (!CreateFolder(wstrFolder.substr(0, ipos).c_str()))
 			return NULL;
 	}
-	FILE* pf = _wfopen(lpszFileName, L"w");
+	FILE* pf = NULL;
+	_wfopen_s(&pf, lpszFileName, L"w");
 	return pf;
 }
 

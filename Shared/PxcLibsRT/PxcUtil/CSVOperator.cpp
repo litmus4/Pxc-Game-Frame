@@ -13,7 +13,8 @@ CCSVOperator::CCSVOperator(const char* path)
 
 bool CCSVOperator::LoadCSV(const char* path)
 {
-    FILE* pfile = fopen(path, "r");
+	FILE* pfile = NULL;
+	fopen_s(&pfile, path, "r");
     if (pfile)
     {
         fseek(pfile,0,SEEK_END);
@@ -119,7 +120,7 @@ bool CCSVOperator::SetNumber(u32 uiLine, u32 uiRow, int iValue)
     {
         char buffer[100];
         memset(buffer, 0, sizeof(buffer));
-        sprintf(buffer, "%d", iValue);
+        sprintf_s(buffer, "%d", iValue);
         pKey->clear();
         *pKey = buffer;
         return true;
@@ -137,7 +138,7 @@ bool CCSVOperator::SetNumber(u32 uiLine, u32 uiRow, float fValue)
     {
         char buffer[100];
         memset(buffer, 0, sizeof(buffer));
-        sprintf(buffer, "%d", fValue);
+        sprintf_s(buffer, "%d", fValue);
         pKey->clear();
         *pKey = buffer;
         return true;
@@ -170,7 +171,8 @@ bool CCSVOperator::SaveCSV(const char* path)
         m_CSVName = path;
     }
 
-    FILE* pfile = fopen(m_CSVName.c_str(), "w");
+	FILE* pfile = NULL;
+	fopen_s(&pfile, m_CSVName.c_str(), "w");
     if (pfile)
     {
         std::map<u32, std::map<u32, std::string> >::iterator iter = m_StringKeyMap.begin();

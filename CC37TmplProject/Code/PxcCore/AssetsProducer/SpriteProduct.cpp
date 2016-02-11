@@ -1,10 +1,13 @@
 #include "SpriteProduct.h"
 #include "AnimateProduct.h"
+#include "SpriteLine.h"
 
 CSpriteProduct::CSpriteProduct()
 {
 	m_bSpriteFrame = false;
+	m_bLoadingDraw = false;
 	m_pTmpl = NULL;
+	m_pLine = NULL;
 
 	m_pSprite = NULL;
 }
@@ -48,6 +51,9 @@ bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 		if (!tabop.GetValue("TexFileName", m_strName))
 			return false;
 	}
+
+	if (!tabop.GetValue("IsLoadingDraw", m_bLoadingDraw))
+		return false;
 
 	return true;
 }
@@ -113,6 +119,11 @@ CBaseProduct* CSpriteProduct::Clone()
 	return pProduct;
 }
 
+void CSpriteProduct::SetLine(CSpriteLine* pLine)
+{
+	m_pLine = pLine;
+}
+
 void CSpriteProduct::Update(float dt)
 {
 	//TODO
@@ -121,7 +132,11 @@ void CSpriteProduct::Update(float dt)
 void CSpriteProduct::Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags)
 {
 	if (!IsComplete())
+	{
+		if (m_bLoadingDraw && m_pLine)
+			m_pLine->DrawLoading(m_v4Trans, renderer, parentTrans, parentFlags);
 		return;
+	}
 	if (m_pSprite)
 		m_pSprite->visit(renderer, parentTrans, parentFlags);
 }

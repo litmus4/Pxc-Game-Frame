@@ -1,9 +1,10 @@
 #include "BaseLine.h"
 #include "PxcUtil/CSVTableOperator.h"
 #include "PxcUtil/LogCenter.h"
+#include "PublicDefinitions/CoreConstantsDef.h"
 #include "PublicDefinitions/SpecialFileDef.h"
 
-#define RELEASE_DELAY_TIME 60.0f
+#define RELEASE_DELAY_TIME CoreConstantsDef::Assets_Consts::c_fAssets_ReleaseDelayTime
 
 CBaseLine::ProductTmpl::ProductTmpl()
 {

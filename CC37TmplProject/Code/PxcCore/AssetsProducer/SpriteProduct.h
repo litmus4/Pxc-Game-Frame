@@ -3,6 +3,7 @@
 #include "BaseProduct.h"
 
 class CAnimateProduct;
+class CSpriteLine;
 class CSpriteProduct : public CBaseProduct
 {
 public:
@@ -17,6 +18,7 @@ public:
 	virtual void UnLoad();
 	virtual CBaseProduct* Clone();
 
+	void SetLine(CSpriteLine* pLine);
 	void Update(float dt);
 	void Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags);
 	cocos2d::Sprite* GetSprite();
@@ -34,7 +36,9 @@ private:
 	bool m_bSpriteFrame;
 	std::string m_strPlistFileName;
 	std::string m_strAtlasFileName;
+	bool m_bLoadingDraw;
 	CSpriteProduct* m_pTmpl;
+	CSpriteLine* m_pLine;
 
 	cocos2d::Sprite* m_pSprite;
 	cocos2d::Vec4 m_v4Trans;

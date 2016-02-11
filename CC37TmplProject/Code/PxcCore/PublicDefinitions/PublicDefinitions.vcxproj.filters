@@ -21,5 +21,13 @@
     <ClInclude Include="SpecialFileDef.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CoreConstantsDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CoreConstantsDef.cpp">
+      <Filter>头文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

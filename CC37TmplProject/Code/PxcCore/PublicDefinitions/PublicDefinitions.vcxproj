@@ -81,7 +81,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoreConstantsDef.h" />
     <ClInclude Include="SpecialFileDef.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CoreConstantsDef.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

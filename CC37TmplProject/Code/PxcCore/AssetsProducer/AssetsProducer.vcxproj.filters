@@ -36,6 +36,9 @@
     <ClInclude Include="AnimateLine.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AssetsProducer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseProduct.cpp">
@@ -54,6 +57,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AnimateLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetsProducer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="AnimateLine.h" />
     <ClInclude Include="AnimateProduct.h" />
+    <ClInclude Include="AssetsProducer.h" />
     <ClInclude Include="BaseLine.h" />
     <ClInclude Include="BaseProduct.h" />
     <ClInclude Include="SpriteLine.h" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="AnimateLine.cpp" />
     <ClCompile Include="AnimateProduct.cpp" />
+    <ClCompile Include="AssetsProducer.cpp" />
     <ClCompile Include="BaseLine.cpp" />
     <ClCompile Include="BaseProduct.cpp" />
     <ClCompile Include="SpriteLine.cpp" />

@@ -1,0 +1,7 @@
+ID,是否精灵帧,plist文件,纹理文件,帧名,是否是加载中绘制图
+ID,IsSpriteFrame,PlistFileName,TexFileName,FrameName,IsLoadingDraw
+int,int,string,string,string,int
+-1,0,,,,0
+0,1,Assets\Atlas\Basic.plist,Assets\Atlas\Basic.png,LoadingDraw.png,1
+1,,,Assets\Sprites\pxc_big.png,,
+2,1,Assets\Atlas\Basic.plist,Assets\Atlas\Basic.png,pxc_small.png,

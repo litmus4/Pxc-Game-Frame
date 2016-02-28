@@ -190,6 +190,8 @@ void CSpriteProduct::OnLoadComplete()
 	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.begin();
 	for (; iter != m_mapAnims.end(); iter++)
 		iter->second->SetSprite(this);
+	if (fabs(m_v4Trans.w - 0.0f) < FLOAT_PRECISION && m_pSprite)
+		m_v4Trans.w = 1.0f;
 	SetTransform(m_v4Trans);
 }
 

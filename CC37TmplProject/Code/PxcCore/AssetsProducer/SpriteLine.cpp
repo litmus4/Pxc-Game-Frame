@@ -21,12 +21,6 @@ bool CSpriteLine::Init(const char* szFileName)
 	return bRet;
 }
 
-void CSpriteLine::Release()
-{
-	Discard(m_pLoadingDraw);
-	CBaseLine::Release();
-}
-
 CSpriteProduct* CSpriteLine::Fetch(int iID, CBaseProduct::ELoadType eLoadType, bool bAsyn)
 {
 	CSpriteProduct* pProduct = static_cast<CSpriteProduct*>(FetchProduct(iID, eLoadType, bAsyn));
@@ -41,6 +35,11 @@ void CSpriteLine::DrawLoading(cocos2d::Vec4& v4Trans, cocos2d::Renderer* rendere
 		return;
 	m_pLoadingDraw->SetTransform(v4Trans);
 	m_pLoadingDraw->Draw(renderer, parentTrans, parentFlags);
+}
+
+void CSpriteLine::DiscardLoadingDraw()
+{
+	Discard(m_pLoadingDraw);
 }
 
 CBaseProduct* CSpriteLine::CreateProduct()

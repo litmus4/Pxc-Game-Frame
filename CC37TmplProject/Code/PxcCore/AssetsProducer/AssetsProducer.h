@@ -1,6 +1,8 @@
 #pragma once
 #include "SpriteLine.h"
 #include "AnimateLine.h"
+#include "SpriteProduct.h"
+#include "AnimateProduct.h"
 #include "PxcUtil/Singleton.h"
 #include "PxcUtil/Thread.h"
 

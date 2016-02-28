@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+class CSpriteProduct;
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -17,6 +18,12 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+
+	virtual void update(float dt);
+
+private:
+	CSpriteProduct* m_pBigProd;
+	bool m_bBigProdAdded;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

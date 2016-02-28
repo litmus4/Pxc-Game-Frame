@@ -61,6 +61,7 @@ bool CAssetsProducer::Init(std::string strPath)
 
 void CAssetsProducer::Release()
 {
+	m_SpriteLine.DiscardLoadingDraw();
 	m_pLoadingThread->Stop();
 }
 
@@ -90,4 +91,5 @@ void CAssetsProducer::OnLoadingThreadEnd()
 {
 	m_SpriteLine.Release();
 	m_AnimateLine.Release();
+	DeleteInstance();
 }

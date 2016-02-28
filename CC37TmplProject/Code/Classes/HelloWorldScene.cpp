@@ -4,11 +4,12 @@
 #include "PublicDefinitions/SpecialFileDef.h"
 #include "DataTables/TextTable/TextTableCenter.h"
 #include "DataTables/OtherTable/OtherTableCenter.h"
+#include "AssetsProducer/AssetsProducer.h"
 #include "PxcUtil/zPackEx.h"
 #include "PxcUtil/StringTools.h"
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-#define USE_ZPACK 2
+#define USE_ZPACK 1
 #endif
 //*/
 
@@ -78,6 +79,7 @@ bool HelloWorld::init()
 #endif
 	CTextTableCenter::GetInstance()->Init();
 	COtherTableCenter::GetInstance()->Init();
+	CAssetsProducer::GetInstance()->Init("Assets");
 	PxcUtil::zPackRelease();
 
 	std::string strText5 = "Hello World ";
@@ -110,6 +112,18 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
+
+	//*²âÊÔÁÙÊ±
+	scheduleUpdate();
+
+	m_pBigProd = NULL;
+	m_bBigProdAdded = false;
+	m_pBigProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(1, CBaseProduct::EClonedData, true);
+	if (m_pBigProd)
+	{
+		//FLAGJK
+	}
+	//*/
     
     return true;
 }
@@ -118,8 +132,13 @@ bool HelloWorld::init()
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
 	//*²âÊÔÁÙÊ±
+	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pBigProd);
+
 	CTextTableCenter::GetInstance()->Release();
+	CTextTableCenter::DeleteInstance();
 	COtherTableCenter::GetInstance()->Release();
+	COtherTableCenter::DeleteInstance();
+	CAssetsProducer::GetInstance()->Release();
 	PxcUtil::zPackClearPathAims();
 	PXCU_LOGINST->Release();
 	//*/
@@ -128,4 +147,15 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+void HelloWorld::update(float dt)
+{
+	CAssetsProducer::GetInstance()->Update(dt);
+
+	if (m_pBigProd && m_pBigProd->IsComplete() && !m_bBigProdAdded)
+	{
+		this->addChild(m_pBigProd->GetSprite());
+		m_bBigProdAdded = true;
+	}
 }

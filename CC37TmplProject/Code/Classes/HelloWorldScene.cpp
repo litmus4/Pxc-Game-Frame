@@ -121,7 +121,9 @@ bool HelloWorld::init()
 	m_pBigProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(1, CBaseProduct::EClonedData, true);
 	if (m_pBigProd)
 	{
-		//FLAGJK
+		Vec4 v4Trans(origin.x + visibleSize.width / 2,
+			origin.y + 200.0f, 0.0f, 1.0f);
+		m_pBigProd->SetTransform(v4Trans);
 	}
 	//*/
     

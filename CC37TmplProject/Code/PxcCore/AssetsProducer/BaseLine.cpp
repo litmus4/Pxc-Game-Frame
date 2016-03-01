@@ -142,7 +142,8 @@ void CBaseLine::Discard(CBaseProduct* pProduct)
 	if (iter != m_mapTemplates.end())
 	{
 		ProductTmpl& tmpl = iter->second;
-		PXCU_LOG_ASSERT(SpecialFileDef::ELogFile_AssetsTables, (tmpl.iNum > 0)) << "资源未被使用";
+		PXCU_LOG_ASSERT(SpecialFileDef::ELogFile_AssetsTables, (tmpl.iNum > 0))
+			<< (tmpl.iNum > 0 ? "" : "资源未被使用");
 		if (pProduct->GetLoadType() != CBaseProduct::ESharedProduct)
 		{
 			bool bReleaseNow = false;

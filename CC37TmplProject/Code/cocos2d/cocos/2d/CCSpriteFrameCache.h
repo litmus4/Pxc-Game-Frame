@@ -216,7 +216,7 @@ protected:
 
     /*Adds multiple Sprite Frames with a dictionary. The texture will be associated with the created sprite frames.
      */
-    void addSpriteFramesWithDictionary(ValueMap& dictionary, Texture2D *texture);
+    void addSpriteFramesWithDictionary(ValueMap& dictionary, Texture2D *texture, Image* ximage = nullptr);
 
     /** Removes multiple Sprite Frames from Dictionary.
     * @since v0.99.5

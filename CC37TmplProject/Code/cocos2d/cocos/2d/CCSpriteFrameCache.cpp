@@ -79,7 +79,7 @@ SpriteFrameCache::~SpriteFrameCache()
     CC_SAFE_DELETE(_loadedFileNames);
 }
 
-void SpriteFrameCache::addSpriteFramesWithDictionary(ValueMap& dictionary, Texture2D* texture)
+void SpriteFrameCache::addSpriteFramesWithDictionary(ValueMap& dictionary, Texture2D* texture, Image* ximage)
 {
     /*
     Supported Zwoptex Formats:
@@ -104,9 +104,13 @@ void SpriteFrameCache::addSpriteFramesWithDictionary(ValueMap& dictionary, Textu
     // check the format
     CCASSERT(format >=0 && format <= 3, "format is not supported for SpriteFrameCache addSpriteFramesWithDictionary:textureFilename:");
 
-    auto textureFileName = Director::getInstance()->getTextureCache()->getTextureFilePath(texture);
-    auto image = new Image();
-    image->initWithImageFile(textureFileName);
+	auto image = ximage;
+	if (image == nullptr)
+	{
+		auto textureFileName = Director::getInstance()->getTextureCache()->getTextureFilePath(texture);
+		image = new Image();
+		image->initWithImageFile(textureFileName);
+	}
     NinePatchImageParser parser;
     for (auto iter = framesDict.begin(); iter != framesDict.end(); ++iter)
     {
@@ -205,7 +209,8 @@ void SpriteFrameCache::addSpriteFramesWithDictionary(ValueMap& dictionary, Textu
         // add sprite frame
         _spriteFrames.insert(spriteFrameName, spriteFrame);
     }
-    CC_SAFE_DELETE(image);
+	if (ximage == nullptr)
+		CC_SAFE_DELETE(image);
 }
 
 void SpriteFrameCache::addSpriteFramesWithFile(const std::string& plist, Texture2D *texture)

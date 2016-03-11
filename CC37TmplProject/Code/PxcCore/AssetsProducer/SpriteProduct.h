@@ -4,6 +4,7 @@
 
 class CAnimateProduct;
 class CSpriteLine;
+class CSubThreadDataReader;
 class CSpriteProduct : public CBaseProduct
 {
 public:
@@ -21,6 +22,7 @@ public:
 	void SetLine(CSpriteLine* pLine);
 	void Update(float dt);
 	void Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags);
+	bool HaveSubThreadReader();
 	cocos2d::Sprite* GetSprite();
 	void SetTransform(cocos2d::Vec4& v4Trans, bool bForce = false);
 	cocos2d::Vec4 GetTransform();
@@ -32,6 +34,9 @@ public:
 	virtual void OnBeforeUnLoad();
 
 private:
+	void CopyFromTemplate();
+
+private:
 	std::string m_strName;
 	bool m_bSpriteFrame;
 	std::string m_strPlistFileName;
@@ -40,6 +45,7 @@ private:
 	CSpriteProduct* m_pTmpl;
 	CSpriteLine* m_pLine;
 
+	CSubThreadDataReader* m_pReader;
 	cocos2d::Sprite* m_pSprite;
 	cocos2d::Vec4 m_v4Trans;
 	std::map<std::string, CAnimateProduct*> m_mapAnims;

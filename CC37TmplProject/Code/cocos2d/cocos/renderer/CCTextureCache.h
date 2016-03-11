@@ -141,7 +141,7 @@ public:
     * @param key The "key" parameter will be used as the "key" for the cache.
     * If "key" is nil, then a new texture will be created each time.
     */
-    Texture2D* addImage(Image *image, const std::string &key);
+    Texture2D* addImage(Image *image, const std::string &key, bool spFlag = false);
     CC_DEPRECATED_ATTRIBUTE Texture2D* addUIImage(Image *image, const std::string& key) { return addImage(image,key); }
 
     /** Returns an already created texture. Returns nil if the texture doesn't exist.

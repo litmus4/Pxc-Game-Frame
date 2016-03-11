@@ -221,10 +221,10 @@ void CBaseLine::Update(float dt)
 
 		if (compProduct.pProduct)
 		{
+			if (compProduct.pTmpl->pProduct->IsLoaded() && !compProduct.pTmpl->pProduct->IsComplete())
+				compProduct.pTmpl->pProduct->OnLoadComplete();
 			if (compProduct.pProduct->IsLoaded())
 				compProduct.pProduct->OnLoadComplete();
-			if (compProduct.pTmpl->pProduct->IsLoaded() && compProduct.pTmpl->pProduct->IsComplete())
-				compProduct.pTmpl->pProduct->OnLoadComplete();
 
 			if (bDelete)
 			{

@@ -414,9 +414,10 @@ void TextureCache::parseNinePatchImage(cocos2d::Image *image, cocos2d::Texture2D
 
 }
 
-Texture2D* TextureCache::addImage(Image *image, const std::string &key)
+Texture2D* TextureCache::addImage(Image *image, const std::string &key, bool spFlag)
 {
-    CCASSERT(image != nullptr, "TextureCache: image MUST not be nil");
+	if (!spFlag)
+		CCASSERT(image != nullptr, "TextureCache: image MUST not be nil");
 
     Texture2D * texture = nullptr;
 
@@ -427,10 +428,14 @@ Texture2D* TextureCache::addImage(Image *image, const std::string &key)
             texture = it->second;
             break;
         }
+		if (spFlag && image == nullptr)
+			break;
 
         // prevents overloading the autorelease pool
         texture = new (std::nothrow) Texture2D();
         texture->initWithImage(image);
+		if (spFlag)
+			this->parseNinePatchImage(image, texture, key);
 
         if(texture)
         {

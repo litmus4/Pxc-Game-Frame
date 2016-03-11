@@ -7,13 +7,24 @@ public:
 	CSubThreadDataReader();
 	~CSubThreadDataReader();
 
-	void LoadImage(const std::string& strFileName);//Sub
+	//Texture
+	void LoadTexImage(const std::string& strFileName);//Sub
 	bool InitAndAddTexture();//Main
 
-	static cocos2d::Sprite* CreateSprite();
+	//Sprite
+	cocos2d::Sprite* CreateSprite();//Main °üº¬InitAndAddTexture
 
+	//SpriteFrames
 	void LoadPlist(const std::string& strFileName);//Sub
-	void AddSpriteFrames();//Main
+	void AddSpriteFrames();//Main °üº¬InitAndAddTexture
 
-	//FLAG
+private:
+	//Texture
+	cocos2d::Image* m_pImage;
+	std::string m_strFullPath;
+	cocos2d::Texture2D* m_pTexture;
+
+	//SpriteFrame
+	std::string m_strsfFileName;
+	cocos2d::ValueMap m_sfDict;
 };

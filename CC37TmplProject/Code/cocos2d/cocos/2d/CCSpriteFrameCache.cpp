@@ -464,4 +464,10 @@ SpriteFrame* SpriteFrameCache::getSpriteFrameByName(const std::string& name)
     return frame;
 }
 
+void SpriteFrameCache::addSpriteFramesDictFile(ValueMap& dict, Texture2D* tex, Image* image, const std::string& plist)
+{
+	addSpriteFramesWithDictionary(dict, tex, image);
+	_loadedFileNames->insert(plist);
+}
+
 NS_CC_END

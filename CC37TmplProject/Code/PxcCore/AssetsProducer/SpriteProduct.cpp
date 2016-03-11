@@ -1,6 +1,7 @@
 #include "SpriteProduct.h"
 #include "AnimateProduct.h"
 #include "SpriteLine.h"
+#include "SubThreadDataReader.h"
 
 CSpriteProduct::CSpriteProduct()
 {
@@ -9,6 +10,7 @@ CSpriteProduct::CSpriteProduct()
 	m_pTmpl = NULL;
 	m_pLine = NULL;
 
+	m_pReader = NULL;
 	m_pSprite = NULL;
 }
 
@@ -67,31 +69,22 @@ bool CSpriteProduct::Load()
 
 	if (m_pTmpl == NULL)
 	{
+		m_pReader = new CSubThreadDataReader();
 		if (m_bSpriteFrame)
 		{
-			cocos2d::SpriteFrameCache::getInstance()->addSpriteFramesWithFile(m_strPlistFileName, m_strAtlasFileName);
-			m_pSprite = cocos2d::Sprite::createWithSpriteFrameName(m_strName);
+			m_pReader->LoadTexImage(m_strAtlasFileName);
+			m_pReader->LoadPlist(m_strPlistFileName);
+			//cocos2d::SpriteFrameCache::getInstance()->addSpriteFramesWithFile(m_strPlistFileName, m_strAtlasFileName);
+			//m_pSprite = cocos2d::Sprite::createWithSpriteFrameName(m_strName);
 		}
 		else
-			m_pSprite = cocos2d::Sprite::create(m_strName);
+			m_pReader->LoadTexImage(m_strName);
+			//m_pSprite = cocos2d::Sprite::create(m_strName);
 	}
 	else if (m_pTmpl->GetSprite())
-	{
-		if (m_bSpriteFrame)
-		{
-			cocos2d::SpriteFrame* pFrame = m_pTmpl->GetSprite()->getSpriteFrame();
-			m_pSprite = cocos2d::Sprite::createWithSpriteFrame(pFrame);
-		}
-		else
-		{
-			cocos2d::Texture2D* pTex = m_pTmpl->GetSprite()->getTexture();
-			m_pSprite = cocos2d::Sprite::createWithTexture(pTex);
-		}
-	}
-	else
+		CopyFromTemplate();
+	else if (!m_pTmpl->HaveSubThreadReader())
 		return false;
-	if (m_pSprite)
-		m_pSprite->retain();
 
 	CBaseProduct::Load();
 	return true;
@@ -141,6 +134,11 @@ void CSpriteProduct::Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& pare
 		m_pSprite->visit(renderer, parentTrans, parentFlags);
 }
 
+bool CSpriteProduct::HaveSubThreadReader()
+{
+	return (m_pReader ? true : false);
+}
+
 cocos2d::Sprite* CSpriteProduct::GetSprite()
 {
 	return m_pSprite;
@@ -186,7 +184,23 @@ CAnimateProduct* CSpriteProduct::GetAnimate(std::string strAnimName)
 
 void CSpriteProduct::OnLoadComplete()
 {
+	if (m_pReader)
+	{
+		if (m_bSpriteFrame)
+		{
+			m_pReader->AddSpriteFrames();
+			m_pSprite = cocos2d::Sprite::createWithSpriteFrameName(m_strName);
+		}
+		else
+			m_pSprite = m_pReader->CreateSprite();
+		if (m_pSprite)
+			m_pSprite->retain();
+		SAFE_DELETE(m_pReader)
+	}
+	else if (m_pTmpl && m_pTmpl->GetSprite())
+		CopyFromTemplate();
 	CBaseProduct::OnLoadComplete();
+
 	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.begin();
 	for (; iter != m_mapAnims.end(); iter++)
 		iter->second->SetSprite(this);
@@ -202,4 +216,20 @@ void CSpriteProduct::OnBeforeUnLoad()
 	for (; iter != m_mapAnims.end(); iter++)
 		iter->second->SetSprite(NULL);
 	m_mapAnims.clear();
+}
+
+void CSpriteProduct::CopyFromTemplate()
+{
+	if (m_bSpriteFrame)
+	{
+		cocos2d::SpriteFrame* pFrame = m_pTmpl->GetSprite()->getSpriteFrame();
+		m_pSprite = cocos2d::Sprite::createWithSpriteFrame(pFrame);
+	}
+	else
+	{
+		cocos2d::Texture2D* pTex = m_pTmpl->GetSprite()->getTexture();
+		m_pSprite = cocos2d::Sprite::createWithTexture(pTex);
+	}
+	if (m_pSprite)
+		m_pSprite->retain();
 }

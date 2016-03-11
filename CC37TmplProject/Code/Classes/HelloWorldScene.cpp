@@ -122,7 +122,7 @@ bool HelloWorld::init()
 	if (m_pBigProd)
 	{
 		Vec4 v4Trans(origin.x + visibleSize.width / 2,
-			origin.y + 200.0f, 0.0f, 1.0f);
+			origin.y + 93.75f, 0.0f, 1.0f);
 		m_pBigProd->SetTransform(v4Trans);
 	}
 	//*/

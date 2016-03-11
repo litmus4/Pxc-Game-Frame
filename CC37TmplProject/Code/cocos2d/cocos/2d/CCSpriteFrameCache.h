@@ -210,6 +210,8 @@ public:
     /** @deprecated use getSpriteFrameByName() instead */
     CC_DEPRECATED_ATTRIBUTE SpriteFrame* spriteFrameByName(const std::string&name) { return getSpriteFrameByName(name); }
 
+	void addSpriteFramesDictFile(ValueMap& dict, Texture2D* tex, Image* image, const std::string& plist);
+
 protected:
     // MARMALADE: Made this protected not private, as deriving from this class is pretty useful
     SpriteFrameCache(){}

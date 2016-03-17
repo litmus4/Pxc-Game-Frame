@@ -7,7 +7,7 @@
             <key>LoadingDraw.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1,1},{64,64}}</string>
+                <string>{{0,0},{64,64}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,7 +20,7 @@
             <key>pxc_small.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{67,1},{50,50}}</string>
+                <string>{{0,64},{50,50}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -38,9 +38,9 @@
             <key>realTextureFileName</key>
             <string>Basic.png</string>
             <key>size</key>
-            <string>{128,128}</string>
+            <string>{64,128}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:74b8d62c3fa3096e92e951a2c60d4643:e5276d8aec02ffda4dd31c768d64eb77:64122ac06ea2225d06124a3837b12496$</string>
+            <string>$TexturePacker:SmartUpdate:2939f519f5185a83de4fb9fe6d22dd85:e5276d8aec02ffda4dd31c768d64eb77:64122ac06ea2225d06124a3837b12496$</string>
             <key>textureFileName</key>
             <string>Basic.png</string>
         </dict>

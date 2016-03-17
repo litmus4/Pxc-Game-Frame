@@ -145,9 +145,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pSmallProd);
 
 	CTextTableCenter::GetInstance()->Release();
-	CTextTableCenter::DeleteInstance();
 	COtherTableCenter::GetInstance()->Release();
-	COtherTableCenter::DeleteInstance();
 	CAssetsProducer::GetInstance()->Release();
 	PxcUtil::zPackClearPathAims();
 	PXCU_LOGINST->Release();

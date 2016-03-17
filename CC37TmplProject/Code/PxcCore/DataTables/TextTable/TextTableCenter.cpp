@@ -20,6 +20,7 @@ bool CTextTableCenter::Init()
 void CTextTableCenter::Release()
 {
 	UNLOADTABLE(Text, m_mapTexts)
+	DeleteInstance();
 }
 
 CTextRow* CTextTableCenter::GetTextRow(int iID)

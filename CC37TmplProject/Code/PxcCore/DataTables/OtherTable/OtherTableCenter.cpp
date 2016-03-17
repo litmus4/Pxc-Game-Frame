@@ -19,6 +19,7 @@ bool COtherTableCenter::Init()
 void COtherTableCenter::Release()
 {
 	UNLOADTABLE(GlobalParam, m_mapGlobalParams)
+	DeleteInstance();
 }
 
 CGlobalParamRow* COtherTableCenter::GetGlobalParamRow(int iID)

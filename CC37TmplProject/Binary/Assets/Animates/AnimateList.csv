@@ -2,4 +2,4 @@ ID,plist文件,动画名称
 ID,PlistFileName,Name
 int,string,string
 -1,,
-0,Assets\Animates\pxc_anim\pxc_anim.plist,count
+0,Assets\Animates\pxc_anim.plist,count

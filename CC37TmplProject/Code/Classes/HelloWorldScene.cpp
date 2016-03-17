@@ -115,15 +115,22 @@ bool HelloWorld::init()
 
 	//*²âÊÔÁÙÊ±
 	scheduleUpdate();
-
 	m_pBigProd = NULL;
 	m_bBigProdAdded = false;
+	m_pSmallProd = NULL;
+	m_bSmallProdAdded = false;
+
 	m_pBigProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(1, CBaseProduct::EClonedData, true);
 	if (m_pBigProd)
 	{
-		Vec4 v4Trans(origin.x + visibleSize.width / 2,
-			origin.y + 93.75f, 0.0f, 1.0f);
+		Vec4 v4Trans(origin.x + visibleSize.width / 2, origin.y + 93.75f, 0.0f, 1.0f);
 		m_pBigProd->SetTransform(v4Trans);
+	}
+	m_pSmallProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(2, CBaseProduct::EClonedData, true);
+	if (m_pSmallProd)
+	{
+		Vec4 v4Trans(origin.x + 50.0f, origin.y + visibleSize.height / 2, 0.0f, 1.0f);
+		m_pSmallProd->SetTransform(v4Trans);
 	}
 	//*/
     
@@ -135,6 +142,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 {
 	//*²âÊÔÁÙÊ±
 	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pBigProd);
+	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pSmallProd);
 
 	CTextTableCenter::GetInstance()->Release();
 	CTextTableCenter::DeleteInstance();
@@ -159,5 +167,10 @@ void HelloWorld::update(float dt)
 	{
 		this->addChild(m_pBigProd->GetSprite());
 		m_bBigProdAdded = true;
+	}
+	if (m_pSmallProd && m_pSmallProd->IsComplete() && !m_bSmallProdAdded)
+	{
+		this->addChild(m_pSmallProd->GetSprite());
+		m_bSmallProdAdded = true;
 	}
 }

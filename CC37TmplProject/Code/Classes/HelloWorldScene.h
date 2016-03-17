@@ -24,6 +24,8 @@ public:
 private:
 	CSpriteProduct* m_pBigProd;
 	bool m_bBigProdAdded;
+	CSpriteProduct* m_pSmallProd;
+	bool m_bSmallProdAdded;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

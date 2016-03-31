@@ -3,6 +3,7 @@
 #include "BaseProduct.h"
 
 class CSpriteProduct;
+class CSubThreadDataReader;
 class CAnimateProduct : public CBaseProduct
 {
 public:
@@ -21,8 +22,9 @@ public:
 	virtual CBaseProduct* Clone();
 
 	void Update(float dt);
+	bool HaveSubThreadReader();
 	cocos2d::Animation* GetAnimation();
-	void SetSprite(CSpriteProduct* pSpritePro);
+	void SetSprite(CSpriteProduct* pSpritePro, bool bNullRemove = true);
 	CSpriteProduct* GetSprite();
 	short Play();
 	void Stop();
@@ -37,9 +39,14 @@ protected:
 private:
 	std::string m_strName;
 	std::string m_strPlistFileName;
+	std::string m_strSFPlistFile;
+	std::string m_strSFAtlasFile;
 	CAnimateProduct* m_pTmpl;
 
+	CSubThreadDataReader* m_pReader;
 	cocos2d::Animation* m_pAnimation;
+	float m_fFps;
+	bool m_bRestoredFinally;
 	CSpriteProduct* m_pSpritePro;
 	cocos2d::Sprite* m_pSprite;
 	cocos2d::Animate* m_pPlayingAnimate;

@@ -108,6 +108,7 @@ CBaseProduct* CSpriteProduct::Clone()
 	pProduct->m_bSpriteFrame = m_bSpriteFrame;
 	pProduct->m_strPlistFileName = m_strPlistFileName;
 	pProduct->m_strAtlasFileName = m_strAtlasFileName;
+	pProduct->m_bLoadingDraw = m_bLoadingDraw;
 	pProduct->m_pTmpl = this;
 	return pProduct;
 }
@@ -214,7 +215,7 @@ void CSpriteProduct::OnBeforeUnLoad()
 	CBaseProduct::OnBeforeUnLoad();
 	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.begin();
 	for (; iter != m_mapAnims.end(); iter++)
-		iter->second->SetSprite(NULL);
+		iter->second->SetSprite(NULL, false);
 	m_mapAnims.clear();
 }
 

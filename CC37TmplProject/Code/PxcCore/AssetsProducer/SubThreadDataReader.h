@@ -18,6 +18,10 @@ public:
 	void LoadPlist(const std::string& strFileName);//Sub
 	void AddSpriteFrames();//Main °üº¬InitAndAddTexture
 
+	//Animations
+	void LoadAnimPlist(const std::string& strFileName);//Sub
+	void AddAnimations();//Main
+
 private:
 	//Texture
 	cocos2d::Image* m_pImage;
@@ -27,4 +31,8 @@ private:
 	//SpriteFrame
 	std::string m_strsfFileName;
 	cocos2d::ValueMap m_sfDict;
+
+	//Animations
+	std::string m_straniFileName;
+	cocos2d::ValueMap m_aniDict;
 };

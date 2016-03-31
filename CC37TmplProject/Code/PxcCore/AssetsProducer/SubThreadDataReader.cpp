@@ -73,3 +73,18 @@ void CSubThreadDataReader::AddSpriteFrames()
 	if (InitAndAddTexture())
 		SpriteFrameCache::getInstance()->addSpriteFramesDictFile(m_sfDict, m_pTexture, m_pImage, m_strsfFileName);
 }
+
+void CSubThreadDataReader::LoadAnimPlist(const std::string& strFileName)
+{
+	m_straniFileName = strFileName;
+	std::string strFullPath = FileUtils::getInstance()->fullPathForFilename(strFileName);
+	m_aniDict = FileUtils::getInstance()->getValueMapFromFile(strFullPath);
+}
+
+void CSubThreadDataReader::AddAnimations()
+{
+	if (m_straniFileName.empty())
+		return;
+
+	AnimationCache::getInstance()->addAnimationsWithDictionary(m_aniDict, m_straniFileName);
+}

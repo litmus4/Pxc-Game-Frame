@@ -1,11 +1,16 @@
 #include "AnimateProduct.h"
 #include "SpriteProduct.h"
+#include "SubThreadDataReader.h"
+#include "PxcUtil/Scattered.h"
 
 CAnimateProduct::CAnimateProduct()
 {
 	m_pTmpl = NULL;
 
+	m_pReader = NULL;
 	m_pAnimation = NULL;
+	m_fFps = -1.0f;
+	m_bRestoredFinally = true;
 	m_pSpritePro = NULL;
 	m_pSprite = NULL;
 	m_pPlayingAnimate = NULL;
@@ -25,26 +30,24 @@ std::string CAnimateProduct::GetName()
 
 float CAnimateProduct::GetFps()
 {
-	if (m_pAnimation)
-		return (1.0f / m_pAnimation->getDelayPerUnit());
-	return -1;
+	return m_fFps;
 }
 
 void CAnimateProduct::SetFps(float fFps)
 {
-	if (m_pAnimation)
+	m_fFps = fFps;
+	if (IsComplete() && m_pAnimation)
 		m_pAnimation->setDelayPerUnit(1.0f / fFps);
 }
 
 bool CAnimateProduct::IsRestoredFinally()
 {
-	if (m_pAnimation)
-		return m_pAnimation->getRestoreOriginalFrame();
-	return false;
+	return m_bRestoredFinally;
 }
 
 void CAnimateProduct::SetRestoredFinally(bool b)
 {
+	m_bRestoredFinally = b;
 	if (m_pAnimation)
 		m_pAnimation->setRestoreOriginalFrame(b);
 }
@@ -60,6 +63,12 @@ bool CAnimateProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 	if (!tabop.GetValue("Name", m_strName))
 		return false;
 
+	if (!tabop.GetValue("SFPlistFile", m_strSFPlistFile))
+		return false;
+
+	if (!tabop.GetValue("SFAtlasFile", m_strSFAtlasFile))
+		return false;
+
 	return true;
 }
 
@@ -72,17 +81,17 @@ bool CAnimateProduct::Load()
 
 	if (m_pTmpl == NULL)
 	{
-		cocos2d::AnimationCache::getInstance()->addAnimationsWithFile(m_strPlistFileName);
-		m_pAnimation = cocos2d::AnimationCache::getInstance()->getAnimation(m_strName);
+		m_pReader = new CSubThreadDataReader();
+		m_pReader->LoadAnimPlist(m_strPlistFileName);
+		m_pReader->LoadTexImage(m_strSFAtlasFile);
+		m_pReader->LoadPlist(m_strSFPlistFile);
+		//cocos2d::AnimationCache::getInstance()->addAnimationsWithFile(m_strPlistFileName);
+		//m_pAnimation = cocos2d::AnimationCache::getInstance()->getAnimation(m_strName);
 	}
 	else if (m_pTmpl->GetAnimation())
-	{
 		m_pAnimation = m_pTmpl->GetAnimation()->clone();
-	}
-	else
+	else if (!m_pTmpl->HaveSubThreadReader())
 		return false;
-	if (m_pAnimation)
-		m_pAnimation->retain();
 
 	CBaseProduct::Load();
 	return true;
@@ -104,6 +113,8 @@ CBaseProduct* CAnimateProduct::Clone()
 	pProduct->m_iID = m_iID;
 	pProduct->m_strName = m_strName;
 	pProduct->m_strPlistFileName = m_strPlistFileName;
+	pProduct->m_strSFPlistFile = m_strSFPlistFile;
+	pProduct->m_strSFAtlasFile = m_strSFAtlasFile;
 	pProduct->m_pTmpl = this;
 	return pProduct;
 }
@@ -113,12 +124,17 @@ void CAnimateProduct::Update(float dt)
 	//TODO
 }
 
+bool CAnimateProduct::HaveSubThreadReader()
+{
+	return (m_pReader ? true : false);
+}
+
 cocos2d::Animation* CAnimateProduct::GetAnimation()
 {
 	return m_pAnimation;
 }
 
-void CAnimateProduct::SetSprite(CSpriteProduct* pSpritePro)
+void CAnimateProduct::SetSprite(CSpriteProduct* pSpritePro, bool bNullRemove)
 {
 	if (pSpritePro)
 	{
@@ -130,7 +146,7 @@ void CAnimateProduct::SetSprite(CSpriteProduct* pSpritePro)
 	else
 	{
 		m_pSprite = NULL;
-		if (m_pSpritePro)
+		if (m_pSpritePro && bNullRemove)
 			m_pSpritePro->RemoveAnimate(GetName());
 		m_pSpritePro = NULL;
 	}
@@ -188,7 +204,26 @@ cocos2d::Animate* CAnimateProduct::GetPlayingAnimate()
 
 void CAnimateProduct::OnLoadComplete()
 {
+	if (m_pReader)
+	{
+		//这里一定要先添加精灵帧，然后再添加动画
+		m_pReader->AddSpriteFrames();
+		m_pReader->AddAnimations();
+		m_pAnimation = cocos2d::AnimationCache::getInstance()->getAnimation(m_strName);
+		if (m_pAnimation)
+			m_pAnimation->retain();
+		SAFE_DELETE(m_pReader)
+	}
+	else if (m_pTmpl && m_pTmpl->GetAnimation())
+		m_pAnimation = m_pTmpl->GetAnimation()->clone();
 	CBaseProduct::OnLoadComplete();
+
+	if (m_fFps < 0.0f && m_pAnimation)
+		m_fFps = 1.0f / m_pAnimation->getDelayPerUnit();
+	else
+		SetFps(m_fFps);
+	SetRestoredFinally(m_bRestoredFinally);
+
 	if (m_pSpritePro && m_pSpritePro->IsComplete())
 		m_pSprite = m_pSpritePro->GetSprite();
 	if (m_bRequestWait)

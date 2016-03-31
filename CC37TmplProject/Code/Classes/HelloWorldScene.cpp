@@ -132,6 +132,14 @@ bool HelloWorld::init()
 		Vec4 v4Trans(origin.x + 50.0f, origin.y + visibleSize.height / 2, 0.0f, 1.0f);
 		m_pSmallProd->SetTransform(v4Trans);
 	}
+	CAnimateProduct* pCountProd = CAssetsProducer::GetInstance()->AnimateLine().Fetch(0, CBaseProduct::EClonedData, true);
+	if (pCountProd)
+	{
+		pCountProd->SetFps(1.0f);
+		pCountProd->SetRestoredFinally(true);
+		if (m_pSmallProd)
+			m_pSmallProd->AddAnimate(pCountProd);//TODO 已经complete时的内部设置问题
+	}
 	//*/
     
     return true;
@@ -142,7 +150,9 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 {
 	//*测试临时
 	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pBigProd);
+	CAnimateProduct* pCountProd = m_pSmallProd->GetAnimate("count");
 	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pSmallProd);
+	CAssetsProducer::GetInstance()->AnimateLine().Discard(pCountProd);
 
 	CTextTableCenter::GetInstance()->Release();
 	COtherTableCenter::GetInstance()->Release();
@@ -169,6 +179,7 @@ void HelloWorld::update(float dt)
 	if (m_pSmallProd && m_pSmallProd->IsComplete() && !m_bSmallProdAdded)
 	{
 		this->addChild(m_pSmallProd->GetSprite());
+		m_pSmallProd->GetAnimate("count")->Play();
 		m_bSmallProdAdded = true;
 	}
 }

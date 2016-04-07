@@ -183,6 +183,13 @@ CAnimateProduct* CSpriteProduct::GetAnimate(std::string strAnimName)
 	return NULL;
 }
 
+void CSpriteProduct::BindAnimates()
+{
+	std::map<std::string, CAnimateProduct*>::iterator iter = m_mapAnims.begin();
+	for (; iter != m_mapAnims.end(); iter++)
+		iter->second->SetSprite(this);
+}
+
 void CSpriteProduct::OnLoadComplete()
 {
 	if (m_pReader)

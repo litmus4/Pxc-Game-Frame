@@ -29,6 +29,7 @@ public:
 	void AddAnimate(CAnimateProduct* pAnimPro);
 	void RemoveAnimate(std::string strAnimName);
 	CAnimateProduct* GetAnimate(std::string strAnimName);
+	void BindAnimates();
 
 	virtual void OnLoadComplete();
 	virtual void OnBeforeUnLoad();

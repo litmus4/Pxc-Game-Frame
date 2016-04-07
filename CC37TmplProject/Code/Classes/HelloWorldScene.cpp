@@ -138,7 +138,7 @@ bool HelloWorld::init()
 		pCountProd->SetFps(1.0f);
 		pCountProd->SetRestoredFinally(true);
 		if (m_pSmallProd)
-			m_pSmallProd->AddAnimate(pCountProd);//TODO 已经complete时的内部设置问题
+			m_pSmallProd->AddAnimate(pCountProd);
 	}
 	//*/
     

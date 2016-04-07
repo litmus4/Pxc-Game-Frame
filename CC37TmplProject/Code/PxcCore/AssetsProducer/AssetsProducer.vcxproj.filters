@@ -42,6 +42,9 @@
     <ClInclude Include="SubThreadDataReader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AudioProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseProduct.cpp">
@@ -66,6 +69,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SubThreadDataReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioProduct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

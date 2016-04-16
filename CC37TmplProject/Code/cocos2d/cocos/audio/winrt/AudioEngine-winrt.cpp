@@ -142,46 +142,59 @@ bool AudioEngineImpl::init()
     return ret;
 }
 
+AudioCache* AudioEngineImpl::preload(const std::string& filePath, bool sync)
+{
+	AudioCache* audioCache = nullptr;
+	do
+	{
+		auto it = _audioCaches.find(filePath);
+		if (it == _audioCaches.end()) {
+			FileFormat fileFormat = FileFormat::UNKNOWN;
+
+			auto ext = filePath.substr(filePath.rfind('.'));
+			transform(ext.begin(), ext.end(), ext.begin(), tolower);
+
+			if (ext.compare(".wav") == 0) {
+				fileFormat = FileFormat::WAV;
+			}
+			else if (ext.compare(".ogg") == 0) {
+				fileFormat = FileFormat::OGG;
+			}
+			else if (ext.compare(".mp3") == 0) {
+				fileFormat = FileFormat::MP3;
+			}
+			else {
+				log("unsupported media type:%s\n", ext.c_str());
+				break;
+			}
+
+			audioCache = &_audioCaches[filePath];
+			audioCache->_fileFormat = fileFormat;
+
+			std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filePath);
+			audioCache->_fileFullPath = fullPath;
+			if (sync) {
+				audioCache->readDataTask();
+			}
+			else {
+				_threadPool->addTask(std::bind(&AudioCache::readDataTask, audioCache));
+			}
+		}
+		else {
+			audioCache = &it->second;
+		}
+	} while (false);
+
+	return audioCache;
+}
+
 int AudioEngineImpl::play2d(const std::string &filePath, bool loop, float volume)
 {
-    AudioCache* audioCache = nullptr;
-    auto it = _audioCaches.find(filePath);
-    if (it == _audioCaches.end()) {
-        audioCache = &_audioCaches[filePath];
-
-        auto ext = filePath.substr(filePath.rfind('.'));
-        transform(ext.begin(), ext.end(), ext.begin(), tolower);
-
-        bool eraseCache = true;
-
-        if (ext.compare(".wav") == 0){
-            audioCache->_fileFormat = FileFormat::WAV;
-            eraseCache = false;
-        }
-        else if (ext.compare(".ogg") == 0){
-            audioCache->_fileFormat = FileFormat::OGG;
-            eraseCache = false;
-        }
-        else if (ext.compare(".mp3") == 0){
-            audioCache->_fileFormat = FileFormat::MP3;
-            eraseCache = false;
-        }
-        else{
-            log("unsupported media type:%s\n", ext.c_str());
-        }
-
-        if (eraseCache){
-            _audioCaches.erase(filePath);
-            return AudioEngine::INVALID_AUDIO_ID;
-        }
-
-        std::string fullPath = FileUtils::getInstance()->fullPathForFilename(filePath);
-        audioCache->_fileFullPath = fullPath;
-        _threadPool->addTask(std::bind(&AudioCache::readDataTask, audioCache));
-    }
-    else {
-        audioCache = &it->second;
-    }
+	auto audioCache = preload(filePath);
+	if (audioCache == nullptr)
+	{
+		return AudioEngine::INVALID_AUDIO_ID;
+	}
 
     auto player = &_audioPlayers[_currentAudioID];
     player->_loop = loop;

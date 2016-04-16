@@ -415,4 +415,18 @@ AudioProfile* AudioEngine::getProfile(const std::string &name)
     }
 }
 
+void AudioEngine::preload(const std::string& filePath, bool sync)
+{
+	lazyInit();
+
+	if (_audioEngineImpl)
+	{
+		if (!FileUtils::getInstance()->isFileExist(filePath)) {
+			return;
+		}
+
+		_audioEngineImpl->preload(filePath, sync);
+	}
+}
+
 #endif

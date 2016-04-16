@@ -61,6 +61,7 @@ public:
     ~AudioCache();
 
     void addCallbacks(const std::function<void()> &callback);
+	void readData();
 
 protected:
     void readDataTask();  

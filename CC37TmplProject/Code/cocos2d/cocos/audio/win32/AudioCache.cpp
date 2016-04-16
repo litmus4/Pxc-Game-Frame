@@ -282,4 +282,9 @@ void AudioCache::addCallbacks(const std::function<void ()> &callback)
     _callbackMutex.unlock();
 }
 
+void AudioCache::readData()
+{
+	readDataTask();
+}
+
 #endif

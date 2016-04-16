@@ -7,7 +7,7 @@ public:
 	struct Ident
 	{
 		std::string strName;
-		unsigned int uSoundID;
+		int iAudioID;
 	};
 
 	struct SharedSoundItem
@@ -23,7 +23,7 @@ public:
 
 	std::string GetName();
 	bool IsBgm();
-	unsigned int GetSoundID();
+	int GetAudioID();
 
 	virtual bool Read(PxcUtil::CCSVTableOperator& tabop);
 	virtual bool Load();

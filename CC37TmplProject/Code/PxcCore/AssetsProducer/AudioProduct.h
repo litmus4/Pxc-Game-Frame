@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseProduct.h"
 
+class CAudioLine;
 class CAudioProduct : public CBaseProduct
 {
 public:
@@ -30,10 +31,11 @@ public:
 	virtual void UnLoad();
 	virtual CBaseProduct* Clone();
 
+	void SetLine(CAudioLine* pLine);
 	void Update(float dt);
-	void Play(bool bLoop);
+	void Play(bool bLoop, bool bForceStopNow = true);
 	void Stop();
-	bool IsPlaying();
+	bool IsPlaying(bool bSelf = true);
 	void SetVolume(float fVol);
 	float GetVolume();
 	void SetMuteExternally(bool b);
@@ -47,12 +49,14 @@ public:
 
 private:
 	Ident& SelectBestSharedSound(bool pbMax, CAudioProduct* pRobLink);
+	void OnPlayEnd(int iAudioID, const std::string& strName, bool bManual);
 
 private:
 	Ident m_Ident;
 	bool m_bBgm;
 	float m_fFirmVolume;//表中填写的固定音量
 	CAudioProduct* m_pTmpl;
+	CAudioLine* m_pLine;
 
 	std::vector<SharedSoundItem> m_vecSharedSounds;
 

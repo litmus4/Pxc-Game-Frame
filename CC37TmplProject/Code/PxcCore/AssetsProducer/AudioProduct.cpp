@@ -1,5 +1,7 @@
+#include "cocos2d.h"
 #include "AudioEngine.h"
 #include "AudioProduct.h"
+#include "AudioLine.h"
 #include "PxcUtil/Scattered.h"
 
 using namespace cocos2d::experimental;
@@ -10,6 +12,7 @@ CAudioProduct::CAudioProduct()
 	m_bBgm = false;
 	m_fFirmVolume = 0.0f;
 	m_pTmpl = NULL;
+	m_pLine = NULL;
 
 	m_bPlaying = false;
 	m_bLoop = false;
@@ -132,6 +135,11 @@ CBaseProduct* CAudioProduct::Clone()
 	return pProduct;
 }
 
+void CAudioProduct::SetLine(CAudioLine* pLine)
+{
+	m_pLine = pLine;
+}
+
 void CAudioProduct::Update(float dt)
 {
 #ifdef AUDIO_MEMORY_REUSE
@@ -149,8 +157,15 @@ void CAudioProduct::Update(float dt)
 #endif
 }
 
-void CAudioProduct::Play(bool bLoop)
+void CAudioProduct::Play(bool bLoop, bool bForceStopNow)
 {
+	if (m_eLoadType == ESharedData && !bForceStopNow && IsPlaying(false))
+	{
+		if (m_pLine)
+			m_pLine->PushWait(m_Ident.strName, bLoop);
+		return;
+	}
+
 	if (IsComplete())
 	{
 #ifdef AUDIO_MEMORY_REUSE
@@ -159,8 +174,11 @@ void CAudioProduct::Play(bool bLoop)
 #endif
 
 		m_Ident.iAudioID = AudioEngine::play2d(m_Ident.strName, bLoop);
+		if (m_pTmpl && m_eLoadType == CBaseProduct::ESharedData)
+			m_pTmpl->m_Ident.iAudioID = m_Ident.iAudioID;
 		SetVolume(m_fVolume);
 		m_bPlaying = true;
+		AudioEngine::setFinishCallback(m_Ident.iAudioID, CC_CALLBACK_2(CAudioProduct::OnPlayEnd, this, false));
 	}
 	else
 	{
@@ -171,6 +189,8 @@ void CAudioProduct::Play(bool bLoop)
 
 void CAudioProduct::Stop()
 {
+	bool bCallback = IsPlaying();
+
 	if (IsComplete())
 	{
 		bool bOk = true;
@@ -186,15 +206,31 @@ void CAudioProduct::Stop()
 	}
 	else
 		m_bPlaying = false;
+
+	if (bCallback)
+		OnPlayEnd(m_Ident.iAudioID, m_Ident.strName, true);
 }
 
-bool CAudioProduct::IsPlaying()
+bool CAudioProduct::IsPlaying(bool bSelf)
 {
 	if (IsComplete())
 	{
-		if (m_Ident.iAudioID == -1 || !m_bPlaying)
-			return false;
-		return (AudioEngine::getState(m_Ident.iAudioID) == AudioEngine::AudioState::PLAYING);
+		if (bSelf)
+		{
+			if (m_Ident.iAudioID == -1 || !m_bPlaying)
+				return false;
+			return (AudioEngine::getState(m_Ident.iAudioID) == AudioEngine::AudioState::PLAYING);
+		}
+		else
+		{
+			int iAudioID = m_Ident.iAudioID;
+			if (iAudioID == -1)
+			{
+				if (m_pTmpl)
+					iAudioID = m_pTmpl->m_Ident.iAudioID;
+			}
+			return (AudioEngine::getState(iAudioID) == AudioEngine::AudioState::PLAYING);
+		}
 	}
 	return m_bPlaying;
 }
@@ -268,4 +304,13 @@ CAudioProduct::Ident& CAudioProduct::SelectBestSharedSound(bool pbMax, CAudioPro
 {
 	//WAIT
 	return m_Ident;
+}
+
+void CAudioProduct::OnPlayEnd(int iAudioID, const std::string& strName, bool bManual)
+{
+	m_bPlaying = false;
+
+	bool bLoop = false;
+	if (m_eLoadType == ESharedData && m_pLine && m_pLine->PopWait(m_Ident.strName, bLoop))
+		Play(bLoop, false);
 }

@@ -154,6 +154,7 @@
     <ClInclude Include="AnimateLine.h" />
     <ClInclude Include="AnimateProduct.h" />
     <ClInclude Include="AssetsProducer.h" />
+    <ClInclude Include="AudioLine.h" />
     <ClInclude Include="AudioProduct.h" />
     <ClInclude Include="BaseLine.h" />
     <ClInclude Include="BaseProduct.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="AnimateLine.cpp" />
     <ClCompile Include="AnimateProduct.cpp" />
     <ClCompile Include="AssetsProducer.cpp" />
+    <ClCompile Include="AudioLine.cpp" />
     <ClCompile Include="AudioProduct.cpp" />
     <ClCompile Include="BaseLine.cpp" />
     <ClCompile Include="BaseProduct.cpp" />

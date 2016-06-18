@@ -22,6 +22,7 @@ public:
 
 	void PushWait(std::string& strName, bool bLoop);
 	bool PopWait(std::string& strName, bool& bLoopOut);
+	void ClearWait(std::string& strName);
 
 protected:
 	virtual CBaseProduct* CreateProduct();

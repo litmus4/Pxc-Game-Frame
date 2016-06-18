@@ -1,8 +1,10 @@
 #pragma once
 #include "SpriteLine.h"
 #include "AnimateLine.h"
+#include "AudioLine.h"
 #include "SpriteProduct.h"
 #include "AnimateProduct.h"
+#include "AudioProduct.h"
 #include "PxcUtil/Singleton.h"
 #include "PxcUtil/Thread.h"
 
@@ -34,6 +36,7 @@ public:
 
 	CSpriteLine& SpriteLine();
 	CAnimateLine& AnimateLine();
+	CAudioLine& AudioLine();
 
 	void Update(float dt);
 	void RunLoadProducts();
@@ -42,6 +45,7 @@ public:
 private:
 	CSpriteLine m_SpriteLine;
 	CAnimateLine m_AnimateLine;
+	CAudioLine m_AudioLine;
 
 	CLoadAssetsThread* m_pLoadingThread;
 };

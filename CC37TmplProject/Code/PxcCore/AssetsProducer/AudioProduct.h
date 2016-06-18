@@ -64,5 +64,7 @@ private:
 	bool m_bLoop;
 	float m_fVolume;
 	bool m_bMuteEx;
-	bool m_fVolumeEx;
+	float m_fVolumeEx;
+
+	bool m_bWaitPlayFlag;
 };

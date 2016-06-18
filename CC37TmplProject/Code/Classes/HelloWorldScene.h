@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 class CSpriteProduct;
+class CAudioProduct;
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -21,11 +22,15 @@ public:
 
 	virtual void update(float dt);
 
+	void menuPlayDebuffCallback(cocos2d::Ref* pSender, bool bForceStop);
+
 private:
 	CSpriteProduct* m_pBigProd;
 	bool m_bBigProdAdded;
 	CSpriteProduct* m_pSmallProd;
 	bool m_bSmallProdAdded;
+	CAudioProduct* m_pDiscoProd;
+	CAudioProduct* m_pDebuffProd;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

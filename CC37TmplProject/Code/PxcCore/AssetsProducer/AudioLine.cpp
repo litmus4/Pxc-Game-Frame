@@ -121,6 +121,13 @@ bool CAudioLine::PopWait(std::string& strName, bool& bLoopOut)
 	return false;
 }
 
+void CAudioLine::ClearWait(std::string& strName)
+{
+	std::map<std::string, std::list<bool>>::iterator iter = m_mapWaits.find(strName);
+	if (iter != m_mapWaits.end())
+		iter->second.clear();
+}
+
 CBaseProduct* CAudioLine::CreateProduct()
 {
 	return new CAudioProduct();

@@ -56,6 +56,9 @@ bool CAssetsProducer::Init(std::string strPath)
 	if (!m_AnimateLine.Init((strPath + "\\Animates\\AnimateList.csv").c_str()))
 		return false;
 
+	if (!m_AudioLine.Init((strPath + "\\Audios\\AudioList.csv").c_str()))
+		return false;
+
 	return m_pLoadingThread->Start();
 }
 
@@ -75,21 +78,29 @@ CAnimateLine& CAssetsProducer::AnimateLine()
 	return m_AnimateLine;
 }
 
+CAudioLine& CAssetsProducer::AudioLine()
+{
+	return m_AudioLine;
+}
+
 void CAssetsProducer::Update(float dt)
 {
 	m_SpriteLine.Update(dt);
 	m_AnimateLine.Update(dt);
+	m_AudioLine.Update(dt);
 }
 
 void CAssetsProducer::RunLoadProducts()
 {
 	m_SpriteLine.RunLoadProducts();
 	m_AnimateLine.RunLoadProducts();
+	m_AudioLine.RunLoadProducts();
 }
 
 void CAssetsProducer::OnLoadingThreadEnd()
 {
 	m_SpriteLine.Release();
 	m_AnimateLine.Release();
+	m_AudioLine.Release();
 	DeleteInstance();
 }

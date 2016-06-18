@@ -19,6 +19,8 @@ CAudioProduct::CAudioProduct()
 	m_fVolume = 1.0f;
 	m_bMuteEx = false;
 	m_fVolumeEx = 1.0f;
+
+	m_bWaitPlayFlag = false;
 }
 
 CAudioProduct::~CAudioProduct()
@@ -159,11 +161,18 @@ void CAudioProduct::Update(float dt)
 
 void CAudioProduct::Play(bool bLoop, bool bForceStopNow)
 {
-	if (m_eLoadType == ESharedData && !bForceStopNow && IsPlaying(false))
+	if (m_eLoadType == ESharedData && IsPlaying(false))
 	{
 		if (m_pLine)
-			m_pLine->PushWait(m_Ident.strName, bLoop);
-		return;
+		{
+			if (!bForceStopNow)
+			{
+				m_pLine->PushWait(m_Ident.strName, bLoop);
+				return;
+			}
+			else if (!m_bWaitPlayFlag)//等待队列播放时，忽略清理队列操作
+				m_pLine->ClearWait(m_Ident.strName);
+		}
 	}
 
 	if (IsComplete())
@@ -312,5 +321,9 @@ void CAudioProduct::OnPlayEnd(int iAudioID, const std::string& strName, bool bMa
 
 	bool bLoop = false;
 	if (m_eLoadType == ESharedData && m_pLine && m_pLine->PopWait(m_Ident.strName, bLoop))
-		Play(bLoop, false);
+	{
+		m_bWaitPlayFlag = true;
+		Play(bLoop);//bForceStopNow为true是因为引擎先回调再标记为停止
+		m_bWaitPlayFlag = false;
+	}
 }

@@ -119,6 +119,8 @@ bool HelloWorld::init()
 	m_bBigProdAdded = false;
 	m_pSmallProd = NULL;
 	m_bSmallProdAdded = false;
+	m_pDiscoProd = NULL;
+	m_pDebuffProd = NULL;
 
 	m_pBigProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(1, CBaseProduct::EClonedData, true);
 	if (m_pBigProd)
@@ -140,6 +142,32 @@ bool HelloWorld::init()
 		if (m_pSmallProd)
 			m_pSmallProd->AddAnimate(pCountProd);
 	}
+	m_pDiscoProd = CAssetsProducer::GetInstance()->AudioLine().Fetch(0, CBaseProduct::ESharedData, true);
+	if (m_pDiscoProd)
+	{
+		m_pDiscoProd->SetVolume(0.7f);
+		m_pDiscoProd->Play(true);
+	}
+	m_pDebuffProd = CAssetsProducer::GetInstance()->AudioLine().Fetch(1, CBaseProduct::ESharedData, true);
+	if (m_pDebuffProd)
+	{
+		float fRightWidth = closeItem->getContentSize().width;
+
+		auto pPlayItemForce = MenuItemImage::create("CloseSelected.png", "CloseNormal.png",
+			CC_CALLBACK_1(HelloWorld::menuPlayDebuffCallback, this, true));
+		pPlayItemForce->setPosition(Vec2(
+			origin.x + visibleSize.width - fRightWidth - pPlayItemForce->getContentSize().width / 2,
+			origin.y + pPlayItemForce->getContentSize().height / 2));
+		menu->addChild(pPlayItemForce);
+		fRightWidth += pPlayItemForce->getContentSize().width;
+
+		auto pPlayItemQueue = MenuItemImage::create("CloseSelected.png", "CloseNormal.png",
+			CC_CALLBACK_1(HelloWorld::menuPlayDebuffCallback, this, false));
+		pPlayItemQueue->setPosition(Vec2(
+			origin.x + visibleSize.width - fRightWidth - pPlayItemQueue->getContentSize().width / 2,
+			origin.y +pPlayItemQueue->getContentSize().height / 2));
+		menu->addChild(pPlayItemQueue);
+	}
 	//*/
     
     return true;
@@ -153,6 +181,8 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 	CAnimateProduct* pCountProd = m_pSmallProd->GetAnimate("count");
 	CAssetsProducer::GetInstance()->SpriteLine().Discard(m_pSmallProd);
 	CAssetsProducer::GetInstance()->AnimateLine().Discard(pCountProd);
+	CAssetsProducer::GetInstance()->AudioLine().Discard(m_pDiscoProd);
+	CAssetsProducer::GetInstance()->AudioLine().Discard(m_pDebuffProd);
 
 	CTextTableCenter::GetInstance()->Release();
 	COtherTableCenter::GetInstance()->Release();
@@ -181,5 +211,17 @@ void HelloWorld::update(float dt)
 		this->addChild(m_pSmallProd->GetSprite());
 		m_pSmallProd->GetAnimate("count")->Play();
 		m_bSmallProdAdded = true;
+	}
+}
+
+void HelloWorld::menuPlayDebuffCallback(cocos2d::Ref* pSender, bool bForceStop)
+{
+	if (m_pDebuffProd)
+	{
+		m_pDebuffProd->Play(false, bForceStop);
+		if (bForceStop)
+			CAssetsProducer::GetInstance()->AudioLine().SetBgm(true, 1.0f);
+		else
+			CAssetsProducer::GetInstance()->AudioLine().SetBgm(true, 0.2f);
 	}
 }

@@ -55,6 +55,8 @@ THE SOFTWARE.
 #include <dirent.h>
 #endif
 
+#include "PxcUtil/zPackEx.h"
+
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC)
 
 NS_CC_BEGIN
@@ -567,11 +569,24 @@ static Data getData(const std::string& filename, bool forString)
     {
         // Read the file from hardware
         std::string fullPath = fileutils->fullPathForFilename(filename);
-        FILE *fp = fopen(fileutils->getSuitableFOpen(fullPath).c_str(), mode);
-        CC_BREAK_IF(!fp);
-        fseek(fp,0,SEEK_END);
-        size = ftell(fp);
-        fseek(fp,0,SEEK_SET);
+		zp::IReadFile* pZFile = NULL;
+		FILE *fp = NULL;
+		if (PxcUtil::zPackFOpen(fullPath.c_str(), &pZFile) == PxcUtil::EzPOpen_SimplePath)
+		{
+			fp = fopen(fileutils->getSuitableFOpen(fullPath).c_str(), mode);
+		}
+        CC_BREAK_IF(!fp && !pZFile);
+
+		if (pZFile)
+		{
+			size = pZFile->size();
+		}
+		else
+		{
+			fseek(fp, 0, SEEK_END);
+			size = ftell(fp);
+			fseek(fp, 0, SEEK_SET);
+		}
         
         if (forString)
         {
@@ -583,8 +598,16 @@ static Data getData(const std::string& filename, bool forString)
             buffer = (unsigned char*)malloc(sizeof(unsigned char) * size);
         }
         
-        readsize = fread(buffer, sizeof(unsigned char), size, fp);
-        fclose(fp);
+		if (pZFile)
+		{
+			readsize = pZFile->read(buffer, size);
+			zPackFClose(pZFile);
+		}
+		else
+		{
+			readsize = fread(buffer, sizeof(unsigned char), size, fp);
+			fclose(fp);
+		}
         
         if (forString && readsize < size)
         {
@@ -740,6 +763,20 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const
     {
         return "";
     }
+
+	int ipos = filename.find_first_of('#');
+	if (ipos != std::string::npos)
+	{
+		return filename;
+	}
+	else
+	{
+		std::string filename_x = filename;
+		if (PxcUtil::zPackCombinePath(filename_x))
+		{
+			return filename_x;
+		}
+	}
     
     if (isAbsolutePath(filename))
     {
@@ -943,6 +980,12 @@ std::string FileUtils::getFullPathForDirectoryAndFilename(const std::string& dir
 
 bool FileUtils::isFileExist(const std::string& filename) const
 {
+	int ipos = filename.find_first_of('#');
+	if (ipos != std::string::npos)
+	{
+		return true;
+	}
+
     if (isAbsolutePath(filename))
     {
         return isFileExistInternal(filename);

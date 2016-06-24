@@ -73,14 +73,14 @@ void zPackAddPathAim(const char* szPack, const char* szPath)
 	g_mapZPackPathAims.insert(std::pair<std::string, std::string>(strPath, szPack));
 }
 
-void zPackCombinePath(std::string& strPath)
+bool zPackCombinePath(std::string& strPath)
 {
 	if (!g_bZPackPath)
-		return;
+		return false;
 	if (g_bZPackPathFileFirst)
 	{
 		if (FileManage::IsFileExist(StringTools::StrToWstr(strPath).c_str()))
-			return;
+			return false;
 	}
 
 	std::string strPathKey = strPath;
@@ -91,6 +91,7 @@ void zPackCombinePath(std::string& strPath)
 	std::map<std::string, std::string>::iterator iter = g_mapZPackPathAims.find(strPathKey);
 	if (iter != g_mapZPackPathAims.end())
 		strPath = iter->second + "#" + strPath;
+	return true;
 }
 
 void zPackClearPathAims()

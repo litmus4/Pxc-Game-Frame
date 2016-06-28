@@ -769,14 +769,6 @@ std::string FileUtils::fullPathForFilename(const std::string &filename) const
 	{
 		return filename;
 	}
-	else
-	{
-		std::string filename_x = filename;
-		if (PxcUtil::zPackCombinePath(filename_x))
-		{
-			return filename_x;
-		}
-	}
     
     if (isAbsolutePath(filename))
     {

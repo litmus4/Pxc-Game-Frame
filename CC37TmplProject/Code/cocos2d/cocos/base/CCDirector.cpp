@@ -62,6 +62,7 @@ THE SOFTWARE.
 #include "base/CCAsyncTaskPool.h"
 #include "platform/CCApplication.h"
 //#include "platform/CCGLViewImpl.h"
+#include "PxcUtil/zPackEx.h"
 
 #if CC_ENABLE_SCRIPT_BINDING
 #include "CCScriptSupport.h"
@@ -910,6 +911,7 @@ void Director::popToSceneStackLevel(int level)
 
 void Director::end()
 {
+	PxcUtil::zPackRelease();
     _purgeDirectorInNextLoop = true;
 }
 

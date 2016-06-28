@@ -9,7 +9,7 @@
 #include "PxcUtil/StringTools.h"
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-#define USE_ZPACK 1
+#define USE_ZPACK 2
 #endif
 //*/
 
@@ -76,6 +76,7 @@ bool HelloWorld::init()
 	PxcUtil::zPackPathSwitch(true);
 #endif
 	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
+	PxcUtil::zPackAddPathAim("Packs\\Assets.zpk", "Assets");
 #endif
 	CTextTableCenter::GetInstance()->Init();
 	COtherTableCenter::GetInstance()->Init();
@@ -188,6 +189,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 	COtherTableCenter::GetInstance()->Release();
 	CAssetsProducer::GetInstance()->Release();
 	PxcUtil::zPackClearPathAims();
+	PxcUtil::zPackRelease();
 	PXCU_LOGINST->Release();
 	//*/
     Director::getInstance()->end();

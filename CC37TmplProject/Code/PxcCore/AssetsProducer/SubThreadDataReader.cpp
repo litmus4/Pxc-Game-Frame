@@ -1,4 +1,5 @@
 #include "SubThreadDataReader.h"
+#include "PxcUtil/zPackEx.h"
 
 USING_NS_CC;
 
@@ -15,7 +16,9 @@ CSubThreadDataReader::~CSubThreadDataReader()
 
 void CSubThreadDataReader::LoadTexImage(const std::string& strFileName)
 {
-	m_strFullPath = FileUtils::getInstance()->fullPathForFilename(strFileName);
+	m_strFullPath = strFileName;//成员变量是组合或绝对路径
+	if (!PxcUtil::zPackCombinePath(m_strFullPath))
+		m_strFullPath = FileUtils::getInstance()->fullPathForFilename(strFileName);
 
 	m_pTexture = Director::getInstance()->getTextureCache()->getTextureForKey(m_strFullPath);
 	if (m_pTexture)
@@ -60,8 +63,10 @@ void CSubThreadDataReader::LoadPlist(const std::string& strFileName)
 	if (SpriteFrameCache::getInstance()->isSpriteFramesWithFileLoaded(strFileName))
 		return;
 
-	m_strsfFileName = strFileName;
-	std::string strFullPath = FileUtils::getInstance()->fullPathForFilename(strFileName);
+	m_strsfFileName = strFileName;//成员变量是相对路径
+	std::string strFullPath = strFileName;
+	if (!PxcUtil::zPackCombinePath(strFullPath))
+		strFullPath = FileUtils::getInstance()->fullPathForFilename(strFileName);
 	m_sfDict = FileUtils::getInstance()->getValueMapFromFile(strFullPath);
 }
 
@@ -76,9 +81,10 @@ void CSubThreadDataReader::AddSpriteFrames()
 
 void CSubThreadDataReader::LoadAnimPlist(const std::string& strFileName)
 {
-	m_straniFileName = strFileName;
-	std::string strFullPath = FileUtils::getInstance()->fullPathForFilename(strFileName);
-	m_aniDict = FileUtils::getInstance()->getValueMapFromFile(strFullPath);
+	m_straniFileName = strFileName;//成员变量是组合或绝对路径
+	if (!PxcUtil::zPackCombinePath(m_straniFileName))
+		m_straniFileName = FileUtils::getInstance()->fullPathForFilename(strFileName);
+	m_aniDict = FileUtils::getInstance()->getValueMapFromFile(m_straniFileName);
 }
 
 void CSubThreadDataReader::AddAnimations()

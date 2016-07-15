@@ -11,12 +11,14 @@ public:
 	{
 		ProductTmpl();
 		~ProductTmpl();
+		void UnLoadAllSaves();
 
 		CBaseProduct* pProduct;
 		CBaseProduct* pLoadingProduct;
 		int iNum;
 		bool bToRelease;
 		float fDelayTime;
+		std::set<CBaseProduct*> setSaves;
 	};
 
 	struct ProcessProduct
@@ -41,6 +43,8 @@ public:
 	virtual void Discard(CBaseProduct* pProduct);
 	virtual void Update(float dt);
 	virtual void RunLoadProducts();
+
+	virtual void UnLoadTemplateSavesByID(int iID);
 
 protected:
 	virtual CBaseProduct* FetchProduct(int iID, CBaseProduct::ELoadType eLoadType, bool bAsyn = false);

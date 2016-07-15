@@ -20,6 +20,27 @@ CBaseLine::ProductTmpl::~ProductTmpl()
 	//
 }
 
+void CBaseLine::ProductTmpl::UnLoadAllSaves()
+{
+	std::set<CBaseProduct*>::iterator iter = setSaves.begin();
+	for (; iter != setSaves.end(); iter++)
+	{
+		if (*iter)
+		{
+			if ((*iter)->IsComplete())
+			{
+				(*iter)->OnBeforeUnLoad();
+				(*iter)->UnLoad();
+			}
+			delete *iter;
+		}
+	}
+	setSaves.clear();
+	iNum = 0;
+	bToRelease = true;
+	fDelayTime = RELEASE_DELAY_TIME;
+}
+
 CBaseLine::ProcessProduct::ProcessProduct()
 {
 	pTmpl = NULL;
@@ -68,6 +89,7 @@ void CBaseLine::Release()
 	for (; iter != m_mapTemplates.end(); iter++)
 	{
 		Update(0.0f);
+		iter->second.UnLoadAllSaves();
 
 		if (iter->second.pProduct->IsComplete())
 			iter->second.pProduct->UnLoad();
@@ -184,6 +206,7 @@ void CBaseLine::Discard(CBaseProduct* pProduct)
 					pProduct->OnBeforeUnLoad();
 					pProduct->UnLoad();
 				}
+				tmpl.setSaves.erase(pProduct);
 				delete pProduct;
 				tmpl.iNum--;
 			}
@@ -238,6 +261,8 @@ void CBaseLine::Update(float dt)
 					compProduct.pTmpl->fDelayTime = RELEASE_DELAY_TIME;
 				}
 			}
+			else if (compProduct.pProduct->GetLoadType() != CBaseProduct::ESharedProduct)
+				compProduct.pTmpl->setSaves.insert(compProduct.pProduct);
 		}
 		else
 			break;
@@ -296,4 +321,11 @@ void CBaseLine::RunLoadProducts()
 		compProduct.pProduct = loadProduct.pProduct;
 		m_lisAsynCompleteQueue.push_back(compProduct);
 	}
+}
+
+void CBaseLine::UnLoadTemplateSavesByID(int iID)
+{
+	std::map<int, ProductTmpl>::iterator iter = m_mapTemplates.find(iID);
+	if (iter != m_mapTemplates.end())
+		iter->second.UnLoadAllSaves();
 }

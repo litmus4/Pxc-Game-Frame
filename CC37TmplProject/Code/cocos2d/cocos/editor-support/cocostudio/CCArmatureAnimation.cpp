@@ -256,6 +256,48 @@ void ArmatureAnimation::play(const std::string& animationName, int durationTo,  
     _armature->update(0);
 }
 
+void ArmatureAnimation::playPart(const std::string& animationName, const std::string& boneName, int durationTo, int loop)
+{
+	if (animationName.empty())
+	{
+		CCLOG("_animationData can not be null");
+		return;
+	}
+
+	ArmatureAnimation* pPartAnim = ArmatureAnimation::create(nullptr);
+	if (nullptr == pPartAnim)
+		return;
+
+	pPartAnim->_movementData = _animationData->getMovement(animationName.c_str());
+	if (nullptr == pPartAnim->_movementData)
+	{
+		CCLOG("_movementData can not be null");
+		return;
+	}
+
+	//! Get key frame count
+	pPartAnim->_rawDuration = _movementData->duration;
+
+	pPartAnim->_movementID = animationName;
+
+	pPartAnim->_processScale = _speedScale * _movementData->scale;
+
+	//! Further processing parameters
+	durationTo = (durationTo == -1) ? pPartAnim->_movementData->durationTo : durationTo;
+
+	int durationTween = pPartAnim->_movementData->durationTween == 0 ?
+		pPartAnim->_rawDuration : pPartAnim->_movementData->durationTween;
+
+	cocos2d::tweenfunc::TweenType tweenEasing = pPartAnim->_movementData->tweenEasing;
+	loop = (loop < 0) ? pPartAnim->_movementData->loop : loop;
+
+	pPartAnim->_onMovementList = false;
+
+	pPartAnim->play(durationTo, durationTween, loop, tweenEasing);
+
+	//FLAG
+}
+
 void ArmatureAnimation::playByIndex(int animationIndex, int durationTo, int loop)
 {
     playWithIndex(animationIndex, durationTo, loop);

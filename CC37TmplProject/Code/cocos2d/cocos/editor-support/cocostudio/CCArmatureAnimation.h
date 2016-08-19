@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include "cocostudio/CCTween.h"
 #include "cocostudio/CocosStudioExport.h"
 #include <queue>
+#include <set>
 
 namespace cocostudio {
 
@@ -125,6 +126,8 @@ public:
      *         loop > 0 : this animation is loop
      */
     virtual void play(const std::string& animationName, int durationTo = -1,  int loop = -1);
+
+	virtual void playPart(const std::string& animationName, const std::string& boneName, int durationTo = -1, int loop = -1);
 
     /**
      * Play animation by index, the other param is the same to play.
@@ -272,6 +275,9 @@ protected:
     //! AnimationData save all MovementDatas this animation used.
     AnimationData *_animationData;
 
+	typedef std::list<std::pair<Bone*, ArmatureAnimation*>> tPartAnimationList;
+	tPartAnimationList _partAnimationList;
+
     //! Scale the animation speed
     float _speedScale;
 
@@ -284,6 +290,7 @@ protected:
     int _toIndex;                                //! The frame index in MovementData->m_pMovFrameDataArr, it's different from m_iFrameIndex.
 
     cocos2d::Vector<Tween*> _tweenList;
+	std::set<Tween*> _partTweenSet;
 
     bool _ignoreFrameEvent;
     

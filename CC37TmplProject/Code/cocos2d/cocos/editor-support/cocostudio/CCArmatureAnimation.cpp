@@ -626,9 +626,15 @@ void ArmatureAnimation::playPartEveryBone(Bone* bone, MovementData* movementData
 								int durationTo, int durationTween, int loop, tweenfunc::TweenType tweenEasing)
 {
 	tPartAnimationList::iterator itAnim = _partAnimationList.begin();
-	for (; itAnim != _partAnimationList.end(); itAnim++)
+	while (itAnim != _partAnimationList.end())
 	{
-		//TODO stopPart
+		if (itAnim->first == bone)
+		{
+			//TODO stopPart without erase
+			itAnim = _partAnimationList.erase(itAnim);
+		}
+		else
+			itAnim++;
 	}
 
 	MovementBoneData* movementBoneData = static_cast<MovementBoneData *>(movementData->movBoneDataDic.at(bone->getName()));

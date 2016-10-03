@@ -30,7 +30,6 @@ THE SOFTWARE.
 #include "cocostudio/CCTween.h"
 #include "cocostudio/CocosStudioExport.h"
 #include <queue>
-#include <set>
 
 namespace cocostudio {
 
@@ -270,6 +269,9 @@ protected:
 
     bool isIgnoreFrameEvent() const { return _ignoreFrameEvent; }
 
+	void playPartEveryBone(Bone* bone, MovementData* movementData, float processScale,
+				int durationTo, int durationTween, int loop, cocos2d::tweenfunc::TweenType tweenEasing);
+
     friend class Tween;
 protected:
     //! AnimationData save all MovementDatas this animation used.
@@ -290,7 +292,7 @@ protected:
     int _toIndex;                                //! The frame index in MovementData->m_pMovFrameDataArr, it's different from m_iFrameIndex.
 
     cocos2d::Vector<Tween*> _tweenList;
-	std::set<Tween*> _partTweenSet;
+	std::map<Tween*, bool> _partTweenMap;
 
     bool _ignoreFrameEvent;
     

@@ -276,11 +276,11 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 	}
 
 	//! Get key frame count
-	pPartAnim->_rawDuration = _movementData->duration;
+	pPartAnim->_rawDuration = pPartAnim->_movementData->duration;
 
 	pPartAnim->_movementID = animationName;
 
-	pPartAnim->_processScale = _speedScale * _movementData->scale;
+	pPartAnim->_processScale = _speedScale * pPartAnim->_movementData->scale;
 
 	//! Further processing parameters
 	durationTo = (durationTo == -1) ? pPartAnim->_movementData->durationTo : durationTo;
@@ -295,7 +295,31 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 
 	pPartAnim->play(durationTo, durationTween, loop, tweenEasing);
 
-	//FLAG
+	if (pPartAnim->_rawDuration == 0)
+	{
+		pPartAnim->_loopType = SINGLE_FRAME;
+	}
+	else
+	{
+		if (loop)
+		{
+			pPartAnim->_loopType = ANIMATION_TO_LOOP_FRONT;
+		}
+		else
+		{
+			pPartAnim->_loopType = ANIMATION_NO_LOOP;
+		}
+		pPartAnim->_durationTween = durationTween;
+	}
+
+	Bone* bone = _armature->getBone(boneName);
+	if (bone != nullptr)
+	{
+		playPartEveryBone(bone, pPartAnim->_movementData, pPartAnim->_processScale,
+				durationTo, durationTween, loop, tweenEasing);
+
+		_partAnimationList.push_back(std::make_pair(bone, pPartAnim));
+	}
 }
 
 void ArmatureAnimation::playByIndex(int animationIndex, int durationTo, int loop)
@@ -596,6 +620,55 @@ void ArmatureAnimation::updateMovementList()
 
         _onMovementList = true;
     }
+}
+
+void ArmatureAnimation::playPartEveryBone(Bone* bone, MovementData* movementData, float processScale,
+								int durationTo, int durationTween, int loop, tweenfunc::TweenType tweenEasing)
+{
+	tPartAnimationList::iterator itAnim = _partAnimationList.begin();
+	for (; itAnim != _partAnimationList.end(); itAnim++)
+	{
+		//TODO stopPart
+	}
+
+	MovementBoneData* movementBoneData = static_cast<MovementBoneData *>(movementData->movBoneDataDic.at(bone->getName()));
+
+	Tween* tween = bone->getTween();
+	if (movementBoneData && movementBoneData->frameList.size() > 0)
+	{
+		std::map<Tween*, bool>::iterator itTween = _partTweenMap.find(tween);
+		if (itTween == _partTweenMap.end())
+			_partTweenMap.insert(std::make_pair(tween, true));
+		else
+			itTween->second = true;
+
+		movementBoneData->duration = movementData->duration;
+		tween->play(movementBoneData, durationTo, durationTween, loop, tweenEasing);
+
+		tween->setProcessScale(processScale);
+
+		if (bone->getChildArmature())
+		{
+			bone->getChildArmature()->getAnimation()->setSpeedScale(processScale);
+		}
+	}
+	else
+	{
+		if (!bone->isIgnoreMovementBoneData())
+		{
+			//! this bone is not include in this movement, so hide it
+			bone->getDisplayManager()->changeDisplayWithIndex(-1, false);
+			tween->stop();
+		}
+	}
+
+	Vector<Node*>& nodeVec = bone->getChildren();
+	Vector<Node*>::iterator iter = nodeVec.begin();
+	for (; iter != nodeVec.end(); iter++)
+	{
+		playPartEveryBone(static_cast<Bone*>(*iter), movementData, processScale,
+				durationTo, durationTween, loop, tweenEasing);
+	}
 }
 
 }

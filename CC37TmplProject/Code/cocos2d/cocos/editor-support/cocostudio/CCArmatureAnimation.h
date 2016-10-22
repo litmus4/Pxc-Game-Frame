@@ -160,14 +160,17 @@ public:
      * Pause the Process
      */
     virtual void pause() override;
+	void pausePart(const std::string& boneName);
     /**
      * Resume the Process
      */
     virtual void resume() override;
+	void resumePart(const std::string& boneName);
     /**
      * Stop the Process
      */
     virtual void stop() override;
+	void stopPart(const std::string& boneName);
 
 
     /**
@@ -269,7 +272,7 @@ protected:
 
     bool isIgnoreFrameEvent() const { return _ignoreFrameEvent; }
 
-	void playPartEveryBone(Bone* bone, MovementData* movementData, float processScale,
+	void playPartEveryBone(Bone* bone, Bone* boneMain, MovementData* movementData, float processScale,
 				int durationTo, int durationTween, int loop, cocos2d::tweenfunc::TweenType tweenEasing);
 
     friend class Tween;
@@ -292,7 +295,7 @@ protected:
     int _toIndex;                                //! The frame index in MovementData->m_pMovFrameDataArr, it's different from m_iFrameIndex.
 
     cocos2d::Vector<Tween*> _tweenList;
-	std::map<Tween*, bool> _partTweenMap;
+	std::map<Tween*, Bone*> _partTweenMap;
 
     bool _ignoreFrameEvent;
     

@@ -58,6 +58,7 @@ ArmatureAnimation::ArmatureAnimation()
     , _onMovementList(false)
     , _movementListLoop(false)
     , _movementListDurationTo(-1)
+	, _partBoneMain(nullptr)
     , _userObject(nullptr)
 
     , _movementEventCallFunc(nullptr)
@@ -335,7 +336,7 @@ void ArmatureAnimation::play(const std::string& animationName, int durationTo,  
     _armature->update(0);
 }
 
-void ArmatureAnimation::playPart(const std::string& animationName, const std::string& boneName, int durationTo, int loop)
+void ArmatureAnimation::playPart(const std::string& animationName, const std::string& boneName, int durationTo, int loop, float speedScale)
 {
 	if (animationName.empty())
 	{
@@ -343,7 +344,7 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 		return;
 	}
 
-	ArmatureAnimation* pPartAnim = ArmatureAnimation::create(nullptr);
+	ArmatureAnimation* pPartAnim = ArmatureAnimation::create(_armature);
 	if (nullptr == pPartAnim)
 		return;
 	pPartAnim->retain();
@@ -360,7 +361,8 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 
 	pPartAnim->_movementID = animationName;
 
-	pPartAnim->_processScale = _speedScale * pPartAnim->_movementData->scale;
+	pPartAnim->_speedScale = speedScale;
+	pPartAnim->_processScale = speedScale * pPartAnim->_movementData->scale;
 
 	//! Further processing parameters
 	durationTo = (durationTo == -1) ? pPartAnim->_movementData->durationTo : durationTo;
@@ -398,8 +400,11 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 		playPartEveryBone(bone, bone, pPartAnim->_movementData, pPartAnim->_processScale,
 				durationTo, durationTween, loop, tweenEasing);
 
+		pPartAnim->_partBoneMain = bone;
 		_partAnimationList.push_back(std::make_pair(bone, pPartAnim));
 	}
+	else
+		pPartAnim->release();
 }
 
 void ArmatureAnimation::playByIndex(int animationIndex, int durationTo, int loop)
@@ -492,6 +497,12 @@ ssize_t ArmatureAnimation::getMovementCount() const
 void ArmatureAnimation::update(float dt)
 {
     ProcessBase::update(dt);
+	tPartAnimationList::iterator itAnim = _partAnimationList.begin();
+	for (; itAnim != _partAnimationList.end(); itAnim++)
+	{
+		if (itAnim->second != nullptr)
+			itAnim->second->update(dt);
+	}
     
     for (const auto &tween : _tweenList)
     {
@@ -640,6 +651,13 @@ void ArmatureAnimation::setMovementEventCallFunc(std::function<void(Armature *ar
 void ArmatureAnimation::setFrameEventCallFunc(std::function<void(Bone *bone, const std::string& frameEventName, int originFrameIndex, int currentFrameIndex)> listener)
 {
     _frameEventListener = listener;
+}
+
+std::string ArmatureAnimation::getPartBoneName()
+{
+	if (_partBoneMain != nullptr)
+		return _partBoneMain->getName();
+	return "";
 }
 
 void ArmatureAnimation::setUserObject(Ref *pUserObject)

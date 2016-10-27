@@ -126,7 +126,7 @@ public:
      */
     virtual void play(const std::string& animationName, int durationTo = -1,  int loop = -1);
 
-	virtual void playPart(const std::string& animationName, const std::string& boneName, int durationTo = -1, int loop = -1);
+	virtual void playPart(const std::string& animationName, const std::string& boneName, int durationTo = -1, int loop = -1, float speedScale = 1.0f);
 
     /**
      * Play animation by index, the other param is the same to play.
@@ -212,6 +212,8 @@ public:
     }
     virtual AnimationData *getAnimationData() const { return _animationData; }
 
+	//in part
+	std::string getPartBoneName();
 
     /** 
      * Returns a user assigned Object
@@ -308,6 +310,8 @@ protected:
     bool _movementListLoop;
     unsigned int _movementIndex;
     int _movementListDurationTo;
+
+	Bone* _partBoneMain;//in part
 
     cocos2d::Ref *_userObject;
 protected:

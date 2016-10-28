@@ -55,13 +55,16 @@ ArmatureAnimation::ArmatureAnimation()
     , _movementID("")
     , _toIndex(0)
     , _ignoreFrameEvent(false)
+	, _partRegEventType(START)
     , _onMovementList(false)
     , _movementListLoop(false)
     , _movementListDurationTo(-1)
 	, _partBoneMain(nullptr)
+	, _partWholeAnim(nullptr)
     , _userObject(nullptr)
 
     , _movementEventCallFunc(nullptr)
+	, _partMovementEventCallFunc(nullptr)
     , _frameEventCallFunc(nullptr)
     , _movementEventTarget(nullptr)
     , _frameEventTarget(nullptr)
@@ -401,6 +404,7 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 				durationTo, durationTween, loop, tweenEasing);
 
 		pPartAnim->_partBoneMain = bone;
+		pPartAnim->_partWholeAnim = this;
 		_partAnimationList.push_back(std::make_pair(bone, pPartAnim));
 	}
 	else
@@ -551,7 +555,10 @@ void ArmatureAnimation::update(float dt)
         
         if(_movementEventTarget)
         {
-            (_movementEventTarget->*_movementEventCallFunc)(event->armature, event->movementType, event->movementID);
+			if (_movementEventCallFunc != nullptr)
+				(_movementEventTarget->*_movementEventCallFunc)(event->armature, event->movementType, event->movementID);
+			if (_partMovementEventCallFunc != nullptr)
+				(_movementEventTarget->*_partMovementEventCallFunc)(event->armature, event->partBoneName, event->movementType, event->movementID);
         }
         
         if (_movementEventListener)
@@ -582,7 +589,10 @@ void ArmatureAnimation::updateHandler()
             {
                 _nextFrameIndex = _durationTween;
 
-                movementEvent(_armature, START, _movementID.c_str());
+				if (_partWholeAnim != nullptr)
+					_partWholeAnim->partMovementEvent(_armature, getPartBoneName(), START, _movementID.c_str());
+				else
+					movementEvent(_armature, START, _movementID.c_str());
 
                 break;
             }
@@ -595,7 +605,10 @@ void ArmatureAnimation::updateHandler()
             _isComplete = true;
             _isPlaying = false;
 
-            movementEvent(_armature, COMPLETE, _movementID.c_str());
+			if (_partWholeAnim != nullptr)
+				_partWholeAnim->partMovementEvent(_armature, getPartBoneName(), COMPLETE, _movementID.c_str());
+			else
+				movementEvent(_armature, COMPLETE, _movementID.c_str());
 
             updateMovementList();
         }
@@ -607,7 +620,10 @@ void ArmatureAnimation::updateHandler()
             _currentFrame = _nextFrameIndex == 0 ? 0 : fmodf(_currentFrame, _nextFrameIndex);
             _nextFrameIndex = _durationTween > 0 ? _durationTween : 1;
 
-            movementEvent(_armature, START, _movementID.c_str());
+			if (_partWholeAnim != nullptr)
+				_partWholeAnim->partMovementEvent(_armature, getPartBoneName(), START, _movementID.c_str());
+			else
+				movementEvent(_armature, START, _movementID.c_str());
         }
         break;
         default:
@@ -616,7 +632,10 @@ void ArmatureAnimation::updateHandler()
             _currentFrame = fmodf(_currentFrame, _nextFrameIndex);
             _toIndex = 0;
 
-            movementEvent(_armature, LOOP_COMPLETE, _movementID.c_str());
+			if (_partWholeAnim != nullptr)
+				_partWholeAnim->partMovementEvent(_armature, getPartBoneName(), LOOP_COMPLETE, _movementID.c_str());
+			else
+				movementEvent(_armature, LOOP_COMPLETE, _movementID.c_str());
         }
         break;
         }
@@ -636,6 +655,12 @@ void ArmatureAnimation::setMovementEventCallFunc(Ref *target, SEL_MovementEventC
 {
     _movementEventTarget = target;
     _movementEventCallFunc = callFunc;
+}
+
+void ArmatureAnimation::setPartMovementEventCallFunc(cocos2d::Ref* target, SEL_PartMovementEventCallFunc callFunc)
+{
+	_movementEventTarget = target;
+	_partMovementEventCallFunc = callFunc;
 }
 
 void ArmatureAnimation::setFrameEventCallFunc(Ref *target, SEL_FrameEventCallFunc callFunc)
@@ -694,6 +719,18 @@ void ArmatureAnimation::movementEvent(Armature *armature, MovementEventType move
     }
 }
 
+void ArmatureAnimation::partMovementEvent(Armature* armature, const std::string& boneName, MovementEventType movementType, const std::string& movementID)
+{
+	if (_movementEventTarget && _partMovementEventCallFunc && movementType == _partRegEventType)
+	{
+		MovementEvent* movementEvent = new (std::nothrow) MovementEvent();
+		movementEvent->armature = armature;
+		movementEvent->movementType = movementType;
+		movementEvent->movementID = movementID;
+		movementEvent->partBoneName = boneName;
+		_movementEventQueue.push(movementEvent);
+	}
+}
 
 void ArmatureAnimation::updateMovementList()
 {

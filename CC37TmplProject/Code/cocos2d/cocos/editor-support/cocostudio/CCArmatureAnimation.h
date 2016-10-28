@@ -46,6 +46,7 @@ class Armature;
 class Bone;
 
 typedef void (cocos2d::Ref::*SEL_MovementEventCallFunc)(Armature *, MovementEventType, const std::string&);
+typedef void (cocos2d::Ref::*SEL_PartMovementEventCallFunc)(Armature*, const std::string&, MovementEventType, const std::string&);
 typedef void (cocos2d::Ref::*SEL_FrameEventCallFunc)(Bone *, const std::string&, int, int);
 
 #define movementEvent_selector(_SELECTOR) (cocostudio::SEL_MovementEventCallFunc)(&_SELECTOR)
@@ -64,6 +65,7 @@ struct MovementEvent
     Armature *armature;
     MovementEventType movementType;
     std::string movementID;
+	std::string partBoneName;
 };
 
 class  CC_STUDIO_DLL ArmatureAnimation : public ProcessBase
@@ -191,6 +193,7 @@ public:
      * To disconnect this event, just setMovementEventCallFunc(nullptr, nullptr);
      */
     CC_DEPRECATED_ATTRIBUTE void setMovementEventCallFunc(cocos2d::Ref *target, SEL_MovementEventCallFunc callFunc);
+	CC_DEPRECATED_ATTRIBUTE void setPartMovementEventCallFunc(cocos2d::Ref* target, SEL_PartMovementEventCallFunc callFunc);
 
     /**
      * Set armature's frame event callback function
@@ -269,6 +272,7 @@ protected:
      * Emit a movement event
      */
     void movementEvent(Armature *armature, MovementEventType movementType, const std::string& movementID);
+	void partMovementEvent(Armature* armature, const std::string& boneName, MovementEventType movementType, const std::string& movementID);
 
     void updateMovementList();
 
@@ -303,6 +307,7 @@ protected:
     
     std::queue<FrameEvent*> _frameEventQueue;
     std::queue<MovementEvent*> _movementEventQueue;
+	MovementEventType _partRegEventType;
 
     std::vector<std::string> _movementList;
     
@@ -312,6 +317,7 @@ protected:
     int _movementListDurationTo;
 
 	Bone* _partBoneMain;//in part
+	ArmatureAnimation* _partWholeAnim;//in part
 
     cocos2d::Ref *_userObject;
 protected:
@@ -322,6 +328,7 @@ protected:
      * @param const char*, Movement ID, also called Movement Name
      */
     SEL_MovementEventCallFunc _movementEventCallFunc;
+	SEL_PartMovementEventCallFunc _partMovementEventCallFunc;
 
     /**
      * FrameEvent CallFunc.

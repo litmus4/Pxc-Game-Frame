@@ -406,6 +406,8 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 		pPartAnim->_partBoneMain = bone;
 		pPartAnim->_partWholeAnim = this;
 		_partAnimationList.push_back(std::make_pair(bone, pPartAnim));
+
+		_armature->update(0);
 	}
 	else
 		pPartAnim->release();

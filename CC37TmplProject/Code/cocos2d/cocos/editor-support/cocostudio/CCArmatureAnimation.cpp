@@ -525,8 +525,10 @@ void ArmatureAnimation::update(float dt)
 	for (; itGarb != _partGarbageAnims.end(); itGarb++)
 	{
 		if ((*itGarb) != _partAnimationList.end() && (*itGarb)->second != nullptr)
+		{
 			(*itGarb)->second->release();
-		_partAnimationList.erase(*itGarb);
+			_partAnimationList.erase(*itGarb);
+		}
 	}
 	_partGarbageAnims.clear();
 

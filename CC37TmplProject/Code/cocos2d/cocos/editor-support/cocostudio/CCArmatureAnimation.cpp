@@ -519,6 +519,15 @@ void ArmatureAnimation::update(float dt)
 			itTween->first->update(dt);
 	}
 
+	std::vector<tPartAnimationList::iterator>::iterator itGarb = _partGarbageAnims.begin();
+	for (; itGarb != _partGarbageAnims.end(); itGarb++)
+	{
+		if ((*itGarb) != _partAnimationList.end() && (*itGarb)->second != nullptr)
+			(*itGarb)->second->release();
+		_partAnimationList.erase(*itGarb);
+	}
+	_partGarbageAnims.clear();
+
     if(_frameEventQueue.size() > 0 || _movementEventQueue.size() > 0)
     {
         _armature->retain();
@@ -606,7 +615,10 @@ void ArmatureAnimation::updateHandler()
             _isPlaying = false;
 
 			if (_partWholeAnim != nullptr)
+			{
 				_partWholeAnim->partMovementEvent(_armature, getPartBoneName(), COMPLETE, _movementID.c_str());
+				_partWholeAnim->onPartEnd(_partBoneMain);
+			}
 			else
 				movementEvent(_armature, COMPLETE, _movementID.c_str());
 
@@ -661,6 +673,11 @@ void ArmatureAnimation::setPartMovementEventCallFunc(cocos2d::Ref* target, SEL_P
 {
 	_movementEventTarget = target;
 	_partMovementEventCallFunc = callFunc;
+}
+
+void ArmatureAnimation::registerPartEventType(MovementEventType movementType)
+{
+	_partRegEventType = movementType;
 }
 
 void ArmatureAnimation::setFrameEventCallFunc(Ref *target, SEL_FrameEventCallFunc callFunc)
@@ -816,6 +833,25 @@ void ArmatureAnimation::playPartEveryBone(Bone* bone, Bone* boneMain, MovementDa
 	{
 		playPartEveryBone(static_cast<Bone*>(*iter), boneMain, movementData, processScale,
 				durationTo, durationTween, loop, tweenEasing);
+	}
+}
+
+void ArmatureAnimation::onPartEnd(Bone* bone)
+{
+	if (bone == nullptr)
+		return;
+
+	std::map<Tween*, Bone*>::iterator itTween = _partTweenMap.begin();
+	for (; itTween != _partTweenMap.end(); itTween++)
+	{
+		if (itTween->second == bone)
+			itTween->second = nullptr;
+	}
+	tPartAnimationList::iterator itAnim = _partAnimationList.begin();
+	for (; itAnim != _partAnimationList.end(); itAnim++)
+	{
+		if (itAnim->first == bone)
+			_partGarbageAnims.push_back(itAnim);
 	}
 }
 

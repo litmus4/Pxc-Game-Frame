@@ -195,6 +195,8 @@ public:
     CC_DEPRECATED_ATTRIBUTE void setMovementEventCallFunc(cocos2d::Ref *target, SEL_MovementEventCallFunc callFunc);
 	CC_DEPRECATED_ATTRIBUTE void setPartMovementEventCallFunc(cocos2d::Ref* target, SEL_PartMovementEventCallFunc callFunc);
 
+	void registerPartEventType(MovementEventType movementType);
+
     /**
      * Set armature's frame event callback function
      * To disconnect this event, just setFrameEventCallFunc(nullptr, nullptr);
@@ -281,6 +283,8 @@ protected:
 	void playPartEveryBone(Bone* bone, Bone* boneMain, MovementData* movementData, float processScale,
 				int durationTo, int durationTween, int loop, cocos2d::tweenfunc::TweenType tweenEasing);
 
+	void onPartEnd(Bone* bone);
+
     friend class Tween;
 protected:
     //! AnimationData save all MovementDatas this animation used.
@@ -315,6 +319,8 @@ protected:
     bool _movementListLoop;
     unsigned int _movementIndex;
     int _movementListDurationTo;
+
+	std::vector<tPartAnimationList::iterator> _partGarbageAnims;
 
 	Bone* _partBoneMain;//in part
 	ArmatureAnimation* _partWholeAnim;//in part

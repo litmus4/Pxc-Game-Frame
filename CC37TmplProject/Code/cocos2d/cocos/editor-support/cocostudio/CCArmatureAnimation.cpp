@@ -517,8 +517,7 @@ void ArmatureAnimation::update(float dt)
 	std::map<Tween*, Bone*>::iterator itTween = _partTweenMap.begin();
 	for (; itTween != _partTweenMap.end(); itTween++)
 	{
-		if (itTween->second != nullptr)
-			itTween->first->update(dt);
+		itTween->first->update(dt);
 	}
 
 	std::vector<tPartAnimationList::iterator>::iterator itGarb = _partGarbageAnims.begin();

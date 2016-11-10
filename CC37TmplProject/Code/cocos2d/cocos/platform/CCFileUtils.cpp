@@ -651,15 +651,37 @@ unsigned char* FileUtils::getFileData(const std::string& filename, const char* m
     {
         // read the file from hardware
         const std::string fullPath = fullPathForFilename(filename);
-        FILE *fp = fopen(getSuitableFOpen(fullPath).c_str(), mode);
-        CC_BREAK_IF(!fp);
+		zp::IReadFile* pZFile = NULL;
+		FILE *fp = NULL;
+		if (PxcUtil::zPackFOpen(fullPath.c_str(), &pZFile) == PxcUtil::EzPOpen_SimplePath)
+		{
+			fp = fopen(getSuitableFOpen(fullPath).c_str(), mode);
+		}
+        CC_BREAK_IF(!fp && !pZFile);
         
-        fseek(fp,0,SEEK_END);
-        *size = ftell(fp);
-        fseek(fp,0,SEEK_SET);
+		if (pZFile)
+		{
+			*size = pZFile->size();
+		}
+		else
+		{
+			fseek(fp, 0, SEEK_END);
+			*size = ftell(fp);
+			fseek(fp, 0, SEEK_SET);
+		}
+
         buffer = (unsigned char*)malloc(*size);
-        *size = fread(buffer,sizeof(unsigned char), *size,fp);
-        fclose(fp);
+
+		if (pZFile)
+		{
+			*size = pZFile->read(buffer, (zp::u32)(*size));
+			zPackFClose(pZFile);
+		}
+		else
+		{
+			*size = fread(buffer, sizeof(unsigned char), *size, fp);
+			fclose(fp);
+		}
     } while (0);
     
     if (!buffer)

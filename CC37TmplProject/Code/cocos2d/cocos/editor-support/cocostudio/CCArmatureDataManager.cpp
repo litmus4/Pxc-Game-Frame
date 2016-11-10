@@ -222,6 +222,19 @@ void ArmatureDataManager::addArmatureFileInfoAsync(const std::string& imagePath,
     addSpriteFrameFromFile(plistPath, imagePath, configFilePath);
 }
 
+void ArmatureDataManager::addArmatureFileInfoNoImage(const std::string& configFilePath, const std::string& plistPath)
+{
+	addRelativeData(configFilePath);
+
+	_autoLoadSpriteFile = false;
+	DataReaderHelper::getInstance()->addDataFromFile(configFilePath);
+
+	if (RelativeData* data = getRelativeData(configFilePath))
+	{
+		data->plistFiles.push_back(plistPath);
+	}
+}
+
 void ArmatureDataManager::addSpriteFrameFromFile(const std::string& plistPath, const std::string& imagePath, const std::string& configFilePath)
 {
     if (RelativeData *data = getRelativeData(configFilePath))

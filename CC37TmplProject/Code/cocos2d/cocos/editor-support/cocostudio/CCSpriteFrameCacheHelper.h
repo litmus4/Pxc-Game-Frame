@@ -30,9 +30,12 @@ THE SOFTWARE.
 #include <string>
 #include <map>
 #include <vector>
+#include <unordered_map>
 
 namespace cocos2d {
     class SpriteFrame;
+	class Value;
+	typedef std::unordered_map<std::string, Value> ValueMap;
 }
 
 namespace cocostudio {
@@ -57,6 +60,8 @@ public:
      */
     void addSpriteFrameFromFile(const std::string& plistPath, const std::string& imagePath);
     void removeSpriteFrameFromFile(const std::string& plistPath);
+
+	void retainSpriteFramesFromDictionary(cocos2d::ValueMap& dict, const std::string& plistPath);
 
 private:
     void retainSpriteFrames(const std::string& plistPath);

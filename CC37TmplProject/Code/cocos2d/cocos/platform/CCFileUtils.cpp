@@ -661,7 +661,7 @@ unsigned char* FileUtils::getFileData(const std::string& filename, const char* m
         
 		if (pZFile)
 		{
-			*size = pZFile->size();
+			*size = (ssize_t)pZFile->size();
 		}
 		else
 		{

@@ -170,17 +170,23 @@ bool HelloWorld::init()
 			origin.y + pPlayItemQueue->getContentSize().height / 2));
 		menu->addChild(pPlayItemQueue);
 	}
-	ArmatureDataManager::getInstance()->addArmatureFileInfo(
-		"Assets\\Armatures\\arm_part\\arm_part.png",
-		"Assets\\Armatures\\arm_part\\arm_part.plist",
-		"Assets\\Armatures\\arm_part\\arm_part.ExportJson");
+	std::string strPartImage = "Assets\\Armatures\\arm_part\\arm_part.png";
+	PxcUtil::zPackCombinePath(strPartImage);
+	std::string strPartPlist = "Assets\\Armatures\\arm_part\\arm_part.plist";
+	PxcUtil::zPackCombinePath(strPartPlist);
+	std::string strPartJson = "Assets\\Armatures\\arm_part\\arm_part.ExportJson";
+	PxcUtil::zPackCombinePath(strPartJson);
+	ArmatureDataManager::getInstance()->addArmatureFileInfo(strPartImage, strPartPlist, strPartJson);
 	m_pPartArm = Armature::create("NewAnimation1");
 	if (m_pPartArm)
 	{
 		m_pPartArm->setPosition(Vec2(origin.x + visibleSize.width - 60.0f, origin.y + visibleSize.height / 2));
 		this->addChild(m_pPartArm);
 
-		m_pPartArm->getAnimation()->playPart("up_small", "Layer2", 30);
+		m_pPartArm->getAnimation()->registerPartEventType(COMPLETE);
+		m_pPartArm->getAnimation()->setPartMovementEventCallFunc(this,
+			(SEL_PartMovementEventCallFunc)&HelloWorld::partMoveCompleteCallback);
+		m_pPartArm->getAnimation()->playPart("up_small", "Layer2");
 	}
 	//*/
     
@@ -238,5 +244,15 @@ void HelloWorld::menuPlayDebuffCallback(cocos2d::Ref* pSender, bool bForceStop)
 			CAssetsProducer::GetInstance()->AudioLine().SetBgm(true, 1.0f);
 		else
 			CAssetsProducer::GetInstance()->AudioLine().SetBgm(true, 0.2f);
+	}
+}
+
+void HelloWorld::partMoveCompleteCallback(Armature* pArmature, const std::string& strBoneName,
+							MovementEventType eEventType, const std::string& strAnimName)
+{
+	if (m_pPartArm && strAnimName == "up_small")
+	{
+		m_pPartArm->getAnimation()->playPart("up_big", "Layer1", 30);
+		m_pPartArm->getAnimation()->playPart("down_big", "Layer4");
 	}
 }

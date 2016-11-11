@@ -24,6 +24,8 @@ public:
 	virtual void update(float dt);
 
 	void menuPlayDebuffCallback(cocos2d::Ref* pSender, bool bForceStop);
+	void partMoveCompleteCallback(cocostudio::Armature* pArmature, const std::string& strBoneName,
+					cocostudio::MovementEventType eEventType, const std::string& strAnimName);
 
 private:
 	CSpriteProduct* m_pBigProd;

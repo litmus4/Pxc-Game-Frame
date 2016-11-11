@@ -2,6 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "cocostudio/CocoStudio.h"
 
 class CSpriteProduct;
 class CAudioProduct;
@@ -31,6 +32,7 @@ private:
 	bool m_bSmallProdAdded;
 	CAudioProduct* m_pDiscoProd;
 	CAudioProduct* m_pDebuffProd;
+	cocostudio::Armature* m_pPartArm;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

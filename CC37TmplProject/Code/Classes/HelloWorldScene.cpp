@@ -14,6 +14,7 @@
 //*/
 
 USING_NS_CC;
+using namespace cocostudio;
 
 Scene* HelloWorld::createScene()
 {
@@ -166,8 +167,20 @@ bool HelloWorld::init()
 			CC_CALLBACK_1(HelloWorld::menuPlayDebuffCallback, this, false));
 		pPlayItemQueue->setPosition(Vec2(
 			origin.x + visibleSize.width - fRightWidth - pPlayItemQueue->getContentSize().width / 2,
-			origin.y +pPlayItemQueue->getContentSize().height / 2));
+			origin.y + pPlayItemQueue->getContentSize().height / 2));
 		menu->addChild(pPlayItemQueue);
+	}
+	ArmatureDataManager::getInstance()->addArmatureFileInfo(
+		"Assets\\Armatures\\arm_part\\arm_part.png",
+		"Assets\\Armatures\\arm_part\\arm_part.plist",
+		"Assets\\Armatures\\arm_part\\arm_part.ExportJson");
+	m_pPartArm = Armature::create("NewAnimation1");
+	if (m_pPartArm)
+	{
+		m_pPartArm->setPosition(Vec2(origin.x + visibleSize.width - 60.0f, origin.y + visibleSize.height / 2));
+		this->addChild(m_pPartArm);
+
+		m_pPartArm->getAnimation()->playPart("up_small", "Layer2", 30);
 	}
 	//*/
     

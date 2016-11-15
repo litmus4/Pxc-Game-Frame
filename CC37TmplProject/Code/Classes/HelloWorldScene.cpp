@@ -180,7 +180,7 @@ bool HelloWorld::init()
 	m_pPartArm = Armature::create("NewAnimation1");
 	if (m_pPartArm)
 	{
-		m_pPartArm->setPosition(Vec2(origin.x + visibleSize.width - 100.0f, origin.y + visibleSize.height / 2));
+		m_pPartArm->setPosition(Vec2(origin.x + visibleSize.width - 120.0f, origin.y + visibleSize.height / 2));
 		this->addChild(m_pPartArm);
 
 		m_pPartArm->getAnimation()->registerPartEventType(COMPLETE);

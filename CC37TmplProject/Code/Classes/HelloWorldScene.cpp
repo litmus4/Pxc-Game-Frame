@@ -127,7 +127,7 @@ bool HelloWorld::init()
 	m_pBigProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(1, CBaseProduct::EClonedData, true);
 	if (m_pBigProd)
 	{
-		Vec4 v4Trans(origin.x + visibleSize.width / 2, origin.y + 93.75f, 0.0f, 1.0f);
+		Vec4 v4Trans(origin.x + visibleSize.width / 2, origin.y + 200.0f, 0.0f, 1.0f);
 		m_pBigProd->SetTransform(v4Trans);
 	}
 	m_pSmallProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(2, CBaseProduct::EClonedData, true);
@@ -180,7 +180,7 @@ bool HelloWorld::init()
 	m_pPartArm = Armature::create("NewAnimation1");
 	if (m_pPartArm)
 	{
-		m_pPartArm->setPosition(Vec2(origin.x + visibleSize.width - 60.0f, origin.y + visibleSize.height / 2));
+		m_pPartArm->setPosition(Vec2(origin.x + visibleSize.width - 100.0f, origin.y + visibleSize.height / 2));
 		this->addChild(m_pPartArm);
 
 		m_pPartArm->getAnimation()->registerPartEventType(COMPLETE);

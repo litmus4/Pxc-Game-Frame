@@ -35,6 +35,7 @@ private:
 	CAudioProduct* m_pDiscoProd;
 	CAudioProduct* m_pDebuffProd;
 	cocostudio::Armature* m_pPartArm;
+	float m_fPartArmTime;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

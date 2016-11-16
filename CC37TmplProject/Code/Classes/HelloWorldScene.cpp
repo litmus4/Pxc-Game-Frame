@@ -123,6 +123,8 @@ bool HelloWorld::init()
 	m_bSmallProdAdded = false;
 	m_pDiscoProd = NULL;
 	m_pDebuffProd = NULL;
+	m_pPartArm = NULL;
+	m_fPartArmTime = -1.0f;
 
 	m_pBigProd = CAssetsProducer::GetInstance()->SpriteLine().Fetch(1, CBaseProduct::EClonedData, true);
 	if (m_pBigProd)
@@ -187,6 +189,7 @@ bool HelloWorld::init()
 		m_pPartArm->getAnimation()->setPartMovementEventCallFunc(this,
 			(SEL_PartMovementEventCallFunc)&HelloWorld::partMoveCompleteCallback);
 		m_pPartArm->getAnimation()->playPart("up_small", "Layer2");
+		m_fPartArmTime = 0.0f;
 	}
 	//*/
     
@@ -233,6 +236,16 @@ void HelloWorld::update(float dt)
 		m_pSmallProd->GetAnimate("count")->Play();
 		m_bSmallProdAdded = true;
 	}
+	if (m_pPartArm && m_fPartArmTime >= -0.5f)
+	{
+		m_fPartArmTime += dt;
+		if (m_fPartArmTime >= 1.0f)
+		{
+			m_pPartArm->getAnimation()->playPart("up_big", "Layer1", 30);
+			m_pPartArm->getAnimation()->playPart("down_big", "Layer4");
+			m_fPartArmTime = -1.0f;
+		}
+	}
 }
 
 void HelloWorld::menuPlayDebuffCallback(cocos2d::Ref* pSender, bool bForceStop)
@@ -250,9 +263,8 @@ void HelloWorld::menuPlayDebuffCallback(cocos2d::Ref* pSender, bool bForceStop)
 void HelloWorld::partMoveCompleteCallback(Armature* pArmature, const std::string& strBoneName,
 							MovementEventType eEventType, const std::string& strAnimName)
 {
-	if (m_pPartArm && strAnimName == "up_small")
+	if (m_pPartArm && strAnimName == "down_big")
 	{
-		m_pPartArm->getAnimation()->playPart("up_big", "Layer1", 30);
-		m_pPartArm->getAnimation()->playPart("down_big", "Layer4");
+		m_pPartArm->getAnimation()->playPart("up_big", "Layer4", 30);
 	}
 }

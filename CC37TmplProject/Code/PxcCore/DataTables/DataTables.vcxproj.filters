@@ -39,6 +39,12 @@
     <ClInclude Include="OtherTable\OtherTableCenter.h">
       <Filter>OtherTable</Filter>
     </ClInclude>
+    <ClInclude Include="TextTable\CaptionRow.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextTable\StoryTextRow.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
@@ -55,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="LoadDefines.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\CaptionRow.cpp">
+      <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\StoryTextRow.cpp">
+      <Filter>TextTable</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

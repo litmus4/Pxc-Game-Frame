@@ -92,6 +92,8 @@
     <ClInclude Include="LoadDefines.h" />
     <ClInclude Include="OtherTable\GlobalParamRow.h" />
     <ClInclude Include="OtherTable\OtherTableCenter.h" />
+    <ClInclude Include="TextTable\CaptionRow.h" />
+    <ClInclude Include="TextTable\StoryTextRow.h" />
     <ClInclude Include="TextTable\TextRow.h" />
     <ClInclude Include="TextTable\TextTableCenter.h" />
   </ItemGroup>
@@ -99,6 +101,8 @@
     <ClCompile Include="LoadDefines.cpp" />
     <ClCompile Include="OtherTable\GlobalParamRow.cpp" />
     <ClCompile Include="OtherTable\OtherTableCenter.cpp" />
+    <ClCompile Include="TextTable\CaptionRow.cpp" />
+    <ClCompile Include="TextTable\StoryTextRow.cpp" />
     <ClCompile Include="TextTable\TextRow.cpp" />
     <ClCompile Include="TextTable\TextTableCenter.cpp" />
   </ItemGroup>

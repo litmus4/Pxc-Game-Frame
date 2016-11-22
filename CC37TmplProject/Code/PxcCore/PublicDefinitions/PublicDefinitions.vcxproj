@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreConstantsDef.h" />
+    <ClInclude Include="Globalization.h" />
     <ClInclude Include="SpecialFileDef.h" />
   </ItemGroup>
   <ItemGroup>

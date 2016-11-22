@@ -1,5 +1,6 @@
 #pragma once
 #include "PxcUtil/Singleton.h"
+#include "PublicDefinitions/Globalization.h"
 #include "TextRow.h"
 #include "CaptionRow.h"
 #include "StoryTextRow.h"
@@ -9,7 +10,7 @@ class CTextTableCenter : public PxcUtil::Singleton<CTextTableCenter>
 DECLARE_SINGLETON_CONSTRUCTOR(CTextTableCenter)
 public:
 	~CTextTableCenter();
-	bool Init(bool bUseCaptionTags = false);
+	bool Init(GlobalDef::ELanguage eLanguage, bool bUseCaptionTags = false);
 	void Release();
 
 	CTextRow* GetTextRow(int iID);

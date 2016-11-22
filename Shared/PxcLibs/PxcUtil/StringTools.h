@@ -10,6 +10,10 @@ namespace StringTools
 
 std::wstring StrToWstr(const std::string& str);
 std::string WstrToStr(const std::wstring& wstr);
+std::wstring Utf8ToWstr(const std::string& stru);
+std::string WstrToUtf8(const std::wstring& wstr);
+std::string StrToUtf8(const std::string& str);
+std::string Utf8ToStr(const std::string& stru);
 
 template<typename T>
 inline std::string BasicToStr(const T& basic)

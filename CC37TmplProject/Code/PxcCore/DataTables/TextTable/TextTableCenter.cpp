@@ -14,7 +14,7 @@ CTextTableCenter::~CTextTableCenter()
 bool CTextTableCenter::Init(GlobalDef::ELanguage eLanguage, bool bUseCaptionTags)
 {
 	std::string strFolder = "TextTable";
-	strFolder += GlobalDef::g_szLanguageFolders[eLanguage];
+	strFolder += GlobalDef::GetLanguageFolder(eLanguage);
 
 	LOADTABLE(Text, strFolder, m_mapTexts, m_iID)
 	LOADTABLE(Caption, strFolder, m_mapCaptions, m_iID)

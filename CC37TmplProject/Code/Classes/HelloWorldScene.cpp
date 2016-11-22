@@ -79,7 +79,7 @@ bool HelloWorld::init()
 	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
 	PxcUtil::zPackAddPathAim("Packs\\Assets.zpk", "Assets");
 #endif
-	CTextTableCenter::GetInstance()->Init(GlobalDef::ELanguage_EN_US);
+	CTextTableCenter::GetInstance()->Init(GlobalDef::ELanguage_ZH_CN);
 	COtherTableCenter::GetInstance()->Init();
 	CAssetsProducer::GetInstance()->Init("Assets");
 	PxcUtil::zPackRelease();

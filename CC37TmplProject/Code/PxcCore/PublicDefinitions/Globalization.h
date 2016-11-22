@@ -10,10 +10,14 @@ enum ELanguage
 	ELanguage_ZH_TW,
 };
 
-const char* g_szLanguageFolders[] = {
-	"\\zh_cn",
-	"\\en_us",
-	"\\zh_tw",
-};
+inline const char* GetLanguageFolder(ELanguage eLanguage)
+{
+	static const char* szLanguageFolders[] = {
+		"\\zh_cn",
+		"\\en_us",
+		"\\zh_tw",
+	};
+	return szLanguageFolders[eLanguage];
+}
 
 }

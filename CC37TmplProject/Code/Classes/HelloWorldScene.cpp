@@ -97,7 +97,7 @@ bool HelloWorld::init()
 			strText5 += vecValues[0];
 	}
 	//*/
-    auto label = Label::createWithTTF(strText5, "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF(strText5, "fonts/msyh.ttf", 24);
     
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width/2,

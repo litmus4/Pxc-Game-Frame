@@ -41,6 +41,8 @@ THE SOFTWARE.
 #include "base/CCValue.h"
 #include "base/CCMap.h"
 
+#include "PxcUtil/Scattered.h"
+
 NS_CC_BEGIN
 
 class Sprite;
@@ -214,7 +216,7 @@ public:
 
 protected:
     // MARMALADE: Made this protected not private, as deriving from this class is pretty useful
-    SpriteFrameCache(){}
+	SpriteFrameCache(){ _plock = new PxcUtil::Lock(); }
 
     /*Adds multiple Sprite Frames with a dictionary. The texture will be associated with the created sprite frames.
      */
@@ -229,6 +231,8 @@ protected:
     Map<std::string, SpriteFrame*> _spriteFrames;
     ValueMap _spriteFramesAliases;
     std::set<std::string>*  _loadedFileNames;
+
+	PxcUtil::Lock* _plock;
 };
 
 // end of _2d group

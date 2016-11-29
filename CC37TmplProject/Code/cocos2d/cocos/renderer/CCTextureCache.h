@@ -41,6 +41,8 @@ THE SOFTWARE.
 #include "renderer/CCTexture2D.h"
 #include "platform/CCImage.h"
 
+#include "PxcUtil/Scattered.h"
+
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     #include "platform/CCImage.h"
     #include <list>
@@ -240,6 +242,8 @@ protected:
     int _asyncRefCount;
 
     std::unordered_map<std::string, Texture2D*> _textures;
+
+	PxcUtil::Lock* _plock;
 };
 
 #if CC_ENABLE_CACHE_TEXTURE_DATA

@@ -526,10 +526,12 @@ void FileUtils::setDelegate(FileUtils *delegate)
 FileUtils::FileUtils()
     : _writablePath("")
 {
+	_plock = new PxcUtil::Lock();
 }
 
 FileUtils::~FileUtils()
 {
+	delete _plock;
 }
 
 
@@ -543,6 +545,7 @@ bool FileUtils::init()
 
 void FileUtils::purgeCachedEntries()
 {
+	CRI_SEC(*_plock)
     _fullPathCache.clear();
 }
 
@@ -639,6 +642,7 @@ std::string FileUtils::getStringFromFile(const std::string& filename)
 
 Data FileUtils::getDataFromFile(const std::string& filename)
 {
+	CRI_SEC(*_plock)
     return getData(filename, false);
 }
 
@@ -781,6 +785,7 @@ std::string FileUtils::getPathForFilename(const std::string& filename, const std
 
 std::string FileUtils::fullPathForFilename(const std::string &filename) const
 {
+	CRI_SEC(*_plock)
     if (filename.empty())
     {
         return "";
@@ -840,6 +845,7 @@ std::string FileUtils::fullPathFromRelativeFile(const std::string &filename, con
 
 void FileUtils::setSearchResolutionsOrder(const std::vector<std::string>& searchResolutionsOrder)
 {
+	CRI_SEC(*_plock)
     bool existDefault = false;
     _fullPathCache.clear();
     _searchResolutionsOrderArray.clear();
@@ -900,6 +906,7 @@ void FileUtils::setDefaultResourceRootPath(const std::string& path)
 
 void FileUtils::setSearchPaths(const std::vector<std::string>& searchPaths)
 {
+	CRI_SEC(*_plock)
     bool existDefaultRootPath = false;
     
     _fullPathCache.clear();
@@ -952,6 +959,7 @@ void FileUtils::addSearchPath(const std::string &searchpath,const bool front)
 
 void FileUtils::setFilenameLookupDictionary(const ValueMap& filenameLookupDict)
 {
+	CRI_SEC(*_plock)
     _fullPathCache.clear();    
     _filenameLookupDict = filenameLookupDict;
 }
@@ -1051,6 +1059,7 @@ bool FileUtils::isDirectoryExistInternal(const std::string& dirPath) const
 
 bool FileUtils::isDirectoryExist(const std::string& dirPath) const
 {
+	CRI_SEC(*_plock)
     CCASSERT(!dirPath.empty(), "Invalid path");
     
     if (isAbsolutePath(dirPath))

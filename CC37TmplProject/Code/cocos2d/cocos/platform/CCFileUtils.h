@@ -34,6 +34,8 @@ THE SOFTWARE.
 #include "base/CCValue.h"
 #include "base/CCData.h"
 
+#include "PxcUtil/Scattered.h"
+
 NS_CC_BEGIN
 
 /**
@@ -518,6 +520,8 @@ protected:
      * Writable path.
      */
     std::string _writablePath;
+
+	PxcUtil::Lock* _plock;
 
     /**
      *  The singleton pointer of FileUtils.

@@ -289,6 +289,7 @@ std::string FileUtilsWin32::getStringFromFile(const std::string& filename)
     
 Data FileUtilsWin32::getDataFromFile(const std::string& filename)
 {
+	CRI_SEC(*_plock)
     return getData(filename, false);
 }
 

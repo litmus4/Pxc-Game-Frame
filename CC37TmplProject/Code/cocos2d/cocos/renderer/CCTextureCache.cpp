@@ -66,6 +66,7 @@ TextureCache::TextureCache()
 , _needQuit(false)
 , _asyncRefCount(0)
 {
+	_plock = new PxcUtil::Lock();
 }
 
 TextureCache::~TextureCache()
@@ -76,6 +77,8 @@ TextureCache::~TextureCache()
         (it->second)->release();
 
     CC_SAFE_DELETE(_loadingThread);
+
+	delete _plock;
 }
 
 void TextureCache::destroyInstance()
@@ -98,6 +101,7 @@ std::string TextureCache::getDescription() const
 
 void TextureCache::addImageAsync(const std::string &path, const std::function<void(Texture2D*)>& callback)
 {
+	CRI_SEC(*_plock)
     Texture2D *texture = nullptr;
 
     std::string fullpath = FileUtils::getInstance()->fullPathForFilename(path);
@@ -201,6 +205,7 @@ void TextureCache::unbindAllImageAsync()
 
 void TextureCache::loadImage()
 {
+	CRI_SEC(*_plock)
     AsyncStruct *asyncStruct = nullptr;
 
     while (true)
@@ -284,6 +289,7 @@ void TextureCache::loadImage()
 
 void TextureCache::addImageAsyncCallBack(float dt)
 {
+	CRI_SEC(*_plock)
     // the image is generated in loading thread
     std::deque<ImageInfo*> *imagesQueue = _imageInfoQueue;
 
@@ -351,6 +357,7 @@ void TextureCache::addImageAsyncCallBack(float dt)
 
 Texture2D * TextureCache::addImage(const std::string &path)
 {
+	CRI_SEC(*_plock)
     Texture2D * texture = nullptr;
     Image* image = nullptr;
     // Split up directory and filename
@@ -416,6 +423,7 @@ void TextureCache::parseNinePatchImage(cocos2d::Image *image, cocos2d::Texture2D
 
 Texture2D* TextureCache::addImage(Image *image, const std::string &key, bool spFlag)
 {
+	CRI_SEC(*_plock)
 	if (!spFlag)
 		CCASSERT(image != nullptr, "TextureCache: image MUST not be nil");
 
@@ -460,6 +468,7 @@ Texture2D* TextureCache::addImage(Image *image, const std::string &key, bool spF
 
 bool TextureCache::reloadTexture(const std::string& fileName)
 {
+	CRI_SEC(*_plock)
     Texture2D * texture = nullptr;
     Image * image = nullptr;
 
@@ -501,6 +510,7 @@ bool TextureCache::reloadTexture(const std::string& fileName)
 
 void TextureCache::removeAllTextures()
 {
+	CRI_SEC(*_plock)
     for( auto it=_textures.begin(); it!=_textures.end(); ++it ) {
         (it->second)->release();
     }
@@ -509,6 +519,7 @@ void TextureCache::removeAllTextures()
 
 void TextureCache::removeUnusedTextures()
 {
+	CRI_SEC(*_plock)
     for( auto it=_textures.cbegin(); it!=_textures.cend(); /* nothing */) {
         Texture2D *tex = it->second;
         if( tex->getReferenceCount() == 1 ) {
@@ -525,6 +536,7 @@ void TextureCache::removeUnusedTextures()
 
 void TextureCache::removeTexture(Texture2D* texture)
 {
+	CRI_SEC(*_plock)
     if( ! texture )
     {
         return;
@@ -542,6 +554,7 @@ void TextureCache::removeTexture(Texture2D* texture)
 
 void TextureCache::removeTextureForKey(const std::string &textureKeyName)
 {
+	CRI_SEC(*_plock)
     std::string key = textureKeyName;
     auto it = _textures.find(key);
 
@@ -558,6 +571,7 @@ void TextureCache::removeTextureForKey(const std::string &textureKeyName)
 
 Texture2D* TextureCache::getTextureForKey(const std::string &textureKeyName) const
 {
+	CRI_SEC(*_plock)
     std::string key = textureKeyName;
     auto it = _textures.find(key);
 
@@ -581,6 +595,7 @@ void TextureCache::reloadAllTextures()
 
 const std::string TextureCache::getTextureFilePath( cocos2d::Texture2D *texture )const
 {
+	CRI_SEC(*_plock)
     for(auto& item : _textures)
     {
         if(item.second == texture)
@@ -602,6 +617,7 @@ void TextureCache::waitForQuit()
 
 std::string TextureCache::getCachedTextureInfo() const
 {
+	CRI_SEC(*_plock)
     std::string buffer;
     char buftmp[4096];
 

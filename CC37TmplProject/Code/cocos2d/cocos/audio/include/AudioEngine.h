@@ -36,6 +36,8 @@
 #include "platform/CCPlatformMacros.h"
 #include "Export.h"
 
+#include "PxcUtil/Scattered.h"
+
 #ifdef ERROR
 #undef ERROR
 #endif // ERROR
@@ -341,6 +343,8 @@ protected:
     static ProfileHelper* _defaultProfileHelper;
     
     static AudioEngineImpl* _audioEngineImpl;
+
+	static PxcUtil::Lock _lock;
     
     friend class AudioEngineImpl;
 };

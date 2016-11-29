@@ -30,6 +30,8 @@
 #include "platform/CCFileUtils.h"
 #include "base/ccUtils.h"
 
+#include "PxcUtil/Scattered.h"
+
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 #include "android/AudioEngine-inl.h"
 #elif CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC

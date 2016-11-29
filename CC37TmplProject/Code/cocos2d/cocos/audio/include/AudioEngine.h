@@ -36,11 +36,14 @@
 #include "platform/CCPlatformMacros.h"
 #include "Export.h"
 
-#include "PxcUtil/Scattered.h"
-
 #ifdef ERROR
 #undef ERROR
 #endif // ERROR
+
+namespace PxcUtil
+{
+	class Lock;
+}
 
 /**
  * @addtogroup audio

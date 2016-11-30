@@ -1,6 +1,7 @@
 #include "zPackEx.h"
 #include "StringTools.h"
 #include "FileManage.h"
+#include "Scattered.h"
 #include <map>
 
 namespace PxcUtil
@@ -10,9 +11,11 @@ std::map<std::string, zp::IPackage*> g_mapOpenZPacks;
 bool g_bZPackPath = false;
 bool g_bZPackPathFileFirst = true;
 std::map<std::string, std::string> g_mapZPackPathAims;
+Lock g_ZPackLock;
 
 EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
 {
+	CRI_SEC(g_ZPackLock)
 	std::string strComboPath = szComboPath;
 	int ipos = strComboPath.find_first_of('#');
 	if (ipos == std::string::npos)
@@ -46,6 +49,7 @@ EzPOpen_Result zPackFOpen(const char* szComboPath, zp::IReadFile** ppReadFile)
 
 void zPackRelease()
 {
+	CRI_SEC(g_ZPackLock)
 	std::map<std::string, zp::IPackage*>::iterator iter = g_mapOpenZPacks.begin();
 	for (; iter != g_mapOpenZPacks.end(); iter++)
 	{
@@ -62,6 +66,7 @@ void zPackPathSwitch(bool bFlag, bool bFileFirst)
 
 void zPackAddPathAim(const char* szPack, const char* szPath)
 {
+	CRI_SEC(g_ZPackLock)
 	if (!g_bZPackPath)
 		return;
 
@@ -75,6 +80,7 @@ void zPackAddPathAim(const char* szPack, const char* szPath)
 
 bool zPackCombinePath(std::string& strPath)
 {
+	CRI_SEC(g_ZPackLock)
 	if (!g_bZPackPath)
 		return false;
 	if (g_bZPackPathFileFirst)
@@ -96,6 +102,7 @@ bool zPackCombinePath(std::string& strPath)
 
 void zPackClearPathAims()
 {
+	CRI_SEC(g_ZPackLock)
 	g_mapZPackPathAims.clear();
 }
 

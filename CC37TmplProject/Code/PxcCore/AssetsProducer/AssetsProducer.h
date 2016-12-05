@@ -27,8 +27,8 @@ private:
 
 class CAssetsProducer : public PxcUtil::Singleton<CAssetsProducer>
 {
+DECLARE_SINGLETON_CONSTRUCTOR(CAssetsProducer)
 public:
-	CAssetsProducer();
 	~CAssetsProducer();
 
 	bool Init(std::string strPath);

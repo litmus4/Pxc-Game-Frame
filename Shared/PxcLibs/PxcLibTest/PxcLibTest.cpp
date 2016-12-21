@@ -164,9 +164,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	std::cout << "=====================" << std::endl;
 	ExactTime::Init();
 	std::cout << "ExactTime: " << ExactTime::GetSysTick();
-	std::cout << ", " << ExactTime::GetTime(ExactTime::ELevel_Second);
-	std::cout << ", " << ExactTime::GetTime(ExactTime::ELevel_Milli);
-	std::cout << ", " << ExactTime::GetTime(ExactTime::ELevel_Micro) << std::endl;
+	std::cout << ", " << ExactTime::GetPerfTime(ExactTime::ELevel_Second);
+	std::cout << ", " << ExactTime::GetPerfTime(ExactTime::ELevel_Milli);
+	std::cout << ", " << ExactTime::GetPerfTime(ExactTime::ELevel_Micro);
+	float fTime = ExactTime::GetFloatTime();
+	std::cout << ", " << fTime << std::endl;
 	DateTimeInfo info;
 	long long lDateTime = DateTime::GetDateTime();
 	std::cout << "DateTime: " << lDateTime;

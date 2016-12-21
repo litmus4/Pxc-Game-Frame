@@ -5,6 +5,8 @@
 #include <cassert>
 #include <algorithm>
 
+#pragma comment(lib, "winmm.lib")
+
 namespace PxcUtil
 {
 
@@ -24,11 +26,36 @@ double ExactTime::GetSysTick()
 	return (1.0 / s_lFrequency);
 }
 
-unsigned long long ExactTime::GetTime(ELevel_Type eLevel)
+unsigned long long ExactTime::GetPerfTime(ELevel_Type eLevel)
 {
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	return (unsigned long long)((double)li.QuadPart / s_lFrequency * pow(1000.0, (int)eLevel));
+}
+
+float ExactTime::GetFloatTime(ELevel_Type eLevel, bool bPerf)
+{
+	if (eLevel == ELevel_Micro)
+		return (float)GetPerfTime(eLevel);
+
+	if (bPerf)
+	{
+		unsigned long long ulPerfTime = GetPerfTime(ELevel_Micro);
+		int iFigure = (eLevel == ELevel_Milli ? 1000 : 1000 * 1000);
+		unsigned long long ulInt = ulPerfTime / iFigure;
+		int iDec = (int)(ulPerfTime % iFigure);
+		return (float)ulInt + (float)iDec / (float)iFigure;
+	}
+	else
+	{
+		DWORD dwSysTime = timeGetTime();
+		if (eLevel == ELevel_Milli)
+			return (float)dwSysTime;
+
+		DWORD dwInt = dwSysTime / 1000;
+		int iDec = (int)(dwSysTime % 1000);
+		return (float)dwInt + (float)iDec / (float)1000;
+	}
 }
 
 //====================================================================

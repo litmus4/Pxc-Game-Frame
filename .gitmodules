@@ -1,0 +1,3 @@
+[submodule "Shared/PxcLibsRTTest"]
+	path = Shared/PxcLibsRTTest
+	url = https://github.com/litmus4/PxcLibsRTTest.git

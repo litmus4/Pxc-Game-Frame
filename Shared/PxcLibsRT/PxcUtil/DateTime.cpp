@@ -8,6 +8,27 @@
 namespace PxcUtil
 {
 
+unsigned long long spaceGetTime(bool bCut)
+{
+	FILETIME fileTime;
+	GetSystemTimeAsFileTime(&fileTime);
+	ULARGE_INTEGER uli;
+	uli.HighPart = fileTime.dwHighDateTime;
+	uli.LowPart = fileTime.dwLowDateTime;
+	if (bCut)
+	{
+		static ULONGLONG ulCut = 0;
+		if (ulCut == 0)
+		{
+			ULONGLONG ulDiff = 1000 * 1000 * 10;
+			ulDiff *= 10000;
+			ulCut = uli.QuadPart - ulDiff;
+		}
+		uli.QuadPart -= ulCut;
+	}
+	return uli.QuadPart;
+}
+
 long long ExactTime::s_lFrequency = 0;
 
 void ExactTime::Init()
@@ -24,11 +45,38 @@ double ExactTime::GetSysTick()
 	return (1.0 / s_lFrequency);
 }
 
-unsigned long long ExactTime::GetTime(ELevel_Type eLevel)
+unsigned long long ExactTime::GetPerfTime(ELevel_Type eLevel)
 {
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	return (unsigned long long)((double)li.QuadPart / s_lFrequency * pow(1000.0, (int)eLevel));
+}
+
+float ExactTime::GetFloatTime(ELevel_Type eLevel, bool bPerf)
+{
+	if (bPerf)
+	{
+		unsigned long long ulPerfTime = GetPerfTime(ELevel_Micro);
+		if (eLevel == ELevel_Micro)
+			return (float)ulPerfTime;
+
+		int iFigure = (eLevel == ELevel_Milli ? 1000 : 1000 * 1000);
+		unsigned long long ulInt = ulPerfTime / iFigure;
+		int iDec = (int)(ulPerfTime % iFigure);
+		return (float)ulInt + (float)iDec / (float)iFigure;
+	}
+	else
+	{
+		unsigned long long ulSysTime = spaceGetTime();
+		int iFigure = 1000 * 1000 * 10;
+		if (eLevel == ELevel_Milli)
+			iFigure = 1000 * 10;
+		else if (eLevel == ELevel_Micro)
+			iFigure = 10;
+		unsigned long long ulInt = ulSysTime / iFigure;
+		int iDec = (int)(ulSysTime % iFigure);
+		return (float)ulInt + (float)iDec / (float)iFigure;
+	}
 }
 
 //====================================================================

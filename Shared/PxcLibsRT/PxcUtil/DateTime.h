@@ -5,6 +5,8 @@
 namespace PxcUtil
 {
 
+unsigned long long spaceGetTime(bool bCut = true);
+
 class ExactTime
 {
 public:
@@ -18,7 +20,8 @@ public:
 public:
 	static void Init();
 	static double GetSysTick();
-	static unsigned long long GetTime(ELevel_Type eLevel = ELevel_Second);
+	static unsigned long long GetPerfTime(ELevel_Type eLevel = ELevel_Second);
+	static float GetFloatTime(ELevel_Type eLevel = ELevel_Second, bool bPerf = false);
 
 private:
 	static long long s_lFrequency;

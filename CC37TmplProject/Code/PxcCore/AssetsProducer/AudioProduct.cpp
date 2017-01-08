@@ -293,25 +293,25 @@ void CAudioProduct::OnLoadComplete()
 
 CAudioProduct::Ident& CAudioProduct::CreateSharedSound(CAudioProduct* pLink)
 {
-	//WAIT
+	//WAITJK
 	return m_Ident;
 }
 
 CAudioProduct::Ident& CAudioProduct::ReloadRelation(Ident& ident, CAudioProduct* pLink)
 {
-	//WAIT
+	//WAITJK
 	return m_Ident;
 }
 
 bool CAudioProduct::CheckAndCutLink(Ident& ident, CAudioProduct* pLink)
 {
-	//WAIT
+	//WAITJK
 	return false;
 }
 
 CAudioProduct::Ident& CAudioProduct::SelectBestSharedSound(bool pbMax, CAudioProduct* pRobLink)
 {
-	//WAIT
+	//WAITJK
 	return m_Ident;
 }
 

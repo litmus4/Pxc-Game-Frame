@@ -121,7 +121,7 @@ CBaseProduct* CAnimateProduct::Clone()
 
 void CAnimateProduct::Update(float dt)
 {
-	//TODO
+	//TODOJK
 }
 
 bool CAnimateProduct::HaveSubThreadReader()
@@ -235,5 +235,5 @@ void CAnimateProduct::OnPlayEnd(bool bManual)
 	m_pPlayingAnimate = NULL;
 	m_pPlayingSeq = NULL;
 
-	//TODO
+	//TODOJK
 }

@@ -787,7 +787,7 @@ void ArmatureAnimation::updateMovementList()
 void ArmatureAnimation::playPartEveryBone(Bone* bone, Bone* boneMain, MovementData* movementData, float processScale,
 								int durationTo, int durationTween, int loop, tweenfunc::TweenType tweenEasing)
 {
-	//TODO 换成stopPart保证停止？
+	//TODOJK 换成stopPart保证停止？
 	tPartAnimationList::iterator itAnim = _partAnimationList.begin();
 	while (itAnim != _partAnimationList.end())
 	{

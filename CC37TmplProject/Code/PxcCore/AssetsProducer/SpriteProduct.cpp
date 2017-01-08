@@ -120,7 +120,7 @@ void CSpriteProduct::SetLine(CSpriteLine* pLine)
 
 void CSpriteProduct::Update(float dt)
 {
-	//TODO
+	//TODOJK
 }
 
 void CSpriteProduct::Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags)

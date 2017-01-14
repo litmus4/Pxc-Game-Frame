@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <wrl.h>
+//#include <wrl.h>
 
 namespace PxcUtil
 {
@@ -60,7 +60,12 @@ public:
 	void SetThreadName(std::string ThreadName);
 	void SetThreadName(const char* ThreadName);
 
+	//UWP中才能使用
+	bool IsCanceled();
+
 private:
+	Windows::Foundation::IAsyncAction^ m_pWorkItem;
+	Windows::System::Threading::Core::PreallocatedWorkItem^ m_pPreWorkItem;
 	Runnable* const m_pRunnable;
 	std::string m_ThreadName;
 	volatile bool m_bRun;

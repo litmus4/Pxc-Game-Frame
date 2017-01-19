@@ -8,19 +8,12 @@ using namespace Windows::System::Threading::Core;
 namespace PxcUtil
 {
 
-void CThread::RunType::RunFunc(IAsyncAction^ pWorkItem)
-{
-	if (pThread)
-		pThread->Run();
-}
-
 CThread::CThread()
 : m_pWorkItem(nullptr)
 , m_pPreWorkItem(nullptr)
 , m_pRunnable(NULL)
 , m_bRun(false)
 {
-	m_pRunObj = ref new RunType(this);
 }
 
 CThread::~CThread()
@@ -34,7 +27,6 @@ CThread::CThread(Runnable* pRunnable)
 , m_pRunnable(pRunnable)
 , m_bRun(false)
 {
-	m_pRunObj = ref new RunType(this);
 }
 
 CThread::CThread(const char* ThreadName, Runnable* pRunnable)
@@ -44,7 +36,6 @@ CThread::CThread(const char* ThreadName, Runnable* pRunnable)
 , m_pRunnable(pRunnable)
 , m_bRun(false)
 {
-	m_pRunObj = ref new RunType(this);
 }
 
 CThread::CThread(std::string ThreadName, Runnable * pRunnable)
@@ -54,7 +45,6 @@ CThread::CThread(std::string ThreadName, Runnable * pRunnable)
 , m_pRunnable(pRunnable)
 , m_bRun(false)
 {
-	m_pRunObj = ref new RunType(this);
 }
 
 bool CThread::Start(bool bSuspend)
@@ -62,12 +52,12 @@ bool CThread::Start(bool bSuspend)
 	if (m_bRun)
 		return true;
 
-	WorkItemHandler^ pHandler = ref new WorkItemHandler(m_pRunObj, &RunType::RunFunc);
-	//[this](IAsyncAction^ pWorkItem)
-	//{
-	//	this->Run();
-	//}
-	//);
+	WorkItemHandler^ pHandler = ref new WorkItemHandler(
+	[this](IAsyncAction^ pWorkItem)
+	{
+		this->Run();
+	}
+	);
 
 	if (bSuspend)
 	{

@@ -17,15 +17,6 @@ public:
 class CThread : public Runnable
 {
 private:
-	ref struct RunType sealed
-	{
-		friend class CThread;
-	private:
-		RunType(CThread* pTh) : pThread(pTh){}
-		void RunFunc(Windows::Foundation::IAsyncAction^ pWorkItem);
-		CThread* pThread;
-	};
-
 	explicit CThread(const CThread& rhs);
 
 public:
@@ -75,7 +66,6 @@ public:
 private:
 	Windows::Foundation::IAsyncAction^ m_pWorkItem;
 	Windows::System::Threading::Core::PreallocatedWorkItem^ m_pPreWorkItem;
-	RunType^ m_pRunObj;
 	Runnable* const m_pRunnable;
 	std::string m_ThreadName;
 	volatile bool m_bRun;

@@ -201,6 +201,7 @@
     <ClInclude Include="CSVTableOperator.h" />
     <ClInclude Include="DateTime.h" />
     <ClInclude Include="FileManage.h" />
+    <ClInclude Include="IDPool.h" />
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="PxcUtilRT.h" />
     <ClInclude Include="pch.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="CSVTableOperator.cpp" />
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="FileManage.cpp" />
+    <ClCompile Include="IDPool.cpp" />
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="PxcUtilRT.cpp" />
     <ClCompile Include="pch.cpp">

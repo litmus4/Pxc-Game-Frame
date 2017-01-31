@@ -16,6 +16,7 @@
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="StringTools.cpp" />
     <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="IDPool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PxcUtilRT.h" />
@@ -31,5 +32,6 @@
     <ClInclude Include="StringParser.h" />
     <ClInclude Include="StringTools.h" />
     <ClInclude Include="Thread.h" />
+    <ClInclude Include="IDPool.h" />
   </ItemGroup>
 </Project>

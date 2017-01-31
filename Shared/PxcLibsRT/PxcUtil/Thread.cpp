@@ -8,6 +8,8 @@ using namespace Windows::System::Threading::Core;
 namespace PxcUtil
 {
 
+CIDPool CThread::s_IDPool = CIDPool(0, 9999999, -1);
+
 CThread::CThread()
 : m_pWorkItem(nullptr)
 , m_pPreWorkItem(nullptr)
@@ -67,6 +69,7 @@ bool CThread::Start(bool bSuspend)
 	{
 		m_pWorkItem = ThreadPool::RunAsync(pHandler);
 	}
+	m_ThreadID = (unsigned int)s_IDPool.Generate();
 	m_bRun = (nullptr != m_pWorkItem || nullptr != m_pPreWorkItem);
 	return m_bRun;
 }
@@ -137,8 +140,7 @@ bool CThread::Terminate(unsigned long ExitCode)
 
 unsigned int CThread::GetThreadID()
 {
-	//TODOJK 回头实现用IDPool自动生成线程ID
-	return 0;
+	return m_ThreadID;
 }
 
 std::string CThread::GetThreadName()

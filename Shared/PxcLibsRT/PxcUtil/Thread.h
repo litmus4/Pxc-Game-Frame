@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IDPool.h"
 #include <string>
 
 //#include <wrl.h>
@@ -67,8 +68,11 @@ private:
 	Windows::Foundation::IAsyncAction^ m_pWorkItem;
 	Windows::System::Threading::Core::PreallocatedWorkItem^ m_pPreWorkItem;
 	Runnable* const m_pRunnable;
+	unsigned int m_ThreadID;
 	std::string m_ThreadName;
 	volatile bool m_bRun;
+
+	static CIDPool s_IDPool;
 };
 
 }

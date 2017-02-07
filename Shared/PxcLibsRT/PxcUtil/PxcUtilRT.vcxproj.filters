@@ -17,6 +17,7 @@
     <ClCompile Include="StringTools.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="IDPool.cpp" />
+    <ClCompile Include="Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PxcUtilRT.h" />
@@ -33,5 +34,6 @@
     <ClInclude Include="StringTools.h" />
     <ClInclude Include="Thread.h" />
     <ClInclude Include="IDPool.h" />
+    <ClInclude Include="Random.h" />
   </ItemGroup>
 </Project>

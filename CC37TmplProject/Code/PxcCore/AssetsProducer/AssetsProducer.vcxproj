@@ -154,6 +154,7 @@
     <ClInclude Include="AnimateLine.h" />
     <ClInclude Include="AnimateProduct.h" />
     <ClInclude Include="ArmatureActionInfo.h" />
+    <ClInclude Include="ArmatureProduct.h" />
     <ClInclude Include="AssetsProducer.h" />
     <ClInclude Include="AudioLine.h" />
     <ClInclude Include="AudioProduct.h" />
@@ -166,6 +167,7 @@
   <ItemGroup>
     <ClCompile Include="AnimateLine.cpp" />
     <ClCompile Include="AnimateProduct.cpp" />
+    <ClCompile Include="ArmatureProduct.cpp" />
     <ClCompile Include="AssetsProducer.cpp" />
     <ClCompile Include="AudioLine.cpp" />
     <ClCompile Include="AudioProduct.cpp" />

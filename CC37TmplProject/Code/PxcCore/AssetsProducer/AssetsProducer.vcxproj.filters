@@ -51,6 +51,9 @@
     <ClInclude Include="ArmatureActionInfo.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ArmatureProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseProduct.cpp">
@@ -81,6 +84,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AudioLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ArmatureProduct.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

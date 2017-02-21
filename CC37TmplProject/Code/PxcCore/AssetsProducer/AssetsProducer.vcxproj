@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="AnimateLine.h" />
     <ClInclude Include="AnimateProduct.h" />
+    <ClInclude Include="ArmatureActionInfo.h" />
     <ClInclude Include="AssetsProducer.h" />
     <ClInclude Include="AudioLine.h" />
     <ClInclude Include="AudioProduct.h" />

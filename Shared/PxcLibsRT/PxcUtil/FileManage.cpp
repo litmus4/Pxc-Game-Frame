@@ -1,6 +1,8 @@
 #include "FileManage.h"
 #include "StringTools.h"
 
+using namespace Windows::Storage;
+
 namespace PxcUtil
 {
 
@@ -10,26 +12,23 @@ namespace FileManage
 
 std::wstring GetAbsPath()
 {
-	wchar_t wszPath[MAX_PATH];
-	memset(wszPath, 0, sizeof(wszPath));
-	//GetCurrentDirectoryW(MAX_PATH, wszPath);
-	return wszPath;
+	return Windows::ApplicationModel::Package::Current->InstalledLocation->Path->Data();
 }
 
 BOOL IsRoot(LPCTSTR lpszPath)
 {
-	//char szRoot[4];
-	//std::string strPath = StringTools::WstrToStr(lpszPath);
-	//sprintf_s(szRoot, "%c:\\", strPath.c_str());
-	//return (strcmp(szRoot, strPath.c_str()) == 0);
-	return (wcslen(lpszPath) == 0);
+	if (wcscmp(lpszPath, Windows::ApplicationModel::Package::Current->InstalledLocation->Path->Data()) == 0)
+		return true;
+	else if (wcscmp(lpszPath, ApplicationData::Current->LocalFolder->Path->Data()) == 0)
+		return true;
+	return false;
 }
 
 void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std::wstring>& vecOut)
 {
 	char szFind[MAX_PATH];
 	strcpy_s(szFind, StringTools::WstrToStr(lpszPath).c_str());
-	if (!IsRoot(lpszPath))
+	if (wcslen(lpszPath) > 0)
 		strcat_s(szFind, "\\");
 	strcat_s(szFind, "*.*"); // 找所有文件
 	int iExtLen = StringTools::WstrToStr(szExt).size();
@@ -49,7 +48,7 @@ void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std:
 		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
 			char szFile[MAX_PATH];
-			if (IsRoot(lpszPath))
+			if (wcslen(lpszPath) == 0)
 				sprintf_s(szFile, "%s%s", strPath.c_str(), strFileName.c_str());
 			else
 				sprintf_s(szFile, "%s\\%s", strPath.c_str(), strFileName.c_str());
@@ -63,7 +62,7 @@ void FindFilesRecursive(LPCTSTR lpszPath, const wchar_t* szExt, std::vector<std:
 				(iFileLen > iExtLen + 1 && wstrFileName.substr(iFileLen - iExtLen, iExtLen).compare(szExt) == 0))
 			{
 				char szFile[MAX_PATH];
-				if (IsRoot(lpszPath))
+				if (wcslen(lpszPath) == 0)
 					sprintf_s(szFile, "%s%s", strPath.c_str(), strFileName.c_str());
 				else
 					sprintf_s(szFile, "%s\\%s", strPath.c_str(), strFileName.c_str());

@@ -16,6 +16,7 @@ enum EUwpPath_Type
 	EUwpPath_Temp,
 };
 std::map<std::string, EUwpPath_Type> g_mapUwpPathAims;
+std::string g_strDeployFolder;
 
 void zPackRelease()
 {
@@ -35,17 +36,29 @@ void zPackAddPathAim(const char* szPack, const char* szPath)
 		strPath = strPath.substr(0, ipos);
 
 	std::string strUri = szPack;
-	EUwpPath_Type eType = EUwpPath_Install;
-	if (strUri == "ms-appx")
-		eType = EUwpPath_Install;
-	else if (strUri == "ms-appdata:///local/")
-		eType = EUwpPath_Local;
-	else if (strUri == "ms-appdata:///roaming/")
-		eType = EUwpPath_Roaming;
-	else if (strUri == "ms-appdata:///temporary/")
-		eType = EUwpPath_Temp;
+	ipos = strUri.find(":///");
+	if (ipos != std::string::npos)
+	{
+		std::string strUriHead = strUri.substr(0, ipos);
+		std::string strUriSub = strUri.substr(ipos + 4);
+		EUwpPath_Type eType = EUwpPath_Install;
+		if (strUriHead == "ms-appx")
+		{
+			if (g_strDeployFolder.empty())
+				g_strDeployFolder = strUriSub;
+		}
+		else if (strUriHead == "ms-appdata")
+		{
+			if (strUriSub == "local")
+				eType = EUwpPath_Local;
+			else if (strUriSub == "roaming")
+				eType = EUwpPath_Roaming;
+			else if (strUriSub == "temporary")
+				eType = EUwpPath_Temp;
+		}
 
-	g_mapUwpPathAims.insert(std::make_pair(strPath, eType));
+		g_mapUwpPathAims.insert(std::make_pair(strPath, eType));
+	}
 }
 
 bool zPackCombinePath(std::string& strPath)
@@ -66,23 +79,34 @@ bool zPackCombinePath(std::string& strPath)
 	if (iter != g_mapUwpPathAims.end())
 	{
 		Platform::String^ pstrUwpPath = ref new Platform::String(L"");
+		std::string strUwpPath;
 		switch (iter->second)
 		{
 		case EUwpPath_Install:
-			pstrUwpPath = Windows::ApplicationModel::Package::Current->InstalledLocation->Path;
+			{
+				pstrUwpPath = Windows::ApplicationModel::Package::Current->InstalledLocation->Path;
+				strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data()) + "\\" + g_strDeployFolder;
+			}
 			break;
 		case EUwpPath_Local:
-			pstrUwpPath = ApplicationData::Current->LocalFolder->Path;
+			{
+				pstrUwpPath = ApplicationData::Current->LocalFolder->Path;
+				strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data());
+			}
 			break;
 		case EUwpPath_Roaming:
-			pstrUwpPath = ApplicationData::Current->RoamingFolder->Path;
+			{
+				pstrUwpPath = ApplicationData::Current->RoamingFolder->Path;
+				strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data());
+			}
 			break;
 		case EUwpPath_Temp:
-			pstrUwpPath = ApplicationData::Current->TemporaryFolder->Path;
+			{
+				pstrUwpPath = ApplicationData::Current->TemporaryFolder->Path;
+				strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data());
+			}
 			break;
 		}
-
-		std::string strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data());
 		strPath = strUwpPath + "\\" + strPath;
 		return true;
 	}

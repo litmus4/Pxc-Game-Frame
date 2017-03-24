@@ -22,6 +22,7 @@ public:
 		m_eDynamicSkinType = EDynamicSkin_None;
 		m_iActionID = -1;
 		m_bLoop = false;
+		m_bRandom = false;
 		m_iPriorityType = 0;
 		m_iAttachedEffectID = -1;
 	}
@@ -36,6 +37,7 @@ public:
 	std::string m_strAnimName;
 	std::string m_strLeaveAnimName;
 	bool m_bLoop;
+	bool m_bRandom;
 	int m_iPriorityType;
 	int m_iAttachedEffectID;
 	std::string m_strDesc;

@@ -201,6 +201,7 @@
     <ClInclude Include="CSVOperator.h" />
     <ClInclude Include="CSVTableOperator.h" />
     <ClInclude Include="DateTime.h" />
+    <ClInclude Include="Delegate.h" />
     <ClInclude Include="FileManage.h" />
     <ClInclude Include="IDPool.h" />
     <ClInclude Include="IniFile.h" />

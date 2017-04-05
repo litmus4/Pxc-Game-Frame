@@ -26,63 +26,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\DebugUtils\DebugDraw.cpp" />
-    <ClCompile Include="..\DebugUtils\DetourDebugDraw.cpp" />
-    <ClCompile Include="..\DebugUtils\RecastDebugDraw.cpp" />
-    <ClCompile Include="..\DebugUtils\RecastDump.cpp" />
-    <ClCompile Include="..\DetourCrowd\DetourCrowd.cpp" />
-    <ClCompile Include="..\DetourCrowd\DetourLocalBoundary.cpp" />
-    <ClCompile Include="..\DetourCrowd\DetourObstacleAvoidance.cpp" />
-    <ClCompile Include="..\DetourCrowd\DetourPathCorridor.cpp" />
-    <ClCompile Include="..\DetourCrowd\DetourPathQueue.cpp" />
-    <ClCompile Include="..\DetourCrowd\DetourProximityGrid.cpp" />
-    <ClCompile Include="..\DetourTileCache\DetourTileCache.cpp" />
-    <ClCompile Include="..\DetourTileCache\DetourTileCacheBuilder.cpp" />
-    <ClCompile Include="..\Detour\DetourAlloc.cpp" />
-    <ClCompile Include="..\Detour\DetourCommon.cpp" />
-    <ClCompile Include="..\Detour\DetourNavMesh.cpp" />
-    <ClCompile Include="..\Detour\DetourNavMeshBuilder.cpp" />
-    <ClCompile Include="..\Detour\DetourNavMeshQuery.cpp" />
-    <ClCompile Include="..\Detour\DetourNode.cpp" />
-    <ClCompile Include="..\fastlz\fastlz.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\DebugUtils\DebugDraw.h" />
-    <ClInclude Include="..\DebugUtils\DetourDebugDraw.h" />
-    <ClInclude Include="..\DebugUtils\RecastDebugDraw.h" />
-    <ClInclude Include="..\DebugUtils\RecastDump.h" />
-    <ClInclude Include="..\DetourCrowd\DetourCrowd.h" />
-    <ClInclude Include="..\DetourCrowd\DetourLocalBoundary.h" />
-    <ClInclude Include="..\DetourCrowd\DetourObstacleAvoidance.h" />
-    <ClInclude Include="..\DetourCrowd\DetourPathCorridor.h" />
-    <ClInclude Include="..\DetourCrowd\DetourPathQueue.h" />
-    <ClInclude Include="..\DetourCrowd\DetourProximityGrid.h" />
-    <ClInclude Include="..\DetourTileCache\DetourTileCache.h" />
-    <ClInclude Include="..\DetourTileCache\DetourTileCacheBuilder.h" />
-    <ClInclude Include="..\Detour\DetourAlloc.h" />
-    <ClInclude Include="..\Detour\DetourAssert.h" />
-    <ClInclude Include="..\Detour\DetourCommon.h" />
-    <ClInclude Include="..\Detour\DetourMath.h" />
-    <ClInclude Include="..\Detour\DetourNavMesh.h" />
-    <ClInclude Include="..\Detour\DetourNavMeshBuilder.h" />
-    <ClInclude Include="..\Detour\DetourNavMeshQuery.h" />
-    <ClInclude Include="..\Detour\DetourNode.h" />
-    <ClInclude Include="..\Detour\DetourStatus.h" />
-    <ClInclude Include="..\fastlz\fastlz.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{f551524d-8a70-4b2f-a7c2-28ae61150022}</ProjectGuid>
+    <ProjectGuid>{d20b9e18-4d49-44b4-ac04-7f2e1389af8e}</ProjectGuid>
     <Keyword>StaticLibrary</Keyword>
-    <ProjectName>librecast</ProjectName>
-    <RootNamespace>librecast</RootNamespace>
-    <DefaultLanguage>en-US</DefaultLanguage>
+    <RootNamespace>DataTablesRT</RootNamespace>
+    <DefaultLanguage>zh-CN</DefaultLanguage>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Store</ApplicationType>
-    <ApplicationTypeRevision>8.2</ApplicationTypeRevision>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.14393.0</WindowsTargetPlatformMinVersion>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -145,9 +99,13 @@
   <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(SolutionDir)$(Configuration).uwp\</OutDir>
+    <IntDir>$(Configuration).uwp\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <GenerateManifest>false</GenerateManifest>
+    <OutDir>$(SolutionDir)$(Configuration).uwp\</OutDir>
+    <IntDir>$(Configuration).uwp\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <GenerateManifest>false</GenerateManifest>
@@ -166,24 +124,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -191,16 +133,31 @@
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
     <Lib>
-      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>..\..\..\..\Shared\PxcLibsRT\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>..\..\..\..\Shared\PxcLibsRT\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -210,30 +167,21 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
-    <Lib>
-      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -243,22 +191,44 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
-    <Lib>
-      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
-    </Lib>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="LoadDefines.h" />
+    <ClInclude Include="OtherTable\GlobalParamRow.h" />
+    <ClInclude Include="OtherTable\OtherTableCenter.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TextTable\CaptionRow.h" />
+    <ClInclude Include="TextTable\StoryTextRow.h" />
+    <ClInclude Include="TextTable\TextRow.h" />
+    <ClInclude Include="TextTable\TextTableCenter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="LoadDefines.cpp" />
+    <ClCompile Include="OtherTable\GlobalParamRow.cpp" />
+    <ClCompile Include="OtherTable\OtherTableCenter.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TextTable\CaptionRow.cpp" />
+    <ClCompile Include="TextTable\StoryTextRow.cpp" />
+    <ClCompile Include="TextTable\TextRow.cpp" />
+    <ClCompile Include="TextTable\TextTableCenter.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

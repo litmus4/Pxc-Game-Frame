@@ -19,7 +19,7 @@ std::wstring StrToWstr(const std::string& str)
 		LPWSTR wszBuf = new WCHAR[iSize];
 		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, wszBuf, iSize);
 		wstrRet = wszBuf;
-		delete []wszBuf;
+		delete[] wszBuf;
 	}
 	return wstrRet;
 }
@@ -35,7 +35,85 @@ std::string WstrToStr(const std::wstring& wstr)
 		LPSTR szBuf = new CHAR[iSize];
 		WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, szBuf, iSize, NULL, NULL);
 		strRet = szBuf;
-		delete []szBuf;
+		delete[] szBuf;
+	}
+	return strRet;
+}
+
+std::wstring Utf8ToWstr(const std::string& stru)
+{
+	std::wstring wstrRet;
+	if (stru.empty())
+		return wstrRet;
+	int iSize = MultiByteToWideChar(CP_UTF8, 0, stru.c_str(), -1, NULL, 0);
+	if (iSize != 0)
+	{
+		LPWSTR wszBuf = new WCHAR[iSize];
+		MultiByteToWideChar(CP_UTF8, 0, stru.c_str(), -1, wszBuf, iSize);
+		wstrRet = wszBuf;
+		delete[] wszBuf;
+	}
+	return wstrRet;
+}
+
+std::string WstrToUtf8(const std::wstring& wstr)
+{
+	std::string strRet;
+	if (wstr.empty())
+		return strRet;
+	int iSize = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+	if (iSize != 0)
+	{
+		LPSTR szBuf = new CHAR[iSize];
+		WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, szBuf, iSize, NULL, NULL);
+		strRet = szBuf;
+		delete[] szBuf;
+	}
+	return strRet;
+}
+
+std::string StrToUtf8(const std::string& str)
+{
+	std::string struRet;
+	if (str.empty())
+		return struRet;
+	int iSize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0);
+	if (iSize != 0)
+	{
+		LPWSTR wszBuf = new WCHAR[iSize];
+		MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, wszBuf, iSize);
+		iSize = WideCharToMultiByte(CP_UTF8, 0, wszBuf, -1, NULL, 0, NULL, NULL);
+		if (iSize != 0)
+		{
+			LPSTR szBuf = new CHAR[iSize];
+			WideCharToMultiByte(CP_UTF8, 0, wszBuf, -1, szBuf, iSize, NULL, NULL);
+			struRet = szBuf;
+			delete[] szBuf;
+		}
+		delete[] wszBuf;
+	}
+	return struRet;
+}
+
+std::string Utf8ToStr(const std::string& stru)
+{
+	std::string strRet;
+	if (stru.empty())
+		return strRet;
+	int iSize = MultiByteToWideChar(CP_UTF8, 0, stru.c_str(), -1, NULL, 0);
+	if (iSize != 0)
+	{
+		LPWSTR wszBuf = new WCHAR[iSize];
+		MultiByteToWideChar(CP_UTF8, 0, stru.c_str(), -1, wszBuf, iSize);
+		iSize = WideCharToMultiByte(CP_ACP, 0, wszBuf, -1, NULL, 0, NULL, NULL);
+		if (iSize != 0)
+		{
+			LPSTR szBuf = new CHAR[iSize];
+			WideCharToMultiByte(CP_ACP, 0, wszBuf, -1, szBuf, iSize, NULL, NULL);
+			strRet = szBuf;
+			delete[] szBuf;
+		}
+		delete[] wszBuf;
 	}
 	return strRet;
 }

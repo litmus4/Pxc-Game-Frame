@@ -78,6 +78,9 @@ bool HelloWorld::init()
 #endif
 	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
 	PxcUtil::zPackAddPathAim("Packs\\Assets.zpk", "Assets");
+#else
+	PxcUtil::zPackAddPathAim("ms-appx:///Assets\\Resources", "DataTables");
+	PxcUtil::zPackAddPathAim("ms-appx:///Assets\\Resources", "Assets");
 #endif
 	CTextTableCenter::GetInstance()->Init(GlobalDef::ELanguage_ZH_CN);
 	COtherTableCenter::GetInstance()->Init();

@@ -69,10 +69,14 @@ bool zPackCombinePath(std::string& strPath)
 		strPathKey = strPathKey.substr(0, ipos);
 	else
 	{
-		Platform::String^ pstrUwpPath = ApplicationData::Current->LocalFolder->Path;
-		std::string strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data());
-		strPath = strUwpPath + "\\" + strPath;
-		return true;
+		ipos = strPathKey.find_first_of('.');
+		if (ipos != std::string::npos)
+		{
+			Platform::String^ pstrUwpPath = ApplicationData::Current->LocalFolder->Path;
+			std::string strUwpPath = StringTools::WstrToStr(pstrUwpPath->Data());
+			strPath = strUwpPath + "\\" + strPath;
+			return true;
+		}
 	}
 
 	std::map<std::string, EUwpPath_Type>::iterator iter = g_mapUwpPathAims.find(strPathKey);

@@ -572,6 +572,7 @@ static Data getData(const std::string& filename, bool forString)
     {
         // Read the file from hardware
         std::string fullPath = fileutils->fullPathForFilename(filename);
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 		zp::IReadFile* pZFile = NULL;
 		FILE *fp = NULL;
 		if (PxcUtil::zPackFOpen(fullPath.c_str(), &pZFile) == PxcUtil::EzPOpen_SimplePath)
@@ -590,6 +591,13 @@ static Data getData(const std::string& filename, bool forString)
 			size = ftell(fp);
 			fseek(fp, 0, SEEK_SET);
 		}
+#else
+		FILE *fp = fopen(fileutils->getSuitableFOpen(fullPath).c_str(), mode);
+		CC_BREAK_IF(!fp);
+		fseek(fp, 0, SEEK_END);
+		size = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+#endif
         
         if (forString)
         {
@@ -601,6 +609,7 @@ static Data getData(const std::string& filename, bool forString)
             buffer = (unsigned char*)malloc(sizeof(unsigned char) * size);
         }
         
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 		if (pZFile)
 		{
 			readsize = pZFile->read(buffer, size);
@@ -611,6 +620,10 @@ static Data getData(const std::string& filename, bool forString)
 			readsize = fread(buffer, sizeof(unsigned char), size, fp);
 			fclose(fp);
 		}
+#else
+		readsize = fread(buffer, sizeof(unsigned char), size, fp);
+		fclose(fp);
+#endif
         
         if (forString && readsize < size)
         {
@@ -655,6 +668,7 @@ unsigned char* FileUtils::getFileData(const std::string& filename, const char* m
     {
         // read the file from hardware
         const std::string fullPath = fullPathForFilename(filename);
+#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
 		zp::IReadFile* pZFile = NULL;
 		FILE *fp = NULL;
 		if (PxcUtil::zPackFOpen(fullPath.c_str(), &pZFile) == PxcUtil::EzPOpen_SimplePath)
@@ -686,6 +700,18 @@ unsigned char* FileUtils::getFileData(const std::string& filename, const char* m
 			*size = fread(buffer, sizeof(unsigned char), *size, fp);
 			fclose(fp);
 		}
+#else
+		FILE *fp = fopen(getSuitableFOpen(fullPath).c_str(), mode);
+		CC_BREAK_IF(!fp);
+
+		fseek(fp, 0, SEEK_END);
+		*size = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+
+		buffer = (unsigned char*)malloc(*size);
+		*size = fread(buffer, sizeof(unsigned char), *size, fp);
+		fclose(fp);
+#endif
     } while (0);
     
     if (!buffer)

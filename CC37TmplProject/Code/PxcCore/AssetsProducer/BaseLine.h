@@ -43,6 +43,7 @@ public:
 	virtual void Discard(CBaseProduct* pProduct);
 	virtual void Update(float dt);
 	virtual void RunLoadProducts();
+	virtual bool IsLoadQueueEmpty();
 
 	virtual void UnLoadTemplateSavesByID(int iID);
 

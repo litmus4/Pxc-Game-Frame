@@ -18,11 +18,12 @@ public:
 	virtual void Run();
 	bool Start();
 	void Stop();
+	void TrySwitchSuspend(bool b);
 
 private:
 	PxcUtil::CThread* m_pThread;
 	CAssetsProducer* m_pProducer;
-	bool m_bRunning;
+	bool m_bRunning, m_bRunOk, m_bSuspend;
 };
 
 class CAssetsProducer : public PxcUtil::Singleton<CAssetsProducer>
@@ -39,7 +40,7 @@ public:
 	CAudioLine& AudioLine();
 
 	void Update(float dt);
-	void RunLoadProducts();
+	bool RunLoadProducts();
 	void OnLoadingThreadEnd();
 
 private:

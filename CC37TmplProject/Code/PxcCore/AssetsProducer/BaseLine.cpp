@@ -323,6 +323,11 @@ void CBaseLine::RunLoadProducts()
 	}
 }
 
+bool CBaseLine::IsLoadQueueEmpty()
+{
+	return m_lisAsynLoadQueue.empty();
+}
+
 void CBaseLine::UnLoadTemplateSavesByID(int iID)
 {
 	std::map<int, ProductTmpl>::iterator iter = m_mapTemplates.find(iID);

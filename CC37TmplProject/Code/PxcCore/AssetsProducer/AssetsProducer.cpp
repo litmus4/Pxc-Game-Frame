@@ -6,7 +6,6 @@ CLoadAssetsThread::CLoadAssetsThread(CAssetsProducer* pProducer)
 	m_pThread = NULL;
 	m_pProducer = pProducer;
 	m_bRunning = false;
-	m_bRunOk = true;
 	m_bSuspend = false;
 }
 
@@ -20,7 +19,16 @@ void CLoadAssetsThread::Run()
 	if (m_pProducer)
 	{
 		while (m_bRunning)
-			m_bRunOk = m_pProducer->RunLoadProducts();
+		{
+			bool bOk = m_pProducer->RunLoadProducts();
+			if (!bOk && m_pThread && !m_bSuspend)
+			{
+				{	CRI_SEC(m_lock)
+					m_bSuspend = true;
+				}
+				m_pThread->Suspend();
+			}
+		}
 		m_pProducer->OnLoadingThreadEnd();
 	}
 }
@@ -38,26 +46,13 @@ void CLoadAssetsThread::Stop()
 	m_bRunning = false;
 }
 
-void CLoadAssetsThread::TrySwitchSuspend(bool b)
+void CLoadAssetsThread::TryResume()
 {
-	if (!m_bRunning || !m_pThread)
-		return;
-
-	if (b)
+	CRI_SEC(m_lock)
+	if (m_bRunning && m_pThread && m_bSuspend)
 	{
-		if (!m_bRunOk && !m_bSuspend)
-		{
-			m_pThread->Suspend();
-			m_bSuspend = true;
-		}
-	}
-	else
-	{
-		if (m_bSuspend)
-		{
-			m_pThread->Resume();
-			m_bSuspend = false;
-		}
+		m_bSuspend = false;
+		m_pThread->Resume();
 	}
 }
 
@@ -90,7 +85,7 @@ bool CAssetsProducer::Init(std::string strPath)
 void CAssetsProducer::Release()
 {
 	m_SpriteLine.DiscardLoadingDraw();
-	m_pLoadingThread->TrySwitchSuspend(false);
+	m_pLoadingThread->TryResume();
 	m_pLoadingThread->Stop();
 }
 
@@ -111,11 +106,10 @@ CAudioLine& CAssetsProducer::AudioLine()
 
 void CAssetsProducer::Update(float dt)
 {
-	m_pLoadingThread->TrySwitchSuspend(true);
 	if (!m_SpriteLine.IsLoadQueueEmpty() ||
 		!m_AnimateLine.IsLoadQueueEmpty() ||
 		!m_AudioLine.IsLoadQueueEmpty())
-		m_pLoadingThread->TrySwitchSuspend(false);
+		m_pLoadingThread->TryResume();
 
 	m_SpriteLine.Update(dt);
 	m_AnimateLine.Update(dt);

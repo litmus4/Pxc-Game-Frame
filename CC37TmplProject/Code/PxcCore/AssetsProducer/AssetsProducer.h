@@ -18,12 +18,13 @@ public:
 	virtual void Run();
 	bool Start();
 	void Stop();
-	void TrySwitchSuspend(bool b);
+	void TryResume();
 
 private:
 	PxcUtil::CThread* m_pThread;
 	CAssetsProducer* m_pProducer;
-	bool m_bRunning, m_bRunOk, m_bSuspend;
+	bool m_bRunning, m_bSuspend;
+	PxcUtil::Lock m_lock;
 };
 
 class CAssetsProducer : public PxcUtil::Singleton<CAssetsProducer>

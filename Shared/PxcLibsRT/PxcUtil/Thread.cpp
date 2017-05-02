@@ -16,6 +16,7 @@ CThread::CThread()
 , m_pRunnable(NULL)
 , m_bRun(false)
 {
+	m_hEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 CThread::~CThread()
@@ -29,6 +30,7 @@ CThread::CThread(Runnable* pRunnable)
 , m_pRunnable(pRunnable)
 , m_bRun(false)
 {
+	m_hEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 CThread::CThread(const char* ThreadName, Runnable* pRunnable)
@@ -38,6 +40,7 @@ CThread::CThread(const char* ThreadName, Runnable* pRunnable)
 , m_pRunnable(pRunnable)
 , m_bRun(false)
 {
+	m_hEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 CThread::CThread(std::string ThreadName, Runnable * pRunnable)
@@ -47,6 +50,7 @@ CThread::CThread(std::string ThreadName, Runnable * pRunnable)
 , m_pRunnable(pRunnable)
 , m_bRun(false)
 {
+	m_hEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
 bool CThread::Start(bool bSuspend)
@@ -109,7 +113,7 @@ void CThread::Resume()
 	}
 	else
 	{
-		//TODOJK
+		::SetEvent(m_hEvent);
 	}
 }
 
@@ -118,7 +122,7 @@ void CThread::Suspend()
 	if (nullptr == m_pWorkItem || !m_bRun)
 		return;
 
-	//TODOJK
+	::WaitForSingleObject(m_hEvent, INFINITE);
 }
 
 bool CThread::Terminate(unsigned long ExitCode)

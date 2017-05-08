@@ -97,9 +97,12 @@ bool Tween::init(Bone *bone)
 }
 
 
-void Tween::play(MovementBoneData *movementBoneData, int durationTo, int durationTween,  int loop, int tweenEasing)
+void Tween::play(MovementBoneData *movementBoneData, int durationTo, int durationTween,  int loop, int tweenEasing, float startFrame)
 {
-    ProcessBase::play(durationTo, durationTween, loop, tweenEasing);
+	if (startFrame > 0.0f)
+		ProcessBase::play(durationTo, durationTween, loop, tweenEasing, startFrame);
+	else
+		ProcessBase::play(durationTo, durationTween, loop, tweenEasing);
 
     if (loop)
     {
@@ -224,7 +227,8 @@ void Tween::updateHandler()
             else
             {
                 _nextFrameIndex = _durationTween;
-                _currentFrame = _currentPercent * _nextFrameIndex;
+                _currentFrame = _currentPercent * _nextFrameIndex + _startFrame;
+				_currentPercent += _startFrame / _nextFrameIndex;
                 _totalDuration = 0;
                 _betweenDuration = 0;
                 _fromIndex = _toIndex = 0;
@@ -249,6 +253,8 @@ void Tween::updateHandler()
                 _currentPercent = 0;
                 _currentFrame = 0;
             }
+			_currentFrame += _startFrame;
+			_currentPercent += _startFrame / _nextFrameIndex;
 
             _totalDuration = 0;
             _betweenDuration = 0;

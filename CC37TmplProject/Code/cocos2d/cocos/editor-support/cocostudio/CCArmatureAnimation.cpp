@@ -339,7 +339,7 @@ void ArmatureAnimation::play(const std::string& animationName, int durationTo,  
     _armature->update(0);
 }
 
-void ArmatureAnimation::playPart(const std::string& animationName, const std::string& boneName, int durationTo, int loop, float speedScale)
+void ArmatureAnimation::playPart(const std::string& animationName, const std::string& boneName, int durationTo, int loop, float startFrame, float speedScale)
 {
 	if (animationName.empty())
 	{
@@ -358,6 +358,10 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 		CCLOG("_movementData can not be null");
 		return;
 	}
+	if (startFrame < 0.0f)
+		startFrame = 0.0f;
+	if (startFrame > pPartAnim->_movementData->duration)
+		startFrame = pPartAnim->_movementData->duration;
 
 	//! Get key frame count
 	pPartAnim->_rawDuration = pPartAnim->_movementData->duration;
@@ -378,7 +382,7 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 
 	pPartAnim->_onMovementList = false;
 
-	pPartAnim->play(durationTo, durationTween, loop, tweenEasing);
+	pPartAnim->play(durationTo, durationTween, loop, tweenEasing, startFrame);
 
 	if (pPartAnim->_rawDuration == 0)
 	{
@@ -401,7 +405,7 @@ void ArmatureAnimation::playPart(const std::string& animationName, const std::st
 	if (bone != nullptr)
 	{
 		playPartEveryBone(bone, bone, pPartAnim->_movementData, pPartAnim->_processScale,
-				durationTo, durationTween, loop, tweenEasing);
+				durationTo, durationTween, loop, tweenEasing, startFrame);
 
 		pPartAnim->_partBoneMain = bone;
 		pPartAnim->_partWholeAnim = this;
@@ -592,7 +596,7 @@ void ArmatureAnimation::updateHandler()
         case ANIMATION_NO_LOOP:
         {
             _loopType = ANIMATION_MAX;
-            _currentFrame = (_currentPercent - 1) * _nextFrameIndex;
+            _currentFrame = (_currentPercent - 1) * _nextFrameIndex + _startFrame;
             _currentPercent = _currentFrame / _durationTween;
 
             if (_currentPercent >= 1.0f)
@@ -634,7 +638,9 @@ void ArmatureAnimation::updateHandler()
             _loopType = ANIMATION_LOOP_FRONT;
             _currentPercent = fmodf(_currentPercent, 1);
             _currentFrame = _nextFrameIndex == 0 ? 0 : fmodf(_currentFrame, _nextFrameIndex);
+			_currentFrame += _startFrame;
             _nextFrameIndex = _durationTween > 0 ? _durationTween : 1;
+			_currentPercent += _startFrame / _nextFrameIndex;
 
 			if (_partWholeAnim != nullptr)
 				_partWholeAnim->partMovementEvent(_armature, getPartBoneName(), START, _movementID.c_str());
@@ -785,7 +791,7 @@ void ArmatureAnimation::updateMovementList()
 }
 
 void ArmatureAnimation::playPartEveryBone(Bone* bone, Bone* boneMain, MovementData* movementData, float processScale,
-								int durationTo, int durationTween, int loop, tweenfunc::TweenType tweenEasing)
+								int durationTo, int durationTween, int loop, tweenfunc::TweenType tweenEasing, float startFrame)
 {
 	//TODOJK »»³ÉstopPart±£Ö¤Í£Ö¹£¿
 	tPartAnimationList::iterator itAnim = _partAnimationList.begin();
@@ -812,7 +818,7 @@ void ArmatureAnimation::playPartEveryBone(Bone* bone, Bone* boneMain, MovementDa
 			itTween->second = boneMain;
 
 		movementBoneData->duration = movementData->duration;
-		tween->play(movementBoneData, durationTo, durationTween, loop, tweenEasing);
+		tween->play(movementBoneData, durationTo, durationTween, loop, tweenEasing, startFrame);
 
 		tween->setProcessScale(processScale);
 
@@ -836,7 +842,7 @@ void ArmatureAnimation::playPartEveryBone(Bone* bone, Bone* boneMain, MovementDa
 	for (; iter != nodeVec.end(); iter++)
 	{
 		playPartEveryBone(static_cast<Bone*>(*iter), boneMain, movementData, processScale,
-				durationTo, durationTween, loop, tweenEasing);
+				durationTo, durationTween, loop, tweenEasing, startFrame);
 	}
 }
 

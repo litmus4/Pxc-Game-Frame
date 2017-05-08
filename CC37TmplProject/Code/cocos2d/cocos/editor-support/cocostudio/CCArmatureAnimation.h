@@ -128,7 +128,8 @@ public:
      */
     virtual void play(const std::string& animationName, int durationTo = -1,  int loop = -1);
 
-	virtual void playPart(const std::string& animationName, const std::string& boneName, int durationTo = -1, int loop = -1, float speedScale = 1.0f);
+	virtual void playPart(const std::string& animationName, const std::string& boneName, int durationTo = -1, int loop = -1,
+					float startFrame = 0.0f, float speedScale = 1.0f);
 
     /**
      * Play animation by index, the other param is the same to play.
@@ -281,7 +282,7 @@ protected:
     bool isIgnoreFrameEvent() const { return _ignoreFrameEvent; }
 
 	void playPartEveryBone(Bone* bone, Bone* boneMain, MovementData* movementData, float processScale,
-				int durationTo, int durationTween, int loop, cocos2d::tweenfunc::TweenType tweenEasing);
+				int durationTo, int durationTween, int loop, cocos2d::tweenfunc::TweenType tweenEasing, float startFrame);
 
 	void onPartEnd(Bone* bone);
 

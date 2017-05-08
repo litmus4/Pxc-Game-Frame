@@ -84,7 +84,7 @@ public:
      *         2  : fade in and out
      *
      */
-    virtual void play(int durationTo, int durationTween,  int loop, int tweenEasing);
+    virtual void play(int durationTo, int durationTween,  int loop, int tweenEasing, float startFrame = -1.0f);
 
     /**
      * Pause the Process
@@ -169,6 +169,7 @@ protected:
 
     //! Current frame this process arrived, this frame is tween frame
     float _currentFrame;
+	float _startFrame;
     //! Frame index it the time line
     int _curFrameIndex;
 

@@ -81,7 +81,7 @@ public:
      *         2  : fade in and out
      *
      */
-    virtual void play(MovementBoneData *movementBoneData, int durationTo, int durationTween,  int loop, int tweenEasing);
+    virtual void play(MovementBoneData *movementBoneData, int durationTo, int durationTween,  int loop, int tweenEasing, float startFrame = -1.0f);
 
     inline void setAnimation(ArmatureAnimation *animation) { _animation = animation; }
     inline ArmatureAnimation *getAnimation() const { return _animation; }

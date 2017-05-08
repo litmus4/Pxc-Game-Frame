@@ -41,6 +41,7 @@ ProcessBase::ProcessBase(void)
     , _animationInternal(1/60.0f)
     , _durationTween(0)
     , _currentFrame(0)
+	, _startFrame(0)
     , _curFrameIndex(0)
     , _isLoopBack(false)
 {
@@ -71,12 +72,13 @@ void ProcessBase::stop()
     _isPlaying = false;
 }
 
-void ProcessBase::play(int durationTo, int durationTween,  int loop, int tweenEasing)
+void ProcessBase::play(int durationTo, int durationTween,  int loop, int tweenEasing, float startFrame)
 {
     _isComplete = false;
     _isPause = false;
     _isPlaying = true;
-    _currentFrame = 0;
+	_currentFrame = 0;
+	_startFrame = (startFrame > 0.0f) ? startFrame : 0;
 
     /*
      *  Set m_iTotalFrames to durationTo, it is used for change tween between two animation.

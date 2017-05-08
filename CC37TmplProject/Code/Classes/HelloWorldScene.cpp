@@ -268,6 +268,6 @@ void HelloWorld::partMoveCompleteCallback(Armature* pArmature, const std::string
 {
 	if (m_pPartArm && strAnimName == "down_big")
 	{
-		m_pPartArm->getAnimation()->playPart("up_big", "Layer4", 30);
+		m_pPartArm->getAnimation()->playPart("up_big", "Layer4", 30, -1, 30.0f);
 	}
 }

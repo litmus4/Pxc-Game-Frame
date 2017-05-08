@@ -39,7 +39,47 @@ public:
 
 		EState eState;
 		CArmatureActionInfo* pActionInfo;
+		float fStartFrame;
+		float fStartTime;
 		float fSpeedScale;
 		bool bBlend;
+	};
+	struct PartAction
+	{
+		PartAction();
+		void Reset();
+
+		int iPriority;
+		CArmatureActionInfo* pActionInfo;
+		std::string strBoneName;
+		std::string strAnimName;
+		float fStartFrame;
+		float fSpeedScale;
+		bool bLoop;
+		bool bChanged;
+	};
+
+	struct RequestAction
+	{
+		int iActionID;
+		CArmatureActionInfo::EParentBinderType eParentBinderType;
+		CArmatureActionInfo::EDynamicSkinType eDynamicSkinType;
+		float fStartFrame;
+		float fStartTime;
+		float fSpeedScale;
+		bool bBlend;
+	};
+
+	struct ActionGroup
+	{
+		ActionGroup()
+		{
+			bRandom = true;
+			iCurIndex = 0;
+		}
+
+		bool bRandom;
+		int iCurIndex;
+		std::vector<CArmatureActionInfo*> vecActions;
 	};
 };

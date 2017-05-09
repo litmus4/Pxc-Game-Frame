@@ -63,8 +63,8 @@ public:
 	struct RequestAction
 	{
 		int iActionID;
-		CArmatureActionInfo::EParentBinderType eParentBinderType;
-		CArmatureActionInfo::EDynamicSkinType eDynamicSkinType;
+		CArmatureActionInfo::EParentBinderType ePrtBinderType;
+		CArmatureActionInfo::EDynamicSkinType eDynSkinType;
 		float fStartFrame;
 		float fStartTime;
 		float fSpeedScale;
@@ -83,13 +83,54 @@ public:
 		int iCurIndex;
 		std::vector<CArmatureActionInfo*> vecActions;
 	};
+public:
+	typedef std::map<CArmatureActionInfo::EDynamicSkinType,
+		std::map<int/*ActionID*/, ActionGroup>> tSubSkinMap;
+	typedef std::map<CArmatureActionInfo::EParentBinderType, tSubSkinMap> tMainBinderMap;
 
 public:
 	CArmatureProduct();
 	virtual ~CArmatureProduct();
 
+	std::string GetConfigFileName();
+	virtual bool Read(PxcUtil::CCSVTableOperator& tabop);
+	virtual bool Load();
+	virtual void UnLoad();
+	virtual CBaseProduct* Clone();
+
+	void Update(float dt);
+	void Draw(cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags);
+	bool HaveSubThreadReader();
+	cocostudio::Armature* GetArmature();
+	void SetTransform(cocos2d::Vec4& v4Trans, bool bForce = false);
+	cocos2d::Vec4 GetTransform();
+
+	bool PlayAction(int iActionID, CArmatureActionInfo::EParentBinderType ePrtBinderType,
+		CArmatureActionInfo::EDynamicSkinType eDynSkinType,
+		float fStartFrame = 0.0f, float fSpeedScale = 1.0f, bool bBlend = true,
+		bool bReplay = true, int* pAttachedEffectID = NULL);
+	void StopAction(int iActionID, bool bLoopOnly = true, bool bPlayLeave = true);
+	void StopAction(EPriorityType ePriorityType, bool bPlayLeave = true);
+
+	tMainBinderMap* GetMainActionMap();
+	std::map<int/*ActionID*/, ActionGroup>*
+		GetExcitedActionMap(CArmatureActionInfo::EParentBinderType ePrtBinderType,
+		CArmatureActionInfo::EDynamicSkinType eDynSkinType);
+	CArmatureActionInfo* GetPlayingActionInfo(EPartType ePartType);
+
+	//TODOJK matrix
+
+	virtual void OnLoadComplete();
+
 protected:
-	//
+	void OnPartCompleteCallback(cocostudio::Armature* pArmature, const std::string& strBoneName,
+		cocostudio::MovementEventType eEventType, const std::string& strAnimName);
+	CArmatureActionInfo* GetActionInfo(CArmatureActionInfo::EParentBinderType ePrtBinderType,
+		CArmatureActionInfo::EDynamicSkinType eDynSkinType, int iActionID);
+	int SetCurrentAction(CArmatureActionInfo* pActionInfo, float fStartFrame, float fStartTime,
+		float fSpeedScale, bool bBlend, bool bReplay);
+	int SetPartAction(EPartType ePartType, EPriorityType ePriorityType);
+	void RefreshAction();
 
 private:
 	std::string m_strConfigFileName;
@@ -100,15 +141,12 @@ private:
 
 	CSubThreadDataReader* m_pReader;
 	cocostudio::Armature* m_pArmature;
-	typedef std::map<CArmatureActionInfo::EDynamicSkinType,
-		std::map<int/*ActionID*/, ActionGroup>> tSubSkinMap;
-	typedef std::map<CArmatureActionInfo::EParentBinderType, tSubSkinMap> tMainBinderMap;
-	tMainBinderMap m_mapActions;
+	tMainBinderMap* m_pmapActions;
 	float m_fAnimInternal;
 	cocos2d::Vec4 m_v4Trans;
 
-	std::list<RequestAction> m_lisRequestActions;
 	CurrentAction m_CurrentActions[EPriority_Num];
 	PartAction m_PartActions[EPart_Num];
+	std::list<RequestAction> m_lisRequestActions;
 	std::string m_strPartBoneNames[3];
 };

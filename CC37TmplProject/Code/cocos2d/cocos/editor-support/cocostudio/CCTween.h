@@ -111,12 +111,12 @@ protected:
     /**
      * According to the percent to calculate current FrameData with tween effect
      */
-    virtual FrameData *tweenNodeTo(float percent, FrameData *node = nullptr);
+    virtual FrameData *tweenNodeTo(float percent, FrameData *node = nullptr, FrameData* between = nullptr);
 
     /**
      * According to the percent to calculate current color with tween effect
      */
-    virtual void tweenColorTo(float percent, FrameData *node);
+    virtual void tweenColorTo(float percent, FrameData *node, FrameData* between);
 
     /**
      * Update display index and process the key frame event when arrived a key frame

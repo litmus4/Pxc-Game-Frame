@@ -99,8 +99,22 @@ bool Tween::init(Bone *bone)
 
 void Tween::play(MovementBoneData *movementBoneData, int durationTo, int durationTween,  int loop, int tweenEasing, float startFrame)
 {
+	FrameData* targetTweenFrame = nullptr;
 	if (startFrame > 0.0f)
+	{
 		ProcessBase::play(durationTo, durationTween, loop, tweenEasing, startFrame);
+
+		if (movementBoneData->frameList.size() > 1)
+		{
+			FrameData* targetFirstFrame = movementBoneData->getFrameData(0);
+			FrameData* targetSecondFrame = movementBoneData->getFrameData(1);
+			FrameData targetBetween;
+			targetBetween.subtract(targetFirstFrame, targetSecondFrame, true);
+			int targetDuraTween = durationTween * _movementBoneData->scale;
+			targetDuraTween = targetDuraTween > 0 ? targetDuraTween : 1;
+			targetTweenFrame = tweenNodeTo(startFrame / targetDuraTween, new (std::nothrow) FrameData(), &targetBetween);
+		}
+	}
 	else
 		ProcessBase::play(durationTo, durationTween, loop, tweenEasing);
 
@@ -122,7 +136,7 @@ void Tween::play(MovementBoneData *movementBoneData, int durationTo, int duratio
     setMovementBoneData(movementBoneData);
     _rawDuration = _movementBoneData->duration;
 
-    FrameData *nextKeyFrame = _movementBoneData->getFrameData(0);
+    FrameData *nextKeyFrame = startFrame > 0.0f ? targetTweenFrame : _movementBoneData->getFrameData(0);
     _tweenData->displayIndex = nextKeyFrame->displayIndex;
 
     if (_bone->getArmature()->getArmatureData()->dataVersion >= VERSION_COMBINED)
@@ -167,6 +181,7 @@ void Tween::play(MovementBoneData *movementBoneData, int durationTo, int duratio
     }
 
     tweenNodeTo(0);
+	CC_SAFE_DELETE(targetTweenFrame);
 }
 
 void Tween::gotoAndPlay(int frameIndex)
@@ -359,38 +374,39 @@ void Tween::arriveKeyFrame(FrameData *keyFrameData)
     }
 }
 
-FrameData *Tween::tweenNodeTo(float percent, FrameData *node)
+FrameData *Tween::tweenNodeTo(float percent, FrameData *node, FrameData* between)
 {
     node = node == nullptr ? _tweenData : node;
+	between = between == nullptr ? _between : between;
 
     if (!_from->isTween)
     {
         percent = 0;
     }
 
-    node->x = _from->x + percent * _between->x;
-    node->y = _from->y + percent * _between->y;
-    node->scaleX = _from->scaleX + percent * _between->scaleX;
-    node->scaleY = _from->scaleY + percent * _between->scaleY;
-    node->skewX = _from->skewX + percent * _between->skewX;
-    node->skewY = _from->skewY + percent * _between->skewY;
+    node->x = _from->x + percent * between->x;
+    node->y = _from->y + percent * between->y;
+    node->scaleX = _from->scaleX + percent * between->scaleX;
+    node->scaleY = _from->scaleY + percent * between->scaleY;
+    node->skewX = _from->skewX + percent * between->skewX;
+    node->skewY = _from->skewY + percent * between->skewY;
 
     _bone->setTransformDirty(true);
 
-    if (node && _between->isUseColorInfo)
+    if (node && between->isUseColorInfo)
     {
-        tweenColorTo(percent, node);
+        tweenColorTo(percent, node, between);
     }
 
     return node;
 }
 
-void Tween::tweenColorTo(float percent, FrameData *node)
+void Tween::tweenColorTo(float percent, FrameData *node, FrameData* between)
 {
-    node->a = _from->a + percent * _between->a;
-    node->r = _from->r + percent * _between->r;
-    node->g = _from->g + percent * _between->g;
-    node->b = _from->b + percent * _between->b;
+    node->a = _from->a + percent * between->a;
+    node->r = _from->r + percent * between->r;
+    node->g = _from->g + percent * between->g;
+    node->b = _from->b + percent * between->b;
     _bone->updateColor();
 }
 

@@ -136,7 +136,7 @@ void Tween::play(MovementBoneData *movementBoneData, int durationTo, int duratio
     setMovementBoneData(movementBoneData);
     _rawDuration = _movementBoneData->duration;
 
-    FrameData *nextKeyFrame = startFrame > 0.0f ? targetTweenFrame : _movementBoneData->getFrameData(0);
+    FrameData *nextKeyFrame = targetTweenFrame ? targetTweenFrame : _movementBoneData->getFrameData(0);
     _tweenData->displayIndex = nextKeyFrame->displayIndex;
 
     if (_bone->getArmature()->getArmatureData()->dataVersion >= VERSION_COMBINED)

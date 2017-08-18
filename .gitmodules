@@ -1,3 +1,6 @@
 [submodule "Shared/PxcLibsRTTest"]
 	path = Shared/PxcLibsRTTest
 	url = https://github.com/litmus4/PxcLibsRTTest.git
+[submodule "CCCTmplModel"]
+	path = CCCTmplModel
+	url = https://github.com/litmus4/CCCTmplModel.git

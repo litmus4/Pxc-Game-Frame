@@ -37,7 +37,7 @@ public:
 	TmplIter Begin() { return m_mapTemplates.begin(); }
 	TmplIter End() { return m_mapTemplates.end(); }
 
-	virtual bool Init(const char* szFileName);
+	virtual bool Init(const char* szFileName, GlobalDef::ELanguage eLanguage);
 	virtual void Release();
 
 	virtual void Discard(CBaseProduct* pProduct);

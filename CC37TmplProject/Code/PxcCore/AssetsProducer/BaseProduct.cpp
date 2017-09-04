@@ -27,7 +27,7 @@ void CBaseProduct::SetLoadType(ELoadType eType)
 	m_eLoadType = eType;
 }
 
-bool CBaseProduct::Read(PxcUtil::CCSVTableOperator& tabop)
+bool CBaseProduct::Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage)
 {
 	return true;
 }

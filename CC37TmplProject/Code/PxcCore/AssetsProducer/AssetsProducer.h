@@ -33,7 +33,7 @@ DECLARE_SINGLETON_CONSTRUCTOR(CAssetsProducer)
 public:
 	~CAssetsProducer();
 
-	bool Init(std::string strPath);
+	bool Init(std::string strPath, GlobalDef::ELanguage eLanguage);
 	void Release();
 
 	CSpriteLine& SpriteLine();

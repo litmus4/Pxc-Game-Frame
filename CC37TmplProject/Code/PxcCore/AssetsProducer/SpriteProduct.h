@@ -14,7 +14,7 @@ public:
 	bool IsSpriteFrame();
 	std::string GetName();
 
-	virtual bool Read(PxcUtil::CCSVTableOperator& tabop);
+	virtual bool Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage);
 	virtual bool Load();
 	virtual void UnLoad();
 	virtual CBaseProduct* Clone();

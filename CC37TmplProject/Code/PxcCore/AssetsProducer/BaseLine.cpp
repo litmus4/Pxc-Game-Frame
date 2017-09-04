@@ -57,7 +57,7 @@ CBaseLine::~CBaseLine()
 	//
 }
 
-bool CBaseLine::Init(const char* szFileName)
+bool CBaseLine::Init(const char* szFileName, GlobalDef::ELanguage eLanguage)
 {
 	PxcUtil::CCSVTableOperator tabop;
 	if (!tabop.Load(szFileName))
@@ -67,7 +67,7 @@ bool CBaseLine::Init(const char* szFileName)
 	while (tabop.ReadRow())
 	{
 		CBaseProduct* pProduct = CreateProduct();
-		if (!pProduct->Read(tabop))
+		if (!pProduct->Read(tabop, eLanguage))
 		{
 			delete pProduct;
 			Release();

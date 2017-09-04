@@ -1,5 +1,6 @@
 #pragma once
 #include "PxcUtil/CSVTableOperator.h"
+#include "PublicDefinitions\Globalization.h"
 
 class CBaseProduct
 {
@@ -19,7 +20,7 @@ public:
 	ELoadType GetLoadType();
 	void SetLoadType(ELoadType eType);
 
-	virtual bool Read(PxcUtil::CCSVTableOperator& tabop);
+	virtual bool Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage);
 	virtual bool Load();
 	virtual void UnLoad();
 	virtual CBaseProduct* Clone() = 0;

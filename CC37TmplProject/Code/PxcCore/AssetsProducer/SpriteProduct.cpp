@@ -29,7 +29,7 @@ std::string CSpriteProduct::GetName()
 	return m_strName;
 }
 
-bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop)
+bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage)
 {
 	if (!tabop.GetValue("ID", m_iID))
 		return false;
@@ -37,6 +37,9 @@ bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 	if (!tabop.GetValue("IsSpriteFrame", m_bSpriteFrame))
 		return false;
 
+	bool bGlobal = false;
+	if (!tabop.GetValue("IsGlobal", bGlobal))
+		return false;
 	if (m_bSpriteFrame)
 	{
 		if (!tabop.GetValue("PlistFileName", m_strPlistFileName))
@@ -44,6 +47,8 @@ bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 
 		if (!tabop.GetValue("TexFileName", m_strAtlasFileName))
 			return false;
+		else if (bGlobal)
+			GlobalDef::InsertLanguageFolder(m_strAtlasFileName, eLanguage);
 
 		if (!tabop.GetValue("FrameName", m_strName))
 			return false;
@@ -52,6 +57,8 @@ bool CSpriteProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 	{
 		if (!tabop.GetValue("TexFileName", m_strName))
 			return false;
+		else if (bGlobal)
+			GlobalDef::InsertLanguageFolder(m_strName, eLanguage);
 	}
 
 	if (!tabop.GetValue("IsLoadingDraw", m_bLoadingDraw))

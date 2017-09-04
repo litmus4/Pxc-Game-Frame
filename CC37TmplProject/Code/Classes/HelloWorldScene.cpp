@@ -84,7 +84,7 @@ bool HelloWorld::init()
 #endif
 	CTextTableCenter::GetInstance()->Init(GlobalDef::ELanguage_ZH_CN);
 	COtherTableCenter::GetInstance()->Init();
-	CAssetsProducer::GetInstance()->Init("Assets");
+	CAssetsProducer::GetInstance()->Init("Assets", GlobalDef::ELanguage_ZH_CN);
 	PxcUtil::zPackRelease();
 
 	std::string strText5 = "Hello World ";

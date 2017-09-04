@@ -9,7 +9,7 @@ public:
 	CSpriteLine();
 	virtual ~CSpriteLine();
 
-	virtual bool Init(const char* szFileName);
+	virtual bool Init(const char* szFileName, GlobalDef::ELanguage eLanguage);
 	CSpriteProduct* Fetch(int iID, CBaseProduct::ELoadType eLoadType, bool bAsyn = false);
 
 	void DrawLoading(cocos2d::Vec4& v4Trans, cocos2d::Renderer* renderer, const cocos2d::Mat4& parentTrans, uint32_t parentFlags);

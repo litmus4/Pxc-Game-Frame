@@ -93,7 +93,7 @@ public:
 	virtual ~CArmatureProduct();
 
 	std::string GetConfigFileName();
-	virtual bool Read(PxcUtil::CCSVTableOperator& tabop);
+	virtual bool Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage);
 	virtual bool Load();
 	virtual void UnLoad();
 	virtual CBaseProduct* Clone();

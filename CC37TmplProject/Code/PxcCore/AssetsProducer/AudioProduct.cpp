@@ -43,7 +43,7 @@ int CAudioProduct::GetAudioID()
 	return m_Ident.iAudioID;
 }
 
-bool CAudioProduct::Read(PxcUtil::CCSVTableOperator& tabop)
+bool CAudioProduct::Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage)
 {
 	if (!tabop.GetValue("ID", m_iID))
 		return false;

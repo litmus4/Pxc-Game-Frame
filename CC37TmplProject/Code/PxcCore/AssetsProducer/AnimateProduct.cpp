@@ -52,7 +52,7 @@ void CAnimateProduct::SetRestoredFinally(bool b)
 		m_pAnimation->setRestoreOriginalFrame(b);
 }
 
-bool CAnimateProduct::Read(PxcUtil::CCSVTableOperator& tabop)
+bool CAnimateProduct::Read(PxcUtil::CCSVTableOperator& tabop, GlobalDef::ELanguage eLanguage)
 {
 	if (!tabop.GetValue("ID", m_iID))
 		return false;
@@ -65,9 +65,14 @@ bool CAnimateProduct::Read(PxcUtil::CCSVTableOperator& tabop)
 
 	if (!tabop.GetValue("SFPlistFile", m_strSFPlistFile))
 		return false;
-
+	
+	bool bGlobal = false;
+	if (!tabop.GetValue("IsGlobal", bGlobal))
+		return false;
 	if (!tabop.GetValue("SFAtlasFile", m_strSFAtlasFile))
 		return false;
+	else if (bGlobal)
+		GlobalDef::InsertLanguageFolder(m_strSFAtlasFile, eLanguage);
 
 	return true;
 }

@@ -14,9 +14,9 @@ CSpriteLine::~CSpriteLine()
 	//
 }
 
-bool CSpriteLine::Init(const char* szFileName)
+bool CSpriteLine::Init(const char* szFileName, GlobalDef::ELanguage eLanguage)
 {
-	bool bRet = CBaseLine::Init(szFileName);
+	bool bRet = CBaseLine::Init(szFileName, eLanguage);
 	m_pLoadingDraw = Fetch(SPRITE_LOADING_DRAW_ID, CBaseProduct::ESharedProduct);
 	return bRet;
 }

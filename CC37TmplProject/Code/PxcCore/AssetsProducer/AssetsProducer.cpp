@@ -66,17 +66,17 @@ CAssetsProducer::~CAssetsProducer()
 	delete m_pLoadingThread;
 }
 
-bool CAssetsProducer::Init(std::string strPath)
+bool CAssetsProducer::Init(std::string strPath, GlobalDef::ELanguage eLanguage)
 {
 	PxcUtil::zPackCombinePath(strPath);
 
-	if (!m_SpriteLine.Init((strPath + "\\Sprites\\SpriteList.csv").c_str()))
+	if (!m_SpriteLine.Init((strPath + "\\Sprites\\SpriteList.csv").c_str(), eLanguage))
 		return false;
 
-	if (!m_AnimateLine.Init((strPath + "\\Animates\\AnimateList.csv").c_str()))
+	if (!m_AnimateLine.Init((strPath + "\\Animates\\AnimateList.csv").c_str(), eLanguage))
 		return false;
 
-	if (!m_AudioLine.Init((strPath + "\\Audios\\AudioList.csv").c_str()))
+	if (!m_AudioLine.Init((strPath + "\\Audios\\AudioList.csv").c_str(), eLanguage))
 		return false;
 
 	return m_pLoadingThread->Start();

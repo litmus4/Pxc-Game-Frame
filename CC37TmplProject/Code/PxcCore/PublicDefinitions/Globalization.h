@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace GlobalDef
 {
@@ -18,6 +19,19 @@ inline const char* GetLanguageFolder(ELanguage eLanguage)
 		"\\zh_tw",
 	};
 	return szLanguageFolders[eLanguage];
+}
+
+inline bool InsertLanguageFolder(std::string& strPath, ELanguage eLanguage)
+{
+	int ipos = strPath.find_last_of('\\');
+	if (ipos != std::string::npos)
+	{
+		std::string strFolder = strPath.substr(0, ipos);
+		std::string strFile = strPath.substr(ipos);
+		strPath = strFolder + GetLanguageFolder(eLanguage) + strFile;
+		return true;
+	}
+	return false;
 }
 
 }

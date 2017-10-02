@@ -22,6 +22,10 @@ public:
 	void LoadAnimPlist(const std::string& strFileName);//Sub
 	void AddAnimations();//Main
 
+	//Armature
+	void LoadArmConfig(const std::string& strFileName);//Sub
+	void AddArmature();//Main
+
 private:
 	//Texture
 	cocos2d::Image* m_pImage;
@@ -35,4 +39,7 @@ private:
 	//Animations
 	std::string m_straniFileName;
 	cocos2d::ValueMap m_aniDict;
+
+	//Armature
+	std::string m_strarmFileName;
 };

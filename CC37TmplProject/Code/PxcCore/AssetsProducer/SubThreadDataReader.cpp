@@ -1,7 +1,9 @@
 #include "SubThreadDataReader.h"
+#include "cocostudio\CocoStudio.h"
 #include "PxcUtil/zPackEx.h"
 
 USING_NS_CC;
+using namespace cocostudio;
 
 CSubThreadDataReader::CSubThreadDataReader()
 {
@@ -93,4 +95,17 @@ void CSubThreadDataReader::AddAnimations()
 		return;
 
 	AnimationCache::getInstance()->addAnimationsWithDictionary(m_aniDict, m_straniFileName);
+}
+
+void CSubThreadDataReader::LoadArmConfig(const std::string& strFileName)
+{
+	m_strarmFileName = strFileName;//成员变量是组合或绝对路径
+	if (!PxcUtil::zPackCombinePath(m_strarmFileName))
+		m_strarmFileName = FileUtils::getInstance()->fullPathForFilename(strFileName);
+	ArmatureDataManager::getInstance()->addArmatureFileInfoNoImage(m_strarmFileName, m_strsfFileName);
+}
+
+void CSubThreadDataReader::AddArmature()
+{
+	SpriteFrameCacheHelper::getInstance()->retainSpriteFramesFromDictionary(m_sfDict, m_strsfFileName);
 }

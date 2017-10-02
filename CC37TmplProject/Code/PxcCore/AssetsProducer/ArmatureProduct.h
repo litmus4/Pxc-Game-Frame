@@ -133,6 +133,7 @@ protected:
 	void RefreshAction();
 
 private:
+	std::string m_strName;
 	std::string m_strConfigFileName;
 	std::string m_strPlistFileName;
 	std::string m_strImageFileName;

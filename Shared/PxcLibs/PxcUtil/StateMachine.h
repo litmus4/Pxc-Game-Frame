@@ -48,6 +48,9 @@ public:
 	bool SetState(TState* pState, bool bForce = false)
 	{
 		CRI_SEC(m_lock)
+		if (pState == m_pCurrent)
+			return true;
+
 		if (!bForce)
 		{
 			std::map<TState*, tEventMap>::iterator itCur = m_mapStates.find(m_pCurrent);

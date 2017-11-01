@@ -1,0 +1,5 @@
+ID,plist文件,动画名称,精灵帧plist文件,精灵帧纹理文件,是否多国语言
+ID,PlistFileName,Name,SFPlistFile,SFAtlasFile,IsGlobal
+int,string,string,string,string,int
+-1,,,,,0
+0,Assets\Animates\pxc_anim.plist,count,Assets\Atlas\Basic.plist,Assets\Atlas\Basic.png,1

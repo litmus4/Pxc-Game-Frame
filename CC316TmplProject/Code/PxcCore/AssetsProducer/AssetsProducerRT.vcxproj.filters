@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{dc2daff7-4356-4d9c-b5d0-25e30018b384}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{e626ff30-d76b-44cd-b481-6a95317f0fa9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="AnimateLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimateProduct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ArmatureProduct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetsProducer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioProduct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseProduct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteProduct.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SubThreadDataReader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="AnimateLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimateProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmatureActionInfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ArmatureProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetsProducer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteProduct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SubThreadDataReader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(AngleBinPath)libEGL.dll" />
+    <None Include="$(AngleBinPath)libGLESv2.dll" />
+    <None Include="$(ZLibBinPath)zlib.dll" />
+    <None Include="$(WebsocketsBinPath)libwebsockets.dll" />
+    <None Include="$(SQLiteBinPath)sqlite3.dll" />
+    <None Include="$(OggBinPath)libogg.dll" />
+    <None Include="$(OggBinPath)libvorbis.dll" />
+    <None Include="$(OggBinPath)libvorbisfile.dll" />
+  </ItemGroup>
+</Project>

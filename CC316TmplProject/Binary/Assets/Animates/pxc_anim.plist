@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--Honghaier Game Editor : Version 1.0 -->
+<plist version="1.0">
+<dict>
+<key>animations</key>
+<dict>
+<key>count</key>
+<dict>
+<key>delay</key>
+<real>1.0000</real>
+<key>frames</key>
+<array>
+<string>pxc_a1.png</string>
+<string>pxc_a2.png</string>
+<string>pxc_a3.png</string>
+</array>
+</dict>
+</dict>
+</dict>
+</plist>

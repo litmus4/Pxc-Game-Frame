@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{cf59a1f1-2f02-456b-8788-a5c43b8f65e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{65a5db2c-ce85-4de5-8a9f-99e7240871d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextTable">
+      <UniqueIdentifier>{73b97702-c026-4437-941e-a0e93d0a37b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OtherTable">
+      <UniqueIdentifier>{b6223512-4b99-4cf2-8802-396e49703c27}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="LoadDefines.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\CaptionRow.cpp">
+      <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\StoryTextRow.cpp">
+      <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\TextRow.cpp">
+      <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="TextTable\TextTableCenter.cpp">
+      <Filter>TextTable</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTable\GlobalParamRow.cpp">
+      <Filter>OtherTable</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTable\OtherTableCenter.cpp">
+      <Filter>OtherTable</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="LoadDefines.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TextTable\CaptionRow.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextTable\StoryTextRow.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextTable\TextRow.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
+    <ClInclude Include="TextTable\TextTableCenter.h">
+      <Filter>TextTable</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherTable\GlobalParamRow.h">
+      <Filter>OtherTable</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherTable\OtherTableCenter.h">
+      <Filter>OtherTable</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

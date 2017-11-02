@@ -78,7 +78,7 @@ bool CAudioProduct::Load()
 	}
 	else
 	{
-		AudioEngine::preload(m_Ident.strName, true);
+		AudioEngine::preload(m_Ident.strName, nullptr, true);
 #ifdef AUDIO_MEMORY_REUSE
 		if (m_eLoadType == CBaseProduct::ESharedProduct)
 		{

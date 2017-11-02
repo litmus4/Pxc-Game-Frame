@@ -142,7 +142,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,7 +158,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -174,7 +174,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -190,7 +190,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <CompileAsWinRT>true</CompileAsWinRT>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(EngineRoot)cocos\audio\include;..\..\..\..\Shared\PxcLibsRT\;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

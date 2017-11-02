@@ -603,5 +603,3 @@ bool AudioEngine::isEnabled()
 {
     return _isEnabled;
 }
-
-#endif

@@ -177,7 +177,7 @@ FileUtils::Status FileUtilsWin32::getContents(const std::string& filename, Resiz
     HANDLE fileHandle = INVALID_HANDLE_VALUE;
     if (PxcUtil::zPackFOpen(fullPath.c_str(), &pZFile) == PxcUtil::EzPOpen_SimplePath)
     {
-        HANDLE fileHandle = ::CreateFile(StringUtf8ToWideChar(fullPath).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, nullptr);
+        fileHandle = ::CreateFile(StringUtf8ToWideChar(fullPath).c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, nullptr);
         if (fileHandle == INVALID_HANDLE_VALUE)
             return FileUtils::Status::OpenFailed;
     }
@@ -213,7 +213,7 @@ FileUtils::Status FileUtilsWin32::getContents(const std::string& filename, Resiz
     DWORD sizeRead = 0;
     if (pZFile)
     {
-        sizeRead = pZFile->read(buffer->buffer(), size)
+		sizeRead = pZFile->read((zp::u8*)buffer->buffer(), size);
         successed = (sizeRead != 0);
         zPackFClose(pZFile);
     }

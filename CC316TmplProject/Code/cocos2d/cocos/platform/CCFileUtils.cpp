@@ -41,11 +41,11 @@ THE SOFTWARE.
 #endif
 #include <sys/stat.h>
 
+#include "PxcUtil/zPackEx.h"
+
 NS_CC_BEGIN
 
 // Implement DictMaker
-
-#include "PxcUtil/zPackEx.h"
 
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_IOS) && (CC_TARGET_PLATFORM != CC_PLATFORM_MAC)
 
@@ -707,11 +707,11 @@ FileUtils::Status FileUtils::getContents(const std::string& filename, ResizableB
     }
 
     buffer->resize(size);
-    size_t readsize
+	size_t readsize;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
     if (pZFile)
     {
-        readsize = pZFile->read(buffer->buffer(), size);
+        readsize = pZFile->read((zp::u8*)buffer->buffer(), size);
         zPackFClose(pZFile);
     }
     else

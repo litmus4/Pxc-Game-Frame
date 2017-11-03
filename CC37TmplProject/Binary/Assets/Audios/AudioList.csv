@@ -1,6 +1,0 @@
-ID,文件名,是否背景音乐,音量
-ID,Name,IsBgm,Volume
-int,string,int,float
--1,,0,1
-0,Assets\Audios\PutongDisco.mp3,1,
-1,Assets\Audios\SE_ef_Debuff.mp3,,

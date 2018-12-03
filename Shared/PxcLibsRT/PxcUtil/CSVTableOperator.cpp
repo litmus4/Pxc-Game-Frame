@@ -74,7 +74,7 @@ bool CCSVTableOperator::ReadRow()
 	if (m_iRowNum < 0 || m_pmapDefaults == NULL)
 		return false;
 
-	if (m_itRow != m_Core.GetCSVMap().end())
+	if (m_itRow != m_Core.GetCSVMap().end() && m_itRow->second.size() > 1)//·ÀÂÒÂë
 	{
 		std::map<std::string, ColHead>::iterator iter = m_mapColHeads.begin();
 		for (; iter != m_mapColHeads.end(); iter++)

@@ -10,9 +10,9 @@ COtherTableCenter::~COtherTableCenter()
 	//
 }
 
-bool COtherTableCenter::Init()
+bool COtherTableCenter::Init(std::string strPath)
 {
-	LOADTABLE(GlobalParam, "OtherTable", m_mapGlobalParams, m_iID)
+	LOADTABLE(GlobalParam, strPath, "OtherTable", m_mapGlobalParams, m_iID)
 	return true;
 }
 

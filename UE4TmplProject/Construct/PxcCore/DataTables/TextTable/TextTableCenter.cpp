@@ -11,20 +11,20 @@ CTextTableCenter::~CTextTableCenter()
 	//
 }
 
-bool CTextTableCenter::Init(GlobalDef::ELanguage eLanguage, bool bUseCaptionTags)
+bool CTextTableCenter::Init(std::string strPath, GlobalDef::ELanguage eLanguage, bool bUseCaptionTags)
 {
 	std::string strFolder = "TextTable";
 	strFolder += GlobalDef::GetLanguageFolder(eLanguage);
 
-	LOADTABLE(Text, strFolder, m_mapTexts, m_iID)
-	LOADTABLE(Caption, strFolder, m_mapCaptions, m_iID)
+	LOADTABLE(Text, strPath, strFolder, m_mapTexts, m_iID)
+	LOADTABLE(Caption, strPath, strFolder, m_mapCaptions, m_iID)
 	if (bUseCaptionTags)
 	{
 		std::map<int, CCaptionRow*>::iterator iter = m_mapCaptions.begin();
 		for (; iter != m_mapCaptions.end(); iter++)
 			m_mapCaptionTags.insert(std::make_pair(iter->second->m_strTag, iter->first));
 	}
-	LOADTABLE(StoryText, strFolder, m_mapStoryTexts, m_iID)
+	LOADTABLE(StoryText, strPath, strFolder, m_mapStoryTexts, m_iID)
 	return true;
 }
 

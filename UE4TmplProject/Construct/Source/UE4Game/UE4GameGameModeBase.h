@@ -14,4 +14,8 @@ class UE4GAME_API AUE4GameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	AUE4GameGameModeBase();
+
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage);
 };

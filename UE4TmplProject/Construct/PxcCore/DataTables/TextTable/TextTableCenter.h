@@ -10,7 +10,7 @@ class CTextTableCenter : public PxcUtil::Singleton<CTextTableCenter>
 DECLARE_SINGLETON_CONSTRUCTOR(CTextTableCenter)
 public:
 	~CTextTableCenter();
-	bool Init(std::string strPath, GlobalDef::ELanguage eLanguage, bool bUseCaptionTags = false);
+	bool Init(const std::string& strPath, GlobalDef::ELanguage eLanguage, bool bUseCaptionTags = false);
 	void Release();
 
 	CTextRow* GetTextRow(int iID);

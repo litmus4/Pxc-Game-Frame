@@ -7,7 +7,7 @@ class COtherTableCenter : public PxcUtil::Singleton<COtherTableCenter>
 DECLARE_SINGLETON_CONSTRUCTOR(COtherTableCenter)
 public:
 	~COtherTableCenter();
-	bool Init(std::string strPath);
+	bool Init(const std::string& strPath);
 	void Release();
 
 	CGlobalParamRow* GetGlobalParamRow(int iID);

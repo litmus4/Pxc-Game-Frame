@@ -11,7 +11,7 @@ CTextTableCenter::~CTextTableCenter()
 	//
 }
 
-bool CTextTableCenter::Init(std::string strPath, GlobalDef::ELanguage eLanguage, bool bUseCaptionTags)
+bool CTextTableCenter::Init(const std::string& strPath, GlobalDef::ELanguage eLanguage, bool bUseCaptionTags)
 {
 	std::string strFolder = "TextTable";
 	strFolder += GlobalDef::GetLanguageFolder(eLanguage);

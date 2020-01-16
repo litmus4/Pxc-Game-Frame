@@ -30,7 +30,7 @@ namespace StringParser{
 inline int GetParamFromString(std::string Str, std::vector<i32>& IntVec, char Delim = ',')
 {
 	int ipos = Str.find_first_of(Delim), ilastpos = 0;
-	while (ipos != std::string::npos)
+	while (ipos != (int)std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
 		IntVec.push_back(atoi(strSub.c_str()));
@@ -45,7 +45,7 @@ inline int GetParamFromString(std::string Str, std::vector<i32>& IntVec, char De
 inline int GetParamFromString(std::string Str, std::vector<float>& FloatVec, char Delim = ',')
 {
 	int ipos = Str.find_first_of(Delim), ilastpos = 0;
-	while (ipos != std::string::npos)
+	while (ipos != (int)std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
 		FloatVec.push_back(atof(strSub.c_str()));
@@ -60,7 +60,7 @@ inline int GetParamFromString(std::string Str, std::vector<float>& FloatVec, cha
 inline int GetParamFromString(std::string Str, std::vector<u32>& uiIntVec, char Delim = ',')
 {
 	int ipos = Str.find_first_of(Delim), ilastpos = 0;
-	while (ipos != std::string::npos)
+	while (ipos != (int)std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
 		uiIntVec.push_back(strtoul(strSub.c_str(), NULL, 10));
@@ -74,13 +74,13 @@ inline int GetParamFromString(std::string Str, std::vector<u32>& uiIntVec, char 
 
 inline int GetParamFromString(std::string Str, std::vector<std::string>& StringVec, char Delim = ',')
 {
-	int ipos = 0, ilastpos = 0, iquotpos = std::string::npos;
+	int ipos = 0, ilastpos = 0, iquotpos = (int)std::string::npos;
 	if (ilastpos >= Str.size())
 		return 0;
 	if (Str.at(ilastpos) == '\"')
 	{
 		iquotpos = Str.find_first_of('\"', ilastpos + 1);
-		if (iquotpos != std::string::npos)
+		if (iquotpos != (int)std::string::npos)
 			ipos = Str.find_first_of(Delim, iquotpos);
 		else
 			ipos = Str.find_first_of(Delim, ilastpos);
@@ -88,10 +88,10 @@ inline int GetParamFromString(std::string Str, std::vector<std::string>& StringV
 	else
 		ipos = Str.find_first_of(Delim, ilastpos);
 
-	while (ipos != std::string::npos)
+	while (ipos != (int)std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
-		if (iquotpos != std::string::npos)
+		if (iquotpos != (int)std::string::npos)
 			strSub = strSub.substr(1, strSub.size() - 2);
 		StringVec.push_back(strSub);
 
@@ -101,20 +101,20 @@ inline int GetParamFromString(std::string Str, std::vector<std::string>& StringV
 		if (Str.at(ilastpos) == '\"')
 		{
 			iquotpos = Str.find_first_of('\"', ilastpos + 1);
-			if (iquotpos != std::string::npos)
+			if (iquotpos != (int)std::string::npos)
 				ipos = Str.find_first_of(Delim, iquotpos);
 			else
 				ipos = Str.find_first_of(Delim, ilastpos);
 		}
 		else
 		{
-			iquotpos = std::string::npos;
+			iquotpos = (int)std::string::npos;
 			ipos = Str.find_first_of(Delim, ilastpos);
 		}
 	}
 
 	std::string strSub = Str.substr(ilastpos);
-	if (iquotpos != std::string::npos)
+	if (iquotpos != (int)std::string::npos)
 		strSub = strSub.substr(1, strSub.size() - 2);
 	StringVec.push_back(strSub);
 
@@ -125,7 +125,7 @@ template<typename T>
 inline int GetParamFromStringEx(std::string Str, std::vector<T>& vec, char Delim = ',')
 {
 	int ipos = Str.find_first_of(Delim), ilastpos = 0;
-	while (ipos != std::string::npos)
+	while (ipos != (int)std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
 		std::stringstream stream;

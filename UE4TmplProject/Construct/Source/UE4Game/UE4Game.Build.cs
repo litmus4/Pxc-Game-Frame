@@ -48,9 +48,18 @@ public class UE4Game : ModuleRules
         PublicIncludePaths.Add(Path.Combine(PxcLibPath, ""));
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
         string CfgStr = (Target.Configuration == UnrealTargetConfiguration.Shipping ? "Release" : "Debug");
-        PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "zpack.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "PxcUtil.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "tinyxml.lib"));
+        if (Target.Platform == UnrealTargetPlatform.Win64/* ||*/)
+        {
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "zpack64.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "PxcUtil64.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "tinyxml64.lib"));
+        }
+        else
+        {
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "zpack.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "PxcUtil.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "tinyxml.lib"));
+        }
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + ".win32", "PublicDefinitions.lib"));
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + ".win32", "DataTables.lib"));
     }

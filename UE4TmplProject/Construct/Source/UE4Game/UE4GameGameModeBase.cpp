@@ -9,11 +9,11 @@
 #include "Windows/PreWindowsApi.h"
 #include "PxcUtil/LogCenter.h"
 #include "PublicDefinitions/SpecialFileDef.h"
-#include "DataTables/TextTable/TextTableCenter.h"//FLAGJK 存在两个编译问题之一：Win64下size_t std::string::npos为long long，StringParser中int赋值编译出错
+#include "DataTables/TextTable/TextTableCenter.h"
 #include "DataTables/OtherTable/OtherTableCenter.h"
 #include "Windows/PostWindowsApi.h"
 #include "Windows/HideWindowsPlatformTypes.h"
-#include "PxcUtil/zPackEx.h"//FLAGJK 存在两个编译问题之二：Win32不能与Win64同编，都改为x64
+#include "PxcUtil/zPackEx.h"//FLAGJK 存在两个编译问题之二吗：Win32不能与Win64同编，都改为x64？
 #include <string>
 
 #define USE_ZPACK 1

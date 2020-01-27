@@ -47,6 +47,7 @@ public class UE4Game : ModuleRules
 
         PublicIncludePaths.Add(Path.Combine(PxcLibPath, ""));
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
+        //FLAGJK 存在两个编译问题之一：大量关于PxcLibs的配置不匹配连接错误，部分需要尝试dev配置对应release库，可能PxcCore也需要调配置
         string CfgStr = (Target.Configuration == UnrealTargetConfiguration.Shipping ? "Release" : "Debug");
         if (Target.Platform == UnrealTargetPlatform.Win64/* ||*/)
         {

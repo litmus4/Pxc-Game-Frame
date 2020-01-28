@@ -2,6 +2,7 @@
 
 using System.IO;
 using UnrealBuildTool;
+using System;
 
 public class UE4Game : ModuleRules
 {
@@ -47,20 +48,21 @@ public class UE4Game : ModuleRules
 
         PublicIncludePaths.Add(Path.Combine(PxcLibPath, ""));
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
-        //FLAGJK 存在两个编译问题之一：大量关于PxcLibs的配置不匹配连接错误，部分需要尝试dev配置对应release库，可能PxcCore也需要调配置
-        string CfgStr = (Target.Configuration == UnrealTargetConfiguration.Shipping ? "Release" : "Debug");
+        string CfgStrOut = "Release";
+        string CfgStr = (Target.Configuration == UnrealTargetConfiguration.DebugGame ? "Debug" : "Release");
         if (Target.Platform == UnrealTargetPlatform.Win64/* ||*/)
         {
-            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "zpack64.lib"));
-            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "PxcUtil64.lib"));
-            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "tinyxml64.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "zpack64.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "PxcUtil64.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "tinyxml64.lib"));
         }
         else
         {
-            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "zpack.lib"));
-            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "PxcUtil.lib"));
-            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStr, "tinyxml.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "zpack.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "PxcUtil.lib"));
+            PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "tinyxml.lib"));
         }
+        //FLAGJK 存在两个编译问题之一：PxcCore连接还是未找到外部符号
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + ".win32", "PublicDefinitions.lib"));
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + ".win32", "DataTables.lib"));
     }

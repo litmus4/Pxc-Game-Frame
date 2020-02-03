@@ -11,6 +11,7 @@
 #include "PublicDefinitions/SpecialFileDef.h"
 #include "DataTables/TextTable/TextTableCenter.h"
 #include "DataTables/OtherTable/OtherTableCenter.h"
+#include "PxcUtil/StringTools.h"
 #include "Windows/PostWindowsApi.h"
 #include "Windows/HideWindowsPlatformTypes.h"
 #include "PxcUtil/zPackEx.h"//FLAGJK 存在两个编译问题之二吗：Win32不能与Win64同编，都改为x64？
@@ -45,5 +46,18 @@ void AUE4GameGameModeBase::InitGame(const FString& MapName, const FString& Optio
 	COtherTableCenter::GetInstance()->Init(strContentDir);
 	PxcUtil::zPackRelease();
 
-	//FLAGJK
+	std::string strText5 = "Hello World ";
+	strText5 += CTextTableCenter::GetInstance()->GetText(5);
+	CGlobalParamRow* pParamRow = COtherTableCenter::GetInstance()->GetGlobalParamRow(4);
+	if (pParamRow)
+		strText5 += PxcUtil::StringTools::BasicToStr(pParamRow->GetLeave<LEAVECOL_I>("Int1"));
+	pParamRow = COtherTableCenter::GetInstance()->GetGlobalParamRow(5);
+	if (pParamRow)
+	{
+		std::vector<std::string>& vecValues = pParamRow->GetLeave<LEAVECOL_SA>("Descs");
+		if (!vecValues.empty())
+			strText5 += vecValues[0];
+	}
+	FString sText5 = strText5.c_str();
+	OnHelloWorld(sText5);
 }

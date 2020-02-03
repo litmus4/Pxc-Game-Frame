@@ -46,6 +46,7 @@ public class UE4Game : ModuleRules
 
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
+        bUseRTTI = true;
         PublicIncludePaths.Add(Path.Combine(PxcLibPath, ""));
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
         string CfgStrOut = "Release";

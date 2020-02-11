@@ -14,7 +14,7 @@
 #include "PxcUtil/StringTools.h"
 #include "Windows/PostWindowsApi.h"
 #include "Windows/HideWindowsPlatformTypes.h"
-#include "PxcUtil/zPackEx.h"//FLAGJK 存在两个编译问题之二吗：Win32不能与Win64同编，都改为x64？
+#include "PxcUtil/zPackEx.h"
 #include <string>
 
 #define USE_ZPACK 1

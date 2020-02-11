@@ -51,20 +51,23 @@ public class UE4Game : ModuleRules
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
         string CfgStrOut = "Release";
         string CfgStr = (Target.Configuration == UnrealTargetConfiguration.DebugGame ? "Debug" : "Release");
+        string PlatSufStr = "";
         if (Target.Platform == UnrealTargetPlatform.Win64/* ||*/)
         {
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "zpack64.lib"));
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "PxcUtil64.lib"));
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "tinyxml64.lib"));
+            PlatSufStr = ".win64";
         }
         else
         {
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "zpack.lib"));
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "PxcUtil.lib"));
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "tinyxml.lib"));
+            PlatSufStr = ".win32";
         }
-        //FLAGJK 存在两个编译问题之一：PxcCore连接还是未找到外部符号
-        PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + ".win32", "PublicDefinitions.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + ".win32", "DataTables.lib"));
+        //FLAGJK 存在编译问题：PxcCore的Debug连接竟然还会出现配置不匹配
+        PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "PublicDefinitions.lib"));
+        PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "DataTables.lib"));
     }
 }

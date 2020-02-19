@@ -13,7 +13,7 @@
 	strFile += "\\";\
 	strFile += #Name;\
 	strFile += ".csv";\
-	PxcUtil::zPackCombinePath(strFile);\
+	PxcUtil::zPackCombinePath(strFile, Path.c_str());\
 	strFile = Path + strFile;\
 	PxcUtil::CCSVTableOperator tabop;\
 	if (tabop.Load(strFile.c_str()))\

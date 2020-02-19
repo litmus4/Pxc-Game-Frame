@@ -37,7 +37,7 @@ void AUE4GameGameModeBase::InitGame(const FString& MapName, const FString& Optio
 #else
 	PxcUtil::zPackPathSwitch(true);
 #endif
-	PxcUtil::zPackAddPathAim((strContentDir + "Packs\\DataTables.zpk").c_str(), "DataTables");
+	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
 	//PxcUtil::zPackAddPathAim((strContentDir + "Packs\\Assets.zpk").c_str(), "Assets");
 #else
 	//TODOJK 暂时只有Win64/32平台
@@ -59,5 +59,7 @@ void AUE4GameGameModeBase::InitGame(const FString& MapName, const FString& Optio
 			strText5 += vecValues[0];
 	}
 	FString sText5 = strText5.c_str();
+	UE_LOG(LogTemp, Log, TEXT("@@@@@@@@@@@@@@@@@ %s"), PxcUtil::StringTools::Utf8ToWstr(strText5).c_str());
+	//FLAGJK 蓝图还是看不见OnHelloWorld
 	OnHelloWorld(sText5);
 }

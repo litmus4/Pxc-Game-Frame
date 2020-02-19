@@ -78,14 +78,15 @@ void zPackAddPathAim(const char* szPack, const char* szPath)
 	g_mapZPackPathAims.insert(std::pair<std::string, std::string>(strPath, szPack));
 }
 
-bool zPackCombinePath(std::string& strPath)
+bool zPackCombinePath(std::string& strPath, const char* szLocPath)
 {
 	CRI_SEC(g_ZPackLock)
 	if (!g_bZPackPath)
 		return false;
 	if (g_bZPackPathFileFirst)
 	{
-		if (FileManage::IsFileExist(StringTools::StrToWstr(strPath).c_str()))
+		std::string strFullPath = (szLocPath ? szLocPath + strPath : strPath);
+		if (FileManage::IsFileExist(StringTools::StrToWstr(strFullPath).c_str()))
 			return false;
 	}
 

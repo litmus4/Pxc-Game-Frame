@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{6E17F95A-6E76-4F4D-9D45-BB1C926F6090}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{94A6C6F3-99B3-346E-9557-ABF9D4064DBD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{A865FD64-1CF2-470F-951E-2B379FAC1F20}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{8E2F6A87-1826-34F4-940C-CC23A48F9FE4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4Game", "Intermediate\ProjectFiles\UE4Game.vcxproj", "{18EFC53D-AB56-419B-B73D-F61008C07AEF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4Game", "Intermediate\ProjectFiles\UE4Game.vcxproj", "{8A16C57B-E089-4B2B-A7C0-975577D5401F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C362F347-D4A4-4D3C-892A-25876EA1BB24} = {C362F347-D4A4-4D3C-892A-25876EA1BB24}
 		{D86EB3AC-237E-4B1B-B985-F31A225A042F} = {D86EB3AC-237E-4B1B-B985-F31A225A042F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4", "Intermediate\ProjectFiles\UE4.vcxproj", "{FB1A144C-0E81-4547-B924-D734588AD4FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UE4", "Intermediate\ProjectFiles\UE4.vcxproj", "{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualizers", "Visualizers", "{921689D9-F1FA-42D8-AFC4-29DD3D419A3B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Visualizers", "Visualizers", "{1CCEC849-CC72-4C59-8C36-2F7C38706D4C}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\Program Files\Epic Games\UE_4.24\Engine\Extras\VisualStudioDebugging\UE4.natvis = ..\..\..\..\..\Program Files\Epic Games\UE_4.24\Engine\Extras\VisualStudioDebugging\UE4.natvis
+		..\..\..\..\..\Program Files\Epic Games\UE_4.25\Engine\Extras\VisualStudioDebugging\UE4.natvis = ..\..\..\..\..\Program Files\Epic Games\UE_4.25\Engine\Extras\VisualStudioDebugging\UE4.natvis
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PublicDefinitions", "PxcCore\PublicDefinitions\PublicDefinitions.vcxproj", "{D86EB3AC-237E-4B1B-B985-F31A225A042F}"
@@ -46,50 +46,50 @@ Global
 		Shipping|Win64 = Shipping|Win64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame Editor|HoloLens.ActiveCfg = Invalid|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame Editor|Win32.ActiveCfg = Invalid|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame Editor|Win64.Build.0 = DebugGame_Editor|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|HoloLens.ActiveCfg = DebugGame|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|HoloLens.Build.0 = DebugGame|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|HoloLens.Deploy.0 = DebugGame|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|Win32.ActiveCfg = DebugGame|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|Win32.Build.0 = DebugGame|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|Win64.ActiveCfg = DebugGame|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.DebugGame|Win64.Build.0 = DebugGame|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development Editor|HoloLens.ActiveCfg = Invalid|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development Editor|Win32.ActiveCfg = Invalid|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development Editor|Win64.ActiveCfg = Development_Editor|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development Editor|Win64.Build.0 = Development_Editor|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|HoloLens.ActiveCfg = Development|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|HoloLens.Build.0 = Development|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|HoloLens.Deploy.0 = Development|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|Win32.ActiveCfg = Development|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|Win32.Build.0 = Development|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|Win64.ActiveCfg = Development|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Development|Win64.Build.0 = Development|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|HoloLens.ActiveCfg = Shipping|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|HoloLens.Build.0 = Shipping|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|HoloLens.Deploy.0 = Shipping|arm64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|Win32.ActiveCfg = Shipping|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|Win32.Build.0 = Shipping|Win32
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|Win64.ActiveCfg = Shipping|x64
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF}.Shipping|Win64.Build.0 = Shipping|x64
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.DebugGame Editor|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.DebugGame Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.DebugGame Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.DebugGame|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.DebugGame|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.DebugGame|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Development Editor|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Development Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Development Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Development|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Development|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Development|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Shipping|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Shipping|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
-		{FB1A144C-0E81-4547-B924-D734588AD4FD}.Shipping|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame Editor|HoloLens.ActiveCfg = Invalid|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame Editor|Win32.ActiveCfg = Invalid|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame Editor|Win64.ActiveCfg = DebugGame_Editor|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame Editor|Win64.Build.0 = DebugGame_Editor|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|HoloLens.ActiveCfg = DebugGame|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|HoloLens.Build.0 = DebugGame|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|HoloLens.Deploy.0 = DebugGame|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|Win32.ActiveCfg = DebugGame|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|Win32.Build.0 = DebugGame|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|Win64.ActiveCfg = DebugGame|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.DebugGame|Win64.Build.0 = DebugGame|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development Editor|HoloLens.ActiveCfg = Invalid|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development Editor|Win32.ActiveCfg = Invalid|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development Editor|Win64.ActiveCfg = Development_Editor|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development Editor|Win64.Build.0 = Development_Editor|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|HoloLens.ActiveCfg = Development|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|HoloLens.Build.0 = Development|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|HoloLens.Deploy.0 = Development|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|Win32.ActiveCfg = Development|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|Win32.Build.0 = Development|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|Win64.ActiveCfg = Development|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Development|Win64.Build.0 = Development|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|HoloLens.ActiveCfg = Shipping|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|HoloLens.Build.0 = Shipping|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|HoloLens.Deploy.0 = Shipping|arm64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|Win32.ActiveCfg = Shipping|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|Win32.Build.0 = Shipping|Win32
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|Win64.ActiveCfg = Shipping|x64
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F}.Shipping|Win64.Build.0 = Shipping|x64
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.DebugGame Editor|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.DebugGame Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.DebugGame Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.DebugGame|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.DebugGame|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.DebugGame|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Development Editor|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Development Editor|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Development Editor|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Development|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Development|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Development|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Shipping|HoloLens.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Shipping|Win32.ActiveCfg = BuiltWithUnrealBuildTool|Win32
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029}.Shipping|Win64.ActiveCfg = BuiltWithUnrealBuildTool|Win32
 		{D86EB3AC-237E-4B1B-B985-F31A225A042F}.DebugGame Editor|HoloLens.ActiveCfg = Release|Win32
 		{D86EB3AC-237E-4B1B-B985-F31A225A042F}.DebugGame Editor|HoloLens.Build.0 = Release|Win32
 		{D86EB3AC-237E-4B1B-B985-F31A225A042F}.DebugGame Editor|Win32.ActiveCfg = Debug|Win32
@@ -155,10 +155,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{18EFC53D-AB56-419B-B73D-F61008C07AEF} = {A865FD64-1CF2-470F-951E-2B379FAC1F20}
-		{FB1A144C-0E81-4547-B924-D734588AD4FD} = {6E17F95A-6E76-4F4D-9D45-BB1C926F6090}
-		{D86EB3AC-237E-4B1B-B985-F31A225A042F} = {A865FD64-1CF2-470F-951E-2B379FAC1F20}
-		{C362F347-D4A4-4D3C-892A-25876EA1BB24} = {A865FD64-1CF2-470F-951E-2B379FAC1F20}
+		{CF51F4F3-3A6A-48A4-94CC-DFB6C4E4C029} = {94A6C6F3-99B3-346E-9557-ABF9D4064DBD}
+		{8A16C57B-E089-4B2B-A7C0-975577D5401F} = {8E2F6A87-1826-34F4-940C-CC23A48F9FE4}
+		{D86EB3AC-237E-4B1B-B985-F31A225A042F} = {8E2F6A87-1826-34F4-940C-CC23A48F9FE4}
+		{C362F347-D4A4-4D3C-892A-25876EA1BB24} = {8E2F6A87-1826-34F4-940C-CC23A48F9FE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1C3BC1B8-A606-4FE8-B80A-2B232621CDD7}

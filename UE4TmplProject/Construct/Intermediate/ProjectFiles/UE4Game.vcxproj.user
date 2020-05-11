@@ -7,7 +7,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame_Editor|x64'">
-    <LocalDebuggerCommandArguments>"$(SolutionDir)$(ProjectName).uproject" -skipcompile</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"$(SolutionDir)UE4Game.uproject" -skipcompile</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame|arm64'">
@@ -23,7 +23,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development_Editor|x64'">
-    <LocalDebuggerCommandArguments>"$(SolutionDir)$(ProjectName).uproject" -skipcompile</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>"$(SolutionDir)UE4Game.uproject" -skipcompile</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|arm64'">

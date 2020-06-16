@@ -14,6 +14,7 @@
 #include <agile.h>
 #include <DirectXMath.h>
 #include <memory>
+#include <string>
 
 #define XAUDIO2_HELPER_FUNCTIONS 1
 #include <xaudio2.h>

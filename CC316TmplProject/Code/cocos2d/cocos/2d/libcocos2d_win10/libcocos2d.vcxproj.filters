@@ -3932,9 +3932,6 @@
     <ClInclude Include="..\..\editor-support\cocostudio\WidgetCallBackHandlerProtocol.h">
       <Filter>cocostudio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\external\flatbuffers\code_generators.h">
-      <Filter>external\flatbuffers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\external\flatbuffers\flatbuffers.h">
       <Filter>external\flatbuffers</Filter>
     </ClInclude>

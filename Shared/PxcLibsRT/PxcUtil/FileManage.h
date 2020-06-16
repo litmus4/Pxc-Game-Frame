@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <vector>
+#include <string>
 
 namespace PxcUtil
 {

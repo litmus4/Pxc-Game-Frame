@@ -17,7 +17,7 @@
 #include "PxcUtil/zPackEx.h"
 #include <string>
 
-#define USE_ZPACK 1
+#define USE_ZPACK 2
 
 AUE4GameGameModeBase::AUE4GameGameModeBase()
 {
@@ -37,8 +37,8 @@ void AUE4GameGameModeBase::InitGame(const FString& MapName, const FString& Optio
 #else
 	PxcUtil::zPackPathSwitch(true);
 #endif
-	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
-	//PxcUtil::zPackAddPathAim((strContentDir + "Packs\\Assets.zpk").c_str(), "Assets");
+	//PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
+	PxcUtil::zPackAddPathAim((strContentDir + "Packs\\Assets.zpk").c_str(), "Assets");
 #else
 	//TODOJK 暂时只有Win64/32平台
 #endif

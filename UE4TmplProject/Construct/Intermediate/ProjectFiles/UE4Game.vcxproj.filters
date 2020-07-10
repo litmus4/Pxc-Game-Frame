@@ -42,4 +42,19 @@
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source\UE4Game\Utilities">
+      <UniqueIdentifier>{4f959cb0-3342-4ba8-83e5-5f8f673f1870}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\UE4Game\Utilities\DataRowBridge.h">
+      <Filter>Source\UE4Game\Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\UE4Game\Utilities\DataRowBridge.cpp">
+      <Filter>Source\UE4Game\Utilities</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>

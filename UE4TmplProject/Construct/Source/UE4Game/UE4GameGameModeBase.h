@@ -19,6 +19,7 @@ public:
 
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage);
 
-	UFUNCTION(BlueprintImplementableEvent, Category=GameMode)
+protected:
+	UFUNCTION(BlueprintImplementableEvent, Category = GameMode)
 	void OnHelloWorld(FString& sText);
 };

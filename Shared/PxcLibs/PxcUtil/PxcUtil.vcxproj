@@ -22,7 +22,7 @@
     <ProjectGuid>{AF7D4F7F-CAE5-4556-8EBE-CE8DD3DE3775}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PxcUtil</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

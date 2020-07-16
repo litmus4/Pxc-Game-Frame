@@ -14,7 +14,7 @@
     <ProjectGuid>{C362F347-D4A4-4D3C-892A-25876EA1BB24}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>DataTables</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

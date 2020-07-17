@@ -21,5 +21,5 @@ public:
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = GameMode)
-	void OnHelloWorld(FString& sText);
+	void OnHelloWorld(const FString& sText);
 };

@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "DataRowBridge.generated.h"
 
+class CCSVTableOperator;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UDataRowBridge : public UInterface
@@ -23,8 +25,11 @@ class UE4GAME_API IDataRowBridge
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(CallInEditor, Category = DataRow)
-	virtual bool Load(int iID);
+	virtual bool LoadDataRow(int iID = -1);
 
 	UFUNCTION(CallInEditor, Category = DataRow)
-	virtual bool Save();
+	virtual bool SaveDataRow();
+
+protected:
+	CCSVTableOperator* m_pTabop;
 };

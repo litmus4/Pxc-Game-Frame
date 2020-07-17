@@ -5,12 +5,12 @@
 
 // Add default functionality here for any IDataRowBridge functions that are not pure virtual.
 
-bool IDataRowBridge::Load(int iID)
+bool IDataRowBridge::LoadDataRow(int iID)
 {
 	return false;
 }
 
-bool IDataRowBridge::Save()
+bool IDataRowBridge::SaveDataRow()
 {
 	return false;
 }

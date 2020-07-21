@@ -43,6 +43,23 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+	<Filter Include="Source\UE4Game\Framework">
+      <UniqueIdentifier>{4FB1B31C-EB3E-4E89-A7FD-7D86110833F8}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\Framework\PxcStaticResourceSystem.cpp">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\Framework\PxcStaticResourceSystem.h">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UE4Game\Framework\PXCycleInstance.cpp">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\Framework\PXCycleInstance.h">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <Filter Include="Source\UE4Game\Utilities">
       <UniqueIdentifier>{4f959cb0-3342-4ba8-83e5-5f8f673f1870}</UniqueIdentifier>
     </Filter>

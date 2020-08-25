@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\UE4Game.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{C00B2A7D-C188-4C75-9DB0-73D791E1EB81}</UniqueIdentifier>
+      <UniqueIdentifier>{1DFC624D-696C-476A-B49B-4BA5AA0387A0}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game.Target.cs">
       <Filter>Source</Filter>
@@ -11,8 +11,9 @@
     <None Include="..\..\Source\UE4GameEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\InsertTextsInSlnRefreshHelper.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{4526C4C7-F78A-4E91-BB97-A87A65495FF8}</UniqueIdentifier>
+      <UniqueIdentifier>{D8B5589D-A3D8-497B-A3CD-872A092808C5}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,7 +25,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\UE4Game">
-      <UniqueIdentifier>{3FBCAD61-85BA-41CE-AE31-4BE62D3D8737}</UniqueIdentifier>
+      <UniqueIdentifier>{D4FEF024-AE97-4415-A51E-4803F0FD86A3}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game\UE4Game.Build.cs">
       <Filter>Source\UE4Game</Filter>
@@ -41,10 +42,8 @@
     <ClInclude Include="..\..\Source\UE4Game\UE4GameGameModeBase.h">
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-	<Filter Include="Source\UE4Game\Framework">
-      <UniqueIdentifier>{4FB1B31C-EB3E-4E89-A7FD-7D86110833F8}</UniqueIdentifier>
+    <Filter Include="Source\UE4Game\Framework">
+      <UniqueIdentifier>{ABB0326F-61B8-475A-AF7E-DE59DBC32A33}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcStaticResourceSystem.cpp">
       <Filter>Source\UE4Game\Framework</Filter>
@@ -58,20 +57,14 @@
     <ClInclude Include="..\..\Source\UE4Game\Framework\PXCycleInstance.h">
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Source\UE4Game\Utilities">
-      <UniqueIdentifier>{4f959cb0-3342-4ba8-83e5-5f8f673f1870}</UniqueIdentifier>
+      <UniqueIdentifier>{92FE3209-8574-43D1-825A-1FF1B812693C}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Source\UE4Game\Utilities\DataRowBridge.h">
-      <Filter>Source\UE4Game\Utilities</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\Source\UE4Game\Utilities\DataRowBridge.cpp">
       <Filter>Source\UE4Game\Utilities</Filter>
     </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\Utilities\DataRowBridge.h">
+      <Filter>Source\UE4Game\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

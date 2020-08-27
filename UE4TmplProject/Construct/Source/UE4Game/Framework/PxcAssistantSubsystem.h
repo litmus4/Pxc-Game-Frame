@@ -36,6 +36,8 @@ class UE4GAME_API UPxcAssistantSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 	
 public:
+	static UPxcAssistantSubsystem* GetInstance();
+
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
@@ -56,6 +58,8 @@ public:
 	}
 
 private:
+	static UPxcAssistantSubsystem* s_pInst;
+
 	UPROPERTY(Transient)
 	TMap<FActorWithKey, UObject*> m_tmapWaitingActorKeys;
 };

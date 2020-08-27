@@ -20,9 +20,17 @@ uint32 GetTypeHash(const FActorWithKey& In)
 	return HashCombine(uHash1, uHash2);
 }
 
+UPxcAssistantSubsystem* UPxcAssistantSubsystem::s_pInst = nullptr;
+
+UPxcAssistantSubsystem* UPxcAssistantSubsystem::GetInstance()
+{
+	check(s_pInst);
+	return s_pInst;
+}
+
 void UPxcAssistantSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	//
+	s_pInst = this;
 }
 
 void UPxcAssistantSubsystem::Deinitialize()

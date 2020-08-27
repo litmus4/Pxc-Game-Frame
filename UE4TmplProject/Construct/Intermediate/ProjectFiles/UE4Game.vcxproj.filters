@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\UE4Game.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{6EA53074-CE4A-497C-9D8B-75FAFCA457F3}</UniqueIdentifier>
+      <UniqueIdentifier>{6B549D0D-6C01-4298-B5F4-502166A3444B}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game.Target.cs">
       <Filter>Source</Filter>
@@ -13,7 +13,7 @@
     </None>
     <None Include="..\..\InsertTextsInSlnRefreshHelper.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{548EBF24-7A22-49EE-8183-1AE4644432D4}</UniqueIdentifier>
+      <UniqueIdentifier>{F2CAEE12-182F-476E-984F-024D02F85B5F}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -25,7 +25,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\UE4Game">
-      <UniqueIdentifier>{62A1664E-BB36-4A6B-A387-936D8A328A1F}</UniqueIdentifier>
+      <UniqueIdentifier>{330BB2CE-EC55-453C-8EC1-73BE112B3B5F}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game\UE4Game.Build.cs">
       <Filter>Source\UE4Game</Filter>
@@ -43,7 +43,7 @@
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Framework">
-      <UniqueIdentifier>{844C035B-153D-49F1-AA65-7CEC0D242AE8}</UniqueIdentifier>
+      <UniqueIdentifier>{3BEE911E-DFCF-4EF2-A845-058D234ED6D6}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcAssistantSubsystem.cpp">
       <Filter>Source\UE4Game\Framework</Filter>
@@ -64,8 +64,14 @@
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Utilities">
-      <UniqueIdentifier>{57E4F5D7-363A-4F58-82F2-9F3E9B45D696}</UniqueIdentifier>
+      <UniqueIdentifier>{9FA32850-6307-4643-B7B6-FCF07899EAD6}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\Utilities\AsyncWaitActorWithKey.cpp">
+      <Filter>Source\UE4Game\Utilities</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\Utilities\AsyncWaitActorWithKey.h">
+      <Filter>Source\UE4Game\Utilities</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE4Game\Utilities\DataRowBridge.cpp">
       <Filter>Source\UE4Game\Utilities</Filter>
     </ClCompile>

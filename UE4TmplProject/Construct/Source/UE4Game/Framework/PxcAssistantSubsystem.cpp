@@ -2,6 +2,7 @@
 
 
 #include "PxcAssistantSubsystem.h"
+#include "Utilities/AsyncWaitActorWithKey.h"
 
 bool FActorWithKey::operator==(const FActorWithKey& Other) const
 {
@@ -47,4 +48,9 @@ bool UPxcAssistantSubsystem::AddWaitingActorWithKey(AActor* pActor, const FStrin
 		return true;
 	}
 	return false;
+}
+
+void UPxcAssistantSubsystem::FinishAsyncActorWithKey(AActor* pActor, const FString& sKey)
+{
+	EndWaitingActorWithKey<UAsyncWaitActorWithKey>(pActor, sKey, true);
 }

@@ -57,6 +57,9 @@ public:
 
 	}
 
+	UFUNCTION(BlueprintCallable)
+	void FinishAsyncActorWithKey(AActor* pActor, const FString& sKey);
+
 private:
 	static UPxcAssistantSubsystem* s_pInst;
 

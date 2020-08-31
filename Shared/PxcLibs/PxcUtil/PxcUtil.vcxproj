@@ -167,6 +167,7 @@
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="FileManage.h" />
     <ClInclude Include="IDPool.h" />
+    <ClInclude Include="IDPool64.h" />
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="LogCenter.h" />
     <ClInclude Include="md5.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="FileManage.cpp" />
     <ClCompile Include="IDPool.cpp" />
+    <ClCompile Include="IDPool64.cpp" />
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="LogCenter.cpp" />
     <ClCompile Include="md5.cpp" />

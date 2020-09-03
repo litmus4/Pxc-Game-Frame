@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\UE4Game.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{6B549D0D-6C01-4298-B5F4-502166A3444B}</UniqueIdentifier>
+      <UniqueIdentifier>{07852F82-F8CC-48DB-870A-A15909B1FB79}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game.Target.cs">
       <Filter>Source</Filter>
@@ -13,7 +13,7 @@
     </None>
     <None Include="..\..\InsertTextsInSlnRefreshHelper.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{F2CAEE12-182F-476E-984F-024D02F85B5F}</UniqueIdentifier>
+      <UniqueIdentifier>{6ACF8710-A6C2-4038-8CBD-D12C961A2DE7}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -25,7 +25,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\UE4Game">
-      <UniqueIdentifier>{330BB2CE-EC55-453C-8EC1-73BE112B3B5F}</UniqueIdentifier>
+      <UniqueIdentifier>{F5518939-E80B-481E-9FAB-77FA8628DFE5}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game\UE4Game.Build.cs">
       <Filter>Source\UE4Game</Filter>
@@ -43,7 +43,7 @@
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Framework">
-      <UniqueIdentifier>{3BEE911E-DFCF-4EF2-A845-058D234ED6D6}</UniqueIdentifier>
+      <UniqueIdentifier>{94DF58A5-D3C8-46C7-9176-6B79B6D23656}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcAssistantSubsystem.cpp">
       <Filter>Source\UE4Game\Framework</Filter>
@@ -63,8 +63,14 @@
     <ClInclude Include="..\..\Source\UE4Game\Framework\PXCycleInstance.h">
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\UE4Game\Framework\SignatureStructs.cpp">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\Framework\SignatureStructs.h">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClInclude>
     <Filter Include="Source\UE4Game\Utilities">
-      <UniqueIdentifier>{9FA32850-6307-4643-B7B6-FCF07899EAD6}</UniqueIdentifier>
+      <UniqueIdentifier>{B8824331-1908-4422-887E-E49CDFAB4690}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Utilities\AsyncWaitActorWithKey.cpp">
       <Filter>Source\UE4Game\Utilities</Filter>

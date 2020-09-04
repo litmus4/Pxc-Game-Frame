@@ -22,7 +22,7 @@ public:
 		: lUid(xUid), bFake(true) {}
 	virtual ~FPointerModel() {}
 
-	//void GenerateUidLocal(); FLAGJK
+	void GenerateUidLocal();
 
 	friend uint32 GetTypeHash(const FPointerModel& Model);
 
@@ -48,7 +48,17 @@ struct FSharedSignature
 {
 	GENERATED_BODY()
 public:
-	//
+	FSharedSignature() = default;
+	FSharedSignature(FPointerModel* xModel);
+	FSharedSignature(const FSharedSignature& OtherSig);
+	FSharedSignature(const FPointerModel& xModel);
+
+	FORCEINLINE bool IsValid() const { return pModel.IsValid(); }
+	FORCEINLINE const FPointerModel* Get() const { return pModel.Get(); }
+	FORCEINLINE FPointerModel* Get() { return pModel.Get(); }
+	FORCEINLINE FPointerModel* operator->() const { return pModel.Get(); }
+	FORCEINLINE void Clear() { pModel.Reset(); }
+	//FLAGJK
 
 private:
 	TSharedPtr<FPointerModel> pModel;

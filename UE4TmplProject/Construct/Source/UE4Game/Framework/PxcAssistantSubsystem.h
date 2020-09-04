@@ -4,7 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include <unordered_map>
 #include "PxcAssistantSubsystem.generated.h"
+
+namespace PxcUtil
+{
+	class CIDPool;
+	class CIDPool64;
+}
 
 USTRUCT()
 struct FActorWithKey
@@ -34,6 +41,13 @@ UCLASS()
 class UE4GAME_API UPxcAssistantSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+
+public:
+	enum EUidPoolType
+	{
+		PointerModelLL,
+	};
+#define ASUIDPOOL UPxcAssistantSubsystem::EUidPoolType
 	
 public:
 	static UPxcAssistantSubsystem* GetInstance();
@@ -60,9 +74,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FinishAsyncActorWithKey(AActor* pActor, const FString& sKey);
 
+	PxcUtil::CIDPool* GetUidPool(EUidPoolType eType);
+	PxcUtil::CIDPool64* GetUidPool64(EUidPoolType eType);
+
 private:
+	bool IsUidPool64(EUidPoolType eType);
+
 	static UPxcAssistantSubsystem* s_pInst;
 
 	UPROPERTY(Transient)
 	TMap<FActorWithKey, UObject*> m_tmapWaitingActorKeys;
+
+	std::unordered_map<EUidPoolType, PxcUtil::CIDPool*> m_mapUidPools;
+	std::unordered_map<EUidPoolType, PxcUtil::CIDPool64*> m_mapUidPool64s;
 };

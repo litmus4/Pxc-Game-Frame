@@ -66,7 +66,7 @@ public:
 	FORCEINLINE void Reset() { pModel.Reset(); }
 	FORCEINLINE EPtrModelBaseType GetBaseType() const
 	{ return (IsValid() ? pModel->GetBaseType() : EPtrModelBaseType::Model); }
-	//EPtrModelBaseType K2_GetBaseType(); FLAGJK
+	//EPtrModelBaseType K2_GetBaseType(); TODOJK
 
 	template<class T>
 	bool IsDerived() const
@@ -97,6 +97,64 @@ public:
 	}
 
 	friend uint32 GetTypeHash(const FSharedSignature& Sig);
+
+private:
+	TSharedPtr<FPointerModel> pModel;
+};
+
+USTRUCT(BlueprintType)
+struct FSharedSigPure
+{
+	GENERATED_BODY()
+public:
+	FSharedSigPure() = default;
+	FSharedSigPure(FPointerModel * xModel);
+	FSharedSigPure(const FSharedSigPure& Other);
+	FSharedSigPure(const FPointerModel& xModel);
+
+	FORCEINLINE bool IsValid() const { return pModel.IsValid(); }
+	FORCEINLINE const FPointerModel* Get() const { return pModel.Get(); }
+	FORCEINLINE FPointerModel* Get() { return pModel.Get(); }
+	FORCEINLINE TSharedPtr<FPointerModel> GetShared() const { return pModel; }
+	FORCEINLINE const FPointerModel& operator*() const { return *pModel; }
+	FORCEINLINE FPointerModel& operator*() { return *pModel; }
+	FORCEINLINE FPointerModel* operator->() const { return pModel.Get(); }
+	bool operator==(const FSharedSigPure& Other) const;
+	FORCEINLINE bool operator!=(const FSharedSigPure& Other) const { return !(*this == Other); }
+	bool operator<(const FSharedSigPure& Other) const;
+	FORCEINLINE void Reset() { pModel.Reset(); }
+	FORCEINLINE EPtrModelBaseType GetBaseType() const
+	{ return (IsValid() ? pModel->GetBaseType() : EPtrModelBaseType::Model); }
+
+	template<class T>
+	bool IsDerived() const
+	{
+		static_assert(TPointerIsConvertibleFromTo<T, FPointerModel>::Value,
+			"FSharedSigPure IsDerived static_assert");
+		return (IsValid() && pModel->GetScriptStruct() == T::StaticStruct());
+	}
+
+	template<class T>
+	const T* GetDerivedPtr() const
+	{
+		static_assert(TPointerIsConvertibleFromTo<T, FPointerModel>::Value,
+			"FSharedSigPure GetDerivedPtr static_assert");
+		check(IsValid());
+		check(pModel->GetScriptStruct() == T::StaticStruct());
+		return static_cast<T*>(Get());
+	}
+
+	template<class T>
+	T* GetDerivedPtr()
+	{
+		static_assert(TPointerIsConvertibleFromTo<T, FPassiveWaitingData>::Value,
+			"FSharedSigPure IsDerived static_assert");
+		check(IsValid());
+		check(pModel->GetScriptStruct() == T::StaticStruct());
+		return static_cast<T*>(Get());
+	}
+
+	friend uint32 GetTypeHash(const FSharedSigPure& Sig);
 
 private:
 	TSharedPtr<FPointerModel> pModel;

@@ -79,13 +79,13 @@ bool FSharedSignature::operator==(const FSharedSignature& Other) const
 
 bool FSharedSignature::operator<(const FSharedSignature& Other) const
 {
-	int64 lThisUid = -1LL; uint64 ulThisAdd = 0;
+	int64 lThisUid = -1LL; uint64 ulThisAdd = 0ULL;
 	if (IsValid())
 	{
 		lThisUid = pModel->lUid; ulThisAdd = (uint64)Get();
 	}
 
-	if (IsValid())
+	if (Other.IsValid())
 	{
 		if (lThisUid != Other->lUid)
 			return lThisUid < Other->lUid;
@@ -101,5 +101,60 @@ uint32 GetTypeHash(const FSharedSignature& Sig)
 	if (Sig.IsValid())
 		return GetTypeHash(*Sig);
 	return GetTypeHash(-1LL);
+}
 
+FSharedSigPure::FSharedSigPure(FPointerModel* xModel)
+{
+	pModel = TSharedPtr<FPointerModel>(xModel);
+}
+
+FSharedSigPure::FSharedSigPure(const FSharedSigPure& Other)
+{
+	if (Other.IsValid())
+		pModel = Other.GetShared();
+	else
+		Reset();
+}
+
+FSharedSigPure::FSharedSigPure(const FPointerModel& xModel)
+{
+	TCheckedObjPtr<UScriptStruct> pScriptStruct = xModel.GetScriptStruct();
+	check(pScriptStruct.IsValid());
+
+	FPointerModel* pNewModel = (FPointerModel*)FMemory::Malloc(pScriptStruct->GetCppStructOps()->GetSize());
+	pScriptStruct->InitializeStruct(pNewModel);
+	pScriptStruct->CopyScriptStruct(pNewModel, &xModel);
+
+	pModel = TSharedPtr<FPointerModel>(pNewModel);
+}
+
+bool FSharedSigPure::operator==(const FSharedSigPure& Other) const
+{
+	bool bThisFake = false; int64 lThisUid = -1LL;
+	if (IsValid())
+	{
+		bThisFake = pModel->bFake; lThisUid = pModel->lUid;
+	}
+
+	if (Other.IsValid())
+	{
+		if (bThisFake || Other->bFake)
+			return lThisUid == Other->lUid;
+	}
+
+	return Get() == Other.Get();
+}
+
+bool FSharedSigPure::operator<(const FSharedSigPure& Other) const
+{
+	uint64 ulThisAdd = (uint64)Get();
+	uint64 ulOtherAdd = (uint64)Other.Get();
+	return ulThisAdd < ulOtherAdd;
+}
+
+uint32 GetTypeHash(const FSharedSigPure& Sig)
+{
+	if (Sig.IsValid())
+		return GetTypeHash(*Sig);
+	return GetTypeHash(-1LL);
 }

@@ -35,7 +35,7 @@ void AUE4GameGameModeBase::InitGame(const FString& MapName, const FString& Optio
 //	PxcUtil::zPackAddPathAim((strContentDir + "Packs\\DataTables.zpk").c_str(), "DataTables");
 //	//PxcUtil::zPackAddPathAim((strContentDir + "Packs\\Assets.zpk").c_str(), "Assets");
 //#else
-//	//TODOJK 暂时只有Win64/32平台
+//	//
 //#endif
 //	CTextTableCenter::GetInstance()->Init(strContentDir, GlobalDef::ELanguage_ZH_CN);
 //	COtherTableCenter::GetInstance()->Init(strContentDir);

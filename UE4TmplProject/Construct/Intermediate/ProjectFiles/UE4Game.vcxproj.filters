@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\UE4Game.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{07852F82-F8CC-48DB-870A-A15909B1FB79}</UniqueIdentifier>
+      <UniqueIdentifier>{2ADD8A21-3159-486E-ACA4-E37724A840B0}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game.Target.cs">
       <Filter>Source</Filter>
@@ -13,7 +13,7 @@
     </None>
     <None Include="..\..\InsertTextsInSlnRefreshHelper.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{6ACF8710-A6C2-4038-8CBD-D12C961A2DE7}</UniqueIdentifier>
+      <UniqueIdentifier>{84BA5FC1-762A-4AFA-941D-B91984E15095}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -25,7 +25,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\UE4Game">
-      <UniqueIdentifier>{F5518939-E80B-481E-9FAB-77FA8628DFE5}</UniqueIdentifier>
+      <UniqueIdentifier>{6424FBB5-24AE-48BB-AAE6-F6F7FA316B73}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game\UE4Game.Build.cs">
       <Filter>Source\UE4Game</Filter>
@@ -43,7 +43,7 @@
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Framework">
-      <UniqueIdentifier>{94DF58A5-D3C8-46C7-9176-6B79B6D23656}</UniqueIdentifier>
+      <UniqueIdentifier>{67CADB6E-7A5C-47EF-BA49-9F5030F43A90}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcAssistantSubsystem.cpp">
       <Filter>Source\UE4Game\Framework</Filter>
@@ -69,8 +69,26 @@
     <ClInclude Include="..\..\Source\UE4Game\Framework\SignatureStructs.h">
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
+    <Filter Include="Source\UE4Game\GameplayAbility">
+      <UniqueIdentifier>{65F3E85E-EA1A-44A3-BAC2-509E342FE800}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemGlobals.cpp">
+      <Filter>Source\UE4Game\GameplayAbility</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemGlobals.h">
+      <Filter>Source\UE4Game\GameplayAbility</Filter>
+    </ClInclude>
+    <Filter Include="Source\UE4Game\GameplayAbility\AttributeSets">
+      <UniqueIdentifier>{55F97883-6CEA-49B2-A305-612B94AC9B9F}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\AttributeSets\PxcAttributeSet.cpp">
+      <Filter>Source\UE4Game\GameplayAbility\AttributeSets</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\GameplayAbility\AttributeSets\PxcAttributeSet.h">
+      <Filter>Source\UE4Game\GameplayAbility\AttributeSets</Filter>
+    </ClInclude>
     <Filter Include="Source\UE4Game\Utilities">
-      <UniqueIdentifier>{B8824331-1908-4422-887E-E49CDFAB4690}</UniqueIdentifier>
+      <UniqueIdentifier>{CF33AC22-F050-4143-9395-7E36AA64249C}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Utilities\AsyncWaitActorWithKey.cpp">
       <Filter>Source\UE4Game\Utilities</Filter>

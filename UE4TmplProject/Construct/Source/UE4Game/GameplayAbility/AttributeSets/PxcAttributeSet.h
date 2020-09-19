@@ -31,6 +31,6 @@ public:
 	virtual void PreRevisedAttributeChange(const FGameplayAttribute& Attribute, float& NewValue, float fDiff);
 
 protected:
-	virtual bool CanAttrbuteReviseByGE(const FGameplayAttribute& Attribute, float* pOutValue = nullptr);
+	virtual bool CanAttrbuteRevisedByGE(const FGameplayAttribute& Attribute, float* pOutValue = nullptr);
 	void TryTriggerPreGEContModify(const FGameplayAttribute& Attribute, float& fNewValue, float& fDiff);
 };

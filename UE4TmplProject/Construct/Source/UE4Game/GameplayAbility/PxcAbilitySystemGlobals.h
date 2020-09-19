@@ -4,7 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemGlobals.h"
+#include "GameplayEffect.h"
+#include <list>
+#include <functional>
 #include "PxcAbilitySystemGlobals.generated.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogPxcGAS, Display, All);
+
+USTRUCT()
+struct FGEContModifyInfo
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	UAbilitySystemComponent* pASC;
+
+	UPROPERTY()
+	const UGameplayEffect* pEffect;
+
+	UPROPERTY()
+	TMap<FGameplayAttribute, int32> tmapAttrToIndex;
+};
 
 /**
  * 
@@ -18,6 +38,12 @@ public:
 	virtual void InitGlobalData() override;
 	virtual void SetCurrentAppliedGE(const FGameplayEffectSpec* pSpec) override;
 
+	int32 FindGEContModifyFromQueue(UAbilitySystemComponent* pASC, const FGameplayAttribute& Attribute,
+		std::function<bool(const FGameplayModifierInfo&)>&& fnQuery, const UGameplayEffect** ppOutEffect);
+	void ClearRedundantGEContModify(bool bWarn = true);
+
 	UPROPERTY(Transient, BlueprintReadOnly)
 	const UGameplayEffect* m_pNowAppliedGE;
+
+	std::list<FGEContModifyInfo> m_lisGEContModifyQueue;
 };

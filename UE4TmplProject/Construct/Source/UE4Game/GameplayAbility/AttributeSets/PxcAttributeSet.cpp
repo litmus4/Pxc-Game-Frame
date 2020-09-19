@@ -11,7 +11,7 @@ void UPxcAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, f
 	check(pASC);
 
 	float fDiff = 0.0f, fCurValue = 0.0f;
-	if (CanAttrbuteReviseByGE(Attribute, &fCurValue))
+	if (CanAttrbuteRevisedByGE(Attribute, &fCurValue))
 	{
 		fDiff = fNewValue - fCurValue;
 		TryTriggerPreGEContModify(Attribute, fNewValue, fDiff);
@@ -32,7 +32,7 @@ void UPxcAttributeSet::PreRevisedAttributeChange(const FGameplayAttribute& Attri
 }
 
 //Ä£°å
-bool UPxcAttributeSet::CanAttrbuteReviseByGE(const FGameplayAttribute& Attribute, float* pOutValue)
+bool UPxcAttributeSet::CanAttrbuteRevisedByGE(const FGameplayAttribute& Attribute, float* pOutValue)
 {
 	static const TMap<FGameplayAttribute, float> tmapCheck = {
 		//CANREVISE_PAIR
@@ -50,18 +50,15 @@ bool UPxcAttributeSet::CanAttrbuteReviseByGE(const FGameplayAttribute& Attribute
 void UPxcAttributeSet::TryTriggerPreGEContModify(const FGameplayAttribute& Attribute, float& fNewValue, float& fDiff)
 {
 	UPxcAbilitySystemGlobals* pASG = Cast<UPxcAbilitySystemGlobals>(&UAbilitySystemGlobals::Get());
-	if (pASG && pASG->m_pNowAppliedGE && pASG->m_pNowAppliedGE->DurationPolicy != EGameplayEffectDurationType::Instant)
-	{
-		int32 iModIndex = -1;
-		for (int32 i = 0; i < pASG->m_pNowAppliedGE->Modifiers.Num(); ++i)
-		{
-			const FGameplayModifierInfo& Modifier = pASG->m_pNowAppliedGE->Modifiers[i];
-			if (Modifier.Attribute != Attribute)
-				continue;
+	if (!pASG) return;
 
+	UAbilitySystemComponent* pASC = GetOwningAbilitySystemComponent();
+	const UGameplayEffect* pContModEffect = nullptr;
+	int32 iModIndex = pASG->FindGEContModifyFromQueue(pASC, Attribute,
+		[fNewValue, fDiff](const FGameplayModifierInfo& Modifier)->bool {
 			float fMagnitude = 0.0f;
 			if (!Modifier.ModifierMagnitude.GetStaticMagnitudeIfPossible(1.0f, fMagnitude))
-				continue;
+				return false;
 
 			float fCheckMagnitude = 0.0f;
 			switch (Modifier.ModifierOp)
@@ -79,12 +76,11 @@ void UPxcAttributeSet::TryTriggerPreGEContModify(const FGameplayAttribute& Attri
 			}
 
 			if (FMath::Abs(fCheckMagnitude - fMagnitude) < 0.00001f)
-			{
-				iModIndex = i;
-				break;
-			}
-		}
-		if (iModIndex >= 0)
-			PreGameplayEffectContModify(pASG->m_pNowAppliedGE, iModIndex, fNewValue, fDiff);
-	}
+				return true;
+			return false;
+		},
+	&pContModEffect);
+
+	if (iModIndex >= 0)
+		PreGameplayEffectContModify(pContModEffect, iModIndex, fNewValue, fDiff);
 }

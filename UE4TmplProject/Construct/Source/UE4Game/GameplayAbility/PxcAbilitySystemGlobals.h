@@ -40,10 +40,9 @@ public:
 
 	int32 FindGEContModifyFromQueue(UAbilitySystemComponent* pASC, const FGameplayAttribute& Attribute,
 		std::function<bool(const FGameplayModifierInfo&)>&& fnQuery, const UGameplayEffect** ppOutEffect);
+	void RemoveGEContModify(UAbilitySystemComponent* pASC, const UGameplayEffect* pEffect);
 	void ClearRedundantGEContModify(bool bWarn = true);
 
-	UPROPERTY(Transient, BlueprintReadOnly)
-	const UGameplayEffect* m_pNowAppliedGE;
-
+protected:
 	std::list<FGEContModifyInfo> m_lisGEContModifyQueue;
 };

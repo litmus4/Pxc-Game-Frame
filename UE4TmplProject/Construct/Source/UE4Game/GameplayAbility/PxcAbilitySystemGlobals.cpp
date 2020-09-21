@@ -30,6 +30,10 @@ void UPxcAbilitySystemGlobals::SetCurrentAppliedGE(const FGameplayEffectSpec* pS
 		return;
 	check(pSpec->GetContext().IsValid());
 
+	FGameplayTag ContModTag = FGameplayTag::RequestGameplayTag(TEXT("GEAsset.ContinuousModify"));
+	if (!pSpec->Def->InheritableGameplayEffectTags.CombinedTags.HasTag(ContModTag))
+		return;
+
 	FGEContModifyInfo Info;
 	Info.pASC = pSpec->GetContext().GetInstigatorAbilitySystemComponent();
 	Info.pEffect = pSpec->Def;
@@ -62,7 +66,7 @@ int32 UPxcAbilitySystemGlobals::FindGEContModifyFromQueue(UAbilitySystemComponen
 		
 		if (fnQuery(iter->pEffect->Modifiers[iIndex]))
 		{
-			*ppOutEffect = iter->pEffect;
+			if (ppOutEffect) *ppOutEffect = iter->pEffect;
 			iter->tmapAttrToIndex.Remove(Attribute);
 			if (iter->tmapAttrToIndex.Num() == 0)
 				m_lisGEContModifyQueue.erase(iter);
@@ -70,6 +74,19 @@ int32 UPxcAbilitySystemGlobals::FindGEContModifyFromQueue(UAbilitySystemComponen
 		}
 	}
 	return -1;
+}
+
+void UPxcAbilitySystemGlobals::RemoveGEContModify(UAbilitySystemComponent* pASC, const UGameplayEffect* pEffect)
+{
+	std::list<FGEContModifyInfo>::iterator iter = m_lisGEContModifyQueue.begin();
+	for (; iter != m_lisGEContModifyQueue.end(); iter++)
+	{
+		if (iter->pASC == pASC && iter->pEffect == pEffect)
+		{
+			m_lisGEContModifyQueue.erase(iter);
+			return;
+		}
+	}
 }
 
 void UPxcAbilitySystemGlobals::ClearRedundantGEContModify(bool bWarn)

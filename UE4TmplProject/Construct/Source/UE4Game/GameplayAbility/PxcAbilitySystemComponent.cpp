@@ -16,3 +16,19 @@ int32 UPxcAbilitySystemComponent::RemoveActiveEffects(const FGameplayEffectQuery
 
 	return Super::RemoveActiveEffects(Query, iStacksToRemove);
 }
+
+void UPxcAbilitySystemComponent::OnGiveAbility(FGameplayAbilitySpec& AbilitySpec)
+{
+	Super::OnGiveAbility(AbilitySpec);
+
+	K2_OnGiveAbility(AbilitySpec);
+	DeleAbilityGiven.Broadcast(AbilitySpec);
+}
+
+void UPxcAbilitySystemComponent::OnRemoveAbility(FGameplayAbilitySpec& AbilitySpec)
+{
+	Super::OnRemoveAbility(AbilitySpec);
+
+	K2_OnRemoveAbility(AbilitySpec);
+	DeleAbilityRemoved.Broadcast(AbilitySpec);
+}

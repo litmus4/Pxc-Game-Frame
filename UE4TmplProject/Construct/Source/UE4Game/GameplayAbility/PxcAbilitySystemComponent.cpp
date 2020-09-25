@@ -5,8 +5,8 @@
 
 int32 UPxcAbilitySystemComponent::RemoveActiveEffects(const FGameplayEffectQuery& Query, int32 iStacksToRemove)
 {
-	TArray<FActiveGameplayEffectHandle>&& ActiveHandles = GetActiveEffects(Query);
-	for (FActiveGameplayEffectHandle& Handle : ActiveHandles)
+	TArray<FActiveGameplayEffectHandle>&& tarrHandles = GetActiveEffects(Query);
+	for (FActiveGameplayEffectHandle& Handle : tarrHandles)
 	{
 		const FActiveGameplayEffect* pActiveEffect = GetActiveGameplayEffect(Handle);
 		int32 iStackCount = GetCurrentStackCount(Handle);

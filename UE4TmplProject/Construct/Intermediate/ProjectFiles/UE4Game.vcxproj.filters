@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\UE4Game.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{2ADD8A21-3159-486E-ACA4-E37724A840B0}</UniqueIdentifier>
+      <UniqueIdentifier>{39B050CE-D033-47C5-9AC7-661BCA2E7276}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game.Target.cs">
       <Filter>Source</Filter>
@@ -13,7 +13,7 @@
     </None>
     <None Include="..\..\InsertTextsInSlnRefreshHelper.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{84BA5FC1-762A-4AFA-941D-B91984E15095}</UniqueIdentifier>
+      <UniqueIdentifier>{90A0D043-EE13-4385-BAF4-EBEE1804F8B0}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -24,8 +24,11 @@
     <None Include="..\..\Config\DefaultGame.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="..\..\Config\DefaultGameplayTags.ini">
+      <Filter>Config</Filter>
+    </None>
     <Filter Include="Source\UE4Game">
-      <UniqueIdentifier>{6424FBB5-24AE-48BB-AAE6-F6F7FA316B73}</UniqueIdentifier>
+      <UniqueIdentifier>{BA3F270A-9F62-4787-8DF2-0D770DD93DD4}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game\UE4Game.Build.cs">
       <Filter>Source\UE4Game</Filter>
@@ -43,7 +46,7 @@
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Framework">
-      <UniqueIdentifier>{67CADB6E-7A5C-47EF-BA49-9F5030F43A90}</UniqueIdentifier>
+      <UniqueIdentifier>{3683453D-E25F-4963-B38A-D5FDE97FFEB8}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcAssistantSubsystem.cpp">
       <Filter>Source\UE4Game\Framework</Filter>
@@ -70,8 +73,14 @@
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\GameplayAbility">
-      <UniqueIdentifier>{65F3E85E-EA1A-44A3-BAC2-509E342FE800}</UniqueIdentifier>
+      <UniqueIdentifier>{03497F97-BC34-4327-94B2-65E118DF7414}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemComponent.cpp">
+      <Filter>Source\UE4Game\GameplayAbility</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemComponent.h">
+      <Filter>Source\UE4Game\GameplayAbility</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemGlobals.cpp">
       <Filter>Source\UE4Game\GameplayAbility</Filter>
     </ClCompile>
@@ -79,7 +88,7 @@
       <Filter>Source\UE4Game\GameplayAbility</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\GameplayAbility\AttributeSets">
-      <UniqueIdentifier>{55F97883-6CEA-49B2-A305-612B94AC9B9F}</UniqueIdentifier>
+      <UniqueIdentifier>{BD1F7493-F59A-4777-AEFA-55693FC44B8C}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\AttributeSets\PxcAttributeSet.cpp">
       <Filter>Source\UE4Game\GameplayAbility\AttributeSets</Filter>
@@ -87,8 +96,17 @@
     <ClInclude Include="..\..\Source\UE4Game\GameplayAbility\AttributeSets\PxcAttributeSet.h">
       <Filter>Source\UE4Game\GameplayAbility\AttributeSets</Filter>
     </ClInclude>
+    <Filter Include="Source\UE4Game\PrivateDefinitions">
+      <UniqueIdentifier>{0866EF5B-8BA5-4D86-A114-77C97866351D}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\PrivateDefinitions\GameplayAbilityDef.cpp">
+      <Filter>Source\UE4Game\PrivateDefinitions</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\PrivateDefinitions\GameplayAbilityDef.h">
+      <Filter>Source\UE4Game\PrivateDefinitions</Filter>
+    </ClInclude>
     <Filter Include="Source\UE4Game\Utilities">
-      <UniqueIdentifier>{CF33AC22-F050-4143-9395-7E36AA64249C}</UniqueIdentifier>
+      <UniqueIdentifier>{90A4DF69-4C6A-40C5-8DA0-1BD3BCC919E3}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Utilities\AsyncWaitActorWithKey.cpp">
       <Filter>Source\UE4Game\Utilities</Filter>

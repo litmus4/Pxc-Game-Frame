@@ -17,6 +17,16 @@ int32 UPxcAbilitySystemComponent::RemoveActiveEffects(const FGameplayEffectQuery
 	return Super::RemoveActiveEffects(Query, iStacksToRemove);
 }
 
+TArray<FActiveGameplayEffectHandle> UPxcAbilitySystemComponent::GetActiveEffectsWithAnyTags(FGameplayTagContainer Tags) const
+{
+	return GetActiveEffects(FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(Tags));
+}
+
+UGameplayEffect* UPxcAbilitySystemComponent::K2_GetGameplayEffectDefForHandle(const FActiveGameplayEffectHandle& Handle)
+{
+	return const_cast<UGameplayEffect*>(GetGameplayEffectDefForHandle(Handle));
+}
+
 void UPxcAbilitySystemComponent::OnGiveAbility(FGameplayAbilitySpec& AbilitySpec)
 {
 	Super::OnGiveAbility(AbilitySpec);

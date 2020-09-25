@@ -20,6 +20,12 @@ public:
 public:
 	virtual int32 RemoveActiveEffects(const FGameplayEffectQuery& Query, int32 iStacksToRemove = -1);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "GameplayEffects")
+	TArray<FActiveGameplayEffectHandle> GetActiveEffectsWithAnyTags(FGameplayTagContainer Tags) const;
+
+	UFUNCTION(BlueprintPure)
+	UGameplayEffect* K2_GetGameplayEffectDefForHandle(const FActiveGameplayEffectHandle& Handle);
+
 	UPROPERTY(BlueprintAssignable)
 	FAbilityGivenDelegate DeleAbilityGiven;
 

@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\UE4Game.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{39B050CE-D033-47C5-9AC7-661BCA2E7276}</UniqueIdentifier>
+      <UniqueIdentifier>{7D99F420-97F2-48C9-9CDD-7F6EB1807A57}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game.Target.cs">
       <Filter>Source</Filter>
@@ -13,7 +13,7 @@
     </None>
     <None Include="..\..\InsertTextsInSlnRefreshHelper.txt" />
     <Filter Include="Config">
-      <UniqueIdentifier>{90A0D043-EE13-4385-BAF4-EBEE1804F8B0}</UniqueIdentifier>
+      <UniqueIdentifier>{FDB62027-9182-4D25-BA33-C3519E128FB5}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -28,7 +28,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\UE4Game">
-      <UniqueIdentifier>{BA3F270A-9F62-4787-8DF2-0D770DD93DD4}</UniqueIdentifier>
+      <UniqueIdentifier>{E8B992D2-7D3D-4C2B-ABE6-D3BCEDBA9499}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\UE4Game\UE4Game.Build.cs">
       <Filter>Source\UE4Game</Filter>
@@ -46,12 +46,18 @@
       <Filter>Source\UE4Game</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Framework">
-      <UniqueIdentifier>{3683453D-E25F-4963-B38A-D5FDE97FFEB8}</UniqueIdentifier>
+      <UniqueIdentifier>{E47A86CF-4DF8-4DEC-A907-140568D02235}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcAssistantSubsystem.cpp">
       <Filter>Source\UE4Game\Framework</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\UE4Game\Framework\PxcAssistantSubsystem.h">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\UE4Game\Framework\PxcGameConfig.cpp">
+      <Filter>Source\UE4Game\Framework</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\Framework\PxcGameConfig.h">
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\UE4Game\Framework\PxcStaticResourceSystem.cpp">
@@ -73,7 +79,7 @@
       <Filter>Source\UE4Game\Framework</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\GameplayAbility">
-      <UniqueIdentifier>{03497F97-BC34-4327-94B2-65E118DF7414}</UniqueIdentifier>
+      <UniqueIdentifier>{19538C59-FC1D-4563-B8C8-7CE3CC24E2F4}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemComponent.cpp">
       <Filter>Source\UE4Game\GameplayAbility</Filter>
@@ -87,8 +93,17 @@
     <ClInclude Include="..\..\Source\UE4Game\GameplayAbility\PxcAbilitySystemGlobals.h">
       <Filter>Source\UE4Game\GameplayAbility</Filter>
     </ClInclude>
+    <Filter Include="Source\UE4Game\GameplayAbility\Abilities">
+      <UniqueIdentifier>{90DAE7F7-D899-4F0D-8912-CE7C206CF9E6}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\Abilities\PassiveListenerStructs.cpp">
+      <Filter>Source\UE4Game\GameplayAbility\Abilities</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\UE4Game\GameplayAbility\Abilities\PassiveListenerStructs.h">
+      <Filter>Source\UE4Game\GameplayAbility\Abilities</Filter>
+    </ClInclude>
     <Filter Include="Source\UE4Game\GameplayAbility\AttributeSets">
-      <UniqueIdentifier>{BD1F7493-F59A-4777-AEFA-55693FC44B8C}</UniqueIdentifier>
+      <UniqueIdentifier>{EDB8D0B8-87E2-43B8-B6D1-A91EDE8D28BC}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\GameplayAbility\AttributeSets\PxcAttributeSet.cpp">
       <Filter>Source\UE4Game\GameplayAbility\AttributeSets</Filter>
@@ -97,7 +112,7 @@
       <Filter>Source\UE4Game\GameplayAbility\AttributeSets</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\PrivateDefinitions">
-      <UniqueIdentifier>{0866EF5B-8BA5-4D86-A114-77C97866351D}</UniqueIdentifier>
+      <UniqueIdentifier>{EEDA6606-583E-4D5B-8EC5-83A482D503DF}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\PrivateDefinitions\GameplayAbilityDef.cpp">
       <Filter>Source\UE4Game\PrivateDefinitions</Filter>
@@ -106,7 +121,7 @@
       <Filter>Source\UE4Game\PrivateDefinitions</Filter>
     </ClInclude>
     <Filter Include="Source\UE4Game\Utilities">
-      <UniqueIdentifier>{90A4DF69-4C6A-40C5-8DA0-1BD3BCC919E3}</UniqueIdentifier>
+      <UniqueIdentifier>{F7E5C07D-D2AD-4E36-A87B-710EC5F673A7}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\UE4Game\Utilities\AsyncWaitActorWithKey.cpp">
       <Filter>Source\UE4Game\Utilities</Filter>

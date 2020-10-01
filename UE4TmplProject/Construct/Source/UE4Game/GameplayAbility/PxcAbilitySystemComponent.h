@@ -23,8 +23,17 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "GameplayEffects")
 	TArray<FActiveGameplayEffectHandle> GetActiveEffectsWithAnyTags(FGameplayTagContainer Tags) const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "GameplayEffects")
+	TArray<FActiveGameplayEffectHandle> GetActiveEffectsWithParentTag(FGameplayTag ParentTag, TArray<FGameplayTag>& tarrOutTags) const;
+
 	UFUNCTION(BlueprintPure)
 	UGameplayEffect* K2_GetGameplayEffectDefForHandle(const FActiveGameplayEffectHandle& Handle);
+
+	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调和OnAnyGameplayEffectRemovedDelegate()回调内部调用
+	void UpdateUnlockTags();
+
+	UFUNCTION(BlueprintPure)
+	bool IsUnlocked(const FGameplayTag& Tag);
 
 	UPROPERTY(BlueprintAssignable)
 	FAbilityGivenDelegate DeleAbilityGiven;
@@ -43,4 +52,7 @@ protected:
 	void K2_OnRemoveAbility(const FGameplayAbilitySpec& AbilitySpec);
 
 	//m_tmapPassiveListeners FLAGJK
+
+	UPROPERTY(Transient)
+	TSet<FGameplayTag> m_tsetUnlockTags;
 };

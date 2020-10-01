@@ -2,6 +2,7 @@
 
 
 #include "PxcAbilitySystemComponent.h"
+#include "Framework/PxcGameConfig.h"
 
 int32 UPxcAbilitySystemComponent::RemoveActiveEffects(const FGameplayEffectQuery& Query, int32 iStacksToRemove)
 {
@@ -22,9 +23,50 @@ TArray<FActiveGameplayEffectHandle> UPxcAbilitySystemComponent::GetActiveEffects
 	return GetActiveEffects(FGameplayEffectQuery::MakeQuery_MatchAnyEffectTags(Tags));
 }
 
+TArray<FActiveGameplayEffectHandle> UPxcAbilitySystemComponent::GetActiveEffectsWithParentTag(
+	FGameplayTag ParentTag, TArray<FGameplayTag>& tarrOutTags) const
+{
+	FGameplayEffectQuery Query;
+	Query.CustomMatchDelegate.BindLambda([&ParentTag, &tarrOutTags](const FActiveGameplayEffect& CurEffect)->bool {
+		if (!CurEffect.Spec.Def) return false;
+
+		TArray<FGameplayTag> Tags;
+		CurEffect.Spec.Def->InheritableGameplayEffectTags.CombinedTags.GetGameplayTagArray(Tags);
+		for (FGameplayTag& Tag : Tags)
+		{
+			if (Tag.MatchesTag(ParentTag) && Tag != ParentTag)
+			{
+				tarrOutTags.Add(Tag);
+				return true;
+			}
+		}
+		return false;
+	});
+	return GetActiveEffects(Query);
+}
+
 UGameplayEffect* UPxcAbilitySystemComponent::K2_GetGameplayEffectDefForHandle(const FActiveGameplayEffectHandle& Handle)
 {
 	return const_cast<UGameplayEffect*>(GetGameplayEffectDefForHandle(Handle));
+}
+
+void UPxcAbilitySystemComponent::UpdateUnlockTags()
+{
+	m_tsetUnlockTags.Empty();
+
+	TArray<FGameplayTag> tarrParentTags;
+	GetDefault<UPxcGameConfig>()->UnlockGameplayEffectParentTags.GetGameplayTagArray(tarrParentTags);
+	for (FGameplayTag& ParentTag : tarrParentTags)
+	{
+		TArray<FGameplayTag> tarrChildTags;
+		GetActiveEffectsWithParentTag(ParentTag, tarrChildTags);
+		m_tsetUnlockTags.Append(tarrChildTags);
+	}
+}
+
+bool UPxcAbilitySystemComponent::IsUnlocked(const FGameplayTag& Tag)
+{
+	return m_tsetUnlockTags.Contains(Tag);
 }
 
 void UPxcAbilitySystemComponent::OnGiveAbility(FGameplayAbilitySpec& AbilitySpec)

@@ -10,4 +10,12 @@ UENUM(BlueprintType)
 enum class EPassiveListeningType : uint8
 {
 	Unknown = 0,
+	AttackExtra,
+};
+
+UENUM(BlueprintType)
+enum class EDynamicFigureType : uint8
+{
+	Unknown = 0,
+	AttackExtra,
 };

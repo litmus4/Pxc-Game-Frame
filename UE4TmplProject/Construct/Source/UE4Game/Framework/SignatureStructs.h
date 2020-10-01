@@ -10,6 +10,7 @@ UENUM(BlueprintType)
 enum class EPtrModelBaseType : uint8
 {
 	Model = 0,
+	PassiveListener,
 };
 
 USTRUCT()
@@ -89,7 +90,7 @@ public:
 	template<class T>
 	T* GetDerivedPtr()
 	{
-		static_assert(TPointerIsConvertibleFromTo<T, FPassiveWaitingData>::Value,
+		static_assert(TPointerIsConvertibleFromTo<T, FPointerModel>::Value,
 			"FSharedSignature IsDerived static_assert");
 		check(IsValid());
 		check(pModel->GetScriptStruct() == T::StaticStruct());
@@ -147,7 +148,7 @@ public:
 	template<class T>
 	T* GetDerivedPtr()
 	{
-		static_assert(TPointerIsConvertibleFromTo<T, FPassiveWaitingData>::Value,
+		static_assert(TPointerIsConvertibleFromTo<T, FPointerModel>::Value,
 			"FSharedSigPure IsDerived static_assert");
 		check(IsValid());
 		check(pModel->GetScriptStruct() == T::StaticStruct());

@@ -84,7 +84,7 @@ public:
 			"FSharedSignature GetDerivedPtr static_assert");
 		check(IsValid());
 		check(pModel->GetScriptStruct() == T::StaticStruct());
-		return static_cast<T*>(Get());
+		return static_cast<const T*>(Get());
 	}
 
 	template<class T>

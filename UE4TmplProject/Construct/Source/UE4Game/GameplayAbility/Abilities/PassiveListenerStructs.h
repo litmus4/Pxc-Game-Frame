@@ -13,6 +13,9 @@ struct FPassiveListener : public FPointerModel
 {
 	GENERATED_BODY()
 public:
+	FPassiveListener() = default;
+	FPassiveListener(const int64 xUid) : Super(xUid) {}
+
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
 		return FPassiveListener::StaticStruct();

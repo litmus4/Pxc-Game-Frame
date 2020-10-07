@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
-#include "AbilitySystemComponent.h"
+#include "GameplayAbility/PxcAbilitySystemComponent.h"
 #include "PxcGameConfig.generated.h"
 
 /**
@@ -16,6 +16,9 @@ class UE4GAME_API UPxcGameConfig : public UDeveloperSettings
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "GameplayEffect")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = GameplayEffect)
 	FGameplayTagContainer UnlockGameplayEffectParentTags;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Gameplay)
+	TMap<EDynamicFigureType, FDynamicFigureFeature> tmapDynamicFigureToFeature;
 };

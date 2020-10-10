@@ -58,7 +58,7 @@ public:
 	void UpdateUnlockTags();
 
 	UFUNCTION(BlueprintPure, Category = Gameplay)
-	bool IsUnlocked(const FGameplayTag& Tag);
+	bool IsUnlocked(FGameplayTag Tag);
 
 	UPROPERTY(BlueprintAssignable)
 	FAbilityGivenDelegate DeleAbilityGiven;

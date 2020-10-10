@@ -181,7 +181,7 @@ void UPxcAbilitySystemComponent::UpdateUnlockTags()
 	}
 }
 
-bool UPxcAbilitySystemComponent::IsUnlocked(const FGameplayTag& Tag)
+bool UPxcAbilitySystemComponent::IsUnlocked(FGameplayTag Tag)
 {
 	return m_tsetUnlockTags.Contains(Tag);
 }

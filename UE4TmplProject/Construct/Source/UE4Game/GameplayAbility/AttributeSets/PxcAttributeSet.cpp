@@ -36,7 +36,7 @@ void UPxcAttributeSet::PreRevisedAttributeChange(const FGameplayAttribute& Attri
 bool UPxcAttributeSet::CanAttrbuteRevisedByGE(const FGameplayAttribute& Attribute, float* pOutValue)
 {
 	static const TMap<FGameplayAttribute, float> tmapCheck = {
-		//CANREVISE_PAIR
+		//CANREVISE_PAIR//FLAGJK 要保存函数指针，下边再改为调用
 	};
 
 	const float* pValue = tmapCheck.Find(Attribute);

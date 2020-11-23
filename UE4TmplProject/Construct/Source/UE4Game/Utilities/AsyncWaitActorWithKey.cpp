@@ -29,7 +29,11 @@ void UAsyncWaitActorWithKey::Activate()
 	check(m_pActor);
 
 	UPxcAssistantSubsystem* pSystem = UPxcAssistantSubsystem::GetInstance();
-	pSystem->AddWaitingActorWithKey(m_pActor, m_sKey, this);
+	if (!pSystem->AddWaitingActorWithKey(m_pActor, m_sKey, this))
+	{
+		OnEnded(true);
+		return;
+	}
 
 	FTimerDelegate TimerDelegate;
 	TimerDelegate.BindLambda([pSystem, this]() {

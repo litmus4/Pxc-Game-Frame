@@ -68,6 +68,8 @@ public:
 			pObject->OnEnded(bFinish);
 			m_tmapWaitingActorKeys.Remove(ActorKey);
 		}
+		else
+			m_tmapWaitingActorKeys.Add(ActorKey, nullptr);
 
 	}
 

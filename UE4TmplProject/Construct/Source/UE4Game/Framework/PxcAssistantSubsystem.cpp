@@ -57,6 +57,7 @@ bool UPxcAssistantSubsystem::AddWaitingActorWithKey(AActor* pActor, const FStrin
 		m_tmapWaitingActorKeys.Add(ActorKey, pObject);
 		return true;
 	}
+	m_tmapWaitingActorKeys.Remove(ActorKey);
 	return false;
 }
 

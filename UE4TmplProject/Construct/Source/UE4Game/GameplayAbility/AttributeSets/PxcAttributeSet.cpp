@@ -35,14 +35,14 @@ void UPxcAttributeSet::PreRevisedAttributeChange(const FGameplayAttribute& Attri
 //模板
 bool UPxcAttributeSet::CanAttrbuteRevisedByGE(const FGameplayAttribute& Attribute, float* pOutValue)
 {
-	static const TMap<FGameplayAttribute, float> tmapCheck = {
-		//CANREVISE_PAIR//FLAGJK 要保存函数指针，下边再改为调用
+	static const TMap<FGameplayAttribute, FGameplayAttributeData*> tmapCheck = {
+		//CANREVISE_PAIR
 	};
 
-	const float* pValue = tmapCheck.Find(Attribute);
-	if (pValue)
+	FGameplayAttributeData*const* ppValue = tmapCheck.Find(Attribute);
+	if (ppValue)
 	{
-		if (pOutValue) *pOutValue = *pValue;
+		if (pOutValue) *pOutValue = (*ppValue)->GetCurrentValue();
 		return true;
 	}
 	return false;

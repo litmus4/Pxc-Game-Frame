@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "PrivateDefinitions/GameplayAbilityDef.h"
 #include "Abilities/PassiveListenerStructs.h"
+#include <functional>
 #include "PxcAbilitySystemComponent.generated.h"
 
 USTRUCT()

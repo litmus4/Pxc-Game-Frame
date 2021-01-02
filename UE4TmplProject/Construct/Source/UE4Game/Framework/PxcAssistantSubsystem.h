@@ -78,6 +78,7 @@ public:
 
 	PxcUtil::CIDPool* GetUidPool(EUidPoolType eType);
 	PxcUtil::CIDPool64* GetUidPool64(EUidPoolType eType);
+	PxcUtil::CIDPool* GetIdentifiedStackUidPool(int32 iKey);
 
 private:
 	bool IsUidPool64(EUidPoolType eType);
@@ -89,4 +90,5 @@ private:
 
 	std::unordered_map<EUidPoolType, PxcUtil::CIDPool*> m_mapUidPools;
 	std::unordered_map<EUidPoolType, PxcUtil::CIDPool64*> m_mapUidPool64s;
+	std::unordered_map<int32, PxcUtil::CIDPool*> m_mapIdStackUidPools;
 };

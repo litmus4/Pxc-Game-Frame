@@ -47,6 +47,11 @@ void UPxcAssistantSubsystem::Deinitialize()
 	for (; it64 != m_mapUidPool64s.end(); it64++)
 		delete it64->second;
 	m_mapUidPool64s.clear();
+
+	std::unordered_map<int32, PxcUtil::CIDPool*>::iterator itis = m_mapIdStackUidPools.begin();
+	for (; itis != m_mapIdStackUidPools.end(); itis++)
+		delete itis->second;
+	m_mapIdStackUidPools.clear();
 }
 
 bool UPxcAssistantSubsystem::AddWaitingActorWithKey(AActor* pActor, const FString& sKey, UObject* pObject)
@@ -94,6 +99,17 @@ PxcUtil::CIDPool64* UPxcAssistantSubsystem::GetUidPool64(EUidPoolType eType)
 		return pIDPool;
 	}
 	return nullptr;
+}
+
+PxcUtil::CIDPool* UPxcAssistantSubsystem::GetIdentifiedStackUidPool(int32 iKey)
+{
+	std::unordered_map<int32, PxcUtil::CIDPool*>::iterator iter = m_mapIdStackUidPools.find(iKey);
+	if (iter != m_mapIdStackUidPools.end())
+		return iter->second;
+
+	PxcUtil::CIDPool* pIDPool = new PxcUtil::CIDPool(-1, INT32_MAX, -1);
+	m_mapIdStackUidPools.insert(std::make_pair(iKey, pIDPool));
+	return pIDPool;
 }
 
 bool UPxcAssistantSubsystem::IsUidPool64(EUidPoolType eType)

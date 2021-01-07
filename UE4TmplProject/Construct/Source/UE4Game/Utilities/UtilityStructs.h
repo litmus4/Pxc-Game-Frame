@@ -7,16 +7,6 @@
 #include <set>
 #include "UtilityStructs.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class UE4GAME_API UUtilityStructs : public UObject
-{
-	GENERATED_BODY()
-	
-};
-
 USTRUCT(BlueprintType)
 struct FIdentifiedLessStack
 {
@@ -33,6 +23,18 @@ public:
 
 	std::set<float> set;
 	TMap<int32, std::set<float>::iterator> tmapUidToIt;
+};
+
+UCLASS(BlueprintType, NotBlueprintable)
+class UIdentifiedLessBox : public UObject
+{
+	GENERATED_BODY()
+public:
+	UIdentifiedLessBox() = default;
+	UIdentifiedLessBox(FIdentifiedLessStack* pStack)
+		: m_pStack(pStack) {}
+
+	FIdentifiedLessStack* m_pStack;
 };
 
 USTRUCT(BlueprintType)
@@ -52,4 +54,16 @@ public:
 	typedef std::set<float, std::greater<float>> tSetGreater;
 	tSetGreater set;
 	TMap<int32, tSetGreater::iterator> tmapUidToIt;
+};
+
+UCLASS(BlueprintType, NotBlueprintable)
+class UIdentifiedGreaterBox : public UObject
+{
+	GENERATED_BODY()
+public:
+	UIdentifiedGreaterBox() = default;
+	UIdentifiedGreaterBox(FIdentifiedGreaterStack* pStack)
+		: m_pStack(pStack) {}
+
+	FIdentifiedGreaterStack* m_pStack;
 };

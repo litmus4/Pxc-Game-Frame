@@ -25,18 +25,6 @@ public:
 	TMap<int32, std::set<float>::iterator> tmapUidToIt;
 };
 
-UCLASS(BlueprintType, NotBlueprintable)
-class UIdentifiedLessBox : public UObject
-{
-	GENERATED_BODY()
-public:
-	UIdentifiedLessBox() = default;
-	UIdentifiedLessBox(FIdentifiedLessStack* pStack)
-		: m_pStack(pStack) {}
-
-	FIdentifiedLessStack* m_pStack;
-};
-
 USTRUCT(BlueprintType)
 struct FIdentifiedGreaterStack
 {
@@ -54,16 +42,4 @@ public:
 	typedef std::set<float, std::greater<float>> tSetGreater;
 	tSetGreater set;
 	TMap<int32, tSetGreater::iterator> tmapUidToIt;
-};
-
-UCLASS(BlueprintType, NotBlueprintable)
-class UIdentifiedGreaterBox : public UObject
-{
-	GENERATED_BODY()
-public:
-	UIdentifiedGreaterBox() = default;
-	UIdentifiedGreaterBox(FIdentifiedGreaterStack* pStack)
-		: m_pStack(pStack) {}
-
-	FIdentifiedGreaterStack* m_pStack;
 };

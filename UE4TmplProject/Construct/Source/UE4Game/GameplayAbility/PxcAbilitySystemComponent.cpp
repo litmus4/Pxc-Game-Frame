@@ -167,6 +167,61 @@ void UPxcAbilitySystemComponent::RemovePassiveListenerByTagUid(const FGameplayTa
 		m_tmapPassiveListeners.Remove(Tag);
 }
 
+void UPxcAbilitySystemComponent::ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle,
+	std::function<void(const std::string&, float)>& fnOnEach)
+{
+	SGEExtentionStackMap& StackMap = m_tmapGEExtentionStackTotal.FindOrAdd(Handle);
+	bool bStacked = false;
+
+	std::map<std::string, float>::iterator itRet = m_mapGEExtentionReturn.begin();
+	for (; itRet != m_mapGEExtentionReturn.end(); itRet++)
+	{
+		std::map<std::string, SGEExtentionStack>::iterator itStack = StackMap.map.find(itRet->first);
+		if (itStack == StackMap.map.end())
+			itStack = StackMap.map.insert(std::make_pair(itRet->first, SGEExtentionStack())).first;
+		
+		if (IsGEExtentionStack(FString(itRet->first.c_str())))
+		{
+			itStack->second.vecStack.push_back(itRet->second);
+			bStacked = true;
+		}
+		else
+			itStack->second.fUnique = itRet->second;
+
+		fnOnEach(itRet->first, itRet->second);
+	}
+
+	if (bStacked)
+		StackMap.iStackedNum++;
+	m_mapGEExtentionReturn.clear();
+}
+
+void UPxcAbilitySystemComponent::PopGEExtentionStackByHandle(const FActiveGameplayEffectHandle& Handle, TMap<FString, float>& tmapPopped)
+{
+	SGEExtentionStackMap* pStackMap = m_tmapGEExtentionStackTotal.Find(Handle);
+	if (!pStackMap) return;
+
+	bool bUnstacked = false;
+	std::map<std::string, SGEExtentionStack>::iterator iter = pStackMap->map.begin();
+	for (; iter != pStackMap->map.end(); iter++)
+	{
+		if (IsGEExtentionStack(FString(iter->first.c_str())))
+		{
+			int32 iRandIndex = FMath::RandHelper(iter->second.vecStack.size());
+			tmapPopped.Add(FString(iter->first.c_str()), iter->second.vecStack[iRandIndex]);
+			iter->second.vecStack.erase(iter->second.vecStack.begin() + iRandIndex);
+			bUnstacked = true;
+		}
+		else
+			tmapPopped.Add(FString(iter->first.c_str()), iter->second.fUnique);
+	}
+
+	if (bUnstacked)
+		pStackMap->iStackedNum--;
+	if (pStackMap->iStackedNum <= 0)
+		m_tmapGEExtentionStackTotal.Remove(Handle);
+}
+
 void UPxcAbilitySystemComponent::UpdateUnlockTags()
 {
 	m_tsetUnlockTags.Empty();
@@ -200,4 +255,9 @@ void UPxcAbilitySystemComponent::OnRemoveAbility(FGameplayAbilitySpec& AbilitySp
 
 	K2_OnRemoveAbility(AbilitySpec);
 	DeleAbilityRemoved.Broadcast(AbilitySpec);
+}
+
+bool UPxcAbilitySystemComponent::IsGEExtentionStack_Implementation(const FString& sName) const
+{
+	return false;
 }

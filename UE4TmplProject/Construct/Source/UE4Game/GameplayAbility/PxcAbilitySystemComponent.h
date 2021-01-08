@@ -6,6 +6,9 @@
 #include "AbilitySystemComponent.h"
 #include "PrivateDefinitions/GameplayAbilityDef.h"
 #include "Abilities/PassiveListenerStructs.h"
+#include <vector>
+#include <map>
+#include <string>
 #include <functional>
 #include "PxcAbilitySystemComponent.generated.h"
 
@@ -16,6 +19,22 @@ struct FPassiveListenerGrpList
 public:
 	UPROPERTY()
 	TArray<FPassiveListenerGroup> tarr;
+};
+
+struct SGEExtentionStack
+{
+	SGEExtentionStack() : fUnique(0.0f) {}
+
+	std::vector<float> vecStack;
+	float fUnique;
+};
+
+struct SGEExtentionStackMap
+{
+	SGEExtentionStackMap() : iStackedNum(0) {}
+
+	std::map<std::string, SGEExtentionStack> map;
+	int32 iStackedNum;
 };
 
 /**
@@ -54,6 +73,8 @@ public:
 	void RemovePassiveListenerByTagUid(const FGameplayTag& Tag, int64 lUid = -1);
 
 	//GEExtention FLAGJK
+	void ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle, std::function<void(const std::string&, float)>& fnOnEach);
+	void PopGEExtentionStackByHandle(const FActiveGameplayEffectHandle& Handle, TMap<FString, float>& tmapPopped);
 
 	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调和OnAnyGameplayEffectRemovedDelegate()回调内部调用
 	void UpdateUnlockTags();
@@ -110,9 +131,16 @@ protected:
 		return false;
 	}
 
+	UFUNCTION(BlueprintNativeEvent)
+	bool IsGEExtentionStack(const FString& sName) const;
+	virtual bool IsGEExtentionStack_Implementation(const FString& sName) const;
+
 	UPROPERTY(Transient)
 	TMap<FGameplayTag, FPassiveListenerGrpList> m_tmapPassiveListeners;
 
 	UPROPERTY(Transient)
 	TSet<FGameplayTag> m_tsetUnlockTags;
+
+	TMap<FActiveGameplayEffectHandle, SGEExtentionStackMap> m_tmapGEExtentionStackTotal;
+	std::map<std::string, float> m_mapGEExtentionReturn;
 };

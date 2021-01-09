@@ -19,3 +19,9 @@ enum class EDynamicFigureType : uint8
 	Unknown = 0,
 	AttackExtra,
 };
+
+UENUM(BlueprintType)
+enum class EGEExtentionType : uint8
+{
+	Unknown = 0,
+};

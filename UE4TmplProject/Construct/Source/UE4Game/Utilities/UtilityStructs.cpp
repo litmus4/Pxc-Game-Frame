@@ -11,7 +11,8 @@ int32 FIdentifiedLessStack::PushValue(float fValue)
 	while (!RetPair.second)
 		RetPair = set.insert(fValue += fDiffPrecision);
 
-	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(iTypeKey);
+	std::string&& strKey = TCHAR_TO_ANSI(*sTypeKey);
+	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(strKey);
 	int32 iUid = pUidPool->Generate();
 	tmapUidToIt.Add(iUid, RetPair.first);
 	return iUid;
@@ -24,7 +25,8 @@ void FIdentifiedLessStack::PopValue(int32 iUid)
 	{
 		set.erase(*pIter);
 		tmapUidToIt.Remove(iUid);
-		PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(iTypeKey);
+		std::string&& strKey = TCHAR_TO_ANSI(*sTypeKey);
+		PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(strKey);
 		pUidPool->Free(iUid);
 	}
 }
@@ -35,7 +37,8 @@ int32 FIdentifiedGreaterStack::PushValue(float fValue)
 	while (!RetPair.second)
 		RetPair = set.insert(fValue -= fDiffPrecision);
 
-	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(iTypeKey);
+	std::string&& strKey = TCHAR_TO_ANSI(*sTypeKey);
+	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(strKey);
 	int32 iUid = pUidPool->Generate();
 	tmapUidToIt.Add(iUid, RetPair.first);
 	return iUid;
@@ -48,7 +51,8 @@ void FIdentifiedGreaterStack::PopValue(int32 iUid)
 	{
 		set.erase(*pIter);
 		tmapUidToIt.Remove(iUid);
-		PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(iTypeKey);
+		std::string&& strKey = TCHAR_TO_ANSI(*sTypeKey);
+		PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetIdentifiedStackUidPool(strKey);
 		pUidPool->Free(iUid);
 	}
 }

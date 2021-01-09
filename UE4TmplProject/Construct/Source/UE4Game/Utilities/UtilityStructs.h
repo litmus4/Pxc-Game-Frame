@@ -16,7 +16,7 @@ public:
 	void PopValue(int32 iUid);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 iTypeKey;
+	FString sTypeKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float fDiffPrecision = 0.000001f;
@@ -34,7 +34,7 @@ public:
 	void PopValue(int32 iUid);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 iTypeKey;
+	FString sTypeKey;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float fDiffPrecision = 0.000001f;

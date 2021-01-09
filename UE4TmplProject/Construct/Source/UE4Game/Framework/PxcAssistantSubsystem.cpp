@@ -48,7 +48,7 @@ void UPxcAssistantSubsystem::Deinitialize()
 		delete it64->second;
 	m_mapUidPool64s.clear();
 
-	std::unordered_map<int32, PxcUtil::CIDPool*>::iterator itis = m_mapIdStackUidPools.begin();
+	std::unordered_map<std::string, PxcUtil::CIDPool*>::iterator itis = m_mapIdStackUidPools.begin();
 	for (; itis != m_mapIdStackUidPools.end(); itis++)
 		delete itis->second;
 	m_mapIdStackUidPools.clear();
@@ -101,14 +101,14 @@ PxcUtil::CIDPool64* UPxcAssistantSubsystem::GetUidPool64(EUidPoolType eType)
 	return nullptr;
 }
 
-PxcUtil::CIDPool* UPxcAssistantSubsystem::GetIdentifiedStackUidPool(int32 iKey)
+PxcUtil::CIDPool* UPxcAssistantSubsystem::GetIdentifiedStackUidPool(const std::string& strKey)
 {
-	std::unordered_map<int32, PxcUtil::CIDPool*>::iterator iter = m_mapIdStackUidPools.find(iKey);
+	std::unordered_map<std::string, PxcUtil::CIDPool*>::iterator iter = m_mapIdStackUidPools.find(strKey);
 	if (iter != m_mapIdStackUidPools.end())
 		return iter->second;
 
 	PxcUtil::CIDPool* pIDPool = new PxcUtil::CIDPool(-1, INT32_MAX, -1);
-	m_mapIdStackUidPools.insert(std::make_pair(iKey, pIDPool));
+	m_mapIdStackUidPools.insert(std::make_pair(strKey, pIDPool));
 	return pIDPool;
 }
 

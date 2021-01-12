@@ -73,7 +73,7 @@ public:
 	void RemovePassiveListenerByTagUid(const FGameplayTag& Tag, int64 lUid = -1);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	int32 ExecuteGEExtentionByType(EGEExtentionType eType, float fVariable, FString& sOutName);
+	void ExecuteGEExtentionByType(EGEExtentionType eType, float fVariable, TMap<FString, float>& tmapOutNames);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void DiscardGEExtentionByType(EGEExtentionType eType, const TMap<FString, float>& tmapFakeSpec);
@@ -92,6 +92,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FAbilityGivenDelegate DeleAbilityRemoved;
+
+	std::map<std::string, float> m_mapGEExtentionReturn;
 
 protected:
 	virtual void OnGiveAbility(FGameplayAbilitySpec& AbilitySpec) override;
@@ -147,5 +149,4 @@ protected:
 	TSet<FGameplayTag> m_tsetUnlockTags;
 
 	TMap<FActiveGameplayEffectHandle, SGEExtentionStackMap> m_tmapGEExtentionStackTotal;
-	std::map<std::string, float> m_mapGEExtentionReturn;
 };

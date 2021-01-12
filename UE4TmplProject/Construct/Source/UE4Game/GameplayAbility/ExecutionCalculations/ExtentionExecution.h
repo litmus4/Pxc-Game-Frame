@@ -13,5 +13,21 @@ UCLASS()
 class UE4GAME_API UExtentionExecution : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
-	//FLAGJK
+	
+public:
+	UPROPERTY()
+	FGameplayTag ExtentionVariableTag1;
+
+	UPROPERTY()
+	FGameplayTag ExtentionVariableTag2;
+
+	UPROPERTY()
+	FGameplayTag ExtentionVariableTag3;
+
+	UExtentionExecution(const FObjectInitializer& ObjectInitializer);
+
+	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+		FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+
+	static void Discard(UAbilitySystemComponent* pASC, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handle);
 };

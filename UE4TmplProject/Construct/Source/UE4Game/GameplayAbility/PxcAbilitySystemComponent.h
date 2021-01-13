@@ -78,7 +78,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DiscardGEExtentionByType(EGEExtentionType eType, const TMap<FString, float>& tmapFakeSpec);
 
-	void ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle, std::function<void(const std::string&, float)>& fnOnEach);
+	void ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle, const std::function<void(const std::string&, float)>& fnOnEach);
 	void PopGEExtentionStackByHandle(const FActiveGameplayEffectHandle& Handle, TMap<FString, float>& tmapPopped);
 
 	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调和OnAnyGameplayEffectRemovedDelegate()回调内部调用

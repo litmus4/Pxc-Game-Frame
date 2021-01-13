@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "../Utilities/UtilityStructs.h"
 #include "PxcBlueprintLibrary.generated.h"
 
@@ -16,6 +17,13 @@ class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
+	static FActiveGameplayEffectHandle ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,
+		FActiveGameplayEffectHandle StackedHandle, TMap<FString, float>& tmapRet);
+
+	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
+	static void DiscardExtentionGEByStackedHandle(UAbilitySystemComponent* pASC, FActiveGameplayEffectHandle StackedHandle);
+
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static int32 PushIdentifiedLessWhenGE(UPARAM(ref) FIdentifiedLessStack& Stack, float fValue);
 

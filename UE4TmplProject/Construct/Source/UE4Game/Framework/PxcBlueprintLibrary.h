@@ -17,6 +17,7 @@ class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
+	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调内部调用
 	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
 	static FActiveGameplayEffectHandle ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,
 		FActiveGameplayEffectHandle StackedHandle, TMap<FString, float>& tmapRet);

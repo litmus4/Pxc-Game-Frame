@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "Framework/SignatureStructs.h"
+#include "Framework/Structs/SignatureStructs.h"
 #include "PrivateDefinitions/GameplayAbilityDef.h"
 #include "PassiveLIstenerStructs.generated.h"
 

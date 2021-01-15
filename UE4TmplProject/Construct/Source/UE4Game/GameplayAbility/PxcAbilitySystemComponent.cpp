@@ -168,7 +168,7 @@ void UPxcAbilitySystemComponent::RemovePassiveListenerByTagUid(const FGameplayTa
 }
 
 void UPxcAbilitySystemComponent::ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle,
-	const std::function<void(const std::string&, float)>& fnOnEach)
+	std::function<void(const std::string&, float)>&& fnOnEach)
 {
 	SGEExtentionStackMap& StackMap = m_tmapGEExtentionStackTotal.FindOrAdd(Handle);
 	bool bStacked = false;

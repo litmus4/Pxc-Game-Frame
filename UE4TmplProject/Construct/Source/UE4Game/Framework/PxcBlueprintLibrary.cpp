@@ -5,6 +5,8 @@
 #include "GameplayAbility/PxcAbilitySystemComponent.h"
 #include "GameplayAbility/ExecutionCalculations/ExtentionExecution.h"
 
+DEFINE_LOG_CATEGORY(LogPxcBPLib);
+
 FActiveGameplayEffectHandle UPxcBlueprintLibrary::ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,
 	FActiveGameplayEffectHandle StackedHandle, TMap<FString, float>& tmapRet)
 {

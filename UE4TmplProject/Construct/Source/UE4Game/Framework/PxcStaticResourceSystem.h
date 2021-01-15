@@ -17,4 +17,7 @@ class UE4GAME_API UPxcStaticResourceSystem : public UGameInstanceSubsystem
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
+
+protected:
+	//TMap<FGameplayTag, >
 };

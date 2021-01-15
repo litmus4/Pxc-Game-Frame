@@ -16,6 +16,9 @@ class UE4GAME_API UPxcGameConfig : public UDeveloperSettings
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = StaticResource)
+	TSoftObjectPtr<UDataTable> GEExtentionContToInstUDT;
+
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = GameplayEffect)
 	FGameplayTagContainer UnlockGameplayEffectParentTags;
 

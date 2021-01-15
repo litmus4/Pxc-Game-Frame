@@ -6,7 +6,10 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "../Utilities/UtilityStructs.h"
+#include <functional>
 #include "PxcBlueprintLibrary.generated.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogPxcBPLib, Display, All);
 
 /**
  * 
@@ -36,4 +39,23 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static void PopIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGreaterStack& Stack, int32 iUid);
+
+public:
+	template<class T>
+	static void ForEachUDTRowValue(UDataTable* pUDT, std::function<void(const T*)>&& fnOnEach)
+	{
+		static_assert(TPointerIsConvertibleFromTo<T, FTableRowBase>::Value,
+			"UPxcBlueprintLibrary ForEachRowValueInUDT static_assert");
+		if (verify(IsValid(pUDT) && pUDT->GetRowStruct() && pUDT->GetRowStruct()->IsChildOf(T::StaticStruct())))
+		{
+			TMap<FName, uint8*>::TConstIterator Iter(pUDT->GetRowMap().CreateConstIterator());
+			for (; Iter; Iter++)
+				fnOnEach((T*)Iter.Value());
+		}
+		else
+		{
+			UE_LOG(LogPxcBPLib, Error, TEXT("ForEachRowValueInUDT: UDT is invalid!"));
+			//TODOJK  π”√LogCenter
+		}
+	}
 };

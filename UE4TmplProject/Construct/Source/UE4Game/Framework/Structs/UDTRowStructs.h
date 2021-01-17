@@ -4,16 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Engine/DataTable.h"
+#include "GameplayEffect.h"
 #include "UDTRowStructs.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class UE4GAME_API UUDTRowStructs : public UObject
+USTRUCT(BlueprintInternalUseOnly)
+struct UE4GAME_API FUTRGExContToInst : public FTableRowBase
 {
 	GENERATED_BODY()
-	
-};
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag ExtentionTag;
 
-//FLAGJK
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> InstantEffect;
+};

@@ -4,6 +4,8 @@
 #include "PxcStaticResourceSystem.h"
 #include "Misc/Paths.h"
 #include "Containers/StringConv.h"
+#include "Framework/PxcGameConfig.h"
+#include "Framework/PxcBlueprintLibrary.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -24,6 +26,15 @@ void UPxcStaticResourceSystem::Initialize(FSubsystemCollectionBase& Collection)
 	COtherTableCenter::GetInstance()->Init(strContentDir);
 
 	PxcUtil::zPackRelease();
+	const UPxcGameConfig* pConfig = GetDefault<UPxcGameConfig>();
+	check(pConfig);
+
+	//UnrealDataTables
+	UDataTable* pUDT = pConfig->GEExtentionContToInstUDT.LoadSynchronous();
+	if (pUDT)
+	{
+		LOAD_UDT_TO_TMAP(pUDT, FUTRGExContToInst, m_tmapUDTGEExtentionContToInst, ExtentionTag);
+	}
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PxcStaticResourceSystem initialized"));
 }

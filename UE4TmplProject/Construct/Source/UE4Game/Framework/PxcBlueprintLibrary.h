@@ -46,10 +46,10 @@ public:
 	{
 		static_assert(TPointerIsConvertibleFromTo<T, FTableRowBase>::Value,
 			"UPxcBlueprintLibrary ForEachRowValueInUDT static_assert");
-		if (verify(IsValid(pUDT) && pUDT->GetRowStruct() && pUDT->GetRowStruct()->IsChildOf(T::StaticStruct())))
+		if (ensureAlways(IsValid(pUDT) && pUDT->GetRowStruct() && pUDT->GetRowStruct()->IsChildOf(T::StaticStruct())))
 		{
 			TMap<FName, uint8*>::TConstIterator Iter(pUDT->GetRowMap().CreateConstIterator());
-			for (; Iter; Iter++)
+			for (; Iter; ++Iter)
 				fnOnEach((T*)Iter.Value());
 		}
 		else
@@ -59,3 +59,15 @@ public:
 		}
 	}
 };
+
+#define LOAD_UDT_TO_TMAP(UDTPtr, RowClass, Container, IDMbr) UPxcBlueprintLibrary::ForEachUDTRowValue<RowClass>(\
+	UDTPtr, [this](const RowClass* pRow) {\
+	check(!Container.Find(pRow->IDMbr));\
+	Container.Add(pRow->IDMbr, *pRow);\
+})
+
+#define LOAD_UDT_TO_MAP(UDTPtr, RowClass, Container, IDClass, IDMbr) UPxcBlueprintLibrary::ForEachUDTRowValue<RowClass>(\
+	UDTPtr, [this](const RowClass* pRow) {\
+	check(Container.find(pRow->IDMbr) == Container.end());\
+	Container.insert(std::pair<IDClass, RowClass>pRow->IDMbr, *pRow);\
+})

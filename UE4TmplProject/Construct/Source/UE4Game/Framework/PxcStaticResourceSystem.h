@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Framework/Structs/UDTRowStructs.h"
 #include "PxcStaticResourceSystem.generated.h"
 
 /**
@@ -19,5 +20,5 @@ public:
 	virtual void Deinitialize() override;
 
 protected:
-	//TMap<FGameplayTag, >
+	TMap<FGameplayTag, FUTRGExContToInst> m_tmapUDTGEExtentionContToInst;
 };

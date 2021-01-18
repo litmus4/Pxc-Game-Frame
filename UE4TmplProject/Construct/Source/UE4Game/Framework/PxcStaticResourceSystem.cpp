@@ -47,3 +47,9 @@ void UPxcStaticResourceSystem::Deinitialize()
 	PxcUtil::zPackRelease();
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PxcStaticResourceSystem deinitialized"));
 }
+
+const FUTRGExContToInst* UPxcStaticResourceSystem::GetUDTGEExtentionContToInst(const FGameplayTag& ExtentionTag)
+{
+	const FUTRGExContToInst* pRow = m_tmapUDTGEExtentionContToInst.Find(ExtentionTag);
+	return pRow;
+}

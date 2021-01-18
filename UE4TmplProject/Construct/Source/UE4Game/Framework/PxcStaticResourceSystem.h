@@ -19,6 +19,8 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 
+	const FUTRGExContToInst* GetUDTGEExtentionContToInst(const FGameplayTag& ExtentionTag);
+
 protected:
 	TMap<FGameplayTag, FUTRGExContToInst> m_tmapUDTGEExtentionContToInst;
 };

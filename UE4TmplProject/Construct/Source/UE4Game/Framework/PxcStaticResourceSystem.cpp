@@ -15,10 +15,18 @@
 #include "Windows/PostWindowsApi.h"
 #include "Windows/HideWindowsPlatformTypes.h"
 #include "PxcUtil/zPackEx.h"
-//#include <string>
+
+UPxcStaticResourceSystem* UPxcStaticResourceSystem::s_pInst = nullptr;
+
+UPxcStaticResourceSystem* UPxcStaticResourceSystem::GetInstance()
+{
+	check(s_pInst);
+	return s_pInst;
+}
 
 void UPxcStaticResourceSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
+	s_pInst = this;
 	std::string strContentDir = TCHAR_TO_ANSI(*FPaths::ProjectContentDir());
 
 	//DataTables
@@ -48,7 +56,7 @@ void UPxcStaticResourceSystem::Deinitialize()
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PxcStaticResourceSystem deinitialized"));
 }
 
-const FUTRGExContToInst* UPxcStaticResourceSystem::GetUDTGEExtentionContToInst(const FGameplayTag& ExtentionTag)
+const FUTRGExContToInst* UPxcStaticResourceSystem::GetUTRGEExtentionContToInst(const FGameplayTag& ExtentionTag)
 {
 	const FUTRGExContToInst* pRow = m_tmapUDTGEExtentionContToInst.Find(ExtentionTag);
 	return pRow;

@@ -10,8 +10,8 @@ void UPxcEngineSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	if (GEngine && GEngine->IsInitialized())
 	{
-		UAbilitySystemGlobals& ASG = UAbilitySystemGlobals::Get();
-		ASG.InitGlobalData();
+		UAbilitySystemGlobals* pASG = &UAbilitySystemGlobals::Get();
+		pASG->InitGlobalData();
 	}
 	else
 		DelePostEngineInitHandle = FCoreDelegates::OnPostEngineInit.AddUObject(this, &ThisClass::OnPostEngineInit);
@@ -28,6 +28,6 @@ void UPxcEngineSubsystem::Deinitialize()
 
 void UPxcEngineSubsystem::OnPostEngineInit()
 {
-	UAbilitySystemGlobals& ASG = UAbilitySystemGlobals::Get();
-	ASG.InitGlobalData();
+	UAbilitySystemGlobals* pASG = &UAbilitySystemGlobals::Get();
+	pASG->InitGlobalData();
 }

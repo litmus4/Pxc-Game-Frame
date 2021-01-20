@@ -65,3 +65,28 @@ void UPxcBlueprintLibrary::PopIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGre
 {
 	Stack.PopValue(iUid);
 }
+
+FName UPxcBlueprintLibrary::Key_GetName(const FKey& Key)
+{
+	return Key.GetFName();
+}
+
+void UPxcBlueprintLibrary::Key_GetAllActionMappingByName(const FName& ActionName,
+	TArray<FInputActionKeyMapping>& tarrOutMappings, TArray<FGamepadCombineMapping>& tarrOutGamepadCombMappings)
+{
+	//FLAGJK
+}
+
+int32 UPxcBlueprintLibrary::Key_GetFirstAdaptiveAcMapping(const TArray<FInputActionKeyMapping>& tarrMappings, const TArray<FGamepadCombineMapping>& tarrGamepadCombMappings,
+	FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping)
+{
+	//
+	return 0;
+}
+
+int32 UPxcBlueprintLibrary::Key_GetIndexedDevisedAcMapping(const TArray<FInputActionKeyMapping>& tarrMappings, const TArray<FGamepadCombineMapping>& tarrGamepadCombMappings,
+	bool bDevisedKeyboard, int32 iIndex, bool bGamepadCombBoth, FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping)
+{
+	//
+	return 0;
+}

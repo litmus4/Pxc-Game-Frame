@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Framework/Structs/ScatteredStructs.h"
 #include "../Utilities/UtilityStructs.h"
 #include <functional>
 #include "PxcBlueprintLibrary.generated.h"
@@ -39,6 +40,25 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static void PopIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGreaterStack& Stack, int32 iUid);
+
+	//=====================
+
+	UFUNCTION(BlueprintPure, Category = "Input|Key")
+	static FName Key_GetName(const FKey& Key);
+
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static void Key_GetAllActionMappingByName(const FName& ActionName,
+		TArray<FInputActionKeyMapping>& tarrOutMappings, TArray<FGamepadCombineMapping>& tarrOutGamepadCombMappings);
+
+	//ReturnValue >0:Mapping <0:GamepadCombMapping ==0:没找到
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static int32 Key_GetFirstAdaptiveAcMapping(const TArray<FInputActionKeyMapping>& tarrMappings, const TArray<FGamepadCombineMapping>& tarrGamepadCombMappings,
+		FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping);
+
+	//ReturnValue >0:Mapping <0:GamepadCombMapping ==0:没找到
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static int32 Key_GetIndexedDevisedAcMapping(const TArray<FInputActionKeyMapping>& tarrMappings, const TArray<FGamepadCombineMapping>& tarrGamepadCombMappings,
+		bool bDevisedKeyboard, int32 iIndex, bool bGamepadCombBoth, FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping);
 
 public:
 	template<class T>

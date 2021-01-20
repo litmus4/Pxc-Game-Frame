@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
 #include "GameplayAbility/PxcAbilitySystemComponent.h"
+#include "Framework/Structs/ScatteredStructs.h"
 #include "PxcGameConfig.generated.h"
 
 /**
@@ -24,4 +25,15 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Gameplay)
 	TMap<EDynamicFigureType, FDynamicFigureFeature> tmapDynamicFigureToFeature;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Input)
+	TArray<FGamepadCombineMapping> tarrGamepadCombineMappings;
+
+	void AddGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);
+	void RemoveGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);
+
+	const TMap<FName, TArray<FGamepadCombineMapping>>& GetGamepadCombineMappings() const;
+
+private:
+	bool bGamepadCombineDirty = false;
 };

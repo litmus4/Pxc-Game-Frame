@@ -35,8 +35,8 @@ public:
 	FPxcInputMapping(const FName& xActionName, bool bDevisedKeyboard, int32 iIndex);
 
 	void InitMapping(bool* pbDevisedKeyboard = nullptr, int32 iIndex = -1);
-	//bool IsSame(const FPxcInputMapping& Other);
-	//bool IsSame(const struct FPxcAxputMapping& Other);
+	bool IsSame(const FPxcInputMapping& Other);
+	bool IsSame(const struct FPxcAxputMapping& Other);
 
 	UPROPERTY(BlueprintReadOnly)
 	FName ActionName;

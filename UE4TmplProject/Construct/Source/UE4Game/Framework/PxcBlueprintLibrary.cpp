@@ -168,3 +168,52 @@ int32 UPxcBlueprintLibrary::Key_GetIndexedDevisedAcMapping(const TArray<FInputAc
 
 	return 0;
 }
+
+void UPxcBlueprintLibrary::Key_GetAllAxisMappingByName(const FName& AxisName, bool bPositiveDir, TArray<FInputAxisKeyMapping>& tarrOutMappings)
+{
+	const UInputSettings* pSetting = GetDefault<UInputSettings>();
+	TArray<FInputAxisKeyMapping> tarrAllMappings;
+	pSetting->GetAxisMappingByName(AxisName, tarrAllMappings);
+	for (FInputAxisKeyMapping& Mapping : tarrAllMappings)
+	{
+		if ((bPositiveDir ? Mapping.Scale >= 0.0f : Mapping.Scale < 0.0f) || Mapping.Key.IsFloatAxis()/*摇杆方向一个顶俩*/)
+			tarrOutMappings.Add(Mapping);
+	}
+}
+
+bool UPxcBlueprintLibrary::Key_GetFirstAdaptiveAxMapping(const TArray<FInputAxisKeyMapping>& tarrMappings, FInputAxisKeyMapping& OutMapping)
+{
+	UPXCycleInstance* pGI = Cast<UPXCycleInstance>(GWorld ? GWorld->GetGameInstance() : nullptr);
+	if (!pGI) return false;
+
+	for (const FInputAxisKeyMapping& Mapping : tarrMappings)
+	{
+		bool bCurKb = UKismetInputLibrary::Key_IsKeyboardKey(Mapping.Key);
+		if (pGI->bKeyboardRuntime ? bCurKb : !bCurKb)
+		{
+			OutMapping = Mapping;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool UPxcBlueprintLibrary::Key_GetIndexedDevisedAxMapping(const TArray<FInputAxisKeyMapping>& tarrMappings,
+	bool bDevisedKeyboard, int32 iIndex, FInputAxisKeyMapping& OutMapping)
+{
+	int32 i = 0;
+	for (const FInputAxisKeyMapping& Mapping : tarrMappings)
+	{
+		bool bCurKb = UKismetInputLibrary::Key_IsKeyboardKey(Mapping.Key);
+		if (bDevisedKeyboard ? bCurKb : !bCurKb)
+		{
+			if (i == iIndex)
+			{
+				OutMapping = Mapping;
+				return true;
+			}
+			i++;
+		}
+	}
+	return false;
+}

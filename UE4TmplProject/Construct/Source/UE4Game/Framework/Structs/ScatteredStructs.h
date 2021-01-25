@@ -48,27 +48,27 @@ public:
 	uint8 uModifierCode;
 };
 
-//USTRUCT(BlueprintType)
-//struct FPxcAxputMapping
-//{
-//	GENERATED_BODY()
-//public:
-//	FPxcAxputMapping() : bPositiveDir(true), iFloatPositive(0) {}
-//	FPxcAxputMapping(const FName& xAxisName, bool bPositive);
-//	FPxcAxputMapping(const FName& xAxisName, bool bPositive, bool bDevisedKeyboard, int32 iIndex);
-//
-//	void InitMapping(bool* pbDevisedKeyboard = nullptr, int32 iIndex = -1);
-//	bool IsSame(const FPxcInputMapping& Other);
-//
-//	UPROPERTY(BlueprintReadOnly)
-//	FName AxisName;
-//
-//	UPROPERTY(BlueprintReadOnly)
-//	bool bPositiveDir;
-//
-//	UPROPERTY(BlueprintReadOnly)
-//	FName KeyName;
-//
-//	UPROPERTY(BlueprintReadOnly)
-//	int32 iFloatPositive;//!=0时只手柄
-//};
+USTRUCT(BlueprintType)
+struct FPxcAxputMapping
+{
+	GENERATED_BODY()
+public:
+	FPxcAxputMapping() : bPositiveDir(true), iFloatPositive(0) {}
+	FPxcAxputMapping(const FName& xAxisName, bool bPositive);
+	FPxcAxputMapping(const FName& xAxisName, bool bPositive, bool bDevisedKeyboard, int32 iIndex);
+
+	void InitMapping(bool* pbDevisedKeyboard = nullptr, int32 iIndex = -1);
+	bool IsSame(const FPxcInputMapping& Other);
+
+	UPROPERTY(BlueprintReadOnly)
+	FName AxisName;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bPositiveDir;
+
+	UPROPERTY(BlueprintReadOnly)
+	FName KeyName;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 iFloatPositive;//!=0时只手柄
+};

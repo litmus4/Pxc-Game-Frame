@@ -63,5 +63,43 @@ bool FPxcInputMapping::IsSame(const FPxcInputMapping& Other)
 
 bool FPxcInputMapping::IsSame(const FPxcAxputMapping& Other)
 {
-	return false;//FLAGJK
+	return (uModifierCode != 0 ? false : KeyName == Other.KeyName);
+}
+
+FPxcAxputMapping::FPxcAxputMapping(const FName& xAxisName, bool bPositive)
+	: AxisName(xAxisName), bPositiveDir(bPositive), iFloatPositive(0)
+{
+	InitMapping();
+}
+
+FPxcAxputMapping::FPxcAxputMapping(const FName& xAxisName, bool bPositive, bool bDevisedKeyboard, int32 iIndex)
+	: AxisName(xAxisName), bPositiveDir(bPositive), iFloatPositive(0)
+{
+	InitMapping(&bDevisedKeyboard, iIndex);
+}
+
+void FPxcAxputMapping::InitMapping(bool* pbDevisedKeyboard, int32 iIndex)
+{
+	TArray<FInputAxisKeyMapping> tarrMappings;
+	UPxcBlueprintLibrary::Key_GetAllAxisMappingByName(AxisName, bPositiveDir, tarrMappings);
+	if (tarrMappings.Num() == 0) return;
+
+	FInputAxisKeyMapping FirstMapping;
+	bool bResult = false;
+	if (pbDevisedKeyboard)
+		bResult = UPxcBlueprintLibrary::Key_GetIndexedDevisedAxMapping(tarrMappings, *pbDevisedKeyboard, FMath::Max(iIndex, 0), FirstMapping);
+	else
+		bResult = UPxcBlueprintLibrary::Key_GetFirstAdaptiveAxMapping(tarrMappings, FirstMapping);
+
+	if (bResult)
+	{
+		KeyName = FirstMapping.Key.GetFName();
+		if (FirstMapping.Key.IsFloatAxis())
+			iFloatPositive = (bPositiveDir == (FirstMapping.Scale >= 0) ? 1 : -1);
+	}
+}
+
+bool FPxcAxputMapping::IsSame(const FPxcInputMapping& Other)
+{
+	return (Other.uModifierCode != 0 ? false : KeyName == Other.KeyName);
 }

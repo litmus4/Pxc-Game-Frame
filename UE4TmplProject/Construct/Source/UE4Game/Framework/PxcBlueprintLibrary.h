@@ -60,6 +60,16 @@ public:
 	static int32 Key_GetIndexedDevisedAcMapping(const TArray<FInputActionKeyMapping>& tarrMappings, const TArray<FGamepadCombineMapping>& tarrGamepadCombMappings,
 		bool bDevisedKeyboard, int32 iIndex, bool bGamepadCombBoth, FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping);
 
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static void Key_GetAllAxisMappingByName(const FName& AxisName, bool bPositiveDir, TArray<FInputAxisKeyMapping>& tarrOutMappings);
+
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static bool Key_GetFirstAdaptiveAxMapping(const TArray<FInputAxisKeyMapping>& tarrMappings, FInputAxisKeyMapping& OutMapping);
+
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static bool Key_GetIndexedDevisedAxMapping(const TArray<FInputAxisKeyMapping>& tarrMappings,
+		bool bDevisedKeyboard, int32 iIndex, FInputAxisKeyMapping& OutMapping);
+
 public:
 	template<class T>
 	static void ForEachUDTRowValue(UDataTable* pUDT, std::function<void(const T*)>&& fnOnEach)

@@ -4,6 +4,7 @@
 #include "Framework/PxcBlueprintLibrary.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/KismetInputLibrary.h"
+#include "Styling/SlateBrush.h"
 #include "GameplayAbility/PxcAbilitySystemComponent.h"
 #include "GameplayAbility/ExecutionCalculations/ExtentionExecution.h"
 #include "PXCycleInstance.h"
@@ -216,4 +217,60 @@ bool UPxcBlueprintLibrary::Key_GetIndexedDevisedAxMapping(const TArray<FInputAxi
 		}
 	}
 	return false;
+}
+
+FPxcInputMapping UPxcBlueprintLibrary::Key_MakeInputMapping(const FName& ActionName)
+{
+	return FPxcInputMapping(ActionName);
+}
+
+inline FName GetFirstGamepadModifierName(const FName& ModiActionName)
+{
+	TArray<FInputActionKeyMapping> tarrMappings;
+	TArray<FGamepadCombineMapping> tarrGamepadCombMappings;
+	UPxcBlueprintLibrary::Key_GetAllActionMappingByName(ModiActionName, tarrMappings, tarrGamepadCombMappings);
+	if (tarrMappings.Num() > 0 || tarrGamepadCombMappings.Num() > 0)
+	{
+		FInputActionKeyMapping FirstMapping;
+		FGamepadCombineMapping FirstCombineMapping;
+		int32 iResult = UPxcBlueprintLibrary::Key_GetIndexedDevisedAcMapping(tarrMappings, tarrGamepadCombMappings,
+			false, 0, false, FirstMapping, FirstCombineMapping);
+		if (iResult)
+			return FirstMapping.Key.GetFName();
+	}
+	return FName();
+}
+
+bool UPxcBlueprintLibrary::Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
+	FSlateBrush& OutMainIcon, TArray<FSlateBrush>& tarrOutModifierIcons)
+{
+	if (InputMapping.KeyName.IsNone())
+		return false;//FLAGJK
+	//UISSGameInstanceSubsystem& GIS = UISSGameInstanceSubsystem::GetGlobalRef();
+
+	//const FISSInputKeySetupData* KeySetup = GIS.QueryInputKeySetupByName(InputMapping.KeyName);
+	//if (!KeySetup) return false;
+	//OutMainIcon = KeySetup->IconBrush;
+
+	//static TArray<FName> ModifierNames = {
+	//	TEXT("Shift"), TEXT("Ctrl"), TEXT("Alt"), TEXT("Cmd"), TEXT("ToggleSkill")
+	//};
+	//static TSet<int32> GamepadCombIndexSet = { 4 };
+
+	//if (InputMapping.ModifierCode != 0)
+	//{
+	//	for (int32 i = 0; i < ModifierNames.Num(); ++i)
+	//	{
+	//		if (!(InputMapping.ModifierCode & 1 << i))
+	//			continue;
+	//		FName QueryName = (GamepadCombIndexSet.Contains(i) ? GetFirstGamepadModifierName(ModifierNames[i]) : ModifierNames[i]);
+	//		const FISSInputKeySetupData* ModiSetup = GIS.QueryInputKeySetupByName(QueryName);
+	//		if (ModiSetup)
+	//		{
+	//			OutModifierIcons.Add(ModiSetup->IconBrush);
+	//			if (OutModifierIcons.Num() >= ModifierNum) break;
+	//		}
+	//	}
+	//}
+	return true;
 }

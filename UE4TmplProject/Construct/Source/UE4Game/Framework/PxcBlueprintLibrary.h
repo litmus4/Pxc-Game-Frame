@@ -70,6 +70,13 @@ public:
 	static bool Key_GetIndexedDevisedAxMapping(const TArray<FInputAxisKeyMapping>& tarrMappings,
 		bool bDevisedKeyboard, int32 iIndex, FInputAxisKeyMapping& OutMapping);
 
+	UFUNCTION(BlueprintPure, Category = "Input|Key")
+	static FPxcInputMapping Key_MakeInputMapping(const FName& ActionName);
+
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
+	static bool Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
+		FSlateBrush& OutMainIcon, TArray<FSlateBrush>& tarrOutModifierIcons);
+
 public:
 	template<class T>
 	static void ForEachUDTRowValue(UDataTable* pUDT, std::function<void(const T*)>&& fnOnEach)

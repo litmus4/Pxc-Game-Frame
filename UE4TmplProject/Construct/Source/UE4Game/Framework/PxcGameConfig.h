@@ -29,6 +29,9 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Input)
 	TArray<FGamepadCombineMapping> tarrGamepadCombineMappings;
 
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Input)
+	FString sKeyIconPath;
+
 	void AddGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);
 	void RemoveGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);
 

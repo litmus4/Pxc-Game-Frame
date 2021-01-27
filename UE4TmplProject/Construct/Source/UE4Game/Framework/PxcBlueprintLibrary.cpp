@@ -10,6 +10,12 @@
 #include "PXCycleInstance.h"
 #include "PxcGameConfig.h"
 
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/PreWindowsApi.h"
+#include "DataTables/OtherTable/OtherTableCenter.h"
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
+
 DEFINE_LOG_CATEGORY(LogPxcBPLib);
 
 FActiveGameplayEffectHandle UPxcBlueprintLibrary::ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,
@@ -177,7 +183,7 @@ void UPxcBlueprintLibrary::Key_GetAllAxisMappingByName(const FName& AxisName, bo
 	pSetting->GetAxisMappingByName(AxisName, tarrAllMappings);
 	for (FInputAxisKeyMapping& Mapping : tarrAllMappings)
 	{
-		if ((bPositiveDir ? Mapping.Scale >= 0.0f : Mapping.Scale < 0.0f) || Mapping.Key.IsFloatAxis()/*摇杆方向一个顶俩*/)
+		if ((bPositiveDir ? Mapping.Scale >= 0.0f : Mapping.Scale < 0.0f) || Mapping.Key.IsAxis1D()/*摇杆方向一个顶俩*/)
 			tarrOutMappings.Add(Mapping);
 	}
 }
@@ -245,12 +251,19 @@ bool UPxcBlueprintLibrary::Key_ParseIconsFromInputMapping(const FPxcInputMapping
 	FSlateBrush& OutMainIcon, TArray<FSlateBrush>& tarrOutModifierIcons)
 {
 	if (InputMapping.KeyName.IsNone())
-		return false;//FLAGJK
-	//UISSGameInstanceSubsystem& GIS = UISSGameInstanceSubsystem::GetGlobalRef();
+		return false;
 
-	//const FISSInputKeySetupData* KeySetup = GIS.QueryInputKeySetupByName(InputMapping.KeyName);
-	//if (!KeySetup) return false;
-	//OutMainIcon = KeySetup->IconBrush;
+	CInputKeyRow* pRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*InputMapping.KeyName.ToString()));
+	if (!pRow) return false;
+	FString sIconFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+
+	FString sIconPath = GetDefault<UPxcGameConfig>()->sKeyIconPath;
+	sIconPath.Append(sIconFile);
+	UMaterialInstance* pMtlInst = LoadObject<UMaterialInstance>(nullptr, *sIconPath);
+	if (!ensureAlways(pMtlInst)) return false;
+
+	//OutMainIcon = FSlateBrush(ESlateBrushDrawType::Image, FName(sIconFile), FMargin(),
+	//	ESlateBrushTileType::NoTile, ESlateBrushImageType::FullColor, FVector2D(), FLinearColor::White, pMtlInst);//FLAGJK
 
 	//static TArray<FName> ModifierNames = {
 	//	TEXT("Shift"), TEXT("Ctrl"), TEXT("Alt"), TEXT("Cmd"), TEXT("ToggleSkill")

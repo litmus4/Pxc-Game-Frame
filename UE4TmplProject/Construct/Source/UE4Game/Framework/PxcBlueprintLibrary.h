@@ -74,8 +74,14 @@ public:
 	static FPxcInputMapping Key_MakeInputMapping(const FName& ActionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Input|Key")
-	static UMaterialInstance* Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
+	static UMaterialInstance* Key_ParseIconFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
 		TArray<UMaterialInstance*>& tarrOutModifierIcons);
+
+	UFUNCTION(BlueprintPure, Category = "Input|Key")
+	static FPxcAxputMapping Key_MakeAxputMapping(const FName& AxisName, bool bPositiveDir);
+
+	UFUNCTION(BlueprintCallable, Category = "InputKey")
+	static UMaterialInstance* Key_ParseIconFromAxputMapping(const FPxcAxputMapping& AxputMapping);
 
 public:
 	template<class T>

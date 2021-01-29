@@ -247,7 +247,7 @@ inline FName GetFirstGamepadModifierName(const FName& ModiActionName)
 	return FName();
 }
 
-UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
+UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
 	TArray<UMaterialInstance*>& tarrOutModifierIcons)
 {
 	UMaterialInstance* pRetMtlInst = nullptr;
@@ -289,5 +289,38 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconsFromInputMapping(const FP
 		}
 	}
 
+	return pRetMtlInst;
+}
+
+FPxcAxputMapping UPxcBlueprintLibrary::Key_MakeAxputMapping(const FName& AxisName, bool bPositiveDir)
+{
+	return FPxcAxputMapping(AxisName, bPositiveDir);
+}
+
+inline FString LinkFloatAxisKeyName(const FName& KeyName, bool bFloatPositive)
+{
+	return (KeyName.ToString() + (bFloatPositive ? TEXT("1") : TEXT("0")));
+}
+
+UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromAxputMapping(const FPxcAxputMapping& AxputMapping)
+{
+	UMaterialInstance* pRetMtlInst = nullptr;
+	if (AxputMapping.KeyName.IsNone())
+		return pRetMtlInst;
+
+	CInputKeyRow* pRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*AxputMapping.KeyName.ToString()));
+	if (!pRow)
+	{
+		FString&& sLinkedKeyName = LinkFloatAxisKeyName(AxputMapping.KeyName, AxputMapping.iFloatPositive > 0);
+		pRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*sLinkedKeyName));
+	}
+
+	if (pRow)
+	{
+		const FString* pIconPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::InputKeyIcon);
+		check(pIconPath);
+		FString sIconPath = *pIconPath + ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		pRetMtlInst = LoadObject<UMaterialInstance>(nullptr, *sIconPath);
+	}
 	return pRetMtlInst;
 }

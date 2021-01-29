@@ -26,11 +26,11 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Gameplay)
 	TMap<EDynamicFigureType, FDynamicFigureFeature> tmapDynamicFigureToFeature;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Input)
-	TArray<FGamepadCombineMapping> tarrGamepadCombineMappings;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Assets)
+	TMap<EDynamicAssetsType, FString> tmapDynamicAssetsPathes;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Input)
-	FString sKeyIconPath;
+	TArray<FGamepadCombineMapping> tarrGamepadCombineMappings;
 
 	void AddGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);
 	void RemoveGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);

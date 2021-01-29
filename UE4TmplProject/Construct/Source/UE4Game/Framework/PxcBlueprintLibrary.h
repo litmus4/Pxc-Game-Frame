@@ -74,8 +74,8 @@ public:
 	static FPxcInputMapping Key_MakeInputMapping(const FName& ActionName);
 
 	UFUNCTION(BlueprintCallable, Category = "Input|Key")
-	static bool Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
-		FSlateBrush& OutMainIcon, TArray<FSlateBrush>& tarrOutModifierIcons);
+	static UMaterialInstance* Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
+		TArray<UMaterialInstance*>& tarrOutModifierIcons);
 
 public:
 	template<class T>

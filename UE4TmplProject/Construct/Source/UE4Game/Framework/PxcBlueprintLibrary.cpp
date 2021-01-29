@@ -247,43 +247,47 @@ inline FName GetFirstGamepadModifierName(const FName& ModiActionName)
 	return FName();
 }
 
-bool UPxcBlueprintLibrary::Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
-	FSlateBrush& OutMainIcon, TArray<FSlateBrush>& tarrOutModifierIcons)
+UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconsFromInputMapping(const FPxcInputMapping& InputMapping, int32 iModifierNum,
+	TArray<UMaterialInstance*>& tarrOutModifierIcons)
 {
+	UMaterialInstance* pRetMtlInst = nullptr;
 	if (InputMapping.KeyName.IsNone())
-		return false;
+		return pRetMtlInst;
 
 	CInputKeyRow* pRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*InputMapping.KeyName.ToString()));
-	if (!pRow) return false;
-	FString sIconFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+	if (pRow)
+	{
+		const FString* pIconPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::InputKeyIcon);
+		check(pIconPath);
+		FString sMainPath = *pIconPath + ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		pRetMtlInst = LoadObject<UMaterialInstance>(nullptr, *sMainPath);
 
-	FString sIconPath = GetDefault<UPxcGameConfig>()->sKeyIconPath;
-	sIconPath.Append(sIconFile);
-	UMaterialInstance* pMtlInst = LoadObject<UMaterialInstance>(nullptr, *sIconPath);
-	if (!ensureAlways(pMtlInst)) return false;
+		if (ensureAlways(pRetMtlInst) && InputMapping.uModifierCode != 0)
+		{
+			static TArray<FName> tarrModifierNames = {
+				TEXT("Shift"), TEXT("Ctrl"), TEXT("Alt"), TEXT("Cmd")//, TEXT("")
+			};
+			static TSet<int32> tsetGamepadCombIndex = { 4 };
 
-	//OutMainIcon = FSlateBrush(ESlateBrushDrawType::Image, FName(sIconFile), FMargin(),
-	//	ESlateBrushTileType::NoTile, ESlateBrushImageType::FullColor, FVector2D(), FLinearColor::White, pMtlInst);//FLAGJK
+			for (int32 i = 0; i < tarrModifierNames.Num(); ++i)
+			{
+				if (!(InputMapping.uModifierCode & 1 << i))
+					continue;
 
-	//static TArray<FName> ModifierNames = {
-	//	TEXT("Shift"), TEXT("Ctrl"), TEXT("Alt"), TEXT("Cmd"), TEXT("ToggleSkill")
-	//};
-	//static TSet<int32> GamepadCombIndexSet = { 4 };
+				FName ModiKeyName = tarrModifierNames[i];
+				if (tsetGamepadCombIndex.Contains(i))
+					ModiKeyName = GetFirstGamepadModifierName(ModiKeyName);
+				CInputKeyRow* pModiRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*ModiKeyName.ToString()));
+				if (pModiRow)
+				{
+					FString sModiPath = *pIconPath + ANSI_TO_TCHAR(pModiRow->m_strMtlInstFile.c_str());
+					UMaterialInstance* pModiMtlInst = LoadObject<UMaterialInstance>(nullptr, *sModiPath);
+					tarrOutModifierIcons.Add(pModiMtlInst);
+					if (tarrOutModifierIcons.Num() >= iModifierNum) break;
+				}
+			}
+		}
+	}
 
-	//if (InputMapping.ModifierCode != 0)
-	//{
-	//	for (int32 i = 0; i < ModifierNames.Num(); ++i)
-	//	{
-	//		if (!(InputMapping.ModifierCode & 1 << i))
-	//			continue;
-	//		FName QueryName = (GamepadCombIndexSet.Contains(i) ? GetFirstGamepadModifierName(ModifierNames[i]) : ModifierNames[i]);
-	//		const FISSInputKeySetupData* ModiSetup = GIS.QueryInputKeySetupByName(QueryName);
-	//		if (ModiSetup)
-	//		{
-	//			OutModifierIcons.Add(ModiSetup->IconBrush);
-	//			if (OutModifierIcons.Num() >= ModifierNum) break;
-	//		}
-	//	}
-	//}
-	return true;
+	return pRetMtlInst;
 }

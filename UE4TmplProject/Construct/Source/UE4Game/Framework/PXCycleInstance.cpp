@@ -29,8 +29,8 @@ void UPXCycleInstance::Init()
 #else
 	PxcUtil::zPackPathSwitch(true);
 #endif
-	PxcUtil::zPackAddPathAim((strContentDir + "Packs\\DataTables.zpk").c_str(), "DataTables");
-	//PxcUtil::zPackAddPathAim((strContentDir + "Packs\\Assets.zpk").c_str(), "Assets");
+	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");//FLAGJK zpk路径错误问题需要在家里再测试一遍
+	//PxcUtil::zPackAddPathAim("Packs\\Assets.zpk", "Assets");
 #else
 	//TODOJK 暂时只有Win64/32平台
 #endif

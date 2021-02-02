@@ -1,6 +1,7 @@
 #pragma once
 #include "PxcUtil/Singleton.h"
 #include "GlobalParamRow.h"
+#include "InputActionNameRow.h"
 #include "InputKeyRow.h"
 
 class COtherTableCenter : public PxcUtil::Singleton<COtherTableCenter>
@@ -13,12 +14,17 @@ public:
 
 	CGlobalParamRow* GetGlobalParamRow(int iID);
 
+	CInputActionNameRow* GetInputActionNameRow(int iID);
+	CInputActionNameRow* GetInputActionNameRowByName(const std::string& strActionName);
+	const std::map<int, CInputActionNameRow*>& GetInputActionNameMap();
 	CInputKeyRow* GetInputKeyRow(int iID);
 	CInputKeyRow* GetInputKeyRowByName(const std::string& strKeyName);
 
 private:
 	std::map<int, CGlobalParamRow*> m_mapGlobalParams;
 
+	std::map<int, CInputActionNameRow*> m_mapInputActions;
+	std::map<std::string, int> m_mapInputActionNames;
 	std::map<int, CInputKeyRow*> m_mapInputKeys;
 	std::map<std::string, int> m_mapInputKeyNames;
 };

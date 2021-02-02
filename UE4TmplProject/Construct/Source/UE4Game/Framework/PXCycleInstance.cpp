@@ -29,7 +29,7 @@ void UPXCycleInstance::Init()
 #else
 	PxcUtil::zPackPathSwitch(true);
 #endif
-	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");//FLAGJK zpk路径错误问题需要在家里再测试一遍
+	PxcUtil::zPackAddPathAim("Packs\\DataTables.zpk", "DataTables");
 	//PxcUtil::zPackAddPathAim("Packs\\Assets.zpk", "Assets");
 #else
 	//TODOJK 暂时只有Win64/32平台
@@ -39,6 +39,14 @@ void UPXCycleInstance::Init()
 	Super::Init();
 
 	FGameModeEvents::GameModeInitializedEvent.AddUObject(this, &UPXCycleInstance::OnGameModeInitialized);
+}
+
+void UPXCycleInstance::Shutdown()
+{
+	PxcUtil::CLogCenter::DeleteInstance();
+
+	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance shutdown end"));
+	Super::Shutdown();
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

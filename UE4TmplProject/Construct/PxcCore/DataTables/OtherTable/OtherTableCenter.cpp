@@ -14,6 +14,12 @@ bool COtherTableCenter::Init(const std::string& strPath)
 {
 	LOADTABLE(GlobalParam, strPath, "OtherTable", m_mapGlobalParams, m_iID)
 
+	LOADTABLE(InputActionName, strPath, "OtherTable", m_mapInputActions, m_iID)
+	{
+		std::map<int, CInputActionNameRow*>::iterator iter = m_mapInputActions.begin();
+		for (; iter != m_mapInputActions.end(); iter++)
+			m_mapInputActionNames.insert(std::make_pair(iter->second->m_strActionName, iter->first));
+	}
 	LOADTABLE(InputKey, strPath, "OtherTable", m_mapInputKeys, m_iID)
 	{
 		std::map<int, CInputKeyRow*>::iterator iter = m_mapInputKeys.begin();
@@ -28,6 +34,8 @@ void COtherTableCenter::Release()
 {
 	UNLOADTABLE(GlobalParam, m_mapGlobalParams)
 
+	UNLOADTABLE(InputActionName, m_mapInputActions)
+	m_mapInputActionNames.clear();
 	UNLOADTABLE(InputKey, m_mapInputKeys)
 	m_mapInputKeyNames.clear();
 
@@ -40,6 +48,31 @@ CGlobalParamRow* COtherTableCenter::GetGlobalParamRow(int iID)
 	if (iter != m_mapGlobalParams.end())
 		return iter->second;
 	return NULL;
+}
+
+CInputActionNameRow* COtherTableCenter::GetInputActionNameRow(int iID)
+{
+	std::map<int, CInputActionNameRow*>::iterator iter = m_mapInputActions.find(iID);
+	if (iter != m_mapInputActions.end())
+		return iter->second;
+	return NULL;
+}
+
+CInputActionNameRow* COtherTableCenter::GetInputActionNameRowByName(const std::string& strActionName)
+{
+	std::map<std::string, int>::iterator itName = m_mapInputActionNames.find(strActionName);
+	if (itName != m_mapInputActionNames.end())
+	{
+		std::map<int, CInputActionNameRow*>::iterator iter = m_mapInputActions.find(itName->second);
+		if (iter != m_mapInputActions.end())
+			return iter->second;
+	}
+	return NULL;
+}
+
+const std::map<int, CInputActionNameRow*>& COtherTableCenter::GetInputActionNameMap()
+{
+	return m_mapInputActions;
 }
 
 CInputKeyRow* COtherTableCenter::GetInputKeyRow(int iID)

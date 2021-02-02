@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="LoadDefines.h" />
     <ClInclude Include="OtherTable\GlobalParamRow.h" />
+    <ClInclude Include="OtherTable\InputActionNameRow.h" />
     <ClInclude Include="OtherTable\InputKeyRow.h" />
     <ClInclude Include="OtherTable\OtherTableCenter.h" />
     <ClInclude Include="TextTable\CaptionRow.h" />
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClCompile Include="LoadDefines.cpp" />
     <ClCompile Include="OtherTable\GlobalParamRow.cpp" />
+    <ClCompile Include="OtherTable\InputActionNameRow.cpp" />
     <ClCompile Include="OtherTable\InputKeyRow.cpp" />
     <ClCompile Include="OtherTable\OtherTableCenter.cpp" />
     <ClCompile Include="TextTable\CaptionRow.cpp" />

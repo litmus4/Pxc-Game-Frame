@@ -48,6 +48,9 @@
     <ClInclude Include="OtherTable\InputKeyRow.h">
       <Filter>OtherTable</Filter>
     </ClInclude>
+    <ClInclude Include="OtherTable\InputActionNameRow.h">
+      <Filter>OtherTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
@@ -72,6 +75,9 @@
       <Filter>TextTable</Filter>
     </ClCompile>
     <ClCompile Include="OtherTable\InputKeyRow.cpp">
+      <Filter>OtherTable</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherTable\InputActionNameRow.cpp">
       <Filter>OtherTable</Filter>
     </ClCompile>
   </ItemGroup>

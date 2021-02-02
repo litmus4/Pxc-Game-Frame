@@ -16,6 +16,7 @@ class UE4GAME_API UPXCycleInstance : public UGameInstance
 	
 public:
 	virtual void Init() override;
+	virtual void Shutdown() override;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bKeyboardRuntime = true;

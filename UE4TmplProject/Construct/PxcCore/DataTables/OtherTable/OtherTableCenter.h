@@ -14,9 +14,12 @@ public:
 
 	CGlobalParamRow* GetGlobalParamRow(int iID);
 
+	static std::string LinkAxisName(const std::string& strAxisName, bool bPositiveDir);
+	bool LoadInputActionNames();
 	CInputActionNameRow* GetInputActionNameRow(int iID);
 	CInputActionNameRow* GetInputActionNameRowByName(const std::string& strActionName);
 	const std::map<int, CInputActionNameRow*>& GetInputActionNameMap();
+
 	CInputKeyRow* GetInputKeyRow(int iID);
 	CInputKeyRow* GetInputKeyRowByName(const std::string& strKeyName);
 
@@ -25,6 +28,9 @@ private:
 
 	std::map<int, CInputActionNameRow*> m_mapInputActions;
 	std::map<std::string, int> m_mapInputActionNames;
+
 	std::map<int, CInputKeyRow*> m_mapInputKeys;
 	std::map<std::string, int> m_mapInputKeyNames;
+
+	std::string m_strPath;
 };

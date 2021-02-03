@@ -6,15 +6,15 @@
 #include <string>
 #include <hash_map>
 
-#define LOADTABLE(Name, Path, Folder, Container, IDMbr)\
+#define LOADTABLE(Name, MainPath, Folder, Container, IDMbr)\
 {\
 	std::string strFile = "DataTables\\";\
 	strFile += Folder;\
 	strFile += "\\";\
 	strFile += #Name;\
 	strFile += ".csv";\
-	PxcUtil::zPackCombinePath(strFile, Path.c_str());\
-	strFile = Path + strFile;\
+	PxcUtil::zPackCombinePath(strFile, MainPath.c_str());\
+	strFile = MainPath + strFile;\
 	PxcUtil::CCSVTableOperator tabop;\
 	if (tabop.Load(strFile.c_str()))\
 	{\

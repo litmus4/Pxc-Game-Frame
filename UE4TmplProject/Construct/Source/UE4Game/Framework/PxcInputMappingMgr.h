@@ -40,4 +40,20 @@ class UE4GAME_API UPxcInputMappingMgr : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION(BlueprintCallable, Category = Input)
+	void LoadInputMappings();
+
+	UFUNCTION(BlueprintCallable, Category = Input)
+	void ReleaseInputMappings();
+
+	UFUNCTION(BlueprintCallable, Category = Input)
+	TArray<FInputMappingQuad> GetInputMappings();
+
+	UFUNCTION(BlueprintPure, Category = Input)
+	FString GetDisplayNameOfAction(const FName& ActionName, bool bAxisPositiveDir);
+
+private:
+	UPROPERTY(Transient)
+	TArray<FInputMappingQuad> m_tarrInputMappings;
 };

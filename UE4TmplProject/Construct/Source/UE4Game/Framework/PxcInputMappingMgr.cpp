@@ -135,7 +135,7 @@ bool UPxcInputMappingMgr::ModifyGamepadInputMapping(const FInputActionKeyMapping
 
 	FInputActionKeyMapping FirstKeyMapping;
 	FGamepadCombineMapping FirstCombineMapping;
-	int32 iResult = FindFirstDevisedAcMapping(KeyMapping.ActionName, false, true, FirstKeyMapping, FirstCombineMapping);//FLAG
+	int32 iResult = FindFirstDevisedAcMapping(KeyMapping.ActionName, false, true, FirstKeyMapping, FirstCombineMapping);
 	if (iResult)
 	{
 		pSetting->RemoveActionMapping(FirstKeyMapping, false);

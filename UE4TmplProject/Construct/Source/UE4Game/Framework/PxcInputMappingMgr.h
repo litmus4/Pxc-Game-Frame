@@ -53,7 +53,28 @@ public:
 	UFUNCTION(BlueprintPure, Category = Input)
 	FString GetDisplayNameOfAction(const FName& ActionName, bool bAxisPositiveDir);
 
+	UFUNCTION(BlueprintPure, Category = Input)
+	FString GetDisplayNameOfQuad(const FInputMappingQuad& Quad);
+
+	UFUNCTION(BlueprintPure, Category = Input)
+	bool IsActionModifyForbidden(const FName& ActionName, bool bAxisPositiveDir, bool bKeyboard);
+
+	UFUNCTION(BlueprintPure, Category = Input)
+	bool IsQuadModifyForbidden(const FInputMappingQuad& Quad, bool bKeyboard);
+
+	UFUNCTION(BlueprintPure, Category = Input)
+	bool IsQuadHasKey(const FInputMappingQuad& Quad, bool bKeyboard);
+
+	UFUNCTION(BlueprintCallable, Category = Input)
+	bool ModifyGamepadInputMapping(const FInputActionKeyMapping& KeyMapping, bool bCombine, EGamepadModifierKey eModifierKey,
+		FName& ConflictUniActionName);
+
 private:
+	int32 FindFirstDevisedAcMapping(const FName& ActionName, bool bDevisedKeyboard, bool bGamepadCombBoth,
+		FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping);
+	bool FindFirstDevisedAxMapping(const FName& AxisName, bool bPositiveDir, bool bDevisedKeyboard,
+		FInputAxisKeyMapping& OutMapping);
+
 	UPROPERTY(Transient)
 	TArray<FInputMappingQuad> m_tarrInputMappings;
 };

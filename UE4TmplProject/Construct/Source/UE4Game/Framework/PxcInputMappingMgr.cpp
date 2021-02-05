@@ -2,6 +2,7 @@
 
 
 #include "Framework/PxcInputMappingMgr.h"
+#include "Kismet/KismetInputLibrary.h"
 #include "Framework/PxcGameConfig.h"
 #include "Framework/PxcBlueprintLibrary.h"
 
@@ -189,6 +190,73 @@ bool UPxcInputMappingMgr::ModifyGamepadInputMapping(const FInputActionKeyMapping
 	pConfig->SaveConfig();
 
 	//OnInputMappingModified.Broadcast(*pModifiedQuad, false, DeleConflictUniName);
+	return true;
+}
+
+bool UPxcInputMappingMgr::ModifyKeyboardInputMapping(const FInputActionKeyMapping& KeyMapping, FName& ConflictUniActionName)
+{
+	check(!KeyMapping.ActionName.IsNone() && KeyMapping.Key.IsValid() && UKismetInputLibrary::Key_IsKeyboardKey(KeyMapping.Key));
+
+	FPxcInputMapping NewInputMapping;
+	NewInputMapping.ActionName = KeyMapping.ActionName;
+	NewInputMapping.KeyName = KeyMapping.Key.GetFName();
+	if (KeyMapping.bShift) NewInputMapping.uModifierCode |= 1;
+	if (KeyMapping.bCtrl) NewInputMapping.uModifierCode |= 1 << 1;
+	if (KeyMapping.bAlt) NewInputMapping.uModifierCode |= 1 << 2;
+	if (KeyMapping.bCmd) NewInputMapping.uModifierCode |= 1 << 3;
+
+	FInputMappingQuad* pModifiedQuad = nullptr;
+	FInputMappingQuad* pConflictQuad = nullptr;
+	for (FInputMappingQuad& Quad : m_tarrInputMappings)
+	{
+		if (!Quad.bAxis && Quad.KeyboardInputMapping.ActionName == KeyMapping.ActionName)
+			pModifiedQuad = &Quad;
+		if (Quad.bAxis ? Quad.KeyboardAxputMapping.IsSame(NewInputMapping) : Quad.KeyboardInputMapping.IsSame(NewInputMapping))
+			pConflictQuad = &Quad;
+	}
+	if (!pModifiedQuad || pModifiedQuad == pConflictQuad/*同一个操作按下了原来的按键*/)
+		return false;
+	pModifiedQuad->KeyboardInputMapping = NewInputMapping;
+
+	UInputSettings* pSetting = UInputSettings::GetInputSettings();
+
+	FInputActionKeyMapping FirstKeyMapping;
+	FGamepadCombineMapping FirstCombineMapping;
+	int32 iResult = FindFirstDevisedAcMapping(KeyMapping.ActionName, true, false, FirstKeyMapping, FirstCombineMapping);
+	if (iResult)
+		pSetting->RemoveActionMapping(FirstKeyMapping, false);
+	pSetting->AddActionMapping(KeyMapping, !pConflictQuad);
+
+	FName DeleConflictUniName;
+	if (pConflictQuad)
+	{
+		if (pConflictQuad->bAxis)
+		{
+			FInputAxisKeyMapping FirAxKeyMapping;
+			if (FindFirstDevisedAxMapping(pConflictQuad->KeyboardAxputMapping.AxisName, pConflictQuad->KeyboardAxputMapping.bPositiveDir,
+				true, FirAxKeyMapping))
+				pSetting->RemoveAxisMapping(FirAxKeyMapping);
+
+			pConflictQuad->KeyboardAxputMapping.KeyName = NAME_None;
+			pConflictQuad->KeyboardAxputMapping.iFloatPositive = 0;
+			std::string&& strUniActionName = COtherTableCenter::LinkAxisName(TCHAR_TO_ANSI(*pConflictQuad->KeyboardAxputMapping.AxisName.ToString()),
+				pConflictQuad->KeyboardAxputMapping.bPositiveDir);
+			ConflictUniActionName = DeleConflictUniName = ANSI_TO_TCHAR(strUniActionName.c_str());
+		}
+		else
+		{
+			iResult = FindFirstDevisedAcMapping(pConflictQuad->KeyboardInputMapping.ActionName, true, false, FirstKeyMapping, FirstCombineMapping);
+			if (iResult)
+				pSetting->RemoveActionMapping(FirstKeyMapping);
+
+			pConflictQuad->KeyboardInputMapping.KeyName = NAME_None;
+			pConflictQuad->KeyboardInputMapping.uModifierCode = 0;
+			ConflictUniActionName = DeleConflictUniName = pConflictQuad->KeyboardInputMapping.ActionName;
+		}
+	}
+
+	pSetting->SaveKeyMappings();
+	//OnInputMappingModified.Broadcast(*pModifiedQuad, true, DeleConflictUniName);
 	return true;
 }
 

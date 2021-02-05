@@ -69,6 +69,9 @@ public:
 	bool ModifyGamepadInputMapping(const FInputActionKeyMapping& KeyMapping, bool bCombine, EGamepadModifierKey eModifierKey,
 		FName& ConflictUniActionName);
 
+	UFUNCTION(BlueprintCallable, Category = Input)
+	bool ModifyKeyboardInputMapping(const FInputActionKeyMapping& KeyMapping, FName& ConflictUniActionName);
+
 private:
 	int32 FindFirstDevisedAcMapping(const FName& ActionName, bool bDevisedKeyboard, bool bGamepadCombBoth,
 		FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping);

@@ -260,6 +260,159 @@ bool UPxcInputMappingMgr::ModifyKeyboardInputMapping(const FInputActionKeyMappin
 	return true;
 }
 
+enum EGpAxputOppositeType
+{
+	NormalToFloat,
+	FloatToNormal,
+	FloatToFloat,
+	FloatSwap
+};
+
+bool UPxcInputMappingMgr::ModifyGamepadAxputMapping(const FInputAxisKeyMapping& KeyMapping, bool bFloatPositive,
+	FName& OppositeUniActionName, TArray<FName>& tarrConflictUniActionNames)
+{
+	check(!KeyMapping.AxisName.IsNone() && KeyMapping.Key.IsValid() && KeyMapping.Key.IsGamepadKey());
+
+	FPxcAxputMapping NewAxputMapping;
+	NewAxputMapping.AxisName = KeyMapping.AxisName;
+	NewAxputMapping.bPositiveDir = (KeyMapping.Scale >= 0);
+	NewAxputMapping.KeyName = KeyMapping.Key.GetFName();
+	NewAxputMapping.iFloatPositive = (KeyMapping.Key.IsAxis1D() ? (bFloatPositive ? 1 : -1) : 0);
+
+	FInputMappingQuad* pModifiedQuad = nullptr;
+	FInputMappingQuad* pOppositeQuad = nullptr;
+	EGpAxputOppositeType eOppositeType = EGpAxputOppositeType::FloatSwap;
+	TArray<FInputMappingQuad*> tarrConflictQuads;
+	for (FInputMappingQuad& Quad : m_tarrInputMappings)
+	{
+		if (Quad.bAxis && Quad.GamepadAxputMapping.AxisName == KeyMapping.AxisName)
+		{
+			if (Quad.GamepadAxputMapping.bPositiveDir == NewAxputMapping.bPositiveDir)
+				pModifiedQuad = &Quad;
+			else
+			{
+				if (Quad.GamepadAxputMapping.KeyName == NewAxputMapping.KeyName)//普通按键冲突或swap
+				{
+					if (Quad.GamepadAxputMapping.iFloatPositive != 0)//swap
+						pOppositeQuad = &Quad;
+				}
+				else if (NewAxputMapping.iFloatPositive != 0)//普通或float改为float
+				{
+					pOppositeQuad = &Quad;
+					if (Quad.GamepadAxputMapping.iFloatPositive != 0)//float改为float
+						eOppositeType = EGpAxputOppositeType::FloatToFloat;
+					else
+						eOppositeType = EGpAxputOppositeType::NormalToFloat;
+				}
+				else if (Quad.GamepadAxputMapping.iFloatPositive != 0)//float改为普通
+				{
+					pOppositeQuad = &Quad;
+					eOppositeType = EGpAxputOppositeType::FloatToNormal;
+				}
+			}
+		}
+		if (Quad.bAxis ? Quad.GamepadAxputMapping.KeyName == NewAxputMapping.KeyName : Quad.GamepadInputMapping.IsSame(NewAxputMapping))
+			tarrConflictQuads.Add(&Quad);
+	}
+
+	if (!pModifiedQuad) return false;
+	int32 i = 0;
+	while (i < tarrConflictQuads.Num())
+	{
+		FInputMappingQuad* pCurConfQuad = tarrConflictQuads[i];
+		if (pCurConfQuad == pModifiedQuad)
+		{
+			if (pCurConfQuad->GamepadAxputMapping.iFloatPositive == NewAxputMapping.iFloatPositive)//同一个操作按下了原来的按键
+				return false;
+			else
+				tarrConflictQuads.RemoveAt(i);
+		}
+		else if (pCurConfQuad == pOppositeQuad)
+			tarrConflictQuads.RemoveAt(i);
+		else i++;
+	}
+
+	FName DeleOppositeUniName;
+	pModifiedQuad->GamepadAxputMapping = NewAxputMapping;
+	if (pOppositeQuad)
+	{
+		switch (eOppositeType)
+		{
+		case EGpAxputOppositeType::NormalToFloat:
+		case EGpAxputOppositeType::FloatToFloat:
+			pOppositeQuad->GamepadAxputMapping.KeyName = NewAxputMapping.KeyName;
+			pOppositeQuad->GamepadAxputMapping.iFloatPositive = (bFloatPositive ? -1 : 1);
+			break;
+		case EGpAxputOppositeType::FloatToNormal:
+			pOppositeQuad->GamepadAxputMapping.KeyName = NAME_None;
+			pOppositeQuad->GamepadAxputMapping.iFloatPositive = 0;
+			break;
+		case EGpAxputOppositeType::FloatSwap:
+			pOppositeQuad->GamepadAxputMapping.iFloatPositive = (bFloatPositive ? -1 : 1);
+		}
+		std::string&& strUniActionName = COtherTableCenter::LinkAxisName(TCHAR_TO_ANSI(*pOppositeQuad->GamepadAxputMapping.AxisName.ToString()),
+			pOppositeQuad->GamepadAxputMapping.bPositiveDir);
+		OppositeUniActionName = DeleOppositeUniName = ANSI_TO_TCHAR(strUniActionName.c_str());
+	}
+
+	UInputSettings* pSetting = UInputSettings::GetInputSettings();
+	//UPxcGameConfig* pConfig = GetMutableDefault<UPxcGameConfig>();
+
+	FInputAxisKeyMapping FirstKeyMapping;
+	if (FindFirstDevisedAxMapping(KeyMapping.AxisName, NewAxputMapping.bPositiveDir, false, FirstKeyMapping))
+		pSetting->RemoveAxisMapping(FirstKeyMapping, false);
+	if (pOppositeQuad && eOppositeType == EGpAxputOppositeType::NormalToFloat)
+	{
+		if (FindFirstDevisedAxMapping(pOppositeQuad->GamepadAxputMapping.AxisName, pOppositeQuad->GamepadAxputMapping.bPositiveDir,
+			false, FirstKeyMapping))
+			pSetting->RemoveAxisMapping(FirstKeyMapping, false);
+	}
+	FInputAxisKeyMapping KeyMappingToSet = KeyMapping;
+	KeyMappingToSet.Scale = (NewAxputMapping.bPositiveDir == bFloatPositive ? 1.0f : -1.0f);
+	pSetting->AddAxisMapping(KeyMappingToSet, tarrConflictQuads.Num() == 0);
+
+	TArray<FName> tarrDeleConflictUniNames;
+	for (FInputMappingQuad* pCurConfQuad : tarrConflictQuads)
+	{
+		if (pCurConfQuad->bAxis)
+		{
+			if (FindFirstDevisedAxMapping(pCurConfQuad->GamepadAxputMapping.AxisName, pCurConfQuad->GamepadAxputMapping.bPositiveDir,
+				false, FirstKeyMapping))
+				pSetting->RemoveAxisMapping(FirstKeyMapping);
+
+			pCurConfQuad->GamepadAxputMapping.KeyName = NAME_None;
+			pCurConfQuad->GamepadAxputMapping.iFloatPositive = 0;
+			FName&& UniActionName = ANSI_TO_TCHAR(COtherTableCenter::LinkAxisName(
+				TCHAR_TO_ANSI(*pCurConfQuad->GamepadAxputMapping.AxisName.ToString()), pCurConfQuad->GamepadAxputMapping.bPositiveDir).c_str());
+			tarrDeleConflictUniNames.Add(UniActionName);
+			tarrConflictUniActionNames.Add(UniActionName);
+		}
+		else
+		{
+			FInputActionKeyMapping FirAcKeyMapping;
+			FGamepadCombineMapping FirAcCombineMapping;
+			int32 iResult = FindFirstDevisedAcMapping(pCurConfQuad->GamepadInputMapping.ActionName, false, true, FirAcKeyMapping, FirAcCombineMapping);
+			if (iResult)
+			{
+				pSetting->RemoveActionMapping(FirAcKeyMapping);
+				//if (iResult < 0)//理论上方向按键是统一单键的，手柄上不会与组合键冲突
+				//	pConfig->RemoveGamepadCombineMapping(FirAcCombineMapping);
+			}
+
+			pCurConfQuad->GamepadInputMapping.KeyName = NAME_None;
+			pCurConfQuad->GamepadInputMapping.uModifierCode = 0;
+			tarrDeleConflictUniNames.Add(pCurConfQuad->GamepadInputMapping.ActionName);
+			tarrConflictUniActionNames.Add(pCurConfQuad->GamepadInputMapping.ActionName);
+		}
+	}
+
+	pSetting->SaveKeyMappings();
+	//pConfig->SaveConfig();
+
+	//OnGamepadAxputMappingModified.Broadcast(*pModifiedQuad, false, DeleOppositeUniName, tarrDeleConflictUniNames);
+	return true;
+}
+
 int32 UPxcInputMappingMgr::FindFirstDevisedAcMapping(const FName& ActionName, bool bDevisedKeyboard, bool bGamepadCombBoth,
 	FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping)
 {

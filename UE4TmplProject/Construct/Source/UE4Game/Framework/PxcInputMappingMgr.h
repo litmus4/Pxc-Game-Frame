@@ -72,6 +72,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Input)
 	bool ModifyKeyboardInputMapping(const FInputActionKeyMapping& KeyMapping, FName& ConflictUniActionName);
 
+	UFUNCTION(BlueprintCallable, Category = Input)
+	bool ModifyGamepadAxputMapping(const FInputAxisKeyMapping& KeyMapping, bool bFloatPositive,
+		FName& OppositeUniActionName, TArray<FName>& tarrConflictUniActionNames);
+
 private:
 	int32 FindFirstDevisedAcMapping(const FName& ActionName, bool bDevisedKeyboard, bool bGamepadCombBoth,
 		FInputActionKeyMapping& OutMapping, FGamepadCombineMapping& OutGamepadCombMapping);

@@ -39,6 +39,12 @@ UCLASS()
 class UE4GAME_API UPxcInputMappingMgr : public UObject
 {
 	GENERATED_BODY()
+
+public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FInputMappingModifiedDelegate,
+		const FInputMappingQuad&, Quad, bool, bKeyboard, const FName&, ConflictUniActionName);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FGpAxputMappingModifiedDelegate, const FInputMappingQuad&, Quad,
+		bool, bKeyboard, const FName&, OppositeUniActionName, const TArray<FName>&, ConflictUniActionNames);
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = Input)
@@ -75,6 +81,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Input)
 	bool ModifyGamepadAxputMapping(const FInputAxisKeyMapping& KeyMapping, bool bFloatPositive,
 		FName& OppositeUniActionName, TArray<FName>& tarrConflictUniActionNames);
+
+	UFUNCTION(BlueprintCallable, Category = Input)
+	bool ModifyKeyboardAxputMapping(const FInputAxisKeyMapping& KeyMapping, FName& ConflictUniActionName);
+
+	UPROPERTY(BlueprintAssignable, Category = Input)
+	FInputMappingModifiedDelegate DeleInputMappingModified;
+
+	UPROPERTY(BlueprintAssignable, Category = Input)
+	FGpAxputMappingModifiedDelegate DeleGamepadAxputMappingModified;
 
 private:
 	int32 FindFirstDevisedAcMapping(const FName& ActionName, bool bDevisedKeyboard, bool bGamepadCombBoth,

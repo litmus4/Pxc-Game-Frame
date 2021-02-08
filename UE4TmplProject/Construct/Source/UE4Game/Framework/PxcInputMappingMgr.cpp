@@ -189,7 +189,8 @@ bool UPxcInputMappingMgr::ModifyGamepadInputMapping(const FInputActionKeyMapping
 	pSetting->SaveKeyMappings();
 	pConfig->SaveConfig();
 
-	//OnInputMappingModified.Broadcast(*pModifiedQuad, false, DeleConflictUniName);
+	DeleInputMappingModified.Broadcast(*pModifiedQuad, false, DeleConflictUniName);
+	//TODOJK EventCenter
 	return true;
 }
 
@@ -256,7 +257,8 @@ bool UPxcInputMappingMgr::ModifyKeyboardInputMapping(const FInputActionKeyMappin
 	}
 
 	pSetting->SaveKeyMappings();
-	//OnInputMappingModified.Broadcast(*pModifiedQuad, true, DeleConflictUniName);
+	DeleInputMappingModified.Broadcast(*pModifiedQuad, true, DeleConflictUniName);
+	//TODOJK EventCenter
 	return true;
 }
 
@@ -409,7 +411,74 @@ bool UPxcInputMappingMgr::ModifyGamepadAxputMapping(const FInputAxisKeyMapping& 
 	pSetting->SaveKeyMappings();
 	//pConfig->SaveConfig();
 
-	//OnGamepadAxputMappingModified.Broadcast(*pModifiedQuad, false, DeleOppositeUniName, tarrDeleConflictUniNames);
+	DeleGamepadAxputMappingModified.Broadcast(*pModifiedQuad, false, DeleOppositeUniName, tarrDeleConflictUniNames);
+	//TODOJK EventCenter
+	return true;
+}
+
+bool UPxcInputMappingMgr::ModifyKeyboardAxputMapping(const FInputAxisKeyMapping& KeyMapping, FName& ConflictUniActionName)
+{
+	check(!KeyMapping.AxisName.IsNone() && KeyMapping.Key.IsValid() && UKismetInputLibrary::Key_IsKeyboardKey(KeyMapping.Key));
+
+	FPxcAxputMapping NewAxputMapping;
+	NewAxputMapping.AxisName = KeyMapping.AxisName;
+	NewAxputMapping.bPositiveDir = (KeyMapping.Scale >= 0);
+	NewAxputMapping.KeyName = KeyMapping.Key.GetFName();
+	NewAxputMapping.iFloatPositive = 0;
+
+	FInputMappingQuad* pModifiedQuad = nullptr;
+	FInputMappingQuad* pConflictQuad = nullptr;
+	for (FInputMappingQuad& Quad : m_tarrInputMappings)
+	{
+		if (Quad.bAxis && Quad.KeyboardAxputMapping.AxisName == KeyMapping.AxisName &&
+			Quad.KeyboardAxputMapping.bPositiveDir == NewAxputMapping.bPositiveDir)
+			pModifiedQuad = &Quad;
+		if (Quad.bAxis ? Quad.KeyboardAxputMapping.KeyName == NewAxputMapping.KeyName : Quad.KeyboardInputMapping.IsSame(NewAxputMapping))
+			pConflictQuad = &Quad;
+	}
+	if (!pModifiedQuad || pModifiedQuad == pConflictQuad/*同一个操作按下了原来的按键*/)
+		return false;
+	pModifiedQuad->KeyboardAxputMapping = NewAxputMapping;
+
+	UInputSettings* pSetting = UInputSettings::GetInputSettings();
+
+	FInputAxisKeyMapping FirstKeyMapping;
+	if (FindFirstDevisedAxMapping(KeyMapping.AxisName, NewAxputMapping.bPositiveDir, true, FirstKeyMapping))
+		pSetting->RemoveAxisMapping(FirstKeyMapping, false);
+	pSetting->AddAxisMapping(KeyMapping, !pConflictQuad);
+
+	FName DeleConflictUniName;
+	if (pConflictQuad)
+	{
+		if (pConflictQuad->bAxis)
+		{
+			if (FindFirstDevisedAxMapping(pConflictQuad->KeyboardAxputMapping.AxisName, pConflictQuad->KeyboardAxputMapping.bPositiveDir,
+				true, FirstKeyMapping))
+				pSetting->RemoveAxisMapping(FirstKeyMapping);
+
+			pConflictQuad->KeyboardAxputMapping.KeyName = NAME_None;
+			pConflictQuad->KeyboardAxputMapping.iFloatPositive = 0;
+			std::string&& strUniActionName = COtherTableCenter::LinkAxisName(TCHAR_TO_ANSI(*pConflictQuad->KeyboardAxputMapping.AxisName.ToString()),
+				pConflictQuad->KeyboardAxputMapping.bPositiveDir);
+			ConflictUniActionName = DeleConflictUniName = ANSI_TO_TCHAR(strUniActionName.c_str());
+		}
+		else
+		{
+			FInputActionKeyMapping FirAcKeyMapping;
+			FGamepadCombineMapping FirAcCombineMapping;
+			int32 iResult = FindFirstDevisedAcMapping(pConflictQuad->KeyboardInputMapping.ActionName, true, false, FirAcKeyMapping, FirAcCombineMapping);
+			if (iResult)
+				pSetting->RemoveActionMapping(FirAcKeyMapping);
+
+			pConflictQuad->KeyboardInputMapping.KeyName = NAME_None;
+			pConflictQuad->KeyboardInputMapping.uModifierCode = 0;
+			ConflictUniActionName = DeleConflictUniName = pConflictQuad->KeyboardInputMapping.ActionName;
+		}
+	}
+
+	pSetting->SaveKeyMappings();
+	DeleInputMappingModified.Broadcast(*pModifiedQuad, true, DeleConflictUniName);
+	//TODOJK EventCenter
 	return true;
 }
 

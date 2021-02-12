@@ -147,6 +147,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetsDef.h" />
     <ClInclude Include="CoreConstantsDef.h" />
     <ClInclude Include="Globalization.h" />
     <ClInclude Include="SpecialFileDef.h" />

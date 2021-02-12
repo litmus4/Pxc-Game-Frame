@@ -94,7 +94,7 @@ void FPxcAxputMapping::InitMapping(bool* pbDevisedKeyboard, int32 iIndex)
 	if (bResult)
 	{
 		KeyName = FirstMapping.Key.GetFName();
-		if (FirstMapping.Key.IsFloatAxis())
+		if (FirstMapping.Key.IsAxis1D())
 			iFloatPositive = (bPositiveDir == (FirstMapping.Scale >= 0) ? 1 : -1);
 	}
 }

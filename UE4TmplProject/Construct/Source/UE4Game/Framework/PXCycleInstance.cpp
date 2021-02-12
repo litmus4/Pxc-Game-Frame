@@ -5,6 +5,7 @@
 #include "Misc/Paths.h"
 #include "Containers/StringConv.h"
 #include "GameFramework/GameModeBase.h"
+#include "Framework/PxcInputMappingMgr.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -34,8 +35,10 @@ void UPXCycleInstance::Init()
 #else
 	//TODOJK 暂时只有Win64/32平台
 #endif
-	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 
+	m_pInputMappingMgr = NewObject<UPxcInputMappingMgr>();
+
+	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 	Super::Init();
 
 	FGameModeEvents::GameModeInitializedEvent.AddUObject(this, &UPXCycleInstance::OnGameModeInitialized);
@@ -47,6 +50,11 @@ void UPXCycleInstance::Shutdown()
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance shutdown end"));
 	Super::Shutdown();
+}
+
+UPxcInputMappingMgr* UPXCycleInstance::GetInputMappingMgr()
+{
+	return m_pInputMappingMgr;
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

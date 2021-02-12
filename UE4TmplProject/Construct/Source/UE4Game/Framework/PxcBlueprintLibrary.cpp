@@ -9,6 +9,7 @@
 #include "GameplayAbility/ExecutionCalculations/ExtentionExecution.h"
 #include "PXCycleInstance.h"
 #include "PxcGameConfig.h"
+#include "PublicDefinitions/AssetsDef.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -259,7 +260,8 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromInputMapping(const FPx
 	{
 		const FString* pIconPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::InputKeyIcon);
 		check(pIconPath);
-		FString sMainPath = *pIconPath + ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		FString&& sMainFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		FString&& sMainPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_MTLINST), **pIconPath, *sMainFile, *sMainFile);
 		pRetMtlInst = LoadObject<UMaterialInstance>(nullptr, *sMainPath);
 
 		if (ensureAlways(pRetMtlInst) && InputMapping.uModifierCode != 0)
@@ -280,7 +282,8 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromInputMapping(const FPx
 				CInputKeyRow* pModiRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*ModiKeyName.ToString()));
 				if (pModiRow)
 				{
-					FString sModiPath = *pIconPath + ANSI_TO_TCHAR(pModiRow->m_strMtlInstFile.c_str());
+					FString&& sModiFile = ANSI_TO_TCHAR(pModiRow->m_strMtlInstFile.c_str());
+					FString&& sModiPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_MTLINST), **pIconPath, *sModiFile, *sModiFile);
 					UMaterialInstance* pModiMtlInst = LoadObject<UMaterialInstance>(nullptr, *sModiPath);
 					tarrOutModifierIcons.Add(pModiMtlInst);
 					if (tarrOutModifierIcons.Num() >= iModifierNum) break;
@@ -319,7 +322,8 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromAxputMapping(const FPx
 	{
 		const FString* pIconPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::InputKeyIcon);
 		check(pIconPath);
-		FString sIconPath = *pIconPath + ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		FString&& sIconFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		FString&& sIconPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_MTLINST), **pIconPath, *sIconFile, *sIconFile);
 		pRetMtlInst = LoadObject<UMaterialInstance>(nullptr, *sIconPath);
 	}
 	return pRetMtlInst;

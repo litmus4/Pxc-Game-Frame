@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "PXCycleInstance.generated.h"
 
+class UPxcInputMappingMgr;
+
 /**
  * 
  */
@@ -21,6 +23,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bKeyboardRuntime = true;
 
+	UFUNCTION(BlueprintPure)
+	UPxcInputMappingMgr* GetInputMappingMgr();
+
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);
+
+	UPROPERTY()
+	UPxcInputMappingMgr* m_pInputMappingMgr;
 };

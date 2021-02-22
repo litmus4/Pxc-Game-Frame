@@ -72,11 +72,13 @@ public:
 	UFUNCTION(BlueprintCallable = Category = GameplayAbility)
 	void RemovePassiveListenerByTagUid(const FGameplayTag& Tag, int64 lUid = -1);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	void ExecuteGEExtentionByType(EGEExtentionType eType, float fVariable, TMap<FString, float>& tmapOutNames);
+	virtual void ExecuteGEExtentionByType_Implementation(EGEExtentionType eType, float fVariable, TMap<FString, float>& tmapOutNames);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	void DiscardGEExtentionByType(EGEExtentionType eType, const TMap<FString, float>& tmapFakeSpec);
+	virtual void DiscardGEExtentionByType_Implementation(EGEExtentionType eType, const TMap<FString, float>& tmapFakeSpec);
 
 	void ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle, std::function<void(const std::string&, float)>&& fnOnEach);
 	void PopGEExtentionStackByHandle(const FActiveGameplayEffectHandle& Handle, TMap<FString, float>& tmapPopped);

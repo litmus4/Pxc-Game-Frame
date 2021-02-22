@@ -167,6 +167,16 @@ void UPxcAbilitySystemComponent::RemovePassiveListenerByTagUid(const FGameplayTa
 		m_tmapPassiveListeners.Remove(Tag);
 }
 
+void UPxcAbilitySystemComponent::ExecuteGEExtentionByType_Implementation(EGEExtentionType eType, float fVariable, TMap<FString, float>& tmapOutNames)
+{
+	//
+}
+
+void UPxcAbilitySystemComponent::DiscardGEExtentionByType_Implementation(EGEExtentionType eType, const TMap<FString, float>& tmapFakeSpec)
+{
+	//
+}
+
 void UPxcAbilitySystemComponent::ForEachGEExtentionReturnToStack(const FActiveGameplayEffectHandle& Handle,
 	std::function<void(const std::string&, float)>&& fnOnEach)
 {

@@ -68,6 +68,17 @@ void UPxcBlueprintLibrary::PopIdentifiedLessWhenGE(UPARAM(ref) FIdentifiedLessSt
 	Stack.PopValue(iUid);
 }
 
+bool UPxcBlueprintLibrary::GetIdentifiedLessTop(const FIdentifiedLessStack& Stack, float& fOutValue)
+{
+	std::set<float>::const_iterator iter = Stack.set.begin();
+	if (iter != Stack.set.end())
+	{
+		fOutValue = *iter;
+		return true;
+	}
+	return false;
+}
+
 int32 UPxcBlueprintLibrary::PushIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGreaterStack& Stack, float fValue)
 {
 	return Stack.PushValue(fValue);
@@ -76,6 +87,17 @@ int32 UPxcBlueprintLibrary::PushIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedG
 void UPxcBlueprintLibrary::PopIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGreaterStack& Stack, int32 iUid)
 {
 	Stack.PopValue(iUid);
+}
+
+bool UPxcBlueprintLibrary::GetIdentifiedGreaterTop(const FIdentifiedGreaterStack& Stack, float& fOutValue)
+{
+	std::set<float>::const_iterator iter = Stack.set.begin();
+	if (iter != Stack.set.end())
+	{
+		fOutValue = *iter;
+		return true;
+	}
+	return false;
 }
 
 FName UPxcBlueprintLibrary::Key_GetName(const FKey& Key)

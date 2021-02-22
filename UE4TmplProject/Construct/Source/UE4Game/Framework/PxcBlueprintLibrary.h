@@ -35,11 +35,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static void PopIdentifiedLessWhenGE(UPARAM(ref) FIdentifiedLessStack& Stack, int32 iUid);
 
+	UFUNCTION(BlueprintPure, Category = "Utility|IdentifiedStack")
+	static bool GetIdentifiedLessTop(const FIdentifiedLessStack& Stack, float& fOutValue);
+
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static int32 PushIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGreaterStack& Stack, float fValue);
 
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static void PopIdentifiedGreaterWhenGE(UPARAM(ref) FIdentifiedGreaterStack& Stack, int32 iUid);
+
+	UFUNCTION(BlueprintPure, Category = "Utility|IdentifiedStack")
+	static bool GetIdentifiedGreaterTop(const FIdentifiedGreaterStack& Stack, float& fOutValue);
 
 	//=====================
 

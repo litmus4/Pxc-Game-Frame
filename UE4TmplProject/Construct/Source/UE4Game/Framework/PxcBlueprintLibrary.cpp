@@ -58,6 +58,18 @@ void UPxcBlueprintLibrary::DiscardExtentionGEByStackedHandle(UAbilitySystemCompo
 		UExtentionExecution::Discard(pASC, pActiveEffect->Spec, pActiveEffect->Handle);
 }
 
+void UPxcBlueprintLibrary::CutGEExtentionVariable(float fVariable, TArray<int32> tarrDecSplits, TArray<int32>& tarrOutValues)
+{
+	for (int32& iDecSplit : tarrDecSplits)
+	{
+		check(iDecSplit > 0);
+		float fDiv = FMath::Pow(10, iDecSplit);
+		fVariable *= fDiv;
+		int32 iCurValue = ((int32)fVariable) % ((int32)fDiv);
+		tarrOutValues.Add(iCurValue);
+	}
+}
+
 int32 UPxcBlueprintLibrary::PushIdentifiedLessWhenGE(UPARAM(ref) FIdentifiedLessStack& Stack, float fValue)
 {
 	return Stack.PushValue(fValue);

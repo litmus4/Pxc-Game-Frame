@@ -29,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
 	static void DiscardExtentionGEByStackedHandle(UAbilitySystemComponent* pASC, FActiveGameplayEffectHandle StackedHandle);
 
+	UFUNCTION(BlueprintPure, Category = "Utility|GEExtention")
+	static void CutGEExtentionVariable(float fVariable, TArray<int32> tarrDecSplits, TArray<int32>& tarrOutValues);
+
 	UFUNCTION(BlueprintCallable, Category = "Utility|IdentifiedStack")
 	static int32 PushIdentifiedLessWhenGE(UPARAM(ref) FIdentifiedLessStack& Stack, float fValue);
 

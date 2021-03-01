@@ -114,7 +114,7 @@ int32 UNetBlueprintLibrary::Net_GetPlayerCount(UObject* WorldContextObject)
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World || World->GetNetMode() != NM_ListenServer) return 0;
 
-	if (NetPlayerCount == 0)//FLAGJK_Net 所有玩家断开时重置
+	if (NetPlayerCount == 0)//TODOJK_Net 所有玩家断开时重置
 	{
 		for (FConstPlayerControllerIterator Iter = World->GetPlayerControllerIterator(); Iter; Iter++)
 		{

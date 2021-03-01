@@ -19,7 +19,7 @@ class UE4GAME_API UNetTypesCommon : public UObject
 };
 
 USTRUCT()
-struct FNetHashFastArrayHelper : public FFastArraySerializer
+struct FNetHashFastArrayHelper : public FFastArraySerializer//FLAGJK ±‡“Î¥ÌŒÛ
 {
 	GENERATED_BODY()
 public:

@@ -6,6 +6,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VirtualGroupMgr.generated.h"
 
+USTRUCT()
+struct FVirtualGroupData
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	FName Name;
+
+	UPROPERTY()
+	TArray<AActor*> tarrActors;
+
+	//
+};
+
 /**
  * 
  */
@@ -14,4 +28,8 @@ class UE4GAME_API UVirtualGroupMgr : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+
+private:
+	//
 };

@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "Framework/Structs/ScatteredStructs.h"
+#include "Structs/SignatureStructs.h"
+#include "Structs/ScatteredStructs.h"
 #include "../Utilities/UtilityStructs.h"
 #include <functional>
 #include "PxcBlueprintLibrary.generated.h"
@@ -21,6 +22,9 @@ class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = "GameplayAbility|PassiveListening")
+	int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);
+
 	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调内部调用
 	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
 	static FActiveGameplayEffectHandle ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,

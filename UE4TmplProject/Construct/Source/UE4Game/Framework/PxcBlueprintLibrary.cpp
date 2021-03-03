@@ -19,6 +19,16 @@
 
 DEFINE_LOG_CATEGORY(LogPxcBPLib);
 
+int64 UPxcBlueprintLibrary::MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig)
+{
+	TSharedPtr<FPassiveAttackExListener> pListener = MakeShared<FPassiveAttackExListener>();
+	pListener->fAttackAdd = fAttackAdd;
+	pListener->fAttackMulti = fAttackMulti;
+	OutSig = FSharedSignature(*pListener);
+	OutSig->GenerateUidLocal();
+	return OutSig->lUid;
+}
+
 FActiveGameplayEffectHandle UPxcBlueprintLibrary::ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,
 	FActiveGameplayEffectHandle StackedHandle, TMap<FString, float>& tmapRet)
 {

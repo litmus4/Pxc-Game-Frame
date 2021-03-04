@@ -6,12 +6,38 @@
 #include "UObject/NoExportTypes.h"
 #include "VirtualGroupStructs.generated.h"
 
-/**
- * 
- */
-UCLASS()
-class UE4GAME_API UVirtualGroupStructs : public UObject
+UENUM()
+enum class EVirtualGroupUsage : uint8
+{
+	Unknown = 0,
+	RelativeTimeDilation,
+};
+
+USTRUCT()
+struct FVirtGrpFeature
 {
 	GENERATED_BODY()
-	
+public:
+	FVirtGrpFeature() = default;
+
+	virtual EVirtualGroupUsage GetUsage() const
+	{
+		return EVirtualGroupUsage::Unknown;
+	}
+};
+
+USTRUCT()
+struct FVirtGrpRTDFeature : public FVirtGrpFeature
+{
+	GENERATED_BODY()
+public:
+	FVirtGrpRTDFeature() : fTimeDilation(1.0f) {}
+
+	virtual EVirtualGroupUsage GetUsage() const override
+	{
+		return EVirtualGroupUsage::RelativeTimeDilation;
+	}
+
+	UPROPERTY()
+	float fTimeDilation;
 };

@@ -26,7 +26,7 @@ public:
 	}
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FVirtGrpRTDFeature : public FVirtGrpFeature
 {
 	GENERATED_BODY()
@@ -38,6 +38,6 @@ public:
 		return EVirtualGroupUsage::RelativeTimeDilation;
 	}
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	float fTimeDilation;
 };

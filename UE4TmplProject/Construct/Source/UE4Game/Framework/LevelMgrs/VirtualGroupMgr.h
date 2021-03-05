@@ -18,6 +18,7 @@ public:
 
 	void AddActor(AActor* pActor);
 	void AddActors(const TArray<AActor*>& xActors);
+	bool HasActor(AActor* pActor);
 	void RemoveActor(AActor* pActor);
 	void ClearActors();
 
@@ -41,7 +42,7 @@ public:
 	FName Name;
 
 	UPROPERTY()
-	TArray<AActor*> tarrActors;
+	TSet<AActor*> tsetActors;
 
 	std::unordered_map<EVirtualGroupUsage, FVirtGrpFeature*> mapFeatures;
 };
@@ -55,7 +56,25 @@ class UE4GAME_API UVirtualGroupMgr : public UObject
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (DisplayName = "CreateGroup", ScriptName = "CreateGroup"))
+	bool K2_CreateGroup(const FName& Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages);
+
+	bool CreateGroup(const FName& Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages, FVirtualGroup** ppOutGroup = nullptr);
+	FVirtualGroup* GetGroup(const FName& Name);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void RemoveGroup(const FName& Name);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void Clear();
+
+	void Release();
 
 private:
-	//
+	FVirtGrpFeature* NewFeature(EVirtualGroupUsage eUsage);
+
+	UPROPERTY()
+	TMap<FName, FVirtualGroup> m_tmapGroups;
+
+	std::unordered_map<EVirtualGroupUsage, std::vector<FName>> m_mapUsageToGroups;
 };

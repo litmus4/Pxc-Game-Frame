@@ -48,7 +48,7 @@ void UExtentionExecution::Execute_Implementation(const FGameplayEffectCustomExec
 
 		TMap<FString, float> tmapNames;
 		pTargetASC->ExecuteGEExtentionByType(eType, fVars[i], tmapNames);
-		for (auto Pair : tmapNames)
+		for (auto& Pair : tmapNames)
 		{
 			std::string&& strName = TCHAR_TO_ANSI(*Pair.Key);
 			pTargetASC->m_mapGEExtentionReturn.insert(std::make_pair(strName, Pair.Value));

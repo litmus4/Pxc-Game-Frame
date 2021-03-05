@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "../Structs/VirtualGroupStructs.h"
+#include <map>
 #include <unordered_map>
 #include "VirtualGroupMgr.generated.h"
 
@@ -44,7 +45,7 @@ public:
 	UPROPERTY()
 	TSet<AActor*> tsetActors;
 
-	std::unordered_map<EVirtualGroupUsage, FVirtGrpFeature*> mapFeatures;
+	std::map<EVirtualGroupUsage, FVirtGrpFeature*> mapFeatures;
 };
 
 /**

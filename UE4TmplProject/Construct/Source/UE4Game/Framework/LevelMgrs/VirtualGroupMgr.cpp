@@ -59,7 +59,7 @@ void FVirtualGroup::AddFeatures(const std::vector<FVirtGrpFeature*>& vecFeatures
 
 void FVirtualGroup::RemoveFeatureByUsage(EVirtualGroupUsage eUsage)
 {
-	std::unordered_map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator iter = mapFeatures.find(eUsage);
+	std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator iter = mapFeatures.find(eUsage);
 	if (iter != mapFeatures.end())
 	{
 		SAFE_DELETE(iter->second)
@@ -69,7 +69,7 @@ void FVirtualGroup::RemoveFeatureByUsage(EVirtualGroupUsage eUsage)
 
 void FVirtualGroup::ClearFeatures()
 {
-	std::unordered_map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator iter = mapFeatures.begin();
+	std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator iter = mapFeatures.begin();
 	for (; iter != mapFeatures.end(); iter++)
 		SAFE_DELETE(iter->second)
 	mapFeatures.clear();
@@ -118,7 +118,7 @@ void UVirtualGroupMgr::RemoveGroup(const FName& Name)
 	FVirtualGroup* pGroup = m_tmapGroups.Find(Name);
 	if (!pGroup) return;
 
-	std::unordered_map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
+	std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 	for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
 	{
 		std::unordered_map<EVirtualGroupUsage, std::vector<FName>>::iterator itU2g = m_mapUsageToGroups.find(itFeature->first);

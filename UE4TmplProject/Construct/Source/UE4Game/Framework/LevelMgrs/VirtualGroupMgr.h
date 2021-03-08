@@ -7,6 +7,7 @@
 #include "../Structs/VirtualGroupStructs.h"
 #include <map>
 #include <unordered_map>
+#include <functional>
 #include "VirtualGroupMgr.generated.h"
 
 USTRUCT()
@@ -18,7 +19,7 @@ public:
 	FVirtualGroup(const FName& xName) : Name(xName) {}
 
 	void AddActor(AActor* pActor);
-	void AddActors(const TArray<AActor*>& xActors);
+	void AddActors(const TArray<AActor*>& tarrActors);
 	bool HasActor(AActor* pActor);
 	void RemoveActor(AActor* pActor);
 	void ClearActors();
@@ -58,7 +59,7 @@ class UE4GAME_API UVirtualGroupMgr : public UObject
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (DisplayName = "CreateGroup", ScriptName = "CreateGroup"))
-	bool K2_CreateGroup(const FName& Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages);
+	bool K2_CreateGroup(FName Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages);
 
 	bool CreateGroup(const FName& Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages, FVirtualGroup** ppOutGroup = nullptr);
 	FVirtualGroup* GetGroup(const FName& Name);
@@ -68,6 +69,32 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void Clear();
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void AddActorToGroup(AActor* pActor, const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void AddActorsToGroup(const TArray<AActor*>& tarrActors, const FName& GroupName);
+
+	UFUNCTION(BlueprintPure, Category = Gameplay)
+	bool HasActorInGroup(AActor* pActor, const FName& GroupName);
+
+	template<class T>
+	void ForEachGroupOfUsage(EVirtualGroupUsage eUsage, std::function<void(FVirtualGroup*, T*)>& fnOnEach)
+	{
+		std::unordered_map<EVirtualGroupUsage, std::vector<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
+		if (itU2g == m_mapUsageToGroups.end())
+			return;
+
+		std::vector<FName>::iterator itName = itU2g->second.begin();
+		for (; itName != itU2g->second.end(); itName++)
+		{
+			FVirtualGroup* pGroup = m_tmapGroups.Find(*itName);
+			if (!pGroup) continue;
+			T* pFeature = pGroup->GetFeatureByUsage<T>(eUsage);
+			fnOnEach(pGroup, pFeature);
+		}
+	}
 
 	void Release();
 

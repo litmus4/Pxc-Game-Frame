@@ -15,9 +15,9 @@ void FVirtualGroup::AddActor(AActor* pActor)
 	tsetActors.Add(pActor);
 }
 
-void FVirtualGroup::AddActors(const TArray<AActor*>& xActors)
+void FVirtualGroup::AddActors(const TArray<AActor*>& tarrActors)
 {
-	for (AActor* pActor : xActors)
+	for (AActor* pActor : tarrActors)
 	{
 		check(pActor);
 		tsetActors.Add(pActor);
@@ -75,7 +75,7 @@ void FVirtualGroup::ClearFeatures()
 	mapFeatures.clear();
 }
 
-bool UVirtualGroupMgr::K2_CreateGroup(const FName& Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages)
+bool UVirtualGroupMgr::K2_CreateGroup(FName Name, const TArray<EVirtualGroupUsage>& tarrInitialUsages)
 {
 	return CreateGroup(Name, tarrInitialUsages);
 }
@@ -142,6 +142,28 @@ void UVirtualGroupMgr::Clear()
 		Pair.Value.ClearFeatures();
 	m_tmapGroups.Empty();
 	m_mapUsageToGroups.clear();
+}
+
+void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (pGroup)
+		pGroup->AddActor(pActor);
+}
+
+void UVirtualGroupMgr::AddActorsToGroup(const TArray<AActor*>& tarrActors, const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (pGroup)
+		pGroup->AddActors(tarrActors);
+}
+
+bool UVirtualGroupMgr::HasActorInGroup(AActor* pActor, const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (pGroup)
+		return pGroup->HasActor(pActor);
+	return false;
 }
 
 void UVirtualGroupMgr::Release()

@@ -148,7 +148,11 @@ void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
 {
 	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
 	if (pGroup)
+	{
 		pGroup->AddActor(pActor);
+
+		//FLAGJK 从这里继续，m_mapActorToGroups的second是否换成set
+	}
 }
 
 void UVirtualGroupMgr::AddActorsToGroup(const TArray<AActor*>& tarrActors, const FName& GroupName)
@@ -164,6 +168,20 @@ bool UVirtualGroupMgr::HasActorInGroup(AActor* pActor, const FName& GroupName)
 	if (pGroup)
 		return pGroup->HasActor(pActor);
 	return false;
+}
+
+void UVirtualGroupMgr::RemoveActorFromGroup(AActor* pActor, const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (pGroup)
+		pGroup->RemoveActor(pActor);
+}
+
+void UVirtualGroupMgr::ClearActorsOfGroup(const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (pGroup)
+		pGroup->ClearActors();
 }
 
 void UVirtualGroupMgr::Release()

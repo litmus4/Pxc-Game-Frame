@@ -70,15 +70,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void Clear();
 
-	UFUNCTION(BlueprintCallable, Category = Gameplay)
-	void AddActorToGroup(AActor* pActor, const FName& GroupName);
-
-	UFUNCTION(BlueprintCallable, Category = Gameplay)
-	void AddActorsToGroup(const TArray<AActor*>& tarrActors, const FName& GroupName);
-
-	UFUNCTION(BlueprintPure, Category = Gameplay)
-	bool HasActorInGroup(AActor* pActor, const FName& GroupName);
-
 	template<class T>
 	void ForEachGroupOfUsage(EVirtualGroupUsage eUsage, std::function<void(FVirtualGroup*, T*)>& fnOnEach)
 	{
@@ -96,6 +87,21 @@ public:
 		}
 	}
 
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void AddActorToGroup(AActor* pActor, const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void AddActorsToGroup(const TArray<AActor*>& tarrActors, const FName& GroupName);
+
+	UFUNCTION(BlueprintPure, Category = Gameplay)
+	bool HasActorInGroup(AActor* pActor, const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void RemoveActorFromGroup(AActor* pActor, const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void ClearActorsOfGroup(const FName& GroupName);
+
 	void Release();
 
 private:
@@ -105,4 +111,5 @@ private:
 	TMap<FName, FVirtualGroup> m_tmapGroups;
 
 	std::unordered_map<EVirtualGroupUsage, std::vector<FName>> m_mapUsageToGroups;
+	std::unordered_map<AActor*, std::vector<FName>> m_mapActorToGroups;
 };

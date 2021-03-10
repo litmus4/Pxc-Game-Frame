@@ -11,7 +11,7 @@
 
 void FVirtualGroup::AddActor(AActor* pActor)
 {
-	check(pActor);
+	verify(pActor);
 	tsetActors.Add(pActor);
 }
 
@@ -19,20 +19,20 @@ void FVirtualGroup::AddActors(const TArray<AActor*>& tarrActors)
 {
 	for (AActor* pActor : tarrActors)
 	{
-		check(pActor);
+		verify(pActor);
 		tsetActors.Add(pActor);
 	}
 }
 
 bool FVirtualGroup::HasActor(AActor* pActor)
 {
-	check(pActor);
+	verify(pActor);
 	return tsetActors.Contains(pActor);
 }
 
 void FVirtualGroup::RemoveActor(AActor* pActor)
 {
-	check(pActor);
+	verify(pActor);
 	tsetActors.Remove(pActor);
 }
 
@@ -43,7 +43,7 @@ void FVirtualGroup::ClearActors()
 
 void FVirtualGroup::AddFeature(FVirtGrpFeature* pFeature)
 {
-	check(pFeature);
+	verify(pFeature);
 	mapFeatures.insert(std::make_pair(pFeature->GetUsage(), pFeature));
 }
 
@@ -52,7 +52,7 @@ void FVirtualGroup::AddFeatures(const std::vector<FVirtGrpFeature*>& vecFeatures
 	std::vector<FVirtGrpFeature*>::const_iterator iter = vecFeatures.begin();
 	for (; iter != vecFeatures.end(); iter++)
 	{
-		check(*iter);
+		verify(*iter);
 		mapFeatures.insert(std::make_pair((*iter)->GetUsage(), *iter));
 	}
 }
@@ -98,10 +98,12 @@ bool UVirtualGroupMgr::CreateGroup(const FName& Name, const TArray<EVirtualGroup
 		{
 			pGroup->AddFeature(pFeature);
 
-			std::unordered_map<EVirtualGroupUsage, std::vector<FName>>::iterator iter = m_mapUsageToGroups.find(eUsage);
+			std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator iter = m_mapUsageToGroups.find(eUsage);
 			if (iter == m_mapUsageToGroups.end())
-				iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::vector<FName>())).first;
-			iter->second.push_back(Name);
+				iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::set<FName>())).first;
+
+			ensureMsgf(iter->second.insert(Name).second,
+				TEXT("UVirtualGroupMgr CreateGroup: Repeatedly add feature to same group!"));
 		}
 	}
 	if (ppOutGroup) *ppOutGroup = pGroup;
@@ -118,13 +120,28 @@ void UVirtualGroupMgr::RemoveGroup(const FName& Name)
 	FVirtualGroup* pGroup = m_tmapGroups.Find(Name);
 	if (!pGroup) return;
 
+	for (AActor* pActor : pGroup->tsetActors)
+	{
+		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+		if (itA2g == m_mapActorToGroups.end())
+			continue;
+		std::set<FName>::iterator itName = itA2g->second.find(Name);
+		if (itName != itA2g->second.end())
+		{
+			itA2g->second.erase(itName);
+			if (itA2g->second.empty())
+				m_mapActorToGroups.erase(itA2g);
+		}
+	}
+	pGroup->ClearActors();
+
 	std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 	for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
 	{
-		std::unordered_map<EVirtualGroupUsage, std::vector<FName>>::iterator itU2g = m_mapUsageToGroups.find(itFeature->first);
+		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(itFeature->first);
 		if (itU2g == m_mapUsageToGroups.end())
 			continue;
-		std::vector<FName>::iterator itName = std::find(itU2g->second.begin(), itU2g->second.end(), Name);
+		std::set<FName>::iterator itName = itU2g->second.find(Name);
 		if (itName != itU2g->second.end())
 		{
 			itU2g->second.erase(itName);
@@ -133,6 +150,7 @@ void UVirtualGroupMgr::RemoveGroup(const FName& Name)
 		}
 	}
 	pGroup->ClearFeatures();
+
 	m_tmapGroups.Remove(Name);
 }
 
@@ -142,6 +160,7 @@ void UVirtualGroupMgr::Clear()
 		Pair.Value.ClearFeatures();
 	m_tmapGroups.Empty();
 	m_mapUsageToGroups.clear();
+	m_mapActorToGroups.clear();
 }
 
 void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
@@ -151,7 +170,12 @@ void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
 	{
 		pGroup->AddActor(pActor);
 
-		//FLAGJK 从这里继续，m_mapActorToGroups的second是否换成set
+		std::unordered_map<AActor*, std::set<FName>>::iterator iter = m_mapActorToGroups.find(pActor);
+		if (iter == m_mapActorToGroups.end())
+			iter = m_mapActorToGroups.insert(std::make_pair(pActor, std::set<FName>())).first;
+
+		ensureMsgf(iter->second.insert(GroupName).second,
+			TEXT("UVirtualGroupMgr AddActorToGroup: Repeatedly add actor to same group!"));
 	}
 }
 
@@ -159,7 +183,19 @@ void UVirtualGroupMgr::AddActorsToGroup(const TArray<AActor*>& tarrActors, const
 {
 	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
 	if (pGroup)
+	{
 		pGroup->AddActors(tarrActors);
+
+		for (AActor* pActor : tarrActors)
+		{
+			std::unordered_map<AActor*, std::set<FName>>::iterator iter = m_mapActorToGroups.find(pActor);
+			if (iter == m_mapActorToGroups.end())
+				iter = m_mapActorToGroups.insert(std::make_pair(pActor, std::set<FName>())).first;
+
+			ensureMsgf(iter->second.insert(GroupName).second,
+				TEXT("UVirtualGroupMgr AddActorsToGroup: Repeatedly add actor to same group!"));
+		}
+	}
 }
 
 bool UVirtualGroupMgr::HasActorInGroup(AActor* pActor, const FName& GroupName)
@@ -174,14 +210,45 @@ void UVirtualGroupMgr::RemoveActorFromGroup(AActor* pActor, const FName& GroupNa
 {
 	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
 	if (pGroup)
+	{
 		pGroup->RemoveActor(pActor);
+
+		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+		if (itA2g == m_mapActorToGroups.end())
+			return;
+
+		std::set<FName>::iterator itName = itA2g->second.find(GroupName);
+		if (itName != itA2g->second.end())
+		{
+			itA2g->second.erase(itName);
+			if (itA2g->second.empty())
+				m_mapActorToGroups.erase(itA2g);
+		}
+	}
 }
 
 void UVirtualGroupMgr::ClearActorsOfGroup(const FName& GroupName)
 {
 	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
 	if (pGroup)
+	{
+		for (AActor* pActor : pGroup->tsetActors)
+		{
+			std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+			if (itA2g == m_mapActorToGroups.end())
+				continue;
+
+			std::set<FName>::iterator itName = itA2g->second.find(GroupName);
+			if (itName != itA2g->second.end())
+			{
+				itA2g->second.erase(itName);
+				if (itA2g->second.empty())
+					m_mapActorToGroups.erase(itA2g);
+			}
+		}
+
 		pGroup->ClearActors();
+	}
 }
 
 void UVirtualGroupMgr::Release()

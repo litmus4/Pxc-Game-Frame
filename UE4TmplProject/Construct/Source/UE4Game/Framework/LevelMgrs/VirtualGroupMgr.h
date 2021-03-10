@@ -7,6 +7,7 @@
 #include "../Structs/VirtualGroupStructs.h"
 #include <map>
 #include <unordered_map>
+#include <set>
 #include <functional>
 #include "VirtualGroupMgr.generated.h"
 
@@ -110,6 +111,6 @@ private:
 	UPROPERTY()
 	TMap<FName, FVirtualGroup> m_tmapGroups;
 
-	std::unordered_map<EVirtualGroupUsage, std::vector<FName>> m_mapUsageToGroups;
-	std::unordered_map<AActor*, std::vector<FName>> m_mapActorToGroups;
+	std::unordered_map<EVirtualGroupUsage, std::set<FName>> m_mapUsageToGroups;
+	std::unordered_map<AActor*, std::set<FName>> m_mapActorToGroups;
 };

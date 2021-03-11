@@ -96,6 +96,7 @@ bool UVirtualGroupMgr::CreateGroup(const FName& Name, const TArray<EVirtualGroup
 		FVirtGrpFeature* pFeature = NewFeature(eUsage);
 		if (ensureMsgf(pFeature, TEXT("UVirtualGroupMgr CreateGroup: Invalid initial usage!")))
 		{
+			pFeature->GroupName = Name;
 			pGroup->AddFeature(pFeature);
 
 			std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator iter = m_mapUsageToGroups.find(eUsage);
@@ -249,6 +250,43 @@ void UVirtualGroupMgr::ClearActorsOfGroup(const FName& GroupName)
 
 		pGroup->ClearActors();
 	}
+}
+
+FVirtGrpFeature* UVirtualGroupMgr::AddFeatureToGroup(EVirtualGroupUsage eUsage, const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (!pGroup) return nullptr;
+
+	FVirtGrpFeature* pFeature = NewFeature(eUsage);
+	if (ensureMsgf(pFeature, TEXT("UVirtualGroupMgr AddFeatureToGroup: Invalid initial usage!")))
+	{
+		pFeature->GroupName = GroupName;
+		pGroup->AddFeature(pFeature);
+
+		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator iter = m_mapUsageToGroups.find(eUsage);
+		if (iter == m_mapUsageToGroups.end())
+			iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::set<FName>())).first;
+
+		ensureMsgf(iter->second.insert(GroupName).second,
+			TEXT("UVirtualGroupMgr AddFeatureToGroup: Repeatedly add feature to same group!"));
+	}
+	return pFeature;
+}
+
+void UVirtualGroupMgr::K2_AddFeatureToGroup(EVirtualGroupUsage eUsage, const FName& GroupName)
+{
+	AddFeatureToGroup(eUsage, GroupName);
+}
+
+bool UVirtualGroupMgr::GetRTDFeatureFromGroup(const FName& GroupName, FVirtGrpRTDFeature& OutFeature)
+{
+	FVirtGrpRTDFeature* pFeature = GetFeatureFromGroup<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation, GroupName);
+	if (pFeature)
+	{
+		OutFeature = *pFeature;
+		return true;
+	}
+	return false;
 }
 
 void UVirtualGroupMgr::Release()

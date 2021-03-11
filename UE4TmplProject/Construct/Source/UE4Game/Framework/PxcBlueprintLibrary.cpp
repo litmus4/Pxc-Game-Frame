@@ -9,6 +9,7 @@
 #include "GameplayAbility/ExecutionCalculations/ExtentionExecution.h"
 #include "PXCycleInstance.h"
 #include "PxcGameConfig.h"
+#include "LevelMgrs/VirtualGroupMgr.h"
 #include "PublicDefinitions/AssetsDef.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
@@ -18,6 +19,14 @@
 #include "Windows/HideWindowsPlatformTypes.h"
 
 DEFINE_LOG_CATEGORY(LogPxcBPLib);
+
+void UPxcBlueprintLibrary::SetVirtGrpRTDFeatureBack(UPARAM(ref) FVirtGrpRTDFeature& Feature, UVirtualGroupMgr* pManager)
+{
+	check(pManager);
+	FVirtGrpRTDFeature* pFeature = pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(Feature.GetUsage(), Feature.GroupName);
+	if (pFeature)
+		pFeature->fTimeDilation = Feature.fTimeDilation;
+}
 
 int64 UPxcBlueprintLibrary::MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig)
 {

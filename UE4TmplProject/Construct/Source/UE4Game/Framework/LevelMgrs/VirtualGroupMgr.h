@@ -35,7 +35,7 @@ public:
 	{
 		static_assert(TPointerIsConvertibleFromTo<T, FVirtGrpFeature>::Value,
 			"FVirtualGroup GetFeatureByUsage static_assert");
-		std::unordered_map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator iter = mapFeatures.find(eUsage);
+		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator iter = mapFeatures.find(eUsage);
 		if (iter != mapFeatures.end())
 			return static_cast<T*>(iter->second);
 		return nullptr;
@@ -74,17 +74,41 @@ public:
 	template<class T>
 	void ForEachGroupOfUsage(EVirtualGroupUsage eUsage, std::function<void(FVirtualGroup*, T*)>& fnOnEach)
 	{
-		std::unordered_map<EVirtualGroupUsage, std::vector<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
+		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
 		if (itU2g == m_mapUsageToGroups.end())
 			return;
 
-		std::vector<FName>::iterator itName = itU2g->second.begin();
+		std::set<FName>::iterator itName = itU2g->second.begin();
 		for (; itName != itU2g->second.end(); itName++)
 		{
 			FVirtualGroup* pGroup = m_tmapGroups.Find(*itName);
 			if (!pGroup) continue;
 			T* pFeature = pGroup->GetFeatureByUsage<T>(eUsage);
 			fnOnEach(pGroup, pFeature);
+		}
+	}
+
+	template<class T>
+	void ForEachGroupWithActor(AActor* pActor, EVirtualGroupUsage eSelectUsage, std::function<void(FVirtualGroup*, T*)>& fnOnEach)
+	{
+		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+		if (!pActor || itA2g == m_mapActorToGroups.end())
+			return;
+
+		std::set<FName>::iterator itName = itA2g->second.begin();
+		for (; itName != itA2g->second.end(); itName++)
+		{
+			FVirtualGroup* pGroup = m_tmapGroups.Find(*itName);
+			if (!pGroup) continue;
+
+			if (eSelectUsage != EVirtualGroupUsage::Unknown)
+			{
+				T* pFeature = pGroup->GetFeatureByUsage<T>(eSelectUsage);
+				if (pFeature)
+					fnOnEach(pGroup, pFeature);
+			}
+			else
+				fnOnEach(pGroup, nullptr);
 		}
 	}
 
@@ -102,6 +126,23 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void ClearActorsOfGroup(const FName& GroupName);
+
+	FVirtGrpFeature* AddFeatureToGroup(EVirtualGroupUsage eUsage, const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (DisplayName = "AddFeatureToGroup", ScriptName = "AddFeatureToGroup"))
+	void K2_AddFeatureToGroup(EVirtualGroupUsage eUsage, const FName& GroupName);
+
+	template<class T>
+	T* GetFeatureFromGroup(EVirtualGroupUsage eUsage, const FName& GroupName)
+	{
+		FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+		if (pGroup)
+			return pGroup->GetFeatureByUsage<T>(eUsage);
+		return nullptr;
+	}
+
+	UFUNCTION(BlueprintPure, Category = Gameplay)
+	bool GetRTDFeatureFromGroup(const FName& GroupName, FVirtGrpRTDFeature& OutFeature);
 
 	void Release();
 

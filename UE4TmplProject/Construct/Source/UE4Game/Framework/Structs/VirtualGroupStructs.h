@@ -24,6 +24,8 @@ public:
 	{
 		return EVirtualGroupUsage::Unknown;
 	}
+
+	FName GroupName;
 };
 
 USTRUCT(BlueprintType)
@@ -38,6 +40,6 @@ public:
 		return EVirtualGroupUsage::RelativeTimeDilation;
 	}
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	float fTimeDilation;
 };

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "Structs/VirtualGroupStructs.h"
 #include "Structs/SignatureStructs.h"
 #include "Structs/ScatteredStructs.h"
 #include "../Utilities/UtilityStructs.h"
@@ -12,6 +13,8 @@
 #include "PxcBlueprintLibrary.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogPxcBPLib, Display, All);
+
+class UVirtualGroupMgr;
 
 /**
  * 
@@ -22,6 +25,9 @@ class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = "Gameplay|VirtualGroup")
+	void SetVirtGrpRTDFeatureBack(UPARAM(ref) FVirtGrpRTDFeature& Feature, UVirtualGroupMgr* pManager);
+
 	UFUNCTION(BlueprintCallable, Category = "GameplayAbility|PassiveListening")
 	int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);
 

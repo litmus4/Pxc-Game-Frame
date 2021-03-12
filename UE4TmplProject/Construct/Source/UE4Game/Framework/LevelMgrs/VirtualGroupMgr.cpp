@@ -11,7 +11,7 @@
 
 void FVirtualGroup::AddActor(AActor* pActor)
 {
-	verify(pActor);
+	verify(IsValid(pActor));
 	tsetActors.Add(pActor);
 }
 
@@ -19,20 +19,20 @@ void FVirtualGroup::AddActors(const TArray<AActor*>& tarrActors)
 {
 	for (AActor* pActor : tarrActors)
 	{
-		verify(pActor);
+		verify(IsValid(pActor));
 		tsetActors.Add(pActor);
 	}
 }
 
 bool FVirtualGroup::HasActor(AActor* pActor)
 {
-	verify(pActor);
+	verify(IsValid(pActor));
 	return tsetActors.Contains(pActor);
 }
 
 void FVirtualGroup::RemoveActor(AActor* pActor)
 {
-	verify(pActor);
+	verify(IsValid(pActor));
 	tsetActors.Remove(pActor);
 }
 

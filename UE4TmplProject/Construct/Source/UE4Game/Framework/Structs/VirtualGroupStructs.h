@@ -4,14 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "PrivateDefinitions/LevelManagersDef.h"
 #include "VirtualGroupStructs.generated.h"
-
-UENUM()
-enum class EVirtualGroupUsage : uint8
-{
-	Unknown = 0,
-	RelativeTimeDilation,
-};
 
 USTRUCT()
 struct FVirtGrpFeature

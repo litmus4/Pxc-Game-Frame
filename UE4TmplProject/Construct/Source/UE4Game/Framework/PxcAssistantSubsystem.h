@@ -46,6 +46,7 @@ public:
 	enum EUidPoolType
 	{
 		PointerModelLL,
+		RelativeTimeDilation,
 	};
 #define ASUIDPOOL UPxcAssistantSubsystem::EUidPoolType
 	

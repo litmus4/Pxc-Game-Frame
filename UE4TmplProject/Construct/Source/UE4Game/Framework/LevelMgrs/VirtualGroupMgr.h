@@ -144,6 +144,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = Gameplay)
 	bool GetRTDFeatureFromGroup(const FName& GroupName, FVirtGrpRTDFeature& OutFeature);
 
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void RemoveFeatureFromGroup(EVirtualGroupUsage eUsage, const FName& GroupName);
+
 	void Release();
 
 private:

@@ -289,6 +289,27 @@ bool UVirtualGroupMgr::GetRTDFeatureFromGroup(const FName& GroupName, FVirtGrpRT
 	return false;
 }
 
+void UVirtualGroupMgr::RemoveFeatureFromGroup(EVirtualGroupUsage eUsage, const FName& GroupName)
+{
+	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
+	if (pGroup)
+	{
+		pGroup->RemoveFeatureByUsage(eUsage);
+
+		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
+		if (itU2g == m_mapUsageToGroups.end())
+			return;
+
+		std::set<FName>::iterator itName = itU2g->second.find(GroupName);
+		if (itName != itU2g->second.end())
+		{
+			itU2g->second.erase(itName);
+			if (itU2g->second.empty())
+				m_mapUsageToGroups.erase(itU2g);
+		}
+	}
+}
+
 void UVirtualGroupMgr::Release()
 {
 	Clear();

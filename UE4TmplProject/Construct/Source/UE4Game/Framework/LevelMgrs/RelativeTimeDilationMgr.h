@@ -56,9 +56,8 @@ class UE4GAME_API URelativeTimeDilationMgr : public UObject
 	GENERATED_BODY()
 	
 	/*FLAGJK
-	 * std::map<int64, int32> m_mapComplexUids; eLevel << 32 | iUid, iUid
 	 * TMap<int32, FTimeDilationData> m_tmapTimeDilations;
-	 * std::unordered_map<uint32, int32> m_mapHashToUids;
+	 * std::map<int64, int32> m_mapHashExToUids; eLevel << 32 | uHash, iUid
 	 * std::unordered_map<ERTDilationLevel, int32> m_mapLevelNums;
 	 */
 };

@@ -22,6 +22,10 @@ public:
 	void InitActor(AActor* pActor, float xDuration, float xBlendInTime, float xBlendOutTime,
 		float xStaticDilation, UCurveFloat* xDynamicDilation, int32 xPriority, bool xIgnoreParent);
 
+	void UpdateDilation(float fDeltaSeconds, float& fOutDilation);
+	bool IsFinished() const;
+	bool IsLooping() const;
+
 	float fDuration;//<-0.5 >0.0
 	float fBlendInTime;
 	float fBlendOutTime;
@@ -45,6 +49,7 @@ private:
 	float fCurBlendInTime;//<-0.5 >0.0
 	float fCurBlendOutTime;//<-0.5 >0.0
 	float fRemainingTime;//<-0.5 >0.0
+	float fElapsedTime;
 };
 
 /**
@@ -57,7 +62,7 @@ class UE4GAME_API URelativeTimeDilationMgr : public UObject
 	
 	/*FLAGJK
 	 * TMap<int32, FTimeDilationData> m_tmapTimeDilations;
-	 * std::map<int64, int32> m_mapHashExToUids; eLevel << 32 | uHash, iUid
+	 * std::map<int64, int32> m_mapHashExToUids; eLevel << 32 | uPartialHash, iUid
 	 * std::unordered_map<ERTDilationLevel, int32> m_mapLevelNums;
 	 */
 };

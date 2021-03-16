@@ -8,7 +8,8 @@ FTimeDilationInfo::FTimeDilationInfo()
 	, fStaticDilation(0.0f), pDynamicDilation(nullptr)
 	, eLevel(ERTDilationLevel::AffectActor), pAffectActor(nullptr), bIgnoreParent(false)
 	, iPriority(-1)
-	, fCurBlendInTime(-1.0f), fCurBlendOutTime(-1.0f), fRemainingTime(0.0f), fElapsedTime(0.0f)
+	, fCurBlendInTime(-1.0f), fCurBlendOutTime(-1.0f), fRemainingTime(0.0f)
+	, fElapsedTime(0.0f), fDynamicMax(0.0f)
 {
 	//
 }
@@ -55,6 +56,11 @@ void FTimeDilationInfo::InitUniversal(float xDuration, float xBlendInTime, float
 
 	fStaticDilation = xStaticDilation;
 	pDynamicDilation = xDynamicDilation;
+	if (IsValid(pDynamicDilation))
+	{
+		float fTempMin = 0.0f;
+		pDynamicDilation->FloatCurve.GetTimeRange(fTempMin, fDynamicMax);
+	}
 
 	iPriority = xPriority;
 
@@ -133,7 +139,10 @@ void FTimeDilationInfo::UpdateDilation(float fDeltaSeconds, float& fOutDilation)
 		{
 			float fTargetDilation = fStaticDilation;
 			if (IsValid(pDynamicDilation))
-				fTargetDilation = pDynamicDilation->GetFloatValue(FMath::Fmod(fElapsedTime, fDuration));
+			{
+				float fRealDuration = (fDuration >= -0.5f ? fDuration : fDynamicMax);
+				fTargetDilation = pDynamicDilation->GetFloatValue(FMath::Fmod(fElapsedTime, fRealDuration));
+			}
 			fOutDilation = FMath::GetMappedRangeValueClamped(FVector2D(0, 1), FVector2D(1.0, fTargetDilation), fDilationScale);
 		}
 	}

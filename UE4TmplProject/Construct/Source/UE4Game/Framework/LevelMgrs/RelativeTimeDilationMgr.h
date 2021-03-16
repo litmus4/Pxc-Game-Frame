@@ -50,6 +50,7 @@ private:
 	float fCurBlendOutTime;//<-0.5 >0.0
 	float fRemainingTime;//<-0.5 >0.0
 	float fElapsedTime;
+	float fDynamicMax;
 };
 
 /**

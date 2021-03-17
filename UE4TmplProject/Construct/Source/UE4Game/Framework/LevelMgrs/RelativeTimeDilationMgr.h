@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "PrivateDefinitions/LevelManagersDef.h"
-#include <string>
+#include <map>
+#include <unordered_map>
 #include "RelativeTimeDilationMgr.generated.h"
 
 USTRUCT()
@@ -25,6 +26,11 @@ public:
 	void UpdateDilation(float fDeltaSeconds, float& fOutDilation);
 	bool IsFinished() const;
 	bool IsLooping() const;
+
+	friend uint32 GetTypeHash(const FTimeDilationInfo& Info);
+	uint32 GetPartialHash() const;
+	int64 GetHashEx();
+	static int64 MakeHashEx(ERTDilationLevel eLevel, const FName& GroupName, AActor* pActor, int32 iPriority);
 
 	float fDuration;//<-0.5 >0.0
 	float fBlendInTime;
@@ -53,6 +59,21 @@ private:
 	float fDynamicMax;
 };
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FTimeDilationEndDelegate, bool, bCanceled);
+
+USTRUCT()
+struct FTimeDilationData
+{
+	GENERATED_BODY()
+public:
+	int32 iUid;
+
+	UPROPERTY()
+	FTimeDilationInfo Info;
+
+	FTimeDilationEndDelegate DeleEnded;
+};
+
 /**
  * 
  */
@@ -61,9 +82,17 @@ class UE4GAME_API URelativeTimeDilationMgr : public UObject
 {
 	GENERATED_BODY()
 	
-	/*FLAGJK
-	 * TMap<int32, FTimeDilationData> m_tmapTimeDilations;
-	 * std::map<int64, int32> m_mapHashExToUids; eLevel << 32 | uPartialHash, iUid
-	 * std::unordered_map<ERTDilationLevel, int32> m_mapLevelNums;
-	 */
+public:
+	void Init();
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (fDuration = "1.0", fStaticDilation = "1.0", iPriority = "1"))
+	int32 SetGlobalDilation(float fDuration, float fBlendInTime, float fBlendOutTime,
+		float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded);
+
+private:
+	UPROPERTY()
+	TMap<int32, FTimeDilationData> m_tmapTimeDilations;
+
+	std::map<int64, int32> m_mapHashExToUids;
+	std::unordered_map<ERTDilationLevel, int32> m_mapLevelNums;
 };

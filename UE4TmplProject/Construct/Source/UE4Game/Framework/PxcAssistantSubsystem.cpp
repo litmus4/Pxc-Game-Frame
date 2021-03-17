@@ -18,8 +18,8 @@ bool FActorWithKey::operator!=(const FActorWithKey& Other) const
 
 uint32 GetTypeHash(const FActorWithKey& In)
 {
-	uint32 uHash1 = GetTypeHash(In.pActor);
-	uint32 uHash2 = GetTypeHash(In.sKey);
+	uint32&& uHash1 = GetTypeHash(In.pActor);
+	uint32&& uHash2 = GetTypeHash(In.sKey);
 	return HashCombine(uHash1, uHash2);
 }
 

@@ -16,7 +16,8 @@ enum class EVirtualGroupUsage : uint8
 UENUM(BlueprintType)
 enum class ERTDilationLevel : uint8
 {
-	AffectActor,
-	AffectGroup,
 	Global,
+	AffectGroup,
+	AffectActor,
+	MAX
 };

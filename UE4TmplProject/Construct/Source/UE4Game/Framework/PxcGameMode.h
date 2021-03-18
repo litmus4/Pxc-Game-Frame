@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "PxcGameMode.generated.h"
 
+class UVirtualGroupMgr;
 class URelativeTimeDilationMgr;
 
 /**
@@ -22,6 +23,9 @@ public:
 	virtual void InitGame(const FString& sMapName, const FString& sOptions, FString& sErrorMessage) override;
 
 	UFUNCTION(BlueprintPure)
+	UVirtualGroupMgr* GetVirtualGroupMgr();
+
+	UFUNCTION(BlueprintPure)
 	URelativeTimeDilationMgr* GetRelativeTimeDilationMgr();
 
 protected:
@@ -31,6 +35,9 @@ protected:
 	//*/
 
 private:
+	UPROPERTY()
+	UVirtualGroupMgr* m_pVirtualGroupMgr;
+
 	UPROPERTY()
 	URelativeTimeDilationMgr* m_pRelTimeDilationMgr;
 };

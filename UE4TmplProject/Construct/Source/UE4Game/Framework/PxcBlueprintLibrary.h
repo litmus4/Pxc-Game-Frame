@@ -25,11 +25,11 @@ class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable, Category = "Gameplay|VirtualGroup")
-	void SetVirtGrpRTDFeatureBack(UPARAM(ref) FVirtGrpRTDFeature& Feature, UVirtualGroupMgr* pManager);
+	UFUNCTION(BlueprintCallable, Category = "Gameplay|VirtualGroup", meta = (WorldContext = "pWCO"))
+	void SetVirtGrpRTDFeatureBack(UObject* pWCO, UPARAM(ref) FVirtGrpRTDFeature& Feature);
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayAbility|PassiveListening")
-	int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);
+	int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);//FLAGJK 前两个函数蓝图里找不到
 
 	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调内部调用
 	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
@@ -99,7 +99,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Input|Key")
 	static FPxcAxputMapping Key_MakeAxputMapping(const FName& AxisName, bool bPositiveDir);
 
-	UFUNCTION(BlueprintCallable, Category = "InputKey")
+	UFUNCTION(BlueprintCallable, Category = "Input|Key")
 	static UMaterialInstance* Key_ParseIconFromAxputMapping(const FPxcAxputMapping& AxputMapping);
 
 public:

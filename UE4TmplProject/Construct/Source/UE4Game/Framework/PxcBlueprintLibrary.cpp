@@ -8,6 +8,7 @@
 #include "GameplayAbility/PxcAbilitySystemComponent.h"
 #include "GameplayAbility/ExecutionCalculations/ExtentionExecution.h"
 #include "PXCycleInstance.h"
+#include "PxcGameMode.h"
 #include "PxcGameConfig.h"
 #include "LevelMgrs/VirtualGroupMgr.h"
 #include "PublicDefinitions/AssetsDef.h"
@@ -20,8 +21,13 @@
 
 DEFINE_LOG_CATEGORY(LogPxcBPLib);
 
-void UPxcBlueprintLibrary::SetVirtGrpRTDFeatureBack(UPARAM(ref) FVirtGrpRTDFeature& Feature, UVirtualGroupMgr* pManager)
+void UPxcBlueprintLibrary::SetVirtGrpRTDFeatureBack(UObject* pWCO, UPARAM(ref) FVirtGrpRTDFeature& Feature)
 {
+	UWorld* pWorld = (IsValid(pWCO) ? pWCO->GetWorld() : nullptr);
+	if (!pWorld || !pWorld->IsGameWorld())
+		return;
+
+	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(pWorld->GetAuthGameMode())->GetVirtualGroupMgr();
 	check(pManager);
 	FVirtGrpRTDFeature* pFeature = pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(Feature.GetUsage(), Feature.GroupName);
 	if (pFeature)

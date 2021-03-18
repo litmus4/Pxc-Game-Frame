@@ -2,6 +2,7 @@
 
 
 #include "Framework/PxcGameMode.h"
+#include "LevelMgrs/VirtualGroupMgr.h"
 #include "LevelMgrs/RelativeTimeDilationMgr.h"
 
 //*≤‚ ‘¡Ÿ ±
@@ -20,6 +21,7 @@ APxcGameMode::APxcGameMode()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
+	m_pVirtualGroupMgr = CreateDefaultSubobject<UVirtualGroupMgr>(TEXT("VirtualGroupMgr"));
 	m_pRelTimeDilationMgr = CreateDefaultSubobject<URelativeTimeDilationMgr>(TEXT("RelativeTimeDilationMgr"));
 }
 
@@ -44,6 +46,11 @@ void APxcGameMode::InitGame(const FString& sMapName, const FString& sOptions, FS
 	UE_LOG(LogTemp, Log, TEXT("@@@@@@@@@@@@@@@@@ %s"), *sText5);
 	OnHelloWorld(sText5);
 	//*/
+}
+
+UVirtualGroupMgr* APxcGameMode::GetVirtualGroupMgr()
+{
+	return m_pVirtualGroupMgr;
 }
 
 URelativeTimeDilationMgr* APxcGameMode::GetRelativeTimeDilationMgr()

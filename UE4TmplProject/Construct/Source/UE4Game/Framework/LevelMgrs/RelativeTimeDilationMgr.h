@@ -28,8 +28,8 @@ public:
 	bool IsLooping() const;
 
 	friend uint32 GetTypeHash(const FTimeDilationInfo& Info);
-	uint32 GetPartialHash() const;
-	int64 GetHashEx();
+	uint32 GetPartialHash(bool bNoPriority = false) const;
+	int64 GetHashEx(bool bNoPriority = false);
 	static int64 MakeHashEx(ERTDilationLevel eLevel, const FName& GroupName, AActor* pActor, int32 iPriority);
 
 	float fDuration;//<-0.5 >0.0
@@ -83,10 +83,12 @@ class UE4GAME_API URelativeTimeDilationMgr : public UObject
 	GENERATED_BODY()
 	
 public:
-	void Init();
-
 	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (fDuration = "1.0", fStaticDilation = "1.0", iPriority = "1"))
 	int32 SetGlobalDilation(float fDuration, float fBlendInTime, float fBlendOutTime,
+		float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (fDuration = "1.0", fStaticDilation = "1.0", iPriority = "1"))
+	int32 SetGroupDilation(const FName& GroupName, float fDuration, float fBlendInTime, float fBlendOutTime,
 		float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded);
 
 private:
@@ -94,5 +96,5 @@ private:
 	TMap<int32, FTimeDilationData> m_tmapTimeDilations;
 
 	std::map<int64, int32> m_mapHashExToUids;
-	std::unordered_map<ERTDilationLevel, int32> m_mapLevelNums;
+	std::unordered_map<int64, int32> m_mapHashExnpNums;
 };

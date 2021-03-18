@@ -2,6 +2,7 @@
 
 
 #include "Framework/LevelMgrs/RelativeTimeDilationMgr.h"
+#include "../PxcGameMode.h"
 #include "../PxcAssistantSubsystem.h"
 #include "PxcUtil/IDPool.h"
 
@@ -171,7 +172,7 @@ uint32 GetTypeHash(const FTimeDilationInfo& Info)
 	return HashCombine(uHash1, uHash2);
 }
 
-uint32 FTimeDilationInfo::GetPartialHash() const
+uint32 FTimeDilationInfo::GetPartialHash(bool bNoPriority) const
 {
 	uint32 uHash1 = 0;
 	switch (eLevel)
@@ -181,13 +182,14 @@ uint32 FTimeDilationInfo::GetPartialHash() const
 	case ERTDilationLevel::AffectActor:
 		uHash1 = GetTypeHash(pAffectActor); break;
 	}
+	if (bNoPriority) return uHash1;
 	uint32&& uHash2 = GetTypeHash(iPriority);
 	return HashCombine(uHash1, uHash2);
 }
 
-int64 FTimeDilationInfo::GetHashEx()
+int64 FTimeDilationInfo::GetHashEx(bool bNoPriority)
 {
-	return ((int64)eLevel << 32 | GetPartialHash());
+	return ((int64)eLevel << 32 | GetPartialHash(bNoPriority));
 }
 
 int64 FTimeDilationInfo::MakeHashEx(ERTDilationLevel eLevel, const FName& GroupName, AActor* pActor, int32 iPriority)
@@ -204,40 +206,52 @@ int64 FTimeDilationInfo::MakeHashEx(ERTDilationLevel eLevel, const FName& GroupN
 	return ((int64)eLevel << 32 | HashCombine(uHash1, uHash2));
 }
 
-void URelativeTimeDilationMgr::Init()
-{
-	for (int32 i = 0; i < (int32)ERTDilationLevel::MAX; ++i)
-		m_mapLevelNums.insert(std::make_pair((ERTDilationLevel)i, 0));
-}
-
 int32 URelativeTimeDilationMgr::SetGlobalDilation(float fDuration, float fBlendInTime, float fBlendOutTime,
 	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded)
 {
 	if (iPriority < 1) iPriority = 1;
 
-	int64 lHash = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::Global, NAME_None, nullptr, iPriority);
-	std::map<int64, int32>::iterator iter = m_mapHashExToUids.find(lHash);
-	if (iter != m_mapHashExToUids.end())
+	int64 lHashEx = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::Global, NAME_None, nullptr, iPriority);
+	FTimeDilationData* pData = nullptr;
+
+	std::map<int64, int32>::iterator itH2u = m_mapHashExToUids.find(lHashEx);
+	if (itH2u != m_mapHashExToUids.end())
 	{
-		FTimeDilationData* pData = m_tmapTimeDilations.Find(iter->second);
+		pData = m_tmapTimeDilations.Find(itH2u->second);
 		if (pData)
 		{
 			pData->DeleEnded.ExecuteIfBound(true);
-			m_tmapTimeDilations.Remove(iter->second);
-			m_mapHashExToUids.erase(iter);
-			m_mapLevelNums.find(ERTDilationLevel::Global)->second--;
+			m_tmapTimeDilations.Remove(itH2u->second);
+			m_mapHashExToUids.erase(itH2u);
 		}
 	}
-	check(m_mapHashExToUids.find(lHash) == m_mapHashExToUids.end());
+	check(m_mapHashExToUids.find(lHashEx) == m_mapHashExToUids.end());
 
 	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetUidPool(ASUIDPOOL::RelativeTimeDilation);
 	FTimeDilationData Data;
 	Data.iUid = pUidPool->Generate();
 	Data.Info.InitGlobal(fDuration, fBlendInTime, fBlendOutTime, fStaticDilation, pDynamicDilation, iPriority);
 	Data.DeleEnded = DeleEnded;
+
 	m_tmapTimeDilations.Add(Data.iUid, Data);
-	m_mapHashExToUids.insert(std::make_pair(lHash, Data.iUid));
-	m_mapLevelNums.find(ERTDilationLevel::Global)->second++;
+	m_mapHashExToUids.insert(std::make_pair(lHashEx, Data.iUid));
+	if (pData == nullptr)
+	{
+		int64 lHashExnp = Data.Info.GetHashEx(true);
+		std::unordered_map<int64, int32>::iterator itHn = m_mapHashExnpNums.find(lHashExnp);
+		if (itHn == m_mapHashExnpNums.end())
+			itHn = m_mapHashExnpNums.insert(std::make_pair(lHashExnp, 0)).first;
+		itHn->second++;
+	}
 
 	return Data.iUid;
+}
+
+int32 URelativeTimeDilationMgr::SetGroupDilation(const FName& GroupName, float fDuration, float fBlendInTime, float fBlendOutTime,
+	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded)
+{
+	APxcGameMode* pGM = CastChecked<APxcGameMode>(GetOuter());
+
+	//FLAGJK
+	return 0;
 }

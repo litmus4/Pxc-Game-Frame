@@ -2,8 +2,10 @@
 
 
 #include "Framework/LevelMgrs/RelativeTimeDilationMgr.h"
+#include "Kismet/GameplayStatics.h"
 #include "../PxcGameMode.h"
 #include "../PxcAssistantSubsystem.h"
+#include "VirtualGroupMgr.h"
 #include "PxcUtil/IDPool.h"
 
 FTimeDilationInfo::FTimeDilationInfo()
@@ -220,7 +222,7 @@ int32 URelativeTimeDilationMgr::SetGlobalDilation(float fDuration, float fBlendI
 		pData = m_tmapTimeDilations.Find(itH2u->second);
 		if (pData)
 		{
-			pData->DeleEnded.ExecuteIfBound(true);
+			pData->DeleEnded.ExecuteIfBound(true);//TODOJK EventCenter
 			m_tmapTimeDilations.Remove(itH2u->second);
 			m_mapHashExToUids.erase(itH2u);
 		}
@@ -248,10 +250,135 @@ int32 URelativeTimeDilationMgr::SetGlobalDilation(float fDuration, float fBlendI
 }
 
 int32 URelativeTimeDilationMgr::SetGroupDilation(const FName& GroupName, float fDuration, float fBlendInTime, float fBlendOutTime,
-	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded)
+	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, bool bIgnoreParent, FTimeDilationEndDelegate DeleEnded)
+{
+	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+	check(pManager);
+	if (!pManager->GetGroup(GroupName))//FLAGJK AddFeature
+		return -1;
+	if (iPriority < 1) iPriority = 1;
+
+	int64 lHashEx = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::AffectGroup, GroupName, nullptr, iPriority);
+	FTimeDilationData* pData = nullptr;
+
+	std::map<int64, int32>::iterator itH2u = m_mapHashExToUids.find(lHashEx);
+	if (itH2u != m_mapHashExToUids.end())
+	{
+		pData = m_tmapTimeDilations.Find(itH2u->second);
+		if (pData)
+		{
+			pData->DeleEnded.ExecuteIfBound(true);//TODOJK EventCenter
+			m_tmapTimeDilations.Remove(itH2u->second);
+			m_mapHashExToUids.erase(itH2u);
+		}
+	}
+	check(m_mapHashExToUids.find(lHashEx) == m_mapHashExToUids.end());
+
+	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetUidPool(ASUIDPOOL::RelativeTimeDilation);
+	FTimeDilationData Data;
+	Data.iUid = pUidPool->Generate();
+	Data.Info.InitGroup(GroupName, fDuration, fBlendInTime, fBlendOutTime, fStaticDilation, pDynamicDilation, iPriority, bIgnoreParent);
+	Data.DeleEnded = DeleEnded;
+
+	m_tmapTimeDilations.Add(Data.iUid, Data);
+	m_mapHashExToUids.insert(std::make_pair(lHashEx, Data.iUid));
+	if (pData == nullptr)
+	{
+		int64 lHashExnp = Data.Info.GetHashEx(true);
+		std::unordered_map<int64, int32>::iterator itHn = m_mapHashExnpNums.find(lHashExnp);
+		if (itHn == m_mapHashExnpNums.end())
+			itHn = m_mapHashExnpNums.insert(std::make_pair(lHashExnp, 0)).first;
+		itHn->second++;
+	}
+
+	return Data.iUid;
+}
+
+int32 URelativeTimeDilationMgr::SetActorDilation(AActor* pActor, float fDuration, float fBlendInTime, float fBlendOutTime,
+	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, bool bIgnoreParent, FTimeDilationEndDelegate DeleEnded)
 {
 	APxcGameMode* pGM = CastChecked<APxcGameMode>(GetOuter());
+	if (!IsValid(pActor) || pActor == pGM)
+		return -1;
+	if (iPriority < 1) iPriority = 1;
 
-	//FLAGJK
-	return 0;
+	int64 lHashEx = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::AffectActor, NAME_None, pActor, iPriority);
+	FTimeDilationData* pData = nullptr;
+
+	std::map<int64, int32>::iterator itH2u = m_mapHashExToUids.find(lHashEx);
+	if (itH2u != m_mapHashExToUids.end())
+	{
+		pData = m_tmapTimeDilations.Find(itH2u->second);
+		if (pData)
+		{
+			pData->DeleEnded.ExecuteIfBound(true);//TODOJK EventCenter
+			m_tmapTimeDilations.Remove(itH2u->second);
+			m_mapHashExToUids.erase(itH2u);
+		}
+	}
+	check(m_mapHashExToUids.find(lHashEx) == m_mapHashExToUids.end());
+
+	PxcUtil::CIDPool* pUidPool = UPxcAssistantSubsystem::GetInstance()->GetUidPool(ASUIDPOOL::RelativeTimeDilation);
+	FTimeDilationData Data;
+	Data.iUid = pUidPool->Generate();
+	Data.Info.InitActor(pActor, fDuration, fBlendInTime, fBlendOutTime, fStaticDilation, pDynamicDilation, iPriority, bIgnoreParent);
+	Data.DeleEnded = DeleEnded;
+
+	m_tmapTimeDilations.Add(Data.iUid, Data);
+	m_mapHashExToUids.insert(std::make_pair(lHashEx, Data.iUid));
+	if (pData == nullptr)
+	{
+		int64 lHashExnp = Data.Info.GetHashEx(true);
+		std::unordered_map<int64, int32>::iterator itHn = m_mapHashExnpNums.find(lHashExnp);
+		if (itHn == m_mapHashExnpNums.end())
+			itHn = m_mapHashExnpNums.insert(std::make_pair(lHashExnp, 0)).first;
+		itHn->second++;
+	}
+
+	return Data.iUid;
+}
+
+void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bool bDisableCallback)
+{
+	if (iUid < 0) return;
+
+	FTimeDilationData* pData = m_tmapTimeDilations.Find(iUid);
+	if (!pData) return;
+
+	if (!bDisableCallback)
+	{
+		pData->DeleEnded.ExecuteIfBound(bCanceled);
+		//TODOJK EventCenter
+	}
+
+	m_mapHashExToUids.erase(pData->Info.GetHashEx());
+	std::unordered_map<int64, int32>::iterator itHn = m_mapHashExnpNums.find(pData->Info.GetHashEx(true));
+	if (itHn != m_mapHashExnpNums.end())
+	{
+		itHn->second--;
+		if (itHn->second <= 0)
+		{
+			switch (pData->Info.eLevel)
+			{
+			case ERTDilationLevel::Global:
+				UGameplayStatics::SetGlobalTimeDilation(this, 1.0f);
+				break;
+			case ERTDilationLevel::AffectGroup:
+			{
+				UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+				check(pManager);
+				FVirtGrpRTDFeature* pFeature = pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(
+					EVirtualGroupUsage::RelativeTimeDilation, pData->Info.AffectGroupName);
+				if (pFeature) pFeature->fTimeDilation = 1.0f;
+				break;
+			}
+			case ERTDilationLevel::AffectActor:
+				if (IsValid(pData->Info.pAffectActor))
+					pData->Info.pAffectActor->CustomTimeDilation = 1.0f;//FLAGJK Group”∞œÏ
+				break;
+			}
+		}
+	}
+
+	m_tmapTimeDilations.Remove(iUid);
 }

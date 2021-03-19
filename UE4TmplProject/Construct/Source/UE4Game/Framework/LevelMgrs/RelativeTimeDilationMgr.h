@@ -89,7 +89,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (fDuration = "1.0", fStaticDilation = "1.0", iPriority = "1"))
 	int32 SetGroupDilation(const FName& GroupName, float fDuration, float fBlendInTime, float fBlendOutTime,
-		float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, FTimeDilationEndDelegate DeleEnded);
+		float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, bool bIgnoreParent, FTimeDilationEndDelegate DeleEnded);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay, meta = (fDuration = "1.0", fStaticDilation = "1.0", iPriority = "1"))
+	int32 SetActorDilation(AActor* pActor, float fDuration, float fBlendInTime, float fBlendOutTime,
+		float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, bool bIgnoreParent, FTimeDilationEndDelegate DeleEnded);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void ResetDilationByUid(int32 iUid, bool bCanceled = true, bool bDisableCallback = false);
 
 private:
 	UPROPERTY()

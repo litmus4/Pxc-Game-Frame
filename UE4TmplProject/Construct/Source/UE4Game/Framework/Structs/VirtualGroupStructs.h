@@ -27,7 +27,8 @@ struct FVirtGrpRTDFeature : public FVirtGrpFeature
 {
 	GENERATED_BODY()
 public:
-	FVirtGrpRTDFeature() : fTimeDilation(1.0f) {}
+	FVirtGrpRTDFeature() : fTimeDilation(1.0f),
+		bRuntimeActorExclusiveMark(false) {}
 
 	virtual EVirtualGroupUsage GetUsage() const override
 	{
@@ -36,4 +37,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	float fTimeDilation;
+
+	//仅优化用
+	UPROPERTY(BlueprintReadWrite)
+	bool bRuntimeActorExclusiveMark;
 };

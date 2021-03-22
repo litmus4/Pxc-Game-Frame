@@ -204,6 +204,7 @@ int64 FTimeDilationInfo::MakeHashEx(ERTDilationLevel eLevel, const FName& GroupN
 	case ERTDilationLevel::AffectActor:
 		uHash1 = GetTypeHash(pActor); break;
 	}
+	if (iPriority == 0) return ((int64)eLevel << 32 | uHash1);
 	uint32&& uHash2 = GetTypeHash(iPriority);
 	return ((int64)eLevel << 32 | HashCombine(uHash1, uHash2));
 }
@@ -254,7 +255,7 @@ int32 URelativeTimeDilationMgr::SetGroupDilation(const FName& GroupName, float f
 {
 	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
 	check(pManager);
-	if (!pManager->GetGroup(GroupName))//FLAGJK AddFeature
+	if (!pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation, GroupName))
 		return -1;
 	if (iPriority < 1) iPriority = 1;
 
@@ -367,16 +368,50 @@ void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bo
 			{
 				UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
 				check(pManager);
-				FVirtGrpRTDFeature* pFeature = pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(
-					EVirtualGroupUsage::RelativeTimeDilation, pData->Info.AffectGroupName);
-				if (pFeature) pFeature->fTimeDilation = 1.0f;
+				FVirtualGroup* pGroup = pManager->GetGroup(pData->Info.AffectGroupName);
+				if (!pGroup) break;
+
+				FVirtGrpRTDFeature* pFeature =
+					pGroup->GetFeatureByUsage<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation);
+				if (!pFeature) break;
+				pFeature->fTimeDilation = 1.0f;
+
+				for (AActor* pActor : pGroup->tsetActors)
+				{
+					if (!pFeature->bRuntimeActorExclusiveMark)
+					{
+						if (pManager->ForEachGroupWithActor<FVirtGrpRTDFeature>(pActor, EVirtualGroupUsage::RelativeTimeDilation,
+							[pGroup, this](FVirtualGroup* pMultiGroup, FVirtGrpRTDFeature* pMultiFeature)->bool {
+								if (pMultiGroup == pGroup) return false;
+								int64 lHashExnp = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::AffectGroup, pMultiGroup->Name, nullptr);
+								return (m_mapHashExnpNums.find(lHashExnp) != m_mapHashExnpNums.end());
+							})) continue;
+					}
+
+					int64 lHashExnp = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::AffectActor, NAME_None, pActor);
+					if (m_mapHashExnpNums.find(lHashExnp) != m_mapHashExnpNums.end())
+						continue;
+
+					pActor->CustomTimeDilation = 1.0f;
+				}
 				break;
 			}
 			case ERTDilationLevel::AffectActor:
-				if (IsValid(pData->Info.pAffectActor))
-					pData->Info.pAffectActor->CustomTimeDilation = 1.0f;//FLAGJK GroupÓ°Ïì
+				if (!IsValid(pData->Info.pAffectActor))
+					break;
+
+				UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+				check(pManager);
+				if (pManager->ForEachGroupWithActor<FVirtGrpRTDFeature>(pData->Info.pAffectActor,
+					EVirtualGroupUsage::RelativeTimeDilation, [this](FVirtualGroup* pMultiGroup, FVirtGrpRTDFeature* pMultiFeature)->bool {
+						int64 lHashExnp = FTimeDilationInfo::MakeHashEx(ERTDilationLevel::AffectGroup, pMultiGroup->Name, nullptr);
+						return (m_mapHashExnpNums.find(lHashExnp) != m_mapHashExnpNums.end());
+					})) break;
+
+				pData->Info.pAffectActor->CustomTimeDilation = 1.0f;
 				break;
 			}
+			m_mapHashExnpNums.erase(itHn);
 		}
 	}
 

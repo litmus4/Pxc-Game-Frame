@@ -30,7 +30,7 @@ public:
 	friend uint32 GetTypeHash(const FTimeDilationInfo& Info);
 	uint32 GetPartialHash(bool bNoPriority = false) const;
 	int64 GetHashEx(bool bNoPriority = false);
-	static int64 MakeHashEx(ERTDilationLevel eLevel, const FName& GroupName, AActor* pActor, int32 iPriority);
+	static int64 MakeHashEx(ERTDilationLevel eLevel, const FName& GroupName, AActor* pActor, int32 iPriority = 0);
 
 	float fDuration;//<-0.5 >0.0
 	float fBlendInTime;

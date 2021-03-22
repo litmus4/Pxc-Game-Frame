@@ -72,11 +72,11 @@ public:
 	void Clear();
 
 	template<class T>
-	void ForEachGroupOfUsage(EVirtualGroupUsage eUsage, std::function<void(FVirtualGroup*, T*)>& fnOnEach)
+	bool ForEachGroupOfUsage(EVirtualGroupUsage eUsage, std::function<bool(FVirtualGroup*, T*)> fnOnEach)
 	{
 		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
 		if (itU2g == m_mapUsageToGroups.end())
-			return;
+			return false;
 
 		std::set<FName>::iterator itName = itU2g->second.begin();
 		for (; itName != itU2g->second.end(); itName++)
@@ -84,16 +84,17 @@ public:
 			FVirtualGroup* pGroup = m_tmapGroups.Find(*itName);
 			if (!pGroup) continue;
 			T* pFeature = pGroup->GetFeatureByUsage<T>(eUsage);
-			fnOnEach(pGroup, pFeature);
+			if (fnOnEach(pGroup, pFeature)) return true;
 		}
+		return false;
 	}
 
 	template<class T>
-	void ForEachGroupWithActor(AActor* pActor, EVirtualGroupUsage eSelectUsage, std::function<void(FVirtualGroup*, T*)>& fnOnEach)
+	bool ForEachGroupWithActor(AActor* pActor, EVirtualGroupUsage eSelectUsage, std::function<bool(FVirtualGroup*, T*)> fnOnEach)
 	{
 		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
 		if (!pActor || itA2g == m_mapActorToGroups.end())
-			return;
+			return false;
 
 		std::set<FName>::iterator itName = itA2g->second.begin();
 		for (; itName != itA2g->second.end(); itName++)
@@ -105,11 +106,12 @@ public:
 			{
 				T* pFeature = pGroup->GetFeatureByUsage<T>(eSelectUsage);
 				if (pFeature)
-					fnOnEach(pGroup, pFeature);
+					if (fnOnEach(pGroup, pFeature)) return true;
 			}
 			else
-				fnOnEach(pGroup, nullptr);
+				if (fnOnEach(pGroup, nullptr)) return true;
 		}
+		return false;
 	}
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)

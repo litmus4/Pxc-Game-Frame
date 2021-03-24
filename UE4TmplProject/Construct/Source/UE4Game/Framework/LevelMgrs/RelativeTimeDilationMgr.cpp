@@ -417,3 +417,102 @@ void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bo
 
 	m_tmapTimeDilations.Remove(iUid);
 }
+
+void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
+{
+	APxcGameMode* pGM = CastChecked<APxcGameMode>(GetOuter());
+	float fDt = (fDeltaSeconds / pGM->GetWorldSettings()->TimeDilation) / pGM->CustomTimeDilation;
+	UVirtualGroupMgr* pManager = pGM->GetVirtualGroupMgr();
+	check(pManager);
+
+	SActorPreferred BestGlobal;
+	BestGlobal.iPriority = -1;
+	BestGlobal.fDilation = 1.0f;
+	TMap<FName, SGroupPreferrd> tmapBestGroups;
+	TMap<AActor*, SActorPreferred> tmapBestActors;
+	std::vector<int32> vecFinished;
+
+	std::map<int64, int32>::iterator itH2u = m_mapHashExToUids.begin();
+	for (; itH2u != m_mapHashExToUids.end(); itH2u++)
+	{
+		FTimeDilationData* pData = m_tmapTimeDilations.Find(itH2u->second);
+		if (!pData) continue;
+
+		FTimeDilationInfo& Info = pData->Info;
+		float fCalcDilation = 1.0f;
+		Info.UpdateDilation(fDt, fCalcDilation);
+		if (Info.IsFinished())
+		{
+			vecFinished.push_back(pData->iUid);
+			continue;
+		}
+
+		switch (Info.eLevel)
+		{
+		case ERTDilationLevel::Global:
+			if (Info.iPriority > BestGlobal.iPriority)
+			{
+				BestGlobal.iPriority = Info.iPriority;
+				BestGlobal.fDilation = fCalcDilation;
+			}
+			break;
+		case ERTDilationLevel::AffectGroup:
+		{
+			FVirtualGroup* pGroup = pManager->GetGroup(Info.AffectGroupName);
+			if (!pGroup) break;
+			FVirtGrpRTDFeature* pFeature = pGroup->GetFeatureByUsage<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation);
+			if (!pFeature) break;
+			if (Info.bIgnoreParent)
+				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;//FLAGJK 不能这么算
+
+			SGroupPreferrd* pBest = tmapBestGroups.Find(Info.AffectGroupName);
+			if (!pBest)
+			{
+				tmapBestGroups.Add(Info.AffectGroupName, SGroupPreferrd{ Info.iPriority, &pGroup->tsetActors });
+				pFeature->fTimeDilation = fCalcDilation;
+			}
+			else if (Info.iPriority > pBest->iPriority)
+			{
+				pBest->iPriority = Info.iPriority;
+				pFeature->fTimeDilation = fCalcDilation;
+			}
+			break;
+		}
+		case ERTDilationLevel::AffectActor:
+			check(IsValid(Info.pAffectActor));
+			if (Info.bIgnoreParent)
+				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;
+
+			SActorPreferred* pBest = tmapBestActors.Find(Info.pAffectActor);
+			if (!pBest)
+			{
+				SActorPreferred NewBest;
+				NewBest.iPriority = Info.iPriority;
+				NewBest.fDilationInGroup = 1.0f;
+
+				if (!Info.bIgnoreParent)
+				{
+					pManager->ForEachGroupWithActor<FVirtGrpRTDFeature>(Info.pAffectActor, EVirtualGroupUsage::RelativeTimeDilation,
+						[&NewBest](FVirtualGroup* pMultiGroup, FVirtGrpRTDFeature* pMultiFeature)->bool {
+							NewBest.fDilationInGroup *= pMultiFeature->fTimeDilation;
+							return pMultiFeature->bRuntimeActorExclusiveMark;
+						});
+					NewBest.fDilation = fCalcDilation * NewBest.fDilationInGroup;
+				}
+				else
+					NewBest.fDilation = fCalcDilation;
+
+				tmapBestActors.Add(Info.pAffectActor, NewBest);
+			}
+			else if (Info.iPriority > pBest->iPriority)
+			{
+				pBest->iPriority = Info.iPriority;
+				if (!Info.bIgnoreParent)
+					pBest->fDilation = fCalcDilation * pBest->fDilationInGroup;
+				else
+					pBest->fDilation = fCalcDilation;
+			}
+			break;
+		}
+	}
+}

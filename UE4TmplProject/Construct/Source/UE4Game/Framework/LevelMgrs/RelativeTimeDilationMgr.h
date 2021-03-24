@@ -98,6 +98,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void ResetDilationByUid(int32 iUid, bool bCanceled = true, bool bDisableCallback = false);
 
+	void Tick(float fDeltaSeconds);
+
+private:
+	struct SGroupPreferrd
+	{
+		int32 iPriority;
+		TSet<AActor*>* ptsetActors;
+	};
+
+	struct SActorPreferred
+	{
+		int32 iPriority;
+		float fDilation;
+		float fDilationInGroup;
+	};
+
 private:
 	UPROPERTY()
 	TMap<int32, FTimeDilationData> m_tmapTimeDilations;

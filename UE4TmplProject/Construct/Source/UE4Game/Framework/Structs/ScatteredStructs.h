@@ -8,6 +8,20 @@
 #include "PrivateDefinitions/ScatteredDef.h"
 #include "ScatteredStructs.generated.h"
 
+struct FName4Stl
+{
+public:
+	FName4Stl() = default;
+	FName4Stl(const FName& x) : N(x) {}
+
+	inline bool operator<(const FName4Stl& Other) const
+	{
+		return N.FastLess(Other.N);
+	}
+
+	FName N;
+};
+
 USTRUCT(BlueprintType)
 struct FGamepadCombineMapping
 {

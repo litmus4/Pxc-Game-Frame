@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "../Structs/VirtualGroupStructs.h"
+#include "../Structs/ScatteredStructs.h"
 #include <map>
 #include <unordered_map>
 #include <set>
@@ -74,14 +75,14 @@ public:
 	template<class T>
 	bool ForEachGroupOfUsage(EVirtualGroupUsage eUsage, std::function<bool(FVirtualGroup*, T*)> fnOnEach)
 	{
-		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
+		std::unordered_map<EVirtualGroupUsage, std::set<FName4Stl>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
 		if (itU2g == m_mapUsageToGroups.end())
 			return false;
 
-		std::set<FName>::iterator itName = itU2g->second.begin();
+		std::set<FName4Stl>::iterator itName = itU2g->second.begin();
 		for (; itName != itU2g->second.end(); itName++)
 		{
-			FVirtualGroup* pGroup = m_tmapGroups.Find(*itName);
+			FVirtualGroup* pGroup = m_tmapGroups.Find(itName->N);
 			if (!pGroup) continue;
 			T* pFeature = pGroup->GetFeatureByUsage<T>(eUsage);
 			if (fnOnEach(pGroup, pFeature)) return true;
@@ -92,14 +93,14 @@ public:
 	template<class T>
 	bool ForEachGroupWithActor(AActor* pActor, EVirtualGroupUsage eSelectUsage, std::function<bool(FVirtualGroup*, T*)> fnOnEach)
 	{
-		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+		std::unordered_map<AActor*, std::set<FName4Stl>>::iterator itA2g = m_mapActorToGroups.find(pActor);
 		if (!pActor || itA2g == m_mapActorToGroups.end())
 			return false;
 
-		std::set<FName>::iterator itName = itA2g->second.begin();
+		std::set<FName4Stl>::iterator itName = itA2g->second.begin();
 		for (; itName != itA2g->second.end(); itName++)
 		{
-			FVirtualGroup* pGroup = m_tmapGroups.Find(*itName);
+			FVirtualGroup* pGroup = m_tmapGroups.Find(itName->N);
 			if (!pGroup) continue;
 
 			if (eSelectUsage != EVirtualGroupUsage::Unknown)
@@ -157,6 +158,6 @@ private:
 	UPROPERTY()
 	TMap<FName, FVirtualGroup> m_tmapGroups;
 
-	std::unordered_map<EVirtualGroupUsage, std::set<FName>> m_mapUsageToGroups;
-	std::unordered_map<AActor*, std::set<FName>> m_mapActorToGroups;
+	std::unordered_map<EVirtualGroupUsage, std::set<FName4Stl>> m_mapUsageToGroups;
+	std::unordered_map<AActor*, std::set<FName4Stl>> m_mapActorToGroups;
 };

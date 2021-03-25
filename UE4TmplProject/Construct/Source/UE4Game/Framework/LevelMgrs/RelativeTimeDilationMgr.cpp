@@ -462,8 +462,8 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 			if (!pGroup) break;
 			FVirtGrpRTDFeature* pFeature = pGroup->GetFeatureByUsage<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation);
 			if (!pFeature) break;
-			if (Info.bIgnoreParent)
-				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;//FLAGJK 不能这么算
+			if (Info.bIgnoreParent)//bRuntimeActorExclusiveMark为true时才能忽略父级
+				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;
 
 			SGroupPreferrd* pBest = tmapBestGroups.Find(Info.AffectGroupName);
 			if (!pBest)

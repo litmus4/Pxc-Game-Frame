@@ -38,7 +38,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	float fTimeDilation;
 
-	//仅优化用
+	//仅优化用，为false时不能使用IgnoreParent
 	UPROPERTY(BlueprintReadWrite)
 	bool bRuntimeActorExclusiveMark;
 };

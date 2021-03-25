@@ -91,6 +91,7 @@ bool UVirtualGroupMgr::CreateGroup(const FName& Name, const TArray<EVirtualGroup
 
 	pGroup = &m_tmapGroups.Add(Name);
 	pGroup->Name = Name;
+	FName4Stl Name4(Name);
 	for (EVirtualGroupUsage eUsage : tarrInitialUsages)
 	{
 		FVirtGrpFeature* pFeature = NewFeature(eUsage);
@@ -99,11 +100,11 @@ bool UVirtualGroupMgr::CreateGroup(const FName& Name, const TArray<EVirtualGroup
 			pFeature->GroupName = Name;
 			pGroup->AddFeature(pFeature);
 
-			std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator iter = m_mapUsageToGroups.find(eUsage);
+			std::unordered_map<EVirtualGroupUsage, std::set<FName4Stl>>::iterator iter = m_mapUsageToGroups.find(eUsage);
 			if (iter == m_mapUsageToGroups.end())
-				iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::set<FName>())).first;
+				iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::set<FName4Stl>())).first;
 
-			ensureMsgf(iter->second.insert(Name).second,
+			ensureMsgf(iter->second.insert(Name4).second,
 				TEXT("UVirtualGroupMgr CreateGroup: Repeatedly add feature to same group!"));
 		}
 	}
@@ -120,13 +121,14 @@ void UVirtualGroupMgr::RemoveGroup(const FName& Name)
 {
 	FVirtualGroup* pGroup = m_tmapGroups.Find(Name);
 	if (!pGroup) return;
+	FName4Stl Name4(Name);
 
 	for (AActor* pActor : pGroup->tsetActors)
 	{
-		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+		std::unordered_map<AActor*, std::set<FName4Stl>>::iterator itA2g = m_mapActorToGroups.find(pActor);
 		if (itA2g == m_mapActorToGroups.end())
 			continue;
-		std::set<FName>::iterator itName = itA2g->second.find(Name);
+		std::set<FName4Stl>::iterator itName = itA2g->second.find(Name4);
 		if (itName != itA2g->second.end())
 		{
 			itA2g->second.erase(itName);
@@ -139,10 +141,10 @@ void UVirtualGroupMgr::RemoveGroup(const FName& Name)
 	std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 	for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
 	{
-		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(itFeature->first);
+		std::unordered_map<EVirtualGroupUsage, std::set<FName4Stl>>::iterator itU2g = m_mapUsageToGroups.find(itFeature->first);
 		if (itU2g == m_mapUsageToGroups.end())
 			continue;
-		std::set<FName>::iterator itName = itU2g->second.find(Name);
+		std::set<FName4Stl>::iterator itName = itU2g->second.find(Name4);
 		if (itName != itU2g->second.end())
 		{
 			itU2g->second.erase(itName);
@@ -171,11 +173,11 @@ void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
 	{
 		pGroup->AddActor(pActor);
 
-		std::unordered_map<AActor*, std::set<FName>>::iterator iter = m_mapActorToGroups.find(pActor);
+		std::unordered_map<AActor*, std::set<FName4Stl>>::iterator iter = m_mapActorToGroups.find(pActor);
 		if (iter == m_mapActorToGroups.end())
-			iter = m_mapActorToGroups.insert(std::make_pair(pActor, std::set<FName>())).first;
+			iter = m_mapActorToGroups.insert(std::make_pair(pActor, std::set<FName4Stl>())).first;
 
-		ensureMsgf(iter->second.insert(GroupName).second,
+		ensureMsgf(iter->second.insert(FName4Stl(GroupName)).second,
 			TEXT("UVirtualGroupMgr AddActorToGroup: Repeatedly add actor to same group!"));
 	}
 }
@@ -187,13 +189,14 @@ void UVirtualGroupMgr::AddActorsToGroup(const TArray<AActor*>& tarrActors, const
 	{
 		pGroup->AddActors(tarrActors);
 
+		FName4Stl Name4(GroupName);
 		for (AActor* pActor : tarrActors)
 		{
-			std::unordered_map<AActor*, std::set<FName>>::iterator iter = m_mapActorToGroups.find(pActor);
+			std::unordered_map<AActor*, std::set<FName4Stl>>::iterator iter = m_mapActorToGroups.find(pActor);
 			if (iter == m_mapActorToGroups.end())
-				iter = m_mapActorToGroups.insert(std::make_pair(pActor, std::set<FName>())).first;
+				iter = m_mapActorToGroups.insert(std::make_pair(pActor, std::set<FName4Stl>())).first;
 
-			ensureMsgf(iter->second.insert(GroupName).second,
+			ensureMsgf(iter->second.insert(Name4).second,
 				TEXT("UVirtualGroupMgr AddActorsToGroup: Repeatedly add actor to same group!"));
 		}
 	}
@@ -214,11 +217,11 @@ void UVirtualGroupMgr::RemoveActorFromGroup(AActor* pActor, const FName& GroupNa
 	{
 		pGroup->RemoveActor(pActor);
 
-		std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+		std::unordered_map<AActor*, std::set<FName4Stl>>::iterator itA2g = m_mapActorToGroups.find(pActor);
 		if (itA2g == m_mapActorToGroups.end())
 			return;
 
-		std::set<FName>::iterator itName = itA2g->second.find(GroupName);
+		std::set<FName4Stl>::iterator itName = itA2g->second.find(FName4Stl(GroupName));
 		if (itName != itA2g->second.end())
 		{
 			itA2g->second.erase(itName);
@@ -233,13 +236,14 @@ void UVirtualGroupMgr::ClearActorsOfGroup(const FName& GroupName)
 	FVirtualGroup* pGroup = m_tmapGroups.Find(GroupName);
 	if (pGroup)
 	{
+		FName4Stl Name4(GroupName);
 		for (AActor* pActor : pGroup->tsetActors)
 		{
-			std::unordered_map<AActor*, std::set<FName>>::iterator itA2g = m_mapActorToGroups.find(pActor);
+			std::unordered_map<AActor*, std::set<FName4Stl>>::iterator itA2g = m_mapActorToGroups.find(pActor);
 			if (itA2g == m_mapActorToGroups.end())
 				continue;
 
-			std::set<FName>::iterator itName = itA2g->second.find(GroupName);
+			std::set<FName4Stl>::iterator itName = itA2g->second.find(Name4);
 			if (itName != itA2g->second.end())
 			{
 				itA2g->second.erase(itName);
@@ -263,11 +267,11 @@ FVirtGrpFeature* UVirtualGroupMgr::AddFeatureToGroup(EVirtualGroupUsage eUsage, 
 		pFeature->GroupName = GroupName;
 		pGroup->AddFeature(pFeature);
 
-		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator iter = m_mapUsageToGroups.find(eUsage);
+		std::unordered_map<EVirtualGroupUsage, std::set<FName4Stl>>::iterator iter = m_mapUsageToGroups.find(eUsage);
 		if (iter == m_mapUsageToGroups.end())
-			iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::set<FName>())).first;
+			iter = m_mapUsageToGroups.insert(std::make_pair(eUsage, std::set<FName4Stl>())).first;
 
-		ensureMsgf(iter->second.insert(GroupName).second,
+		ensureMsgf(iter->second.insert(FName4Stl(GroupName)).second,
 			TEXT("UVirtualGroupMgr AddFeatureToGroup: Repeatedly add feature to same group!"));
 	}
 	return pFeature;
@@ -296,11 +300,11 @@ void UVirtualGroupMgr::RemoveFeatureFromGroup(EVirtualGroupUsage eUsage, const F
 	{
 		pGroup->RemoveFeatureByUsage(eUsage);
 
-		std::unordered_map<EVirtualGroupUsage, std::set<FName>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
+		std::unordered_map<EVirtualGroupUsage, std::set<FName4Stl>>::iterator itU2g = m_mapUsageToGroups.find(eUsage);
 		if (itU2g == m_mapUsageToGroups.end())
 			return;
 
-		std::set<FName>::iterator itName = itU2g->second.find(GroupName);
+		std::set<FName4Stl>::iterator itName = itU2g->second.find(FName4Stl(GroupName));
 		if (itName != itU2g->second.end())
 		{
 			itU2g->second.erase(itName);

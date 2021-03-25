@@ -26,10 +26,10 @@ class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay|VirtualGroup", meta = (WorldContext = "pWCO"))
-	void SetVirtGrpRTDFeatureBack(UObject* pWCO, UPARAM(ref) FVirtGrpRTDFeature& Feature);
+	static void SetVirtGrpRTDFeatureBack(UObject* pWCO, UPARAM(ref) FVirtGrpRTDFeature& Feature);
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayAbility|PassiveListening")
-	int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);//FLAGJK 前两个函数蓝图里找不到
+	static int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);
 
 	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调内部调用
 	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")

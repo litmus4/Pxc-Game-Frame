@@ -421,6 +421,36 @@ void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bo
 	m_tmapTimeDilations.Remove(iUid);
 }
 
+void URelativeTimeDilationMgr::ResetDilationByGroupName(const FName& GroupName)
+{
+	std::vector<int32> vecResets;
+	for (auto& Pair : m_tmapTimeDilations)
+	{
+		if (Pair.Value.Info.eLevel == ERTDilationLevel::AffectGroup && Pair.Value.Info.AffectGroupName == GroupName)
+			vecResets.push_back(Pair.Key);
+	}
+
+	std::vector<int32>::iterator iter = vecResets.begin();
+	for (; iter != vecResets.end(); iter++)
+		ResetDilationByUid(*iter);
+}
+
+void URelativeTimeDilationMgr::ResetDilationByActor(AActor* pActor)
+{
+	if (!pActor) return;
+
+	std::vector<int32> vecResets;
+	for (auto& Pair : m_tmapTimeDilations)
+	{
+		if (Pair.Value.Info.eLevel == ERTDilationLevel::AffectActor && Pair.Value.Info.pAffectActor == pActor)
+			vecResets.push_back(Pair.Key);
+	}
+
+	std::vector<int32>::iterator iter = vecResets.begin();
+	for (; iter != vecResets.end(); iter++)
+		ResetDilationByUid(*iter);
+}
+
 void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 {
 	APxcGameMode* pGM = CastChecked<APxcGameMode>(GetOuter());
@@ -550,4 +580,10 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 	std::vector<int32>::iterator itFinish = vecFinished.begin();
 	for (; itFinish != vecFinished.end(); itFinish++)
 		ResetDilationByUid(*itFinish, false);
+}
+
+void URelativeTimeDilationMgr::Release()
+{
+	for (auto& Pair : m_tmapTimeDilations)
+		Pair.Value.DeleEnded.ExecuteIfBound(true);
 }

@@ -98,7 +98,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void ResetDilationByUid(int32 iUid, bool bCanceled = true, bool bDisableCallback = false);
 
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void ResetDilationByGroupName(const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void ResetDilationByActor(AActor* pActor);
+
 	void Tick(float fDeltaSeconds);
+	void Release();
 
 private:
 	struct SGroupPreferrd

@@ -7,6 +7,7 @@
 #include "../PxcAssistantSubsystem.h"
 #include "VirtualGroupMgr.h"
 #include "PxcUtil/IDPool.h"
+#include <unordered_set>
 
 FTimeDilationInfo::FTimeDilationInfo()
 	: fDuration(0.0f), fBlendInTime(0.0f), fBlendOutTime(0.0f)
@@ -378,6 +379,8 @@ void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bo
 
 				for (AActor* pActor : pGroup->tsetActors)
 				{
+					if (!IsValid(pActor)) continue;
+
 					if (!pFeature->bRuntimeActorExclusiveMark)
 					{
 						if (pManager->ForEachGroupWithActor<FVirtGrpRTDFeature>(pActor, EVirtualGroupUsage::RelativeTimeDilation,
@@ -515,4 +518,36 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 			break;
 		}
 	}
+
+	for (auto& ActorPair : tmapBestActors)
+	{
+		check(IsValid(ActorPair.Key));
+		ActorPair.Key->CustomTimeDilation = ActorPair.Value.fDilation;
+	}
+
+	std::unordered_set<AActor*> setAppliedGrpActors;
+	for (auto& GroupPair : tmapBestGroups)
+	{
+		FVirtGrpRTDFeature* pFeature = pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(
+			EVirtualGroupUsage::RelativeTimeDilation, GroupPair.Key);
+		check(pFeature);
+		for (AActor* pActor : *GroupPair.Value.ptsetActors)
+		{
+			if (setAppliedGrpActors.find(pActor) != setAppliedGrpActors.end())
+				continue;
+			if (tmapBestActors.Contains(pActor))
+				continue;
+
+			check(IsValid(pActor));
+			pActor->CustomTimeDilation = pFeature->fTimeDilation;
+			setAppliedGrpActors.insert(pActor);
+		}
+	}
+
+	if (BestGlobal.iPriority > 0)
+		UGameplayStatics::SetGlobalTimeDilation(this, BestGlobal.fDilation);
+
+	std::vector<int32>::iterator itFinish = vecFinished.begin();
+	for (; itFinish != vecFinished.end(); itFinish++)
+		ResetDilationByUid(*itFinish, false);
 }

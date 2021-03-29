@@ -21,6 +21,8 @@ public:
 	APxcGameMode();
 
 	virtual void InitGame(const FString& sMapName, const FString& sOptions, FString& sErrorMessage) override;
+	virtual void Tick(float fDeltaSeconds) override;
+	virtual void EndPlay(const EEndPlayReason::Type eEndPlayReason) override;
 
 	UFUNCTION(BlueprintPure)
 	UVirtualGroupMgr* GetVirtualGroupMgr();

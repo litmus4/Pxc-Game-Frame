@@ -179,6 +179,10 @@ void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
 
 		ensureMsgf(iter->second.insert(FName4Stl(GroupName)).second,
 			TEXT("UVirtualGroupMgr AddActorToGroup: Repeatedly add actor to same group!"));
+
+		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
+		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
+			itFeature->second->OnActorUpdated(pGroup->tsetActors);
 	}
 }
 
@@ -199,6 +203,10 @@ void UVirtualGroupMgr::AddActorsToGroup(const TArray<AActor*>& tarrActors, const
 			ensureMsgf(iter->second.insert(Name4).second,
 				TEXT("UVirtualGroupMgr AddActorsToGroup: Repeatedly add actor to same group!"));
 		}
+
+		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
+		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
+			itFeature->second->OnActorUpdated(pGroup->tsetActors);
 	}
 }
 
@@ -218,16 +226,20 @@ void UVirtualGroupMgr::RemoveActorFromGroup(AActor* pActor, const FName& GroupNa
 		pGroup->RemoveActor(pActor);
 
 		std::unordered_map<AActor*, std::set<FName4Stl>>::iterator itA2g = m_mapActorToGroups.find(pActor);
-		if (itA2g == m_mapActorToGroups.end())
-			return;
-
-		std::set<FName4Stl>::iterator itName = itA2g->second.find(FName4Stl(GroupName));
-		if (itName != itA2g->second.end())
+		if (itA2g != m_mapActorToGroups.end())
 		{
-			itA2g->second.erase(itName);
-			if (itA2g->second.empty())
-				m_mapActorToGroups.erase(itA2g);
+			std::set<FName4Stl>::iterator itName = itA2g->second.find(FName4Stl(GroupName));
+			if (itName != itA2g->second.end())
+			{
+				itA2g->second.erase(itName);
+				if (itA2g->second.empty())
+					m_mapActorToGroups.erase(itA2g);
+			}
 		}
+
+		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
+		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
+			itFeature->second->OnActorUpdated(pGroup->tsetActors);
 	}
 }
 
@@ -253,6 +265,10 @@ void UVirtualGroupMgr::ClearActorsOfGroup(const FName& GroupName)
 		}
 
 		pGroup->ClearActors();
+
+		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
+		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
+			itFeature->second->OnActorUpdated(pGroup->tsetActors);
 	}
 }
 
@@ -325,6 +341,8 @@ FVirtGrpFeature* UVirtualGroupMgr::NewFeature(EVirtualGroupUsage eUsage)
 	{
 	case EVirtualGroupUsage::RelativeTimeDilation:
 		return new FVirtGrpRTDFeature();
+	case EVirtualGroupUsage::CentralTarget:
+		return new FVirtGrpCentralFeature();
 	}
 	return nullptr;
 }

@@ -58,7 +58,7 @@ FString UPxcInputMappingMgr::GetDisplayNameOfAction(const FName& ActionName, boo
 		pRow = COtherTableCenter::GetInstance()->GetInputActionNameRowByName(
 			COtherTableCenter::LinkAxisName(strActionName, bAxisPositiveDir));
 	}
-	return (pRow ? ANSI_TO_TCHAR(pRow->m_strDisplayName.c_str()) : TEXT(""));
+	return (pRow ? UTF8_TO_TCHAR(pRow->m_strDisplayName.c_str()) : TEXT(""));//FLAGJK 这里要用TextID
 }
 
 FString UPxcInputMappingMgr::GetDisplayNameOfQuad(const FInputMappingQuad& Quad)

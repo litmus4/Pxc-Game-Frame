@@ -3,3 +3,7 @@
 
 #include "Framework/Structs/VirtualGroupStructs.h"
 
+void FVirtGrpCentralFeature::OnActorUpdated(TSet<AActor*>& tsetActors)
+{
+	//
+}

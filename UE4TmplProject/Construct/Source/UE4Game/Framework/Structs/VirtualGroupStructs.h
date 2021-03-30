@@ -18,6 +18,7 @@ public:
 	{
 		return EVirtualGroupUsage::Unknown;
 	}
+	virtual void OnActorUpdated(TSet<AActor*>& tsetActors) {}
 
 	FName GroupName;
 };
@@ -41,4 +42,18 @@ public:
 	//仅优化用，为false时不能使用IgnoreParent
 	UPROPERTY(BlueprintReadWrite)
 	bool bRuntimeActorExclusiveMark;
+};
+
+USTRUCT(BlueprintType)
+struct FVirtGrpCentralFeature : public FVirtGrpFeature
+{
+	GENERATED_BODY()
+public:
+	FVirtGrpCentralFeature() = default;
+
+	virtual EVirtualGroupUsage GetUsage() const override
+	{
+		return EVirtualGroupUsage::CentralTarget;
+	}
+	virtual void OnActorUpdated(TSet<AActor*>& tsetActors) override;
 };

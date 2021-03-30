@@ -11,6 +11,7 @@ enum class EVirtualGroupUsage : uint8
 {
 	Unknown = 0,
 	RelativeTimeDilation,
+	CentralTarget,
 };
 
 UENUM(BlueprintType)

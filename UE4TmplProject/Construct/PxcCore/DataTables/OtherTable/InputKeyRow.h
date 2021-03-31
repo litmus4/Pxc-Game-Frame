@@ -10,6 +10,6 @@ public:
 
 	int m_iID;
 	std::string m_strKeyName;
-	std::string m_strDisplayName;
+	int m_iDisplayTextID;
 	std::string m_strMtlInstFile;
 };

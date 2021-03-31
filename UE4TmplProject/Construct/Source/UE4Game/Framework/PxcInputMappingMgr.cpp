@@ -8,6 +8,7 @@
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
+#include "DataTables/TextTable/TextTableCenter.h"
 #include "DataTables/OtherTable/OtherTableCenter.h"
 #include "Windows/PostWindowsApi.h"
 #include "Windows/HideWindowsPlatformTypes.h"
@@ -58,7 +59,13 @@ FString UPxcInputMappingMgr::GetDisplayNameOfAction(const FName& ActionName, boo
 		pRow = COtherTableCenter::GetInstance()->GetInputActionNameRowByName(
 			COtherTableCenter::LinkAxisName(strActionName, bAxisPositiveDir));
 	}
-	return (pRow ? UTF8_TO_TCHAR(pRow->m_strDisplayName.c_str()) : TEXT(""));//FLAGJK 这里要用TextID
+
+	if (pRow)
+	{
+		std::string&& strName = CTextTableCenter::GetInstance()->GetText(pRow->m_iDisplayTextID);
+		return UTF8_TO_TCHAR(strName.c_str());
+	}
+	return TEXT("");
 }
 
 FString UPxcInputMappingMgr::GetDisplayNameOfQuad(const FInputMappingQuad& Quad)

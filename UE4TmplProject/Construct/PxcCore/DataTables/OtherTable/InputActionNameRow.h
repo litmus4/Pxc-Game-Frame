@@ -10,7 +10,7 @@ public:
 
 	int m_iID;
 	std::string m_strActionName;
-	std::string m_strDisplayName;
+	int m_iDisplayTextID;
 	bool m_bAxis;
 	bool m_bAxisPositive;
 	bool m_bGamepadModifyForbidden;

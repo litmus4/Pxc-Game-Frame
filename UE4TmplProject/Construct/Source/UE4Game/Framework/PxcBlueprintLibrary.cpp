@@ -319,7 +319,7 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromInputMapping(const FPx
 	{
 		const FString* pIconPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::InputKeyIcon);
 		check(pIconPath);
-		FString&& sMainFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		FString sMainFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
 		FString&& sMainPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_MTLINST), **pIconPath, *sMainFile, *sMainFile);
 		pRetMtlInst = LoadObject<UMaterialInstance>(nullptr, *sMainPath);
 
@@ -341,7 +341,7 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromInputMapping(const FPx
 				CInputKeyRow* pModiRow = COtherTableCenter::GetInstance()->GetInputKeyRowByName(TCHAR_TO_ANSI(*ModiKeyName.ToString()));
 				if (pModiRow)
 				{
-					FString&& sModiFile = ANSI_TO_TCHAR(pModiRow->m_strMtlInstFile.c_str());
+					FString sModiFile = ANSI_TO_TCHAR(pModiRow->m_strMtlInstFile.c_str());
 					FString&& sModiPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_MTLINST), **pIconPath, *sModiFile, *sModiFile);
 					UMaterialInstance* pModiMtlInst = LoadObject<UMaterialInstance>(nullptr, *sModiPath);
 					tarrOutModifierIcons.Add(pModiMtlInst);
@@ -381,7 +381,7 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromAxputMapping(const FPx
 	{
 		const FString* pIconPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::InputKeyIcon);
 		check(pIconPath);
-		FString&& sIconFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
+		FString sIconFile = ANSI_TO_TCHAR(pRow->m_strMtlInstFile.c_str());
 		FString&& sIconPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_MTLINST), **pIconPath, *sIconFile, *sIconFile);
 		pRetMtlInst = LoadObject<UMaterialInstance>(nullptr, *sIconPath);
 	}

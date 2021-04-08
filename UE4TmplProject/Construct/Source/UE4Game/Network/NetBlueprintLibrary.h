@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Network/NetTypesCommon.h"
+#include "PrivateDefinitions/ScatteredDef.h"
 #include "NetBlueprintLibrary.generated.h"
+
+//TODOJK 定义在Player类
+DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, /*class APxcCharacterPlayer**/ACharacter*, Player);
 
 /**
  * 
@@ -51,7 +56,24 @@ public:
 	static APlayerCameraManager* Net_GetAuthControlledCameraManager(UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static ACharacter* Net_GetRandomPlayerCharacter(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
 	static int32 Net_GetPlayerCount(UObject* WorldContextObject);
+
+	static bool Net_ForEachPlayerNative(UObject* WorldContextObject, const FNetEachPlayerDelegate& OnEach);
+
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static void Net_ForEachPlayer(UObject* WorldContextObject, FPlayerUniversalOneDelegate OnEach);
+
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static void Net_BindAllPlayersUniversalEvent(UObject* WorldContextObject, EPlayerUniEventType Type, FPlayerUniversalOneDelegate OnCall);
+
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static void Net_UnbindAllPlayersAllUniversalEvents(UObject* WorldContextObject, EPlayerUniEventType Type);
+
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static bool Net_IsComponentOverlappingAnyPlayer(UObject* WorldContextObject, UPrimitiveComponent* Component);
 
 	/* 模仿OpenLevel的ServerTravel */
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")

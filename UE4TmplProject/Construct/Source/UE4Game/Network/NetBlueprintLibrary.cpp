@@ -109,6 +109,22 @@ APlayerCameraManager* UNetBlueprintLibrary::Net_GetAuthControlledCameraManager(U
 	return PC ? PC->PlayerCameraManager : nullptr;
 }
 
+ACharacter* UNetBlueprintLibrary::Net_GetRandomPlayerCharacter(UObject* WorldContextObject)
+{
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World) return nullptr;
+
+	TArray<APawn*> Pawns;
+	int32 Num = 0;
+	for (FConstPlayerControllerIterator Iter = World->GetPlayerControllerIterator(); Iter; Iter++)
+	{
+		if (!Iter->Get()) continue;
+		Pawns.Add(Iter->Get()->GetPawn());
+		Num++;
+	}
+	return Cast<ACharacter>(Pawns[FMath::RandHelper(Num)]);
+}
+
 int32 UNetBlueprintLibrary::Net_GetPlayerCount(UObject* WorldContextObject)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
@@ -123,6 +139,58 @@ int32 UNetBlueprintLibrary::Net_GetPlayerCount(UObject* WorldContextObject)
 		}
 	}
 	return NetPlayerCount;
+}
+
+bool UNetBlueprintLibrary::Net_ForEachPlayerNative(UObject* WorldContextObject, const FNetEachPlayerDelegate& OnEach)
+{
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World) return false;
+
+	for (FConstPlayerControllerIterator Iter = World->GetPlayerControllerIterator(); Iter; Iter++)
+	{
+		if (!Iter->Get()) continue;
+		ACharacter* Player = CastChecked<ACharacter>(Iter->Get()->GetPawn());//APxcCharacterPlayer
+		if (OnEach.Execute(Player))
+			return true;
+	}
+	return false;
+}
+
+void UNetBlueprintLibrary::Net_ForEachPlayer(UObject* WorldContextObject, FPlayerUniversalOneDelegate OnEach)
+{
+	Net_ForEachPlayerNative(WorldContextObject,
+		FNetEachPlayerDelegate::CreateLambda([&OnEach](ACharacter* Player)->bool {//APxcCharacterPlayer
+			OnEach.ExecuteIfBound(Player);
+			return false;
+		}));
+}
+
+void UNetBlueprintLibrary::Net_BindAllPlayersUniversalEvent(UObject* WorldContextObject, EPlayerUniEventType Type, FPlayerUniversalOneDelegate OnCall)
+{
+	Net_ForEachPlayerNative(WorldContextObject,
+		FNetEachPlayerDelegate::CreateLambda([Type, &OnCall](ACharacter* Player)->bool {//APxcCharacterPlayer
+			//Player->BindUniversalEventByType(Type, OnCall);
+			return false;
+		}));
+}
+
+void UNetBlueprintLibrary::Net_UnbindAllPlayersAllUniversalEvents(UObject* WorldContextObject, EPlayerUniEventType Type)
+{
+	Net_ForEachPlayerNative(WorldContextObject,
+		FNetEachPlayerDelegate::CreateLambda([Type](ACharacter* Player)->bool {//APxcCharacterPlayer
+			//Player->UnbindAllUniversalEventsFromType(Type);
+			return false;
+		}));
+}
+
+bool UNetBlueprintLibrary::Net_IsComponentOverlappingAnyPlayer(UObject* WorldContextObject, UPrimitiveComponent* Component)
+{
+	if (!IsValid(Component)) return false;
+
+	return Net_ForEachPlayerNative(WorldContextObject,
+		FNetEachPlayerDelegate::CreateLambda([Component](ACharacter* Player)->bool {//APxcCharacterPlayer
+			return Component->IsOverlappingActor(Player);
+		}));
 }
 
 bool UNetBlueprintLibrary::Net_ServerTravel(UObject* WorldContextObject, FName LevelName, bool bAbsolute, FString Options)

@@ -694,3 +694,7 @@ static void RepNet##MainName##ArrayToMap(FNet##MainName##Array& NetArray, TMap<K
 		Queue.pop_front();\
 	} while (OpType != NetQueuedOpBase::Type::Remove && OpType != NetQueuedOpBase::Type::Replace &&\
 		OpType != NetQueuedOpBase::Type::Empty && !Queue.empty())
+
+//============================================================
+
+DECLARE_DELEGATE_RetVal_OneParam(bool, FNetEachPlayerDelegate, /*class APxcCharacterPlayer**/ACharacter*);//TODOJK PlayerÀà

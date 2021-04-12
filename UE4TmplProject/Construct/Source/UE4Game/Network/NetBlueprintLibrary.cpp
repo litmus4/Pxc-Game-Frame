@@ -165,6 +165,14 @@ void UNetBlueprintLibrary::Net_ForEachPlayer(UObject* WorldContextObject, FPlaye
 		}));
 }
 
+bool UNetBlueprintLibrary::Net_IsAnyPlayer(UObject* WorldContextObject, AActor* Actor)
+{
+	return Net_ForEachPlayerNative(WorldContextObject,
+		FNetEachPlayerDelegate::CreateLambda([Actor](ACharacter* Player)->bool {//APxcCharacterPlayer
+			return (Player == Actor);
+		}));
+}
+
 void UNetBlueprintLibrary::Net_BindAllPlayersUniversalEvent(UObject* WorldContextObject, EPlayerUniEventType Type, FPlayerUniversalOneDelegate OnCall)
 {
 	Net_ForEachPlayerNative(WorldContextObject,

@@ -6,6 +6,47 @@
 #include "UObject/NoExportTypes.h"
 #include "GroupCentralTargetMgr.generated.h"
 
+USTRUCT()
+struct FGrpCtrActorViewInfo
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	AActor* pViewTarget;//为空时表示组中Actor本身就是ViewTarget
+
+	float fDefaultBlendTime;
+	EViewTargetBlendFunction eDefaultBlendFunc;
+};
+
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FGroupCentralViewChangeDelegate, AActor*, pActor, AActor*, pViewTarget);
+
+USTRUCT()
+struct FGroupCentralInfo
+{
+	GENERATED_BODY()
+public:
+	FGroupCentralInfo();
+
+	FName GroupName;
+
+	UPROPERTY()
+	AActor* pCentralViewTarget;
+
+	UPROPERTY()
+	TMap<AActor*, FGrpCtrActorViewInfo> tmapActorViewInfos;
+
+	FGroupCentralViewChangeDelegate DeleViewChanged;//第一个参数为空表示移动到了中心
+
+private:
+	FVector vCentralTarget;
+
+	bool bViewing;
+	UPROPERTY()
+	AActor* pCurView;//为空表示当前在看中心
+
+	//FLAGJK
+};
+
 /**
  * 
  */

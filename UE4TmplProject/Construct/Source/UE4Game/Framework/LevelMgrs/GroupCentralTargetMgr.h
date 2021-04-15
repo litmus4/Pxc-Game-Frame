@@ -7,6 +7,17 @@
 #include "GroupCentralTargetMgr.generated.h"
 
 USTRUCT()
+struct FGrpCtrActorDirectInfo
+{
+	GENERATED_BODY()
+public:
+	float fMoveTime;
+
+	UPROPERTY()
+	UCurveFloat* pDynamicMover;
+};
+
+USTRUCT()
 struct FGrpCtrActorViewInfo
 {
 	GENERATED_BODY()
@@ -14,10 +25,11 @@ public:
 	UPROPERTY()
 	AActor* pViewTarget;//为空时表示组中Actor本身就是ViewTarget
 
-	float fDefaultBlendTime;
-	EViewTargetBlendFunction eDefaultBlendFunc;
+	float fBlendTime;
+	EViewTargetBlendFunction eBlendFunc;
 };
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FGroupCentralDirectChangeDelegate, AActor*, pActor);
 DECLARE_DYNAMIC_DELEGATE_TwoParams(FGroupCentralViewChangeDelegate, AActor*, pActor, AActor*, pViewTarget);
 
 USTRUCT()
@@ -27,24 +39,41 @@ struct FGroupCentralInfo
 public:
 	FGroupCentralInfo();
 
+	void Init(const FName& xGroupName);
+	//FLAGJK
+
 	FName GroupName;
 
+	float fDefaultMoveTime;
+	UPROPERTY()
+	UCurveFloat* pDefaultDynamicMover;
+	UPROPERTY()
+	TMap<AActor*, FGrpCtrActorDirectInfo> tmapActorDirectInfos;
+
+	float fDefaultBlendTime;
+	EViewTargetBlendFunction eDefaultBlendFunc;
 	UPROPERTY()
 	AActor* pCentralViewTarget;
-
 	UPROPERTY()
 	TMap<AActor*, FGrpCtrActorViewInfo> tmapActorViewInfos;
 
-	FGroupCentralViewChangeDelegate DeleViewChanged;//第一个参数为空表示移动到了中心
+	FGroupCentralDirectChangeDelegate DeleDirectChanged;//参数为空表示指向了中心
+	FGroupCentralViewChangeDelegate DeleViewChanged;//第一个参数为空表示看了中心
 
 private:
 	FVector vCentralTarget;
 
+	bool bDirecting;
+	UPROPERTY()
+	AActor* pCurDirect;//为空表示当前指向中心
+	UPROPERTY()
+	AActor* pLastDirect;
+	FVector vDirectTarget;
+	float fCurMoveTime;
+
 	bool bViewing;
 	UPROPERTY()
-	AActor* pCurView;//为空表示当前在看中心
-
-	//FLAGJK
+	AActor* pCurView;//用原Actor，为空表示当前在看中心
 };
 
 /**

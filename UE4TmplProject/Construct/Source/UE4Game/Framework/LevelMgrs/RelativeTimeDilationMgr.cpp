@@ -461,7 +461,7 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 	SActorPreferred BestGlobal;
 	BestGlobal.iPriority = -1;
 	BestGlobal.fDilation = 1.0f;
-	TMap<FName, SGroupPreferrd> tmapBestGroups;
+	TMap<FName, SGroupPreferred> tmapBestGroups;
 	TMap<AActor*, SActorPreferred> tmapBestActors;
 	std::vector<int32> vecFinished;
 
@@ -498,10 +498,10 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 			if (Info.bIgnoreParent)//bRuntimeActorExclusiveMark为true时才能忽略父级
 				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;
 
-			SGroupPreferrd* pBest = tmapBestGroups.Find(Info.AffectGroupName);
+			SGroupPreferred* pBest = tmapBestGroups.Find(Info.AffectGroupName);
 			if (!pBest)
 			{
-				tmapBestGroups.Add(Info.AffectGroupName, SGroupPreferrd{ Info.iPriority, &pGroup->tsetActors });
+				tmapBestGroups.Add(Info.AffectGroupName, SGroupPreferred{ Info.iPriority, &pGroup->tsetActors });
 				pFeature->fTimeDilation = fCalcDilation;
 			}
 			else if (Info.iPriority > pBest->iPriority)

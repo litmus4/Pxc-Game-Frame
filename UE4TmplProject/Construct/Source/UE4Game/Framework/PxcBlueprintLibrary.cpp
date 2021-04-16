@@ -169,13 +169,13 @@ int32 UPxcBlueprintLibrary::Key_GetFirstAdaptiveAcMapping(const TArray<FInputAct
 		auto pComb = tarrGamepadCombMappings.FindByPredicate([&Mapping](const FGamepadCombineMapping& CurCM)->bool {
 			return CurCM.MainKey == Mapping.Key;
 		});
-		if (pGI->bKeyboardRuntime ? bCurKb : (!bCurKb && !pComb))
+		if (pGI->m_bKeyboardRuntime ? bCurKb : (!bCurKb && !pComb))
 		{
 			OutMapping = Mapping;
 			return 1;
 		}
 	}
-	if (pGI->bKeyboardRuntime) return 0;
+	if (pGI->m_bKeyboardRuntime) return 0;
 
 	for (const FGamepadCombineMapping& CombineMapping : tarrGamepadCombMappings)
 	{
@@ -256,7 +256,7 @@ bool UPxcBlueprintLibrary::Key_GetFirstAdaptiveAxMapping(const TArray<FInputAxis
 	for (const FInputAxisKeyMapping& Mapping : tarrMappings)
 	{
 		bool bCurKb = UKismetInputLibrary::Key_IsKeyboardKey(Mapping.Key);
-		if (pGI->bKeyboardRuntime ? bCurKb : !bCurKb)
+		if (pGI->m_bKeyboardRuntime ? bCurKb : !bCurKb)
 		{
 			OutMapping = Mapping;
 			return true;

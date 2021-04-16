@@ -21,7 +21,7 @@ public:
 	virtual void Shutdown() override;
 
 	UPROPERTY(BlueprintReadWrite)
-	bool bKeyboardRuntime = true;
+	bool m_bKeyboardRuntime = true;
 
 	UFUNCTION(BlueprintPure)
 	UPxcInputMappingMgr* GetInputMappingMgr();

@@ -108,7 +108,7 @@ public:
 	void Release();
 
 private:
-	struct SGroupPreferrd
+	struct SGroupPreferred
 	{
 		int32 iPriority;
 		TSet<AActor*>* ptsetActors;

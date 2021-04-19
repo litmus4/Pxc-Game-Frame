@@ -15,6 +15,7 @@ public:
 
 	UPROPERTY()
 	UCurveFloat* pDynamicMover;
+	float fDynamicMoveTime;
 };
 
 USTRUCT()
@@ -40,6 +41,11 @@ public:
 	FGroupCentralInfo();
 
 	void Init(const FName& xGroupName);
+	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
+	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT);
+	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
+	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
+	void ResetFloatings();
 	//FLAGJK
 
 	FName GroupName;
@@ -63,15 +69,14 @@ public:
 private:
 	FVector vCentralTarget;
 
-	bool bDirecting;
 	UPROPERTY()
 	AActor* pCurDirect;//为空表示当前指向中心
 	UPROPERTY()
 	AActor* pLastDirect;
 	FVector vDirectTarget;
 	float fCurMoveTime;
+	float fDynamicMoveMax;
 
-	bool bViewing;
 	UPROPERTY()
 	AActor* pCurView;//用原Actor，为空表示当前在看中心
 };

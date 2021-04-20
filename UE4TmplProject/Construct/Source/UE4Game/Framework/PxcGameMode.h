@@ -8,6 +8,7 @@
 
 class UVirtualGroupMgr;
 class URelativeTimeDilationMgr;
+class UGroupCentralTargetMgr;
 
 /**
  * 
@@ -30,6 +31,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	URelativeTimeDilationMgr* GetRelativeTimeDilationMgr();
 
+	UFUNCTION(BlueprintPure)
+	UGroupCentralTargetMgr* GetGroupCentralTargetMgr();
+
 protected:
 	//*≤‚ ‘¡Ÿ ±
 	UFUNCTION(BlueprintImplementableEvent, Category = Test)
@@ -42,4 +46,7 @@ private:
 
 	UPROPERTY()
 	URelativeTimeDilationMgr* m_pRelTimeDilationMgr;
+
+	UPROPERTY()
+	UGroupCentralTargetMgr* m_pGroupCentralTargetMgr;
 };

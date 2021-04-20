@@ -180,9 +180,10 @@ void UVirtualGroupMgr::AddActorToGroup(AActor* pActor, const FName& GroupName)
 		ensureMsgf(iter->second.insert(FName4Stl(GroupName)).second,
 			TEXT("UVirtualGroupMgr AddActorToGroup: Repeatedly add actor to same group!"));
 
+		UWorld* pWorld = (GetOuter() ? GetOuter()->GetWorld() : nullptr);
 		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
-			itFeature->second->OnActorUpdated(pGroup->tsetActors);
+			itFeature->second->OnActorUpdated(pWorld, pGroup->tsetActors);
 	}
 }
 
@@ -204,9 +205,10 @@ void UVirtualGroupMgr::AddActorsToGroup(const TArray<AActor*>& tarrActors, const
 				TEXT("UVirtualGroupMgr AddActorsToGroup: Repeatedly add actor to same group!"));
 		}
 
+		UWorld* pWorld = (GetOuter() ? GetOuter()->GetWorld() : nullptr);
 		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
-			itFeature->second->OnActorUpdated(pGroup->tsetActors);
+			itFeature->second->OnActorUpdated(pWorld, pGroup->tsetActors);
 	}
 }
 
@@ -237,9 +239,10 @@ void UVirtualGroupMgr::RemoveActorFromGroup(AActor* pActor, const FName& GroupNa
 			}
 		}
 
+		UWorld* pWorld = (GetOuter() ? GetOuter()->GetWorld() : nullptr);
 		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
-			itFeature->second->OnActorUpdated(pGroup->tsetActors);
+			itFeature->second->OnActorUpdated(pWorld, pGroup->tsetActors);
 	}
 }
 
@@ -266,9 +269,10 @@ void UVirtualGroupMgr::ClearActorsOfGroup(const FName& GroupName)
 
 		pGroup->ClearActors();
 
+		UWorld* pWorld = (GetOuter() ? GetOuter()->GetWorld() : nullptr);
 		std::map<EVirtualGroupUsage, FVirtGrpFeature*>::iterator itFeature = pGroup->mapFeatures.begin();
 		for (; itFeature != pGroup->mapFeatures.end(); itFeature++)
-			itFeature->second->OnActorUpdated(pGroup->tsetActors);
+			itFeature->second->OnActorUpdated(pWorld, pGroup->tsetActors);
 	}
 }
 

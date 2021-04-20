@@ -6,6 +6,8 @@
 #include "UObject/NoExportTypes.h"
 #include "GroupCentralTargetMgr.generated.h"
 
+class UVirtualGroupMgr;
+
 USTRUCT()
 struct FGrpCtrActorDirectInfo
 {
@@ -66,9 +68,9 @@ public:
 	FGroupCentralDirectChangeDelegate DeleDirectChanged;//参数为空表示指向了中心
 	FGroupCentralViewChangeDelegate DeleViewChanged;//第一个参数为空表示看了中心
 
-private:
 	FVector vCentralTarget;
 
+private:
 	UPROPERTY()
 	AActor* pCurDirect;//为空表示当前指向中心
 	UPROPERTY()
@@ -89,4 +91,14 @@ class UE4GAME_API UGroupCentralTargetMgr : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void SetCentralTarget(const FName& GroupName);
+
+	//功能内部调用
+	void UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager = nullptr, TSet<AActor*>* ptsetActors = nullptr);
+
+private:
+	UPROPERTY()
+	TMap<FName, FGroupCentralInfo> m_tmapCentralInfos;
 };

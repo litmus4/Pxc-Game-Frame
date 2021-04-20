@@ -18,7 +18,7 @@ public:
 	{
 		return EVirtualGroupUsage::Unknown;
 	}
-	virtual void OnActorUpdated(TSet<AActor*>& tsetActors) {}
+	virtual void OnActorUpdated(UWorld* pWorld, TSet<AActor*>& tsetActors) {}
 
 	FName GroupName;
 };
@@ -55,5 +55,5 @@ public:
 	{
 		return EVirtualGroupUsage::CentralTarget;
 	}
-	virtual void OnActorUpdated(TSet<AActor*>& tsetActors) override;
+	virtual void OnActorUpdated(UWorld* pWorld, TSet<AActor*>& tsetActors) override;
 };

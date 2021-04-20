@@ -2,8 +2,17 @@
 
 
 #include "Framework/Structs/VirtualGroupStructs.h"
+#include "../PxcGameMode.h"
+#include "../LevelMgrs/GroupCentralTargetMgr.h"
 
-void FVirtGrpCentralFeature::OnActorUpdated(TSet<AActor*>& tsetActors)
+void FVirtGrpCentralFeature::OnActorUpdated(UWorld* pWorld, TSet<AActor*>& tsetActors)
 {
-	//
+	if (pWorld)
+	{
+		APxcGameMode* pGM = pWorld->GetAuthGameMode<APxcGameMode>();
+		check(pGM);
+		UGroupCentralTargetMgr* pManager = pGM->GetGroupCentralTargetMgr();
+		check(pManager);
+		pManager->UpdateCentralTarget(GroupName, nullptr, &tsetActors);
+	}
 }

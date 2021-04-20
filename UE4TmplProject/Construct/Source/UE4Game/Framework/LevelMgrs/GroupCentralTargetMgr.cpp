@@ -2,6 +2,8 @@
 
 
 #include "Framework/LevelMgrs/GroupCentralTargetMgr.h"
+#include "../PxcGameMode.h"
+#include "VirtualGroupMgr.h"
 
 FGroupCentralInfo::FGroupCentralInfo()
 	: fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
@@ -80,4 +82,50 @@ void FGroupCentralInfo::ResetFloatings()
 	eDefaultBlendFunc = EViewTargetBlendFunction::VTBlend_Linear;
 	pCentralViewTarget = nullptr;
 	tmapActorViewInfos.Empty();
+}
+
+void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName)
+{
+	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+	check(pManager);
+	if (!pManager->GetFeatureFromGroup<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget, GroupName))
+		return;
+
+	if (m_tmapCentralInfos.Contains(GroupName))
+		return;
+
+	FGroupCentralInfo Info;
+	Info.Init(GroupName);
+	m_tmapCentralInfos.Add(GroupName, Info);
+
+	UpdateCentralTarget(GroupName, pManager);
+}
+
+void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager, TSet<AActor*>* ptsetActors)
+{
+	if (!ptsetActors)
+	{
+		if (!pManager)
+		{
+			pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+			check(pManager);
+		}
+		//if (!pManager->GetFeatureFromGroup<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget, GroupName))
+			//return;//功能内部调用此函数免检查
+		FVirtualGroup* pGroup = pManager->GetGroup(GroupName);
+		if (pGroup)
+			ptsetActors = &pGroup->tsetActors;
+	}
+
+	if (ptsetActors && ptsetActors->Num() > 0)
+	{
+		FGroupCentralInfo* pInfo = m_tmapCentralInfos.Find(GroupName);
+		if (pInfo)
+		{
+			FVector vCentral(0.0f, 0.0f, 0.0f);
+			for (AActor* pActor : *ptsetActors)
+				vCentral += pActor->GetActorLocation();
+			pInfo->vCentralTarget = vCentral / ptsetActors->Num();
+		}
+	}
 }

@@ -72,3 +72,8 @@ URelativeTimeDilationMgr* APxcGameMode::GetRelativeTimeDilationMgr()
 {
 	return m_pRelTimeDilationMgr;
 }
+
+UGroupCentralTargetMgr* APxcGameMode::GetGroupCentralTargetMgr()
+{
+	return m_pGroupCentralTargetMgr;
+}

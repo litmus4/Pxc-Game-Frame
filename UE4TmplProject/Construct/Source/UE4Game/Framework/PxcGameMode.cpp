@@ -4,6 +4,7 @@
 #include "Framework/PxcGameMode.h"
 #include "LevelMgrs/VirtualGroupMgr.h"
 #include "LevelMgrs/RelativeTimeDilationMgr.h"
+#include "LevelMgrs/GroupCentralTargetMgr.h"
 
 //*≤‚ ‘¡Ÿ ±
 #include "Windows/AllowWindowsPlatformTypes.h"
@@ -23,6 +24,7 @@ APxcGameMode::APxcGameMode()
 
 	m_pVirtualGroupMgr = CreateDefaultSubobject<UVirtualGroupMgr>(TEXT("VirtualGroupMgr"));
 	m_pRelTimeDilationMgr = CreateDefaultSubobject<URelativeTimeDilationMgr>(TEXT("RelativeTimeDilationMgr"));
+	m_pGroupCentralTargetMgr = CreateDefaultSubobject<UGroupCentralTargetMgr>(TEXT("GroupCentralTargetMgr"));
 }
 
 void APxcGameMode::InitGame(const FString& sMapName, const FString& sOptions, FString& sErrorMessage)

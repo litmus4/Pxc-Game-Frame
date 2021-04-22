@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "VirtualGroupMgr.h"
+#include <unordered_map>
 #include "GroupCentralTargetMgr.generated.h"
 
 class UVirtualGroupMgr;
@@ -43,6 +45,8 @@ public:
 	FGroupCentralInfo();
 
 	void Init(const FName& xGroupName);
+	void Init(FVirtualGroup* pGroup);
+
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
 	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT);
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
@@ -51,6 +55,8 @@ public:
 	//FLAGJK
 
 	FName GroupName;
+	UPROPERTY()
+	TSet<AActor*> tsetBackActors;
 
 	float fDefaultMoveTime;
 	UPROPERTY()
@@ -99,6 +105,18 @@ public:
 	void UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager = nullptr, TSet<AActor*>* ptsetActors = nullptr);
 
 private:
+	struct SLocationHelper
+	{
+		FVector vLastLocation;
+		FName GroupName;
+	};
+
+private:
+	void OnActorTransformUpdated(USceneComponent* pUpdatedComponent,
+		EUpdateTransformFlags eUpdateTransformFlags, ETeleportType eTeleport);
+
 	UPROPERTY()
 	TMap<FName, FGroupCentralInfo> m_tmapCentralInfos;
+
+	std::unordered_map<USceneComponent*, SLocationHelper> m_mapLocationHelpers;
 };

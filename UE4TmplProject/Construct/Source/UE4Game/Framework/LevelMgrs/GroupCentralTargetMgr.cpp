@@ -3,7 +3,6 @@
 
 #include "Framework/LevelMgrs/GroupCentralTargetMgr.h"
 #include "../PxcGameMode.h"
-#include "VirtualGroupMgr.h"
 
 FGroupCentralInfo::FGroupCentralInfo()
 	: fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
@@ -19,6 +18,13 @@ FGroupCentralInfo::FGroupCentralInfo()
 void FGroupCentralInfo::Init(const FName& xGroupName)
 {
 	GroupName = xGroupName;
+}
+
+void FGroupCentralInfo::Init(FVirtualGroup* pGroup)
+{
+	check(pGroup);
+	GroupName = pGroup->Name;
+	tsetBackActors = pGroup->tsetActors;
 }
 
 void FGroupCentralInfo::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
@@ -88,22 +94,34 @@ void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName)
 {
 	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
 	check(pManager);
-	if (!pManager->GetFeatureFromGroup<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget, GroupName))
+	FVirtualGroup* pGroup = pManager->GetGroup(GroupName);
+	if (!pGroup || !pGroup->GetFeatureByUsage<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget))
 		return;
 
 	if (m_tmapCentralInfos.Contains(GroupName))
 		return;
 
 	FGroupCentralInfo Info;
-	Info.Init(GroupName);
+	Info.Init(pGroup);
 	m_tmapCentralInfos.Add(GroupName, Info);
+
+	for (AActor* pActor : pGroup->tsetActors)
+	{
+		USceneComponent* pComp = pActor->GetRootComponent();
+		SLocationHelper Helper;
+		Helper.vLastLocation = pActor->GetActorLocation();
+		Helper.GroupName = GroupName;
+		m_mapLocationHelpers.insert(std::make_pair(pComp, Helper));
+		pComp->TransformUpdated.AddUObject(this, &UGroupCentralTargetMgr::OnActorTransformUpdated);
+	}
 
 	UpdateCentralTarget(GroupName, pManager);
 }
 
 void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager, TSet<AActor*>* ptsetActors)
 {
-	if (!ptsetActors)
+	bool bActorUpdated = (bool)ptsetActors;
+	if (!bActorUpdated)
 	{
 		if (!pManager)
 		{
@@ -122,10 +140,56 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 		FGroupCentralInfo* pInfo = m_tmapCentralInfos.Find(GroupName);
 		if (pInfo)
 		{
+			TSet<AActor*> tsetTempActors;
+			if (bActorUpdated)
+			{
+				tsetTempActors = pInfo->tsetBackActors;
+				pInfo->tsetBackActors.Empty();
+			}
+
 			FVector vCentral(0.0f, 0.0f, 0.0f);
 			for (AActor* pActor : *ptsetActors)
+			{
 				vCentral += pActor->GetActorLocation();
+
+				if (bActorUpdated)
+				{
+					pInfo->tsetBackActors.Add(pActor);
+					USceneComponent* pComp = pActor->GetRootComponent();
+					std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
+					if (iter == m_mapLocationHelpers.end())
+					{
+						SLocationHelper Helper;
+						Helper.vLastLocation = pActor->GetActorLocation();
+						Helper.GroupName = GroupName;
+						m_mapLocationHelpers.insert(std::make_pair(pComp, Helper));
+						pComp->TransformUpdated.AddUObject(this, &UGroupCentralTargetMgr::OnActorTransformUpdated);
+					}
+					else
+						tsetTempActors.Remove(pActor);
+				}
+			}
 			pInfo->vCentralTarget = vCentral / ptsetActors->Num();
+
+			if (bActorUpdated)
+			{
+				for (AActor* pActor : tsetTempActors)
+				{
+					USceneComponent* pComp = pActor->GetRootComponent();
+					std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
+					if (iter != m_mapLocationHelpers.end())
+					{
+						m_mapLocationHelpers.erase(iter);
+						pComp->TransformUpdated.RemoveAll(this);
+					}
+				}
+			}
 		}
 	}
+}
+
+void UGroupCentralTargetMgr::OnActorTransformUpdated(USceneComponent* pUpdatedComponent,
+	EUpdateTransformFlags eUpdateTransformFlags, ETeleportType eTeleport)
+{
+	//FLAGJK
 }

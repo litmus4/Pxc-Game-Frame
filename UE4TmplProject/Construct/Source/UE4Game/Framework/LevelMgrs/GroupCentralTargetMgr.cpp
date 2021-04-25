@@ -5,26 +5,48 @@
 #include "../PxcGameMode.h"
 
 FGroupCentralInfo::FGroupCentralInfo()
-	: fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
+	: bFollowing(false), fFollowPrecision(0.0f), fFollowSpeed(0.0f)
+	, fFollowAccTime(0.0f), fFollowDecTime(0.0f)
+	, fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
 	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr)
 	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear)
-	, pCurDirect(nullptr), pLastDirect(nullptr), fCurMoveTime(0.0f), fDynamicMoveMax(0.0f)
-	, pCurView(nullptr)
+	, fCurFollowSpeed(0.0f), fAcceleration(0.0f), fDeceleration(0.0f)
+	, bMoving(false), pCurDirect(nullptr), pLastDirect(nullptr)
+	, fCurMoveTime(0.0f), fDynamicMoveMax(0.0f), pCurView(nullptr)
 {
 	vCentralTarget = FVector(0.0f, 0.0f, 0.0f);
+	vFollowTarget = FVector(0.0f, 0.0f, 0.0f);
 	vDirectTarget = FVector(0.0f, 0.0f, 0.0f);
 }
 
-void FGroupCentralInfo::Init(const FName& xGroupName)
+void FGroupCentralInfo::Init(const FName& xGroupName, float xFollowPrecision,
+	float xFollowSpeed, float xFollowAccTime, float xFollowDecTime)
 {
 	GroupName = xGroupName;
+	fFollowPrecision = FMath::Max(xFollowPrecision, 0.0f);
+	fFollowSpeed = FMath::Max(xFollowSpeed, 0.0f);
+	fFollowAccTime = FMath::Max(xFollowAccTime, 0.0f);
+	fFollowDecTime = FMath::Max(xFollowDecTime, 0.0f);
+
+	//a=v/t
+	fAcceleration = fFollowSpeed / fFollowAccTime;
+	fDeceleration = fFollowSpeed / fFollowDecTime;
 }
 
-void FGroupCentralInfo::Init(FVirtualGroup* pGroup)
+void FGroupCentralInfo::Init(FVirtualGroup* pGroup, float xFollowPrecision,
+	float xFollowSpeed, float xFollowAccTime, float xFollowDecTime)
 {
 	check(pGroup);
 	GroupName = pGroup->Name;
+	fFollowPrecision = FMath::Max(xFollowPrecision, 0.0f);
+	fFollowSpeed = FMath::Max(xFollowSpeed, 0.0f);
+	fFollowAccTime = FMath::Max(xFollowAccTime, 0.0f);
+	fFollowDecTime = FMath::Max(xFollowDecTime, 0.0f);
+
 	tsetBackActors = pGroup->tsetActors;
+	//a=v/t
+	fAcceleration = fFollowSpeed / fFollowAccTime;
+	fDeceleration = fFollowSpeed / fFollowDecTime;
 }
 
 void FGroupCentralInfo::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
@@ -37,8 +59,10 @@ void FGroupCentralInfo::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
 		pDynamicMover->FloatCurve.GetTimeRange(fTempMin, fDynamicMoveMax);
 	}
 
+	bMoving = true;
 	pCurDirect = nullptr;//默认指向中心
 	pLastDirect = nullptr;
+	vDirectTarget = vFollowTarget;
 }
 
 void FGroupCentralInfo::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT)
@@ -90,7 +114,8 @@ void FGroupCentralInfo::ResetFloatings()
 	tmapActorViewInfos.Empty();
 }
 
-void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName)
+void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fFollowPrecision, float fFollowSpeed,
+	float fFollowAccTime, float fFollowDecTime)
 {
 	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
 	check(pManager);
@@ -102,7 +127,7 @@ void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName)
 		return;
 
 	FGroupCentralInfo Info;
-	Info.Init(pGroup);
+	Info.Init(pGroup, fFollowPrecision, fFollowSpeed, fFollowAccTime, fFollowDecTime);
 	m_tmapCentralInfos.Add(GroupName, Info);
 
 	for (AActor* pActor : pGroup->tsetActors)

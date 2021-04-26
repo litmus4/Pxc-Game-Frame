@@ -38,11 +38,11 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FGroupCentralDirectChangeDelegate, AActor*, pA
 DECLARE_DYNAMIC_DELEGATE_TwoParams(FGroupCentralViewChangeDelegate, AActor*, pActor, AActor*, pViewTarget);
 
 USTRUCT()
-struct FGroupCentralInfo
+struct FGroupCentralData
 {
 	GENERATED_BODY()
 public:
-	FGroupCentralInfo();
+	FGroupCentralData();
 
 	void Init(const FName& xGroupName, float xFollowPrecision,
 		float xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
@@ -130,7 +130,7 @@ private:
 		EUpdateTransformFlags eUpdateTransformFlags, ETeleportType eTeleport);
 
 	UPROPERTY()
-	TMap<FName, FGroupCentralInfo> m_tmapCentralInfos;
+	TMap<FName, FGroupCentralData> m_tmapCentralDatas;
 
 	std::unordered_map<USceneComponent*, SLocationHelper> m_mapLocationHelpers;
 };

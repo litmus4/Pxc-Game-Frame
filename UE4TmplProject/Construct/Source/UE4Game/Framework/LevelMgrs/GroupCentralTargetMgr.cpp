@@ -4,7 +4,7 @@
 #include "Framework/LevelMgrs/GroupCentralTargetMgr.h"
 #include "../PxcGameMode.h"
 
-FGroupCentralInfo::FGroupCentralInfo()
+FGroupCentralData::FGroupCentralData()
 	: bFollowing(false), fFollowPrecision(0.0f), fFollowSpeed(0.0f)
 	, fFollowAccTime(0.0f), fFollowDecTime(0.0f)
 	, fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
@@ -19,7 +19,7 @@ FGroupCentralInfo::FGroupCentralInfo()
 	vDirectTarget = FVector(0.0f, 0.0f, 0.0f);
 }
 
-void FGroupCentralInfo::Init(const FName& xGroupName, float xFollowPrecision,
+void FGroupCentralData::Init(const FName& xGroupName, float xFollowPrecision,
 	float xFollowSpeed, float xFollowAccTime, float xFollowDecTime)
 {
 	GroupName = xGroupName;
@@ -33,7 +33,7 @@ void FGroupCentralInfo::Init(const FName& xGroupName, float xFollowPrecision,
 	fDeceleration = fFollowSpeed / fFollowDecTime;
 }
 
-void FGroupCentralInfo::Init(FVirtualGroup* pGroup, float xFollowPrecision,
+void FGroupCentralData::Init(FVirtualGroup* pGroup, float xFollowPrecision,
 	float xFollowSpeed, float xFollowAccTime, float xFollowDecTime)
 {
 	check(pGroup);
@@ -49,7 +49,7 @@ void FGroupCentralInfo::Init(FVirtualGroup* pGroup, float xFollowPrecision,
 	fDeceleration = fFollowSpeed / fFollowDecTime;
 }
 
-void FGroupCentralInfo::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
+void FGroupCentralData::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
 {
 	fDefaultMoveTime = FMath::Max(fMoveTime, 0.0f);
 	pDefaultDynamicMover = pDynamicMover;
@@ -65,7 +65,7 @@ void FGroupCentralInfo::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
 	vDirectTarget = vFollowTarget;
 }
 
-void FGroupCentralInfo::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT)
+void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT)
 {
 	verify(IsValid(pCentralVT));
 	fDefaultBlendTime = FMath::Max(fBlendTime, 0.0f);
@@ -75,7 +75,7 @@ void FGroupCentralInfo::SetView(float fBlendTime, EViewTargetBlendFunction eBlen
 	pCurView = nullptr;//默认看中心
 }
 
-void FGroupCentralInfo::AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover)
+void FGroupCentralData::AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover)
 {
 	check(IsValid(pActor));
 
@@ -90,7 +90,7 @@ void FGroupCentralInfo::AddActorDirectInfo(AActor* pActor, float fMoveTime, UCur
 	tmapActorDirectInfos.Add(pActor, Info);
 }
 
-void FGroupCentralInfo::AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc)
+void FGroupCentralData::AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc)
 {
 	check(IsValid(pActor));
 	verify(IsValid(pViewTarget));
@@ -102,7 +102,7 @@ void FGroupCentralInfo::AddActorViewInfo(AActor* pActor, AActor* pViewTarget, fl
 	tmapActorViewInfos.Add(pActor, Info);
 }
 
-void FGroupCentralInfo::ResetFloatings()
+void FGroupCentralData::ResetFloatings()
 {
 	fDefaultMoveTime = -1.0f;
 	pDefaultDynamicMover = nullptr;
@@ -123,12 +123,12 @@ void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fFol
 	if (!pGroup || !pGroup->GetFeatureByUsage<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget))
 		return;
 
-	if (m_tmapCentralInfos.Contains(GroupName))
+	if (m_tmapCentralDatas.Contains(GroupName))
 		return;
 
-	FGroupCentralInfo Info;
-	Info.Init(pGroup, fFollowPrecision, fFollowSpeed, fFollowAccTime, fFollowDecTime);
-	m_tmapCentralInfos.Add(GroupName, Info);
+	FGroupCentralData Data;
+	Data.Init(pGroup, fFollowPrecision, fFollowSpeed, fFollowAccTime, fFollowDecTime);
+	m_tmapCentralDatas.Add(GroupName, Data);
 
 	for (AActor* pActor : pGroup->tsetActors)
 	{
@@ -162,14 +162,14 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 
 	if (ptsetActors && ptsetActors->Num() > 0)
 	{
-		FGroupCentralInfo* pInfo = m_tmapCentralInfos.Find(GroupName);
-		if (pInfo)
+		FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+		if (pData)
 		{
 			TSet<AActor*> tsetTempActors;
 			if (bActorUpdated)
 			{
-				tsetTempActors = pInfo->tsetBackActors;
-				pInfo->tsetBackActors.Empty();
+				tsetTempActors = pData->tsetBackActors;
+				pData->tsetBackActors.Empty();
 			}
 
 			FVector vCentral(0.0f, 0.0f, 0.0f);
@@ -179,7 +179,7 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 
 				if (bActorUpdated)
 				{
-					pInfo->tsetBackActors.Add(pActor);
+					pData->tsetBackActors.Add(pActor);
 					USceneComponent* pComp = pActor->GetRootComponent();
 					std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
 					if (iter == m_mapLocationHelpers.end())
@@ -194,7 +194,7 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 						tsetTempActors.Remove(pActor);
 				}
 			}
-			pInfo->vCentralTarget = vCentral / ptsetActors->Num();
+			pData->vCentralTarget = vCentral / ptsetActors->Num();
 
 			if (bActorUpdated)
 			{

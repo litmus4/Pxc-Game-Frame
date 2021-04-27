@@ -5,24 +5,26 @@
 #include "../PxcGameMode.h"
 
 FGroupCentralData::FGroupCentralData()
-	: bFollowing(false), fFollowPrecision(0.0f), fFollowSpeed(0.0f)
-	, fFollowAccTime(0.0f), fFollowDecTime(0.0f)
+	: fRecenterPrecision(0.0f), fFollowPrecision(0.0f)
+	, fFollowSpeed(0.0f), fFollowAccTime(0.0f), fFollowDecTime(0.0f)
 	, fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
 	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr)
 	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear)
-	, fCurFollowSpeed(0.0f), fAcceleration(0.0f), fDeceleration(0.0f)
+	, bFollowing(false), fAcceleration(0.0f), fDeceleration(0.0f)
 	, bMoving(false), pCurDirect(nullptr), pLastDirect(nullptr)
 	, fCurMoveTime(0.0f), fDynamicMoveMax(0.0f), pCurView(nullptr)
 {
 	vCentralTarget = FVector(0.0f, 0.0f, 0.0f);
 	vFollowTarget = FVector(0.0f, 0.0f, 0.0f);
+	vFollowVelocity = FVector(0.0f, 0.0f, 0.0f);
 	vDirectTarget = FVector(0.0f, 0.0f, 0.0f);
 }
 
-void FGroupCentralData::Init(const FName& xGroupName, float xFollowPrecision,
+void FGroupCentralData::Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
 	float xFollowSpeed, float xFollowAccTime, float xFollowDecTime)
 {
 	GroupName = xGroupName;
+	fRecenterPrecision = FMath::Max(xRecenterPrecision, 0.0f);
 	fFollowPrecision = FMath::Max(xFollowPrecision, 0.0f);
 	fFollowSpeed = FMath::Max(xFollowSpeed, 0.0f);
 	fFollowAccTime = FMath::Max(xFollowAccTime, 0.0f);
@@ -33,11 +35,12 @@ void FGroupCentralData::Init(const FName& xGroupName, float xFollowPrecision,
 	fDeceleration = fFollowSpeed / fFollowDecTime;
 }
 
-void FGroupCentralData::Init(FVirtualGroup* pGroup, float xFollowPrecision,
+void FGroupCentralData::Init(FVirtualGroup* pGroup, float xRecenterPrecision, float xFollowPrecision,
 	float xFollowSpeed, float xFollowAccTime, float xFollowDecTime)
 {
 	check(pGroup);
 	GroupName = pGroup->Name;
+	fRecenterPrecision = FMath::Max(xRecenterPrecision, 0.0f);
 	fFollowPrecision = FMath::Max(xFollowPrecision, 0.0f);
 	fFollowSpeed = FMath::Max(xFollowSpeed, 0.0f);
 	fFollowAccTime = FMath::Max(xFollowAccTime, 0.0f);
@@ -114,8 +117,8 @@ void FGroupCentralData::ResetFloatings()
 	tmapActorViewInfos.Empty();
 }
 
-void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fFollowPrecision, float fFollowSpeed,
-	float fFollowAccTime, float fFollowDecTime)
+void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,
+	float fFollowSpeed, float fFollowAccTime, float fFollowDecTime)
 {
 	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
 	check(pManager);
@@ -127,7 +130,7 @@ void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fFol
 		return;
 
 	FGroupCentralData Data;
-	Data.Init(pGroup, fFollowPrecision, fFollowSpeed, fFollowAccTime, fFollowDecTime);
+	Data.Init(pGroup, fRecenterPrecision, fFollowPrecision, fFollowSpeed, fFollowAccTime, fFollowDecTime);
 	m_tmapCentralDatas.Add(GroupName, Data);
 
 	for (AActor* pActor : pGroup->tsetActors)

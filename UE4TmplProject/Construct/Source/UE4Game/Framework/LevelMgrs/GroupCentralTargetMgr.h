@@ -44,9 +44,9 @@ struct FGroupCentralData
 public:
 	FGroupCentralData();
 
-	void Init(const FName& xGroupName, float xFollowPrecision,
+	void Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
 		float xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
-	void Init(FVirtualGroup* pGroup, float xFollowPrecision,
+	void Init(FVirtualGroup* pGroup, float xRecenterPrecision, float xFollowPrecision,
 		float xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
 
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
@@ -57,6 +57,7 @@ public:
 	//FLAGJK
 
 	FName GroupName;
+	float fRecenterPrecision;
 	float fFollowPrecision;
 	float fFollowSpeed;
 	float fFollowAccTime;
@@ -84,8 +85,8 @@ public:
 
 private:
 	bool bFollowing;
-	float fCurFollowSpeed;
 	FVector vFollowTarget;
+	FVector vFollowVelocity;
 	float fAcceleration;
 	float fDeceleration;
 
@@ -112,8 +113,8 @@ class UE4GAME_API UGroupCentralTargetMgr : public UObject
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
-	void SetCentralTarget(const FName& GroupName, float fFollowPrecision, float fFollowSpeed,
-		float fFollowAccTime, float fFollowDecTime);
+	void SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,
+		float fFollowSpeed, float fFollowAccTime, float fFollowDecTime);
 
 	//功能内部调用
 	void UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager = nullptr, TSet<AActor*>* ptsetActors = nullptr);

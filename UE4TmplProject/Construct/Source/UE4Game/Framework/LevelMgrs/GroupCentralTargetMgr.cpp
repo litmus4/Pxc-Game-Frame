@@ -10,7 +10,7 @@ FGroupCentralData::FGroupCentralData()
 	, fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
 	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr)
 	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear)
-	, bFollowing(false), fAcceleration(0.0f), fDeceleration(0.0f)
+	, bFollowing(false), bFollowSpeed(false), fAcceleration(0.0f), fDeceleration(0.0f)
 	, bMoving(false), pCurDirect(nullptr), pLastDirect(nullptr)
 	, fCurMoveTime(0.0f), fDynamicMoveMax(0.0f), pCurView(nullptr)
 {
@@ -50,6 +50,35 @@ void FGroupCentralData::Init(FVirtualGroup* pGroup, float xRecenterPrecision, fl
 	//a=v/t
 	fAcceleration = fFollowSpeed / fFollowAccTime;
 	fDeceleration = fFollowSpeed / fFollowDecTime;
+}
+
+void FGroupCentralData::RefreshFollowState(bool bInit)
+{
+	if (bInit)
+	{
+		vFollowTarget = vCentralTarget;
+		return;
+	}
+
+	if (!bFollowing)
+	{
+		if (FVector::Distance(vCentralTarget, vFollowTarget) >= fFollowPrecision)
+		{
+			bFollowing = true;
+			bFollowSpeed = false;
+		}
+		else
+			return;
+	}
+
+	FVector vDir = (vCentralTarget - vFollowTarget).GetSafeNormal();
+	if (vDir.IsZero()) return;
+	vFollowVelocity = (bFollowSpeed ? vDir * vFollowVelocity.Size() : vDir);
+}
+
+void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
+{
+	//
 }
 
 void FGroupCentralData::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
@@ -149,9 +178,10 @@ void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRec
 void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager, TSet<AActor*>* ptsetActors)
 {
 	bool bActorUpdated = (bool)ptsetActors;
+	bool bInit = (bool)pManager;
 	if (!bActorUpdated)
 	{
-		if (!pManager)
+		if (!bInit)
 		{
 			pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
 			check(pManager);
@@ -198,6 +228,7 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 				}
 			}
 			pData->vCentralTarget = vCentral / ptsetActors->Num();
+			pData->RefreshFollowState(bInit);
 
 			if (bActorUpdated)
 			{
@@ -219,5 +250,14 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 void UGroupCentralTargetMgr::OnActorTransformUpdated(USceneComponent* pUpdatedComponent,
 	EUpdateTransformFlags eUpdateTransformFlags, ETeleportType eTeleport)
 {
-	//FLAGJK
+	std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pUpdatedComponent);
+	if (iter != m_mapLocationHelpers.end())
+	{
+		FGroupCentralData* pData = m_tmapCentralDatas.Find(iter->second.GroupName);
+		if (!pData) return;
+
+		FVector vLoc = pUpdatedComponent->GetComponentLocation();
+		if (FVector::Distance(vLoc, iter->second.vLastLocation) >= pData->fRecenterPrecision)
+			UpdateCentralTarget(iter->second.GroupName);
+	}
 }

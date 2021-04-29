@@ -49,6 +49,9 @@ public:
 	void Init(FVirtualGroup* pGroup, float xRecenterPrecision, float xFollowPrecision,
 		float xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
 
+	void RefreshFollowState(bool bInit);
+	void UpdateFollow(float fDeltaSeconds);
+
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
 	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT);
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
@@ -87,6 +90,7 @@ private:
 	bool bFollowing;
 	FVector vFollowTarget;
 	FVector vFollowVelocity;
+	bool bFollowSpeed;
 	float fAcceleration;
 	float fDeceleration;
 

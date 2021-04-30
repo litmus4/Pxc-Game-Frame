@@ -91,7 +91,7 @@ public:
 	T* GetDerivedPtr()
 	{
 		static_assert(TPointerIsConvertibleFromTo<T, FPointerModel>::Value,
-			"FSharedSignature IsDerived static_assert");
+			"FSharedSignature GetDerivedPtr static_assert");
 		check(IsValid());
 		check(pModel->GetScriptStruct() == T::StaticStruct());
 		return static_cast<T*>(Get());
@@ -149,7 +149,7 @@ public:
 	T* GetDerivedPtr()
 	{
 		static_assert(TPointerIsConvertibleFromTo<T, FPointerModel>::Value,
-			"FSharedSigPure IsDerived static_assert");
+			"FSharedSigPure GetDerivedPtr static_assert");
 		check(IsValid());
 		check(pModel->GetScriptStruct() == T::StaticStruct());
 		return static_cast<T*>(Get());

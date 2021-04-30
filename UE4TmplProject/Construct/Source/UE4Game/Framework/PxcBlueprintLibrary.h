@@ -107,7 +107,7 @@ public:
 	static void ForEachUDTRowValue(UDataTable* pUDT, std::function<void(const T*)>&& fnOnEach)
 	{
 		static_assert(TPointerIsConvertibleFromTo<T, FTableRowBase>::Value,
-			"UPxcBlueprintLibrary ForEachRowValueInUDT static_assert");
+			"UPxcBlueprintLibrary ForEachUDTRowValue static_assert");
 		if (ensureAlways(IsValid(pUDT) && pUDT->GetRowStruct() && pUDT->GetRowStruct()->IsChildOf(T::StaticStruct())))
 		{
 			TMap<FName, uint8*>::TConstIterator Iter(pUDT->GetRowMap().CreateConstIterator());
@@ -116,7 +116,7 @@ public:
 		}
 		else
 		{
-			UE_LOG(LogPxcBPLib, Error, TEXT("ForEachRowValueInUDT: UDT is invalid!"));
+			UE_LOG(LogPxcBPLib, Error, TEXT("ForEachUDTRowValue: UDT is invalid!"));
 			//TODOJK  π”√LogCenter
 		}
 	}
@@ -131,5 +131,5 @@ public:
 #define LOAD_UDT_TO_MAP(UDTPtr, RowClass, Container, IDClass, IDMbr) UPxcBlueprintLibrary::ForEachUDTRowValue<RowClass>(\
 	UDTPtr, [this](const RowClass* pRow) {\
 	check(Container.find(pRow->IDMbr) == Container.end());\
-	Container.insert(std::pair<IDClass, RowClass>pRow->IDMbr, *pRow);\
+	Container.insert(std::pair<IDClass, RowClass>(pRow->IDMbr, *pRow));\
 })

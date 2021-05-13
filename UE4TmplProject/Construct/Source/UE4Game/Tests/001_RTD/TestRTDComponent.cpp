@@ -36,9 +36,10 @@ void UTestRTDComponent::BeginPlay()
 		Param.Owner = GetOwner();
 		Param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		m_pCameraActor = GetWorld()->SpawnActor(m_cCameraActor, &m_transCamera, Param);
-		if (m_pCameraActor)
-			pGroupMgr->AddActorToGroup(m_pCameraActor, TEXT("RTD"));
 	}
+
+	if (GetOwner())
+		pGroupMgr->AddActorToGroup(GetOwner(), TEXT("RTD"));
 }
 
 void UTestRTDComponent::RunCppTestNoParam()

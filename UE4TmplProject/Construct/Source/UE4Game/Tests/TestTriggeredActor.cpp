@@ -4,6 +4,7 @@
 #include "Tests/TestTriggeredActor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "TestRunningComponent.h"
 
 // Sets default values
 ATestTriggeredActor::ATestTriggeredActor()
@@ -40,15 +41,35 @@ void ATestTriggeredActor::BeginPlay()
 void ATestTriggeredActor::OnBoxOverlapped(UPrimitiveComponent* pOverlappedComp, AActor* pOtherActor, UPrimitiveComponent* pOtherComp,
 	int32 iOtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!IsValid(pOtherActor) || !pOtherActor->IsA<APawn>())
+		return;
+
+	UTestRunningComponent* pTestComp = FindComponentByClass<UTestRunningComponent>();
+	if (!IsValid(pTestComp)) return;
+
 	check(pOverlappedComp);
 	FString&& sCompName = pOverlappedComp->GetName();
 	if (sCompName == TEXT("CppBoxComp"))
 	{
-		//
+		if (pTestComp->IsWithParam())
+		{
+			FSharedSignature ParamSig;
+			pTestComp->MakeParameterByOverlappingActor(pOtherActor, ParamSig);
+			pTestComp->RunCppTestWithParam(ParamSig);
+		}
+		else
+			pTestComp->RunCppTestNoParam();
 	}
 	else if (sCompName == TEXT("BpBoxComp"))
 	{
-		//
+		if (pTestComp->IsWithParam())
+		{
+			FSharedSignature ParamSig;
+			pTestComp->MakeParameterByOverlappingActor(pOtherActor, ParamSig);
+			pTestComp->RunBPTestWithParam(ParamSig);
+		}
+		else
+			pTestComp->RunBPTestNoParam();
 	}
 }
 

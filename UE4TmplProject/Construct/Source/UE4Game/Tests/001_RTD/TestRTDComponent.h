@@ -6,6 +6,22 @@
 #include "Tests/TestRunningComponent.h"
 #include "TestRTDComponent.generated.h"
 
+USTRUCT(BlueprintType)
+struct FTestRTDParameter : public FTestParameter
+{
+	GENERATED_BODY()
+public:
+	FTestRTDParameter() : pController(nullptr) {}
+
+	UPROPERTY(BlueprintReadOnly)
+	AController* pController;
+
+	virtual UScriptStruct* GetScriptStruct() const override
+	{
+		return FTestRTDParameter::StaticStruct();
+	}
+};
+
 /**
  * 
  */
@@ -28,9 +44,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FTransform m_transCamera;
+
+	UFUNCTION(BlueprintPure)
+	bool CastParameter(const FSharedSignature& ParamSig, FTestRTDParameter& OutParam);
 	
 public:
-	virtual void RunCppTestNoParam() override;
+	virtual void RunCppTestWithParam(const FSharedSignature& ParamSig) override;
+
+	virtual bool IsWithParam() override { return true; }
+	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig) override;
 
 protected:
 	UPROPERTY()

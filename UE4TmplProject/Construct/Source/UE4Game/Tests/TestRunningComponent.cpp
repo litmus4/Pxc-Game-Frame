@@ -13,7 +13,6 @@ UTestRunningComponent::UTestRunningComponent()
 	// ...
 }
 
-
 // Called when the game starts
 void UTestRunningComponent::BeginPlay()
 {
@@ -23,7 +22,6 @@ void UTestRunningComponent::BeginPlay()
 	
 }
 
-
 // Called every frame
 void UTestRunningComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -32,3 +30,8 @@ void UTestRunningComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	// ...
 }
 
+void UTestRunningComponent::MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig)
+{
+	TSharedPtr<FTestParameter> pParam = MakeShared<FTestParameter>();
+	OutSig = FSharedSignature(*pParam);
+}

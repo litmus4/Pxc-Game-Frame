@@ -42,7 +42,17 @@ void UTestRTDComponent::BeginPlay()
 		pGroupMgr->AddActorToGroup(GetOwner(), TEXT("RTD"));
 }
 
-void UTestRTDComponent::RunCppTestNoParam()
+bool UTestRTDComponent::CastParameter(const FSharedSignature& ParamSig, FTestRTDParameter& OutParam)
+{
+	if (ParamSig.IsDerived<FTestRTDParameter>())
+	{
+		OutParam = *ParamSig.GetDerivedPtr<FTestRTDParameter>();
+		return true;
+	}
+	return false;
+}
+
+void UTestRTDComponent::RunCppTestWithParam(const FSharedSignature& ParamSig)
 {
 	if (!IsValid(m_pSpawnedShowActor) || !IsValid(m_pCameraActor))
 		return;
@@ -55,4 +65,12 @@ void UTestRTDComponent::RunCppTestNoParam()
 	URelativeTimeDilationMgr* pManager = pGM->GetRelativeTimeDilationMgr();
 	check(pManager);
 	//pManager
+}
+
+void UTestRTDComponent::MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig)
+{
+	APawn* pPawn = CastChecked<APawn>(pActor);
+	TSharedPtr<FTestRTDParameter> pParam = MakeShared<FTestRTDParameter>();
+	pParam->pController = pPawn->GetController();
+	OutSig = FSharedSignature(*pParam);
 }

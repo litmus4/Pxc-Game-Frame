@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Tests/TestRunningComponent.h"
+#include <vector>
 #include "TestRTDComponent.generated.h"
 
 USTRUCT(BlueprintType)
@@ -14,7 +15,7 @@ public:
 	FTestRTDParameter() : pController(nullptr) {}
 
 	UPROPERTY(BlueprintReadOnly)
-	AController* pController;
+	APlayerController* pController;
 
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
@@ -45,6 +46,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FTransform m_transCamera;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName m_GroupName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UCurveFloat* m_pCameraDynamic;
+
 	UFUNCTION(BlueprintPure)
 	bool CastParameter(const FSharedSignature& ParamSig, FTestRTDParameter& OutParam);
 	
@@ -55,9 +62,26 @@ public:
 	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig) override;
 
 protected:
-	UPROPERTY()
-	AActor* m_pSpawnedShowActor;
+	UFUNCTION()
+	void OnCameraDilationEnded(bool bCanceled);
+
+	UFUNCTION()
+	void OnGroupDilationEnded(bool bCanceled);
+
+	UFUNCTION()
+	void OnSpawnedDilationEnded(bool bCanceled);
+
+	UFUNCTION()
+	void OnGlobalDilationEnded(bool bCanceled);
+
+	void CheckFinal();
 
 	UPROPERTY()
-	AActor* m_pCameraActor;
+	AActor* m_pSpawnedShowActor = nullptr;
+
+	UPROPERTY()
+	AActor* m_pCameraActor = nullptr;
+
+	std::vector<FTimerHandle> m_vecTimerCache;
+	int32 m_iEndCount = 0;
 };

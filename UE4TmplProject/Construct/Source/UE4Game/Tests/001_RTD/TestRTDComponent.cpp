@@ -64,7 +64,13 @@ void UTestRTDComponent::RunCppTestWithParam(const FSharedSignature& ParamSig)
 	if (CastParameter(ParamSig, Param))
 	{
 		if (IsValid(Param.pController))
+		{
+			APawn* pPawn = Param.pController->GetPawn();
+			if (pPawn)
+				pPawn->DisableInput(Param.pController);
 			Param.pController->SetViewTargetWithBlend(m_pCameraActor, 0.5f);
+			m_pRunningController = Param.pController;
+		}
 	}
 
 	URelativeTimeDilationMgr* pManager = pGM->GetRelativeTimeDilationMgr();
@@ -134,5 +140,24 @@ void UTestRTDComponent::CheckFinal()
 {
 	if (m_iEndCount < 5) return;
 
-	//
+	if (IsValid(m_pRunningController))
+	{
+		APawn* pPawn = m_pRunningController->GetPawn();
+		if (IsValid(pPawn))
+			m_pRunningController->SetViewTargetWithBlend(pPawn, 0.5f);
+	}
+
+	FTimerHandle Timer3;
+	GetWorld()->GetTimerManager().SetTimer(Timer3, FTimerDelegate::CreateLambda([this]() {
+		if (IsValid(m_pRunningController))
+		{
+			APawn* pPawn = m_pRunningController->GetPawn();
+			if (IsValid(pPawn))
+				pPawn->EnableInput(m_pRunningController);
+			m_pRunningController = nullptr;
+		}
+
+		m_vecTimerCache.clear();
+	}), 0.6f, false);
+	m_vecTimerCache.push_back(Timer3);
 }

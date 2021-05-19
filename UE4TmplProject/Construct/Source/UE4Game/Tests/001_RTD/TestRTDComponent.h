@@ -82,6 +82,9 @@ protected:
 	UPROPERTY()
 	AActor* m_pCameraActor = nullptr;
 
+	UPROPERTY()
+	APlayerController* m_pRunningController = nullptr;
+
 	std::vector<FTimerHandle> m_vecTimerCache;
 	int32 m_iEndCount = 0;
 };

@@ -6,6 +6,22 @@
 #include "Framework/LevelMgrs/VirtualGroupMgr.h"
 #include "Framework/LevelMgrs/RelativeTimeDilationMgr.h"
 
+UTestRTDComponent::UTestRTDComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+	m_pCameraDynamic = nullptr;
+
+	m_pSpawnedShowActor = nullptr;
+	m_pCameraActor = nullptr;
+	m_pRunningController = nullptr;
+	m_fCamAngle = -1.0f;
+	m_fCamR = 0.0f;
+	m_fCamAngleOffset = 0.0f;
+	m_fCamAngleSpeed = 0.0f;
+	m_iEndCount = 0;
+}
+
 void UTestRTDComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -79,7 +95,7 @@ void UTestRTDComponent::RunCppTestWithParam(const FSharedSignature& ParamSig)
 	
 	FTimerHandle Timer1;
 	GetWorld()->GetTimerManager().SetTimer(Timer1, FTimerDelegate::CreateLambda([pManager, this]() {
-		//FLAGJK_Test Ïà»ú¹ì¼£
+		CameraOrbit(6.4f);
 
 		FTimeDilationEndDelegate DeleCamera;
 		DeleCamera.BindDynamic(this, &UTestRTDComponent::OnCameraDilationEnded);
@@ -110,6 +126,45 @@ void UTestRTDComponent::MakeParameterByOverlappingActor(AActor* pActor, FSharedS
 	TSharedPtr<FTestRTDParameter> pParam = MakeShared<FTestRTDParameter>();
 	pParam->pController = pPawn->GetController<APlayerController>();
 	OutSig = FSharedSignature(*pParam);
+}
+
+void UTestRTDComponent::TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction)
+{
+	if (m_fCamAngle >= -0.5f)
+	{
+		m_fCamAngle += m_fCamAngleSpeed * fDeltaTime;
+
+		float fFixedCamAngle = m_fCamAngle + m_fCamAngleOffset;
+		fFixedCamAngle = FMath::Fmod(fFixedCamAngle, 360.0f);
+		float fCamRadian = FMath::DegreesToRadians(fFixedCamAngle);
+		FVector vLoc = GetOwner()->GetActorLocation();
+		vLoc.X += m_fCamR * FMath::Cos(fCamRadian);
+		vLoc.Y += m_fCamR * FMath::Sin(fCamRadian);
+		vLoc.Z = m_transCamera.GetLocation().Z;
+		m_pCameraActor->SetActorLocation(vLoc);
+
+		float fFixedYaw = m_fCamAngle + m_transCamera.Rotator().Yaw + 180.0f;
+		fFixedYaw = FMath::Fmod(fFixedYaw, 360.0f) - 180.0f;
+		FRotator rRot(m_transCamera.Rotator().Pitch, fFixedYaw, m_transCamera.Rotator().Roll);
+		m_pCameraActor->SetActorRotation(rRot);
+
+		if (m_fCamAngle >= 360.0f)
+		{
+			m_fCamAngle = -1.0f;
+			m_iEndCount++;
+			CheckFinal();
+		}
+	}
+}
+
+void UTestRTDComponent::CameraOrbit(float fTime)
+{
+	FVector&& vOrbitArm = m_pCameraActor->GetActorLocation() - GetOwner()->GetActorLocation();
+	vOrbitArm.Z = 0.0f;
+	m_fCamR = vOrbitArm.Size();
+	m_fCamAngleOffset = vOrbitArm.Rotation().Yaw;
+	m_fCamAngleSpeed = 360.0f / fTime;
+	m_fCamAngle = 0.0f;
 }
 
 void UTestRTDComponent::OnCameraDilationEnded(bool bCanceled)

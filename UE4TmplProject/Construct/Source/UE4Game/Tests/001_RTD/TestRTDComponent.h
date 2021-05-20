@@ -31,6 +31,9 @@ class UE4GAME_API UTestRTDComponent : public UTestRunningComponent
 {
 	GENERATED_BODY()
 
+public:
+	UTestRTDComponent();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -61,7 +64,11 @@ public:
 	virtual bool IsWithParam() override { return true; }
 	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig) override;
 
+	virtual void TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction) override;
+
 protected:
+	void CameraOrbit(float fTime);
+
 	UFUNCTION()
 	void OnCameraDilationEnded(bool bCanceled);
 
@@ -77,14 +84,18 @@ protected:
 	void CheckFinal();
 
 	UPROPERTY()
-	AActor* m_pSpawnedShowActor = nullptr;
+	AActor* m_pSpawnedShowActor;
 
 	UPROPERTY()
-	AActor* m_pCameraActor = nullptr;
+	AActor* m_pCameraActor;
 
 	UPROPERTY()
-	APlayerController* m_pRunningController = nullptr;
+	APlayerController* m_pRunningController;
 
 	std::vector<FTimerHandle> m_vecTimerCache;
-	int32 m_iEndCount = 0;
+	float m_fCamAngle;
+	float m_fCamR;
+	float m_fCamAngleOffset;
+	float m_fCamAngleSpeed;
+	int32 m_iEndCount;
 };

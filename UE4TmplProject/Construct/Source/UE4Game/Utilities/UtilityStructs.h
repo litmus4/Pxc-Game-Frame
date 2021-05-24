@@ -7,6 +7,30 @@
 #include <set>
 #include "UtilityStructs.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE(FSimpleDynamicDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSimpleDynMultiDelegate);
+
+USTRUCT(BlueprintType)
+struct FSimpleDynamicDelexMono
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSimpleDynamicDelegate DeleCall;
+};
+
+USTRUCT(BlueprintType)
+struct FSimpleDynamicDelexPair
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSimpleDynamicDelegate DeleSucceeded;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSimpleDynamicDelegate DeleFailed;
+};
+
 USTRUCT(BlueprintType)
 struct FIdentifiedLessStack
 {

@@ -74,6 +74,16 @@ public:
 
 	}
 
+	template<class T>
+	T* GetObjectOfActorWithKey(const AActor* pActor, const FString& sKey)
+	{
+		FActorWithKey ActorKey;
+		ActorKey.pActor = pActor;
+		ActorKey.sKey = sKey;
+		UObject** ppObject = m_tmapWaitingActorKeys.Find(ActorKey);
+		return Cast<T>(ppObject ? *ppObject : nullptr);
+	}
+
 	UFUNCTION(BlueprintCallable)
 	void FinishAsyncActorWithKey(AActor* pActor, const FString& sKey);
 

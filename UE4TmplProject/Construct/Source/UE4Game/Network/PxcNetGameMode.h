@@ -17,9 +17,18 @@ class UE4GAME_API APxcNetGameMode : public APxcGameMode
 	GENERATED_BODY()
 	
 public:
-	//FLAGJK_Net
+	UFUNCTION(BlueprintCallable, Category = Networking)
+	void MulticastUniversal(FName TypeName, UObject* pParamObject);
+
+	UFUNCTION(BlueprintCallable, Category = Networking)
+	void MulticastUniversalSync(FName TypeName, float fWaitTime, FSimpleDynamicDelexPair DelexCompleted, UObject* pParamObject);
 
 	FServerSyncInfo* FindServerSyncInfo(EServerSyncType eType);
+
+	bool IsFlowFenceServerReady(const FName& CheckName);
+	void ReadyFlowFence(const FName& CheckName);
+	void ReadyFlowFenceOnServer(const FName& CheckName, float fWaitTime, FSimpleDynamicDelexPair& DelexCompleted);
+	void RemoveFlowFence(const FName& CheckName);
 
 protected:
 	void AddWaitingUsedServerSyncInfo(EServerSyncType eType, float fWaitTime, int32 iAlreadyNum,
@@ -29,4 +38,5 @@ protected:
 	void RemoveServerSyncInfo(EServerSyncType eType);
 
 	TMap<EServerSyncType, FServerSyncInfo> m_tmapServerSyncInfos;
+	TMap<FName, int32> m_tmapFlowFenceSyncCache;
 };

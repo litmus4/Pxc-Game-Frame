@@ -75,7 +75,7 @@ public:
 	}
 
 	template<class T>
-	T* GetObjectOfActorWithKey(const AActor* pActor, const FString& sKey)
+	T* GetObjectOfActorWithKey(AActor* pActor, const FString& sKey)
 	{
 		FActorWithKey ActorKey;
 		ActorKey.pActor = pActor;

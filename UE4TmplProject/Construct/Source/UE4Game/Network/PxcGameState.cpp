@@ -4,6 +4,8 @@
 #include "Network/PxcGameState.h"
 #include "NetBlueprintLibrary.h"
 #include "PrivateDefinitions/NetDef.h"
+#include "Framework/PxcAssistantSubsystem.h"
+#include "FlowFenceActorWithKey.h"
 
 APxcGameState::APxcGameState()
 {
@@ -39,7 +41,10 @@ void APxcGameState::MulticastFinishFlowFence_Implementation(const FString& sKey)
 	if (GetWorld()->GetNetMode() != NM_Client)//服务器会走自己的逻辑，无需调用这里
 		return;
 
-	//FLAGJK_Net
+	UPxcAssistantSubsystem* pSystem = UPxcAssistantSubsystem::GetInstance();
+	UFlowFenceActorWithKey* pObj = pSystem->GetObjectOfActorWithKey<UFlowFenceActorWithKey>(this, sKey);
+	if (IsValid(pObj))
+		pObj->OnCompleteAndFinished();
 }
 
 bool APxcGameState::MulticastFinishFlowFence_Validate(const FString& sKey)

@@ -67,10 +67,9 @@ void UFlowFenceActorWithKey::Activate()
 void UFlowFenceActorWithKey::OnCompleteAndFinished()
 {
 	APxcGameState* pGS = CastChecked<APxcGameState>(GetWorld()->GetGameState());
-	ENetMode eNetMode = GetWorld()->GetNetMode();
 	FString&& sKey = TEXT("FlowFence_") + m_CheckName.ToString();
 
-	if (eNetMode == NM_ListenServer)
+	if (GetWorld()->GetNetMode() == NM_ListenServer)
 	{
 		pGS->MulticastFinishFlowFence(sKey);
 
@@ -87,8 +86,7 @@ void UFlowFenceActorWithKey::OnCompleteAndFinished()
 
 void UFlowFenceActorWithKey::OnCompleteAndTimeOut()
 {
-	ENetMode eNetMode = GetWorld()->GetNetMode();
-	if (eNetMode == NM_ListenServer)
+	if (GetWorld()->GetNetMode() == NM_ListenServer)
 	{
 		APxcNetGameMode* pGM = GetWorld()->GetAuthGameMode<APxcNetGameMode>();
 		check(pGM);

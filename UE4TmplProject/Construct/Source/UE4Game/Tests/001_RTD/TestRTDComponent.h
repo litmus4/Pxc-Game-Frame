@@ -64,10 +64,9 @@ public:
 	virtual bool IsWithParam() override { return true; }
 	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig) override;
 
-	virtual void TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction) override;
-
 protected:
-	void CameraOrbit(float fTime);
+	UFUNCTION()
+	void OnCameraOrbitEnded();
 
 	UFUNCTION()
 	void OnCameraDilationEnded(bool bCanceled);
@@ -93,9 +92,5 @@ protected:
 	APlayerController* m_pRunningController;
 
 	std::vector<FTimerHandle> m_vecTimerCache;
-	float m_fCamAngle;
-	float m_fCamR;
-	float m_fCamAngleOffset;
-	float m_fCamAngleSpeed;
 	int32 m_iEndCount;
 };

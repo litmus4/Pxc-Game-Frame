@@ -110,7 +110,7 @@ void UTestRTDComponent::RunCppTestWithParam(const FSharedSignature& ParamSig)
 
 		FTimeDilationEndDelegate DeleSpawned;
 		DeleSpawned.BindDynamic(this, &UTestRTDComponent::OnSpawnedDilationEnded);
-		pManager->SetActorDilation(m_pSpawnedShowActor, 6.0f, 0.0f, 0.0f, 0.7f, nullptr, 1, false, DeleSpawned);
+		pManager->SetActorDilation(m_pSpawnedShowActor, 6.0f, 0.0f, 0.0f, 0.5f, nullptr, 1, false, DeleSpawned);
 	}), 0.6f, false);
 	m_vecTimerCache.push_back(Timer1);
 
@@ -118,7 +118,7 @@ void UTestRTDComponent::RunCppTestWithParam(const FSharedSignature& ParamSig)
 	GetWorld()->GetTimerManager().SetTimer(Timer2, FTimerDelegate::CreateLambda([pManager, this]() {
 		FTimeDilationEndDelegate DeleGlobal;
 		DeleGlobal.BindDynamic(this, &UTestRTDComponent::OnGlobalDilationEnded);
-		pManager->SetGlobalDilation(3.0f, 0.0f, 0.0f, 0.7f, nullptr, 1, DeleGlobal);
+		pManager->SetGlobalDilation(3.0f, 0.0f, 0.0f, 0.6f, nullptr, 1, DeleGlobal);
 	}), 3.6f, false);
 	m_vecTimerCache.push_back(Timer2);
 }

@@ -57,7 +57,6 @@ public:
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
-	//FLAGJK
 
 	FName GroupName;
 	float fRecenterPrecision;
@@ -93,6 +92,10 @@ private:
 	bool bFollowSpeed;
 	float fAcceleration;
 	float fDeceleration;
+	float fSOfAcc;
+	float fSOfDec;
+	float fAccTemp;
+	float fDecTemp;
 
 	bool bMoving;
 	UPROPERTY()

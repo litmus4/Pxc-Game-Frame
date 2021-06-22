@@ -11,6 +11,7 @@ FGroupCentralData::FGroupCentralData()
 	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr)
 	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear)
 	, bFollowing(false), bFollowSpeed(false), fAcceleration(0.0f), fDeceleration(0.0f)
+	, fSOfAcc(0.0f), fSOfDec(0.0f), fAccTemp(-1.0f), fDecTemp(-1.0f)
 	, bMoving(false), pCurDirect(nullptr), pLastDirect(nullptr)
 	, fCurMoveTime(0.0f), fDynamicMoveMax(0.0f), pCurView(nullptr)
 {
@@ -33,6 +34,9 @@ void FGroupCentralData::Init(const FName& xGroupName, float xRecenterPrecision, 
 	//a=v/t
 	fAcceleration = fFollowSpeed / fFollowAccTime;
 	fDeceleration = fFollowSpeed / fFollowDecTime;
+	//s=1/2*a*t^2
+	fSOfAcc = fAcceleration * fFollowAccTime * fFollowAccTime * 0.5f;
+	fSOfDec = fDeceleration * fFollowDecTime * fFollowDecTime * 0.5f;
 }
 
 void FGroupCentralData::Init(FVirtualGroup* pGroup, float xRecenterPrecision, float xFollowPrecision,
@@ -50,6 +54,9 @@ void FGroupCentralData::Init(FVirtualGroup* pGroup, float xRecenterPrecision, fl
 	//a=v/t
 	fAcceleration = fFollowSpeed / fFollowAccTime;
 	fDeceleration = fFollowSpeed / fFollowDecTime;
+	//s=1/2*a*t^2
+	fSOfAcc = fAcceleration * fFollowAccTime * fFollowAccTime * 0.5f;
+	fSOfDec = fDeceleration * fFollowDecTime * fFollowDecTime * 0.5f;
 }
 
 void FGroupCentralData::RefreshFollowState(bool bInit)
@@ -78,7 +85,32 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 
 void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
 {
-	//
+	if (!bFollowing) return;
+
+	float fCurS = (vCentralTarget - vFollowTarget).Size();
+	if (fCurS <= fSOfDec)
+	{
+		bool bResetVel = false;
+		if (bFollowSpeed)
+		{
+			//a=v/t,s=1/2*a*t^2 => a=v/sqrt((s*2)/a) => a=v^2/(s*2)
+			fDecTemp = vFollowVelocity.Size() * vFollowVelocity.Size() / (fCurS * 2);
+			if (fDecTemp / fDeceleration < 0.1f)
+			{
+				bResetVel = true;
+				fDecTemp = -1.0f;
+			}
+			else if (FMath::Abs(fDecTemp - fDeceleration) < 0.00001)
+				fDecTemp = -1.0f;
+		}
+		else
+			bResetVel = true;
+
+		if (bResetVel)
+		{
+			//FLAGJK
+		}
+	}
 }
 
 void FGroupCentralData::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)

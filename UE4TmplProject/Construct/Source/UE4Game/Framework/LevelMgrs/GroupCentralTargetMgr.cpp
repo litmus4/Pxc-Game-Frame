@@ -15,10 +15,10 @@ FGroupCentralData::FGroupCentralData()
 	, bMoving(false), pCurDirect(nullptr), pLastDirect(nullptr)
 	, fCurMoveTime(0.0f), fDynamicMoveMax(0.0f), pCurView(nullptr)
 {
-	vCentralTarget = FVector(0.0f, 0.0f, 0.0f);
-	vFollowTarget = FVector(0.0f, 0.0f, 0.0f);
-	vFollowVelocity = FVector(0.0f, 0.0f, 0.0f);
-	vDirectTarget = FVector(0.0f, 0.0f, 0.0f);
+	vCentralTarget = FVector::ZeroVector;
+	vFollowTarget = FVector::ZeroVector;
+	vFollowVelocity = FVector::ZeroVector;
+	vDirectTarget = FVector::ZeroVector;
 }
 
 void FGroupCentralData::Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
@@ -67,9 +67,10 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 		return;
 	}
 
+	float fCurS = FVector::Distance(vCentralTarget, vFollowTarget);
 	if (!bFollowing)
 	{
-		if (FVector::Distance(vCentralTarget, vFollowTarget) >= fFollowPrecision)
+		if (fCurS >= fFollowPrecision)
 		{
 			bFollowing = true;
 			bFollowSpeed = false;
@@ -79,28 +80,30 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 	}
 
 	FVector vDir = (vCentralTarget - vFollowTarget).GetSafeNormal();
-	if (vDir.IsZero()) return;
-	vFollowVelocity = (bFollowSpeed ? vDir * vFollowVelocity.Size() : vDir);
-}
+	if (!vDir.IsZero())
+		vFollowVelocity = (bFollowSpeed ? vDir * vFollowVelocity.Size() : vDir);
 
-void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
-{
-	if (!bFollowing) return;
-
-	float fCurS = (vCentralTarget - vFollowTarget).Size();
-	if (fCurS <= fSOfDec)
+	if (fCurS < fFollowPrecision)
+	{
+		bFollowing = false;
+		vFollowVelocity = FVector::ZeroVector;
+		bFollowSpeed = false;
+		fAccTemp = -1.0f;
+		fDecTemp = -1.0f;
+	}
+	else if (fCurS <= fSOfDec)
 	{
 		bool bResetVel = false;
 		if (bFollowSpeed)
 		{
 			//a=v/t,s=1/2*a*t^2 => a=v/sqrt((s*2)/a) => a=v^2/(s*2)
-			fDecTemp = vFollowVelocity.Size() * vFollowVelocity.Size() / (fCurS * 2);
-			if (fDecTemp / fDeceleration < 0.1f)
+			fDecTemp = vFollowVelocity.Size() * vFollowVelocity.Size() / (fCurS * 2.0f);
+			if (fDecTemp / fDeceleration < 0.667f)
 			{
 				bResetVel = true;
 				fDecTemp = -1.0f;
 			}
-			else if (FMath::Abs(fDecTemp - fDeceleration) < 0.00001)
+			else if (FMath::Abs(fDecTemp - fDeceleration) < 0.00001f)
 				fDecTemp = -1.0f;
 		}
 		else
@@ -108,8 +111,43 @@ void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
 
 		if (bResetVel)
 		{
-			//FLAGJK
+			//v=at,s=1/2*a*t^2 => v=a*sqrt((s*2)/a)
+			float fVelocity = fDeceleration * FMath::Sqrt(fCurS * 2.0f / fDeceleration);
+			vFollowVelocity = vFollowVelocity.GetSafeNormal() * fVelocity;
+			bFollowSpeed = true;
 		}
+	}
+	//FLAGJK
+}
+
+void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
+{
+	if (!bFollowing) return;
+
+	float fCurS = FVector::Distance(vCentralTarget, vFollowTarget);
+	if (fCurS < fFollowPrecision)
+	{
+		bFollowing = false;
+		vFollowVelocity = FVector::ZeroVector;
+		bFollowSpeed = false;
+		fAccTemp = -1.0f;
+		fDecTemp = -1.0f;
+	}
+	else if (fCurS <= fSOfDec)
+	{
+		float fDec = (fDecTemp >= -0.5f ? fDecTemp : fDeceleration);
+		//s=v0*t-1/2*a*t^2
+		float fDeltaS = FMath::Max(vFollowVelocity.Size() * fDeltaSeconds - fDec * fDeltaSeconds * fDeltaSeconds * 0.5f, 0.0f);
+		vFollowTarget += vFollowVelocity.GetSafeNormal() * fDeltaS;
+		//v=v0-a*t
+		float fVelocity = FMath::Max(vFollowVelocity.Size() - fDec * fDeltaSeconds, 0.0f);
+		if (fVelocity < 0.00001f)
+		{
+			vFollowVelocity = vFollowVelocity.GetSafeNormal();
+			bFollowSpeed = false;
+		}
+		else
+			vFollowVelocity = vFollowVelocity.GetSafeNormal() * fVelocity;
 	}
 }
 

@@ -90,6 +90,7 @@ private:
 	FVector vFollowTarget;
 	FVector vFollowVelocity;
 	bool bFollowSpeed;
+	bool bAccelerating;
 	float fAcceleration;
 	float fDeceleration;
 	float fSOfAcc;

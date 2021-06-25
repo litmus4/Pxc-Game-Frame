@@ -90,11 +90,14 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 		bFollowing = false;
 		vFollowVelocity = FVector::ZeroVector;
 		bFollowSpeed = false;
+		bAccelerating = false;
 		fAccTemp = -1.0f;
 		fDecTemp = -1.0f;
 	}
 	else if (fDistance <= fSOfDec)
 	{
+		bAccelerating = false;
+
 		bool bResetVel = false;
 		if (bFollowSpeed)
 		{
@@ -114,7 +117,7 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 		if (bResetVel)
 		{
 			//v=at,s=1/2*a*t^2 => v=a*sqrt((s*2)/a)
-			float fVelocity = fDeceleration * FMath::Sqrt(fDistance * 2.0f / fDeceleration);
+			float fVelocity = FMath::Min(fDeceleration * FMath::Sqrt(fDistance * 2.0f / fDeceleration), fFollowSpeed);
 			vFollowVelocity = vFollowVelocity.GetSafeNormal() * fVelocity;
 			bFollowSpeed = true;
 		}
@@ -125,13 +128,14 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 		//t=(v-v0)/a,s=v0*t+1/2*a*t^2 当前速度加速到最大所需位移
 		float fTime = (fFollowSpeed - fVelocity) / fAcceleration;
 		float fCurS = fVelocity * fTime + fAcceleration * fTime * fTime * 0.5f;
-		if (fDistance < fCurS + fSOfDec)
+		if (fCurS > fDistance - fSOfDec)
 		{
 			fCurS = fDistance - fSOfDec;
 			//a=(v-v0)/t,s=v0*t+1/2*a*t^2 => 解一元二次方程t=(-v0+sqrt(v0^2+a*s*2))/a =>
 			//a=(v-v0)*a/(sqrt(v0^2+a*s*2)-v0) => v-v0=sqrt(v0^2+a*s*2)-v0 => a=(v^2-v0^2)/(s*2)
 			fAccTemp = (fFollowSpeed * fFollowSpeed - fVelocity * fVelocity) / (fCurS * 2.0f);
-			//FLAGJK
+			if (FMath::Abs(fAccTemp - fAcceleration) < 0.00001f)
+				fAccTemp = -1.0f;
 		}
 	}
 }
@@ -146,14 +150,18 @@ void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
 		bFollowing = false;
 		vFollowVelocity = FVector::ZeroVector;
 		bFollowSpeed = false;
+		bAccelerating = false;
 		fAccTemp = -1.0f;
 		fDecTemp = -1.0f;
 	}
 	else if (fDistance <= fSOfDec)
 	{
+		bAccelerating = false;
+
 		float fDec = (fDecTemp >= -0.5f ? fDecTemp : fDeceleration);
 		//s=v0*t-1/2*a*t^2
-		float fDeltaS = FMath::Max(vFollowVelocity.Size() * fDeltaSeconds - fDec * fDeltaSeconds * fDeltaSeconds * 0.5f, 0.0f);
+		float fDeltaS = vFollowVelocity.Size() * fDeltaSeconds - fDec * fDeltaSeconds * fDeltaSeconds * 0.5f;
+		fDeltaS = FMath::Clamp(fDeltaS, 0.0f, fDistance);
 		vFollowTarget += vFollowVelocity.GetSafeNormal() * fDeltaS;
 		//v=v0-a*t
 		float fVelocity = FMath::Max(vFollowVelocity.Size() - fDec * fDeltaSeconds, 0.0f);
@@ -164,6 +172,62 @@ void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
 		}
 		else
 			vFollowVelocity = vFollowVelocity.GetSafeNormal() * fVelocity;
+	}
+	else if (bAccelerating)
+	{
+		float fAcc = (fAccTemp >= -0.5f ? fAccTemp : fAcceleration);
+		float fVelocity = (bFollowSpeed ? vFollowVelocity.Size() : 0.0f);
+		//t=(v-v0)/a,s=v0*t+1/2*a*t^2 当前速度加速到最大所需位移
+		float fTime = (fFollowSpeed - fVelocity) / fAcc;
+		float fCurS = fVelocity * fTime + fAcc * fTime * fTime * 0.5f;
+		//s=v0*t+1/2*a*t^2
+		float fDeltaS = fVelocity * fDeltaSeconds + fAcc * fDeltaSeconds * fDeltaSeconds * 0.5f;
+		if (fDeltaS > fCurS)//超过了加速段
+		{
+			fTime = FMath::Max(fDeltaSeconds - fTime, 0.0f);
+			if (fDistance > fCurS + fSOfDec)//总距离包含了完整三段
+			{
+				fDeltaS = fDistance - fCurS - fSOfDec;//fDeltaS暂时设为匀速段全位移
+				if (fTime > fDeltaS / fFollowSpeed)//超过了匀速段
+				{
+					fTime = FMath::Max(fTime - fDeltaS / fFollowSpeed, 0.0f);
+					if (fTime > 0.0f)
+					{
+						//计算减速段 s=v0*t-1/2*a*t^2
+						float fCurDecS = fFollowSpeed * fTime - fDeceleration * fTime * fTime * 0.5f;
+						fCurDecS = FMath::Clamp(fCurDecS, 0.0f, fSOfDec);
+						fDeltaS = fCurS + fDeltaS + fCurDecS;
+						//v=v0-a*t
+						fVelocity = FMath::Max(fFollowSpeed - fDeceleration * fTime, 0.0f);
+					}
+					else
+					{
+						fDeltaS = fCurS + fDeltaS;
+						fVelocity = fFollowSpeed;
+					}
+				}
+				else//到达匀速段
+				{
+					fDeltaS = fCurS + fFollowSpeed * fTime;
+					fVelocity = fFollowSpeed;
+				}
+			}
+			else//总距离只包含加减速两段
+			{
+				if (fTime > 0)
+				{
+					//计算减速段 s=v0*t-1/2*a*t^2
+					fDeltaS = fFollowSpeed * fTime - fDeceleration * fTime * fTime * 0.5f;
+					fDeltaS = FMath::Clamp(fDeltaS, 0.0f, fSOfDec);
+					fDeltaS = fCurS + fDeltaS;
+					//v=v0-a*t
+					fVelocity = FMath::Max(fFollowSpeed - fDeceleration * fTime, 0.0f);
+				}
+				else
+					fVelocity = fFollowSpeed;
+			}
+		}
+		//FLAGJK
 	}
 }
 

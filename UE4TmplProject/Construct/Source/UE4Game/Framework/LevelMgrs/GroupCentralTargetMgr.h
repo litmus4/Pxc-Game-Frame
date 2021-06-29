@@ -51,6 +51,7 @@ public:
 
 	void RefreshFollowState(bool bInit);
 	void UpdateFollow(float fDeltaSeconds);
+	//FLAGJK
 
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
 	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT);

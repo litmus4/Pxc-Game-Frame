@@ -376,11 +376,17 @@ void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRec
 	for (AActor* pActor : pGroup->tsetActors)
 	{
 		USceneComponent* pComp = pActor->GetRootComponent();
-		SLocationHelper Helper;
-		Helper.vLastLocation = pActor->GetActorLocation();
-		Helper.GroupName = GroupName;
-		m_mapLocationHelpers.insert(std::make_pair(pComp, Helper));
-		pComp->TransformUpdated.AddUObject(this, &UGroupCentralTargetMgr::OnActorTransformUpdated);
+		std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
+		if (iter == m_mapLocationHelpers.end())
+		{
+			SLocationHelper Helper;
+			Helper.vLastLocation = pActor->GetActorLocation();
+			Helper.tsetGroupNames.Add(GroupName);
+			m_mapLocationHelpers.insert(std::make_pair(pComp, Helper));
+			pComp->TransformUpdated.AddUObject(this, &UGroupCentralTargetMgr::OnActorTransformUpdated);
+		}
+		else
+			iter->second.tsetGroupNames.Add(GroupName);
 	}
 
 	UpdateCentralTarget(GroupName, pManager);
@@ -430,12 +436,15 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 					{
 						SLocationHelper Helper;
 						Helper.vLastLocation = pActor->GetActorLocation();
-						Helper.GroupName = GroupName;
+						Helper.tsetGroupNames.Add(GroupName);
 						m_mapLocationHelpers.insert(std::make_pair(pComp, Helper));
 						pComp->TransformUpdated.AddUObject(this, &UGroupCentralTargetMgr::OnActorTransformUpdated);
 					}
 					else
+					{
+						iter->second.tsetGroupNames.Add(GroupName);
 						tsetTempActors.Remove(pActor);
+					}
 				}
 			}
 			pData->vCentralTarget = vCentral / ptsetActors->Num();
@@ -447,7 +456,11 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 				{
 					USceneComponent* pComp = pActor->GetRootComponent();
 					std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
-					if (iter != m_mapLocationHelpers.end())
+					if (iter == m_mapLocationHelpers.end())
+						continue;
+					
+					iter->second.tsetGroupNames.Remove(GroupName);
+					if (iter->second.tsetGroupNames.Num() == 0)
 					{
 						m_mapLocationHelpers.erase(iter);
 						pComp->TransformUpdated.RemoveAll(this);
@@ -464,11 +477,14 @@ void UGroupCentralTargetMgr::OnActorTransformUpdated(USceneComponent* pUpdatedCo
 	std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pUpdatedComponent);
 	if (iter != m_mapLocationHelpers.end())
 	{
-		FGroupCentralData* pData = m_tmapCentralDatas.Find(iter->second.GroupName);
-		if (!pData) return;
-
 		FVector vLoc = pUpdatedComponent->GetComponentLocation();
-		if (FVector::Distance(vLoc, iter->second.vLastLocation) >= pData->fRecenterPrecision)
-			UpdateCentralTarget(iter->second.GroupName);
+		float fDis = FVector::Distance(vLoc, iter->second.vLastLocation);
+		for (FName& GroupName : iter->second.tsetGroupNames)
+		{
+			FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+			if (!pData) continue;
+			if (fDis >= pData->fRecenterPrecision)
+				UpdateCentralTarget(GroupName);
+		}
 	}
 }

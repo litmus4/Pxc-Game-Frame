@@ -132,7 +132,7 @@ private:
 	struct SLocationHelper
 	{
 		FVector vLastLocation;
-		FName GroupName;
+		TSet<FName> tsetGroupNames;
 	};
 
 private:

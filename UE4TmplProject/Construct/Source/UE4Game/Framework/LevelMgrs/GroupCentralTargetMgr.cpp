@@ -357,6 +357,18 @@ void FGroupCentralData::ResetFloatings()
 	tmapActorViewInfos.Empty();
 }
 
+void FGroupCentralData::FlushEnd()
+{
+	if (bMoving)
+		DeleDirectChanged.ExecuteIfBound(pCurDirect);
+
+	if (false/*FLAGJK ÕýÔÚViewTargetBlending*/)
+	{
+		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
+		DeleViewChanged.ExecuteIfBound(pCurView, (pInfo ? pInfo->pViewTarget : nullptr));
+	}
+}
+
 void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,
 	float fFollowSpeed, float fFollowAccTime, float fFollowDecTime)
 {
@@ -469,6 +481,28 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 			}
 		}
 	}
+}
+
+void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName, bool bDisableCallback)
+{
+	//FLAGJK
+}
+
+void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)
+{
+	for (auto& Pair : m_tmapCentralDatas)
+	{
+		FGroupCentralData& Data = Pair.Value;
+		Data.UpdateFollow(fDeltaSeconds);
+
+		//
+	}
+}
+
+void UGroupCentralTargetMgr::Release()
+{
+	for (auto& Pair : m_tmapCentralDatas)
+		Pair.Value.FlushEnd();
 }
 
 void UGroupCentralTargetMgr::OnActorTransformUpdated(USceneComponent* pUpdatedComponent,

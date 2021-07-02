@@ -51,13 +51,14 @@ public:
 
 	void RefreshFollowState(bool bInit);
 	void UpdateFollow(float fDeltaSeconds);
-	//FLAGJK
+	FORCEINLINE FVector GetFollowTarget() { return vFollowTarget; }
 
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
 	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT);
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
+	void FlushEnd();
 
 	FName GroupName;
 	float fRecenterPrecision;
@@ -127,6 +128,12 @@ public:
 
 	//功能内部调用
 	void UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager = nullptr, TSet<AActor*>* ptsetActors = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void ResetCentralTarget(const FName& GroupName, bool bDisableCallback = false);
+
+	void Tick(float fDeltaSeconds);
+	void Release();
 
 private:
 	struct SLocationHelper

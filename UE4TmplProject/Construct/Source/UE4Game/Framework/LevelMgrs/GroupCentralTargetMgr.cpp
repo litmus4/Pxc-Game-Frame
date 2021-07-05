@@ -9,7 +9,7 @@ FGroupCentralData::FGroupCentralData()
 	, fFollowSpeed(0.0f), fFollowAccTime(0.0f), fFollowDecTime(0.0f)
 	, fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
 	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr)
-	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear)
+	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear), bToBeResetted(false)
 	, bFollowing(false), bFollowSpeed(false), bAccelerating(false)
 	, fAcceleration(0.0f), fDeceleration(0.0f)
 	, fSOfAcc(0.0f), fSOfDec(0.0f), fAccTemp(-1.0f), fDecTemp(-1.0f)
@@ -357,6 +357,11 @@ void FGroupCentralData::ResetFloatings()
 	tmapActorViewInfos.Empty();
 }
 
+bool FGroupCentralData::IsFloating()
+{
+	return (bMoving/* || ÕýÔÚViewTargetBlending*/);
+}
+
 void FGroupCentralData::FlushEnd()
 {
 	if (bMoving)
@@ -483,8 +488,19 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 	}
 }
 
-void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName, bool bDisableCallback)
+void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName)
 {
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || pData->bToBeResetted)
+		return;
+
+	if (pData->IsFloating())
+	{
+		pData->bToBeResetted;
+		return;
+	}
+
+	pData->ResetFloatings();
 	//FLAGJK
 }
 

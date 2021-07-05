@@ -58,6 +58,7 @@ public:
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
+	bool IsFloating();
 	void FlushEnd();
 
 	FName GroupName;
@@ -86,6 +87,7 @@ public:
 	UPROPERTY()
 	TSet<AActor*> tsetBackActors;
 	FVector vCentralTarget;
+	bool bToBeResetted;
 
 private:
 	bool bFollowing;
@@ -130,7 +132,7 @@ public:
 	void UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager = nullptr, TSet<AActor*>* ptsetActors = nullptr);
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
-	void ResetCentralTarget(const FName& GroupName, bool bDisableCallback = false);
+	void ResetCentralTarget(const FName& GroupName);
 
 	void Tick(float fDeltaSeconds);
 	void Release();

@@ -20,6 +20,7 @@ FGroupCentralData::FGroupCentralData()
 	vFollowTarget = FVector::ZeroVector;
 	vFollowVelocity = FVector::ZeroVector;
 	vDirectTarget = FVector::ZeroVector;
+	vLastSnapShot = FVector::ZeroVector;
 }
 
 void FGroupCentralData::Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
@@ -362,6 +363,34 @@ bool FGroupCentralData::IsFloating()
 	return (bMoving/* || ÕýÔÚViewTargetBlending*/);
 }
 
+void FGroupCentralData::UpdateDirect(float fDeltaSeconds)
+{
+	if (!bMoving) return;
+
+	float fMoveTime = fDefaultMoveTime;
+	UCurveFloat* pDynamicMover = nullptr;
+	if (pCurDirect)
+	{
+		FGrpCtrActorDirectInfo* pInfo = tmapActorDirectInfos.Find(pCurDirect);
+		check(pInfo);
+		fMoveTime = (IsValid(pInfo->pDynamicMover) ? pInfo->fDynamicMoveTime : pInfo->fMoveTime);
+		pDynamicMover = (IsValid(pInfo->pDynamicMover) ? pInfo->pDynamicMover : nullptr);
+	}
+	else if (IsValid(pDefaultDynamicMover))
+	{
+		fMoveTime = fDynamicMoveMax;
+		pDynamicMover = pDefaultDynamicMover;
+	}
+
+	fCurMoveTime += fDeltaSeconds;
+
+	if (fCurMoveTime >= fMoveTime)
+	{
+		//
+	}
+	//FLAGJK
+}
+
 void FGroupCentralData::FlushEnd()
 {
 	if (bMoving)
@@ -501,7 +530,7 @@ void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName)
 	}
 
 	pData->ResetFloatings();
-	//FLAGJK
+	//
 }
 
 void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)

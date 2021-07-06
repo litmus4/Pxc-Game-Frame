@@ -59,6 +59,7 @@ public:
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
 	bool IsFloating();
+	void UpdateDirect(float fDeltaSeconds);
 	void FlushEnd();
 
 	FName GroupName;
@@ -107,6 +108,7 @@ private:
 	AActor* pCurDirect;//为空表示当前指向中心
 	UPROPERTY()
 	AActor* pLastDirect;
+	FVector vLastSnapShot;
 	FVector vDirectTarget;
 	float fCurMoveTime;
 	float fDynamicMoveMax;

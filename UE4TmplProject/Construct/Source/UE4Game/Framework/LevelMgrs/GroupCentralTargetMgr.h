@@ -58,9 +58,10 @@ public:
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
-	bool IsFloating();
+	bool IsFloating(bool bMovingOrBlending = true);
 	void UpdateDirect(float fDeltaSeconds);
 	void FlushEnd();
+	//FLAGJK
 
 	FName GroupName;
 	float fRecenterPrecision;
@@ -91,6 +92,8 @@ public:
 	bool bToBeResetted;
 
 private:
+	void DetermineDirectTarget(FVector* pvIn = nullptr);
+
 	bool bFollowing;
 	FVector vFollowTarget;
 	FVector vFollowVelocity;
@@ -106,9 +109,9 @@ private:
 	bool bMoving;
 	UPROPERTY()
 	AActor* pCurDirect;//为空表示当前指向中心
-	UPROPERTY()
-	AActor* pLastDirect;
-	FVector vLastSnapShot;
+	//UPROPERTY()
+	//AActor* pLastDirect;
+	//FVector vLastSnapShot;
 	FVector vDirectTarget;
 	float fCurMoveTime;
 	float fDynamicMoveMax;

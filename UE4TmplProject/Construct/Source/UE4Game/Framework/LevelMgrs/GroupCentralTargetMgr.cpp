@@ -13,14 +13,13 @@ FGroupCentralData::FGroupCentralData()
 	, bFollowing(false), bFollowSpeed(false), bAccelerating(false)
 	, fAcceleration(0.0f), fDeceleration(0.0f)
 	, fSOfAcc(0.0f), fSOfDec(0.0f), fAccTemp(-1.0f), fDecTemp(-1.0f)
-	, bMoving(false), pCurDirect(nullptr), pLastDirect(nullptr)
-	, fCurMoveTime(0.0f), fDynamicMoveMax(0.0f), pCurView(nullptr)
+	, bMoving(false), pCurDirect(nullptr), fCurMoveTime(0.0f), fDynamicMoveMax(0.0f)
+	, pCurView(nullptr)
 {
 	vCentralTarget = FVector::ZeroVector;
 	vFollowTarget = FVector::ZeroVector;
 	vFollowVelocity = FVector::ZeroVector;
 	vDirectTarget = FVector::ZeroVector;
-	vLastSnapShot = FVector::ZeroVector;
 }
 
 void FGroupCentralData::Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
@@ -305,7 +304,6 @@ void FGroupCentralData::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
 	}
 
 	pCurDirect = nullptr;//默认指向中心
-	pLastDirect = nullptr;
 	vDirectTarget = vFollowTarget;
 }
 
@@ -358,14 +356,22 @@ void FGroupCentralData::ResetFloatings()
 	tmapActorViewInfos.Empty();
 }
 
-bool FGroupCentralData::IsFloating()
+bool FGroupCentralData::IsFloating(bool bMovingOrBlending)
 {
-	return (bMoving/* || 正在ViewTargetBlending*/);
+	if (bMovingOrBlending)
+		return (bMoving/* || 正在ViewTargetBlending*/);
+	return (fDefaultMoveTime >= -0.5f || fDefaultBlendTime >= -0.5f);
 }
 
 void FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 {
-	if (!bMoving) return;
+	if (fDefaultMoveTime < -0.5f) return;
+
+	if (!bMoving)
+	{
+		DetermineDirectTarget();
+		return;
+	}
 
 	float fMoveTime = fDefaultMoveTime;
 	UCurveFloat* pDynamicMover = nullptr;
@@ -382,13 +388,29 @@ void FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 		pDynamicMover = pDefaultDynamicMover;
 	}
 
+	float fLastMoveTime = fCurMoveTime;
 	fCurMoveTime += fDeltaSeconds;
-
-	if (fCurMoveTime >= fMoveTime)
+	if (fCurMoveTime < fMoveTime)
 	{
-		//
+		float fRatio = 0.0f;
+		if (pDynamicMover)
+		{
+			float fCurValue = FMath::Clamp(pDynamicMover->GetFloatValue(FMath::Fmod(fCurMoveTime, fMoveTime)), 0.0f, 1.0f);
+			float fLastValue = FMath::Clamp(pDynamicMover->GetFloatValue(FMath::Fmod(fLastMoveTime, fMoveTime)), 0.0f, 1.0f);
+			fRatio = (fCurValue - fLastValue) / (1.0f - fLastValue);
+		}
+		else
+			fRatio = fDeltaSeconds / (fMoveTime - fLastMoveTime);
+
+		FVector vTarget;
+		DetermineDirectTarget(&vTarget);
+		vDirectTarget = FMath::Lerp(vDirectTarget, vTarget, fRatio);
 	}
-	//FLAGJK
+	else
+	{
+		DetermineDirectTarget();
+		bMoving = false;
+	}
 }
 
 void FGroupCentralData::FlushEnd()
@@ -401,6 +423,18 @@ void FGroupCentralData::FlushEnd()
 		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
 		DeleViewChanged.ExecuteIfBound(pCurView, (pInfo ? pInfo->pViewTarget : nullptr));
 	}
+}
+
+void FGroupCentralData::DetermineDirectTarget(FVector* pvIn)
+{
+	FVector& vTarget = (pvIn ? *pvIn : vDirectTarget);
+	if (pCurDirect)
+	{
+		if (ensure(IsValid(pCurDirect)))
+			vTarget = pCurDirect->GetActorLocation();
+	}
+	else
+		vTarget = vFollowTarget;
 }
 
 void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,

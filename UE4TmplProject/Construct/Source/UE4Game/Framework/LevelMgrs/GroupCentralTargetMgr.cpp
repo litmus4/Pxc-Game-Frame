@@ -363,14 +363,27 @@ bool FGroupCentralData::IsFloating(bool bMovingOrBlending)
 	return (fDefaultMoveTime >= -0.5f || fDefaultBlendTime >= -0.5f);
 }
 
-void FGroupCentralData::UpdateDirect(float fDeltaSeconds)
+void FGroupCentralData::MoveDirect(AActor* pActor)
 {
-	if (fDefaultMoveTime < -0.5f) return;
+	if (pActor == pCurDirect || bMoving)
+		return;
+
+	bMoving = true;
+	if (pActor && tmapActorDirectInfos.Contains(pActor))
+		pCurDirect = pActor;
+	else
+		pCurDirect = nullptr;
+	fCurMoveTime = 0.0f;
+}
+
+int32 FGroupCentralData::UpdateDirect(float fDeltaSeconds)
+{
+	if (fDefaultMoveTime < -0.5f) return -1;
 
 	if (!bMoving)
 	{
 		DetermineDirectTarget();
-		return;
+		return 0;
 	}
 
 	float fMoveTime = fDefaultMoveTime;
@@ -410,7 +423,10 @@ void FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 	{
 		DetermineDirectTarget();
 		bMoving = false;
+		DeleDirectChanged.ExecuteIfBound(pCurDirect);
+		return 2;
 	}
+	return 1;
 }
 
 void FGroupCentralData::FlushEnd()
@@ -418,7 +434,7 @@ void FGroupCentralData::FlushEnd()
 	if (bMoving)
 		DeleDirectChanged.ExecuteIfBound(pCurDirect);
 
-	if (false/*FLAGJK 正在ViewTargetBlending*/)
+	if (false/*FLAGJK 正在ViewTargetBlending(此页搜索其他)*/)
 	{
 		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
 		DeleViewChanged.ExecuteIfBound(pCurView, (pInfo ? pInfo->pViewTarget : nullptr));
@@ -559,12 +575,26 @@ void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName)
 
 	if (pData->IsFloating())
 	{
-		pData->bToBeResetted;
+		pData->bToBeResetted = true;
 		return;
 	}
 
 	pData->ResetFloatings();
-	//
+	for (AActor* pActor : pData->tsetBackActors)
+	{
+		USceneComponent* pComp = pActor->GetRootComponent();
+		std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
+		if (iter == m_mapLocationHelpers.end())
+			continue;
+
+		iter->second.tsetGroupNames.Remove(GroupName);
+		if (iter->second.tsetGroupNames.Num() == 0)
+		{
+			m_mapLocationHelpers.erase(iter);
+			pComp->TransformUpdated.RemoveAll(this);
+		}
+	}
+	m_tmapCentralDatas.Remove(GroupName);
 }
 
 void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)
@@ -573,6 +603,16 @@ void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)
 	{
 		FGroupCentralData& Data = Pair.Value;
 		Data.UpdateFollow(fDeltaSeconds);
+
+		if (Data.UpdateDirect(fDeltaSeconds) == 2)
+		{
+			if (Data.bToBeResetted && !Data.IsFloating())
+			{
+				Data.bToBeResetted = false;
+				ResetCentralTarget(Pair.Key);
+				continue;
+			}
+		}
 
 		//
 	}

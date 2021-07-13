@@ -24,7 +24,7 @@ public:
 		{
 			std::string& strKey = m_lisRepFlagServerStack.back();
 			if (m_mapRepSyncFlags.find(strKey) != m_mapRepSyncFlags.end())
-				Cast<T>(this)->ClientRegisterReplicatedSync(strKey, m_mapRepSyncFlags[strKey]);
+				Cast<T>(this)->ClientRegisterReplicatedSync(FString(strKey.c_str()), m_mapRepSyncFlags[strKey]);
 		}
 	}
 
@@ -62,3 +62,18 @@ protected:
 	std::list<std::string> m_lisRepFlagServerStack;
 	std::list<SRepSyncNotify> m_lisRepSyncNotifyQueue;
 };
+
+//这个宏无法使用，直接复制吧。
+#define DECLARE_REGREPSYNC_RPC UFUNCTION(Client, Reliable)\
+	void ClientRegisterReplicatedSync(const FString& sFeatureKey, uint32 uFlags);
+
+#define DEFINE_REGREPSYNC_RPC(ClassName) \
+	void ClassName::ClientRegisterReplicatedSync_Implementation(const FString& sFeatureKey, uint32 uFlags)\
+	{\
+		std::string strKey = TCHAR_TO_ANSI(*sFeatureKey);\
+		std::map<std::string, uint32>::iterator iter = m_mapRepSyncFlags.find(strKey);\
+		if (iter != m_mapRepSyncFlags.end())\
+			iter->second |= uFlags;\
+		else\
+			m_mapRepSyncFlags.insert(std::make_pair(strKey, 0));\
+	}

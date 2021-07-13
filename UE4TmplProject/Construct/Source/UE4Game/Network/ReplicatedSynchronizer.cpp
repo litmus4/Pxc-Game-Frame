@@ -53,6 +53,7 @@ bool CReplicatedSynchronizer::TryReplicatedSyncNotifyQueuing(const std::string& 
 			else
 				itQueue++;
 		}
+		fnNotify();
 		m_mapRepSyncFlags.erase(strFeatureKey);
 	}
 	return false;

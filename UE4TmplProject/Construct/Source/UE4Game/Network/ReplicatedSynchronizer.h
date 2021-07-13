@@ -24,7 +24,7 @@ public:
 		{
 			std::string& strKey = m_lisRepFlagServerStack.back();
 			if (m_mapRepSyncFlags.find(strKey) != m_mapRepSyncFlags.end())
-				Cast<T>(this)->ClientRegisterReplicatedSync(FString(strKey.c_str()), m_mapRepSyncFlags[strKey]);
+				static_cast<T*>(this)->ClientRegisterReplicatedSync(FString(strKey.c_str()), m_mapRepSyncFlags[strKey]);
 		}
 	}
 

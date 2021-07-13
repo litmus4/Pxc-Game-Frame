@@ -369,10 +369,7 @@ void FGroupCentralData::MoveDirect(AActor* pActor)
 		return;
 
 	bMoving = true;
-	if (pActor && tmapActorDirectInfos.Contains(pActor))
-		pCurDirect = pActor;
-	else
-		pCurDirect = nullptr;
+	pCurDirect = pActor;
 	fCurMoveTime = 0.0f;
 }
 
@@ -388,14 +385,18 @@ int32 FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 
 	float fMoveTime = fDefaultMoveTime;
 	UCurveFloat* pDynamicMover = nullptr;
+	bool bDefault = true;
 	if (pCurDirect)
 	{
 		FGrpCtrActorDirectInfo* pInfo = tmapActorDirectInfos.Find(pCurDirect);
-		check(pInfo);
-		fMoveTime = (IsValid(pInfo->pDynamicMover) ? pInfo->fDynamicMoveTime : pInfo->fMoveTime);
-		pDynamicMover = (IsValid(pInfo->pDynamicMover) ? pInfo->pDynamicMover : nullptr);
+		if (pInfo)
+		{
+			fMoveTime = (IsValid(pInfo->pDynamicMover) ? pInfo->fDynamicMoveTime : pInfo->fMoveTime);
+			pDynamicMover = (IsValid(pInfo->pDynamicMover) ? pInfo->pDynamicMover : nullptr);
+			bDefault = false;
+		}
 	}
-	else if (IsValid(pDefaultDynamicMover))
+	if (bDefault && IsValid(pDefaultDynamicMover))
 	{
 		fMoveTime = fDynamicMoveMax;
 		pDynamicMover = pDefaultDynamicMover;
@@ -423,7 +424,7 @@ int32 FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 	{
 		DetermineDirectTarget();
 		bMoving = false;
-		DeleDirectChanged.ExecuteIfBound(pCurDirect);
+		DeleDirectChanged.ExecuteIfBound(pCurDirect);//TODOJK EventCenter
 		return 2;
 	}
 	return 1;
@@ -441,9 +442,9 @@ void FGroupCentralData::FlushEnd()
 	}
 }
 
-void FGroupCentralData::DetermineDirectTarget(FVector* pvIn)
+void FGroupCentralData::DetermineDirectTarget(FVector* pvOut)
 {
-	FVector& vTarget = (pvIn ? *pvIn : vDirectTarget);
+	FVector& vTarget = (pvOut ? *pvOut : vDirectTarget);
 	if (pCurDirect)
 	{
 		if (ensure(IsValid(pCurDirect)))
@@ -595,6 +596,11 @@ void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName)
 		}
 	}
 	m_tmapCentralDatas.Remove(GroupName);
+}
+
+void UGroupCentralTargetMgr::MoveCentralDirect(const FName& GroupName, AActor* pActor)
+{
+	//FLAGJK
 }
 
 void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)

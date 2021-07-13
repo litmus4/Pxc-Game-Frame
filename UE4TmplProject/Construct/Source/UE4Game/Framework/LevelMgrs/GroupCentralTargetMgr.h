@@ -63,7 +63,6 @@ public:
 	int32 UpdateDirect(float fDeltaSeconds);//-1:ÎÞ 0:Ëø¶¨ 1:Moving 2:MoveEnd
 	FORCEINLINE FVector GetDirectTarget() { return vDirectTarget; }
 	void FlushEnd();
-	//FLAGJK
 
 	FName GroupName;
 	float fRecenterPrecision;
@@ -94,7 +93,7 @@ public:
 	bool bToBeResetted;
 
 private:
-	void DetermineDirectTarget(FVector* pvIn = nullptr);
+	void DetermineDirectTarget(FVector* pvOut = nullptr);
 
 	bool bFollowing;
 	FVector vFollowTarget;
@@ -140,6 +139,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void ResetCentralTarget(const FName& GroupName);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void MoveCentralDirect(const FName& GroupName, AActor* pActor);
 
 	void Tick(float fDeltaSeconds);
 	void Release();

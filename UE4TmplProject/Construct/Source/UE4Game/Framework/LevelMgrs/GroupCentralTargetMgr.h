@@ -42,6 +42,14 @@ struct FGroupCentralData
 {
 	GENERATED_BODY()
 public:
+	enum EFloatingType
+	{
+		Direct = 0x1,
+		View = 0x2
+	};
+#define AllCentralFloatings (EFloatingType::Direct | EFloatingType::View)
+
+public:
 	FGroupCentralData();
 
 	void Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
@@ -58,10 +66,11 @@ public:
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
-	bool IsFloating(bool bMovingOrBlending = true);
+	bool IsFloating(uint8 uFloatingFlags = AllCentralFloatings, bool bMovingOrBlending = true);
 	void MoveDirect(AActor* pActor);
 	int32 UpdateDirect(float fDeltaSeconds);//-1:ÎÞ 0:Ëø¶¨ 1:Moving 2:MoveEnd
 	FORCEINLINE FVector GetDirectTarget() { return vDirectTarget; }
+	//FLAGJK
 	void FlushEnd();
 
 	FName GroupName;
@@ -140,8 +149,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void ResetCentralTarget(const FName& GroupName);
 
+	UFUNCTION(BlueprintPure, Category = Gameplay)
+	bool GetCentralTarget(const FName& GroupName, FVector& vOut, bool bFollow = true);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void SetCentralDirect(const FName& GroupName, float fMoveTime, UCurveFloat* pDynamicMover = nullptr);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void AddActorDirect(const FName& GroupName, AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover = nullptr);
+
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void MoveCentralDirect(const FName& GroupName, AActor* pActor);
+
+	UFUNCTION(BlueprintPure, Category = Gameplay)
+	bool GetDirectTarget(const FName& GroupName, FVector& vOut);
 
 	void Tick(float fDeltaSeconds);
 	void Release();

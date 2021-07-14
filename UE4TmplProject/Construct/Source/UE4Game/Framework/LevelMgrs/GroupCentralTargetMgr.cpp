@@ -335,7 +335,7 @@ void FGroupCentralData::AddActorDirectInfo(AActor* pActor, float fMoveTime, UCur
 void FGroupCentralData::AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc)
 {
 	check(IsValid(pActor));
-	verify(IsValid(pViewTarget));
+	verify(!pViewTarget || IsValid(pViewTarget));
 
 	FGrpCtrActorViewInfo Info;
 	Info.pViewTarget = pViewTarget;
@@ -356,11 +356,23 @@ void FGroupCentralData::ResetFloatings()
 	tmapActorViewInfos.Empty();
 }
 
-bool FGroupCentralData::IsFloating(bool bMovingOrBlending)
+bool FGroupCentralData::IsFloating(uint8 uFloatingFlags, bool bMovingOrBlending)
 {
 	if (bMovingOrBlending)
-		return (bMoving/* || 正在ViewTargetBlending*/);
-	return (fDefaultMoveTime >= -0.5f || fDefaultBlendTime >= -0.5f);
+	{
+		if (uFloatingFlags & EFloatingType::Direct)
+			if (bMoving) return true;
+		if (uFloatingFlags & EFloatingType::View)
+			if (false/*正在ViewTargetBlending*/) return true;
+	}
+	else
+	{
+		if (uFloatingFlags & EFloatingType::Direct)
+			if (fDefaultMoveTime >= -0.5f) return true;
+		if (uFloatingFlags & EFloatingType::View)
+			if (fDefaultBlendTime >= -0.5f) return true;
+	}
+	return false;
 }
 
 void FGroupCentralData::MoveDirect(AActor* pActor)
@@ -598,9 +610,55 @@ void UGroupCentralTargetMgr::ResetCentralTarget(const FName& GroupName)
 	m_tmapCentralDatas.Remove(GroupName);
 }
 
+bool UGroupCentralTargetMgr::GetCentralTarget(const FName& GroupName, FVector& vOut, bool bFollow)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (pData)
+	{
+		vOut = (bFollow ? pData->GetFollowTarget() : pData->vCentralTarget);
+		return true;
+	}
+	return false;
+}
+
+void UGroupCentralTargetMgr::SetCentralDirect(const FName& GroupName, float fMoveTime, UCurveFloat* pDynamicMover)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || pData->IsFloating(FGroupCentralData::Direct) || pData->bToBeResetted)
+		return;
+	pData->SetDirect(fMoveTime, pDynamicMover);
+}
+
+void UGroupCentralTargetMgr::AddActorDirect(const FName& GroupName, AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || pData->IsFloating(FGroupCentralData::Direct) || pData->bToBeResetted)
+		return;
+	if (pData->tsetBackActors.Contains(pActor))
+		pData->AddActorDirectInfo(pActor, fMoveTime, pDynamicMover);
+}
+
 void UGroupCentralTargetMgr::MoveCentralDirect(const FName& GroupName, AActor* pActor)
 {
-	//FLAGJK
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || pData->IsFloating(FGroupCentralData::Direct) || pData->bToBeResetted)
+		return;
+
+	if (pData->tsetBackActors.Contains(pActor))
+		pData->MoveDirect(pActor);
+	else
+		pData->MoveDirect(nullptr);
+}
+
+bool UGroupCentralTargetMgr::GetDirectTarget(const FName& GroupName, FVector& vOut)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (pData && pData->IsFloating(FGroupCentralData::Direct, false))
+	{
+		vOut = pData->GetDirectTarget();
+		return true;
+	}
+	return false;
 }
 
 void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)

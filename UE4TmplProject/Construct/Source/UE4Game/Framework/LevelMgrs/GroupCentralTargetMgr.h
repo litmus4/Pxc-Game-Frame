@@ -67,6 +67,7 @@ public:
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
 	bool IsFloating(uint8 uFloatingFlags = AllCentralFloatings, bool bMovingOrBlending = true);
+	bool IsActorFloating(AActor* pActor, uint8 uFloatingFlags = AllCentralFloatings);
 	void MoveDirect(AActor* pActor);
 	int32 UpdateDirect(float fDeltaSeconds);//-1:ÎÞ 0:Ëø¶¨ 1:Moving 2:MoveEnd
 	FORCEINLINE FVector GetDirectTarget() { return vDirectTarget; }
@@ -163,6 +164,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = Gameplay)
 	bool GetDirectTarget(const FName& GroupName, FVector& vOut);
+
+	UFUNCTION(BlueprintPure, Category = Gameplay)
+	bool IsActorFloating(AActor* pActor);
 
 	void Tick(float fDeltaSeconds);
 	void Release();

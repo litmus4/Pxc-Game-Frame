@@ -375,6 +375,15 @@ bool FGroupCentralData::IsFloating(uint8 uFloatingFlags, bool bMovingOrBlending)
 	return false;
 }
 
+bool FGroupCentralData::IsActorFloating(AActor* pActor, uint8 uFloatingFlags)
+{
+	if (uFloatingFlags & EFloatingType::Direct)
+		if (pActor == pCurDirect) return true;
+	if (uFloatingFlags & EFloatingType::View)
+		if (pActor == pCurView) return true;
+	return false;
+}
+
 void FGroupCentralData::MoveDirect(AActor* pActor)
 {
 	if (pActor == pCurDirect || bMoving)
@@ -563,6 +572,9 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 			{
 				for (AActor* pActor : tsetTempActors)
 				{
+					//正在Direct、Moving或View的Actor不能删除，请在外部做判断
+					verify(!pData->IsActorFloating(pActor));
+
 					USceneComponent* pComp = pActor->GetRootComponent();
 					std::unordered_map<USceneComponent*, SLocationHelper>::iterator iter = m_mapLocationHelpers.find(pComp);
 					if (iter == m_mapLocationHelpers.end())
@@ -657,6 +669,18 @@ bool UGroupCentralTargetMgr::GetDirectTarget(const FName& GroupName, FVector& vO
 	{
 		vOut = pData->GetDirectTarget();
 		return true;
+	}
+	return false;
+}
+
+bool UGroupCentralTargetMgr::IsActorFloating(AActor* pActor)
+{
+	verify(IsValid(pActor));
+
+	for (auto& Pair : m_tmapCentralDatas)
+	{
+		if (Pair.Value.IsActorFloating(pActor))
+			return true;
 	}
 	return false;
 }

@@ -8,7 +8,7 @@ FGroupCentralData::FGroupCentralData()
 	: fRecenterPrecision(0.0f), fFollowPrecision(0.0f)
 	, fFollowSpeed(0.0f), fFollowAccTime(0.0f), fFollowDecTime(0.0f)
 	, fDefaultMoveTime(-1.0f), pDefaultDynamicMover(nullptr)
-	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr)
+	, fDefaultBlendTime(-1.0f), pCentralViewTarget(nullptr), pController(nullptr)
 	, eDefaultBlendFunc(EViewTargetBlendFunction::VTBlend_Linear), bToBeResetted(false)
 	, bFollowing(false), bFollowSpeed(false), bAccelerating(false)
 	, fAcceleration(0.0f), fDeceleration(0.0f)
@@ -307,14 +307,17 @@ void FGroupCentralData::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
 	vDirectTarget = vFollowTarget;
 }
 
-void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT)
+void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc,
+	AActor* pCentralVT, APlayerController* xController)
 {
 	verify(IsValid(pCentralVT));
+	verify(IsValid(xController) && IsValid(xController->PlayerCameraManager));
 	fDefaultBlendTime = FMath::Max(fBlendTime, 0.0f);
 	eDefaultBlendFunc = eBlendFunc;
 	pCentralViewTarget = pCentralVT;
+	pController = xController;
 
-	pCurView = nullptr;//默认看中心
+	BlendView(nullptr);//默认看中心
 }
 
 void FGroupCentralData::AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover)
@@ -363,7 +366,10 @@ bool FGroupCentralData::IsFloating(uint8 uFloatingFlags, bool bMovingOrBlending)
 		if (uFloatingFlags & EFloatingType::Direct)
 			if (bMoving) return true;
 		if (uFloatingFlags & EFloatingType::View)
-			if (false/*正在ViewTargetBlending*/) return true;
+		{
+			if (pController && pController->PlayerCameraManager->PendingViewTarget.Target)
+				return true;
+		}
 	}
 	else
 	{
@@ -386,7 +392,7 @@ bool FGroupCentralData::IsActorFloating(AActor* pActor, uint8 uFloatingFlags)
 
 void FGroupCentralData::MoveDirect(AActor* pActor)
 {
-	if (pActor == pCurDirect || bMoving)
+	if (pActor == pCurDirect)
 		return;
 
 	bMoving = true;
@@ -451,15 +457,41 @@ int32 FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 	return 1;
 }
 
+void FGroupCentralData::BlendView(AActor* pActor)
+{
+	if (pActor == pCurView || !pController)
+		return;
+
+	pCurView = pActor;
+
+	AActor* pViewTarget = pCentralViewTarget;
+	float fBlendTime = fDefaultBlendTime;
+	EViewTargetBlendFunction eBlendFunc = eDefaultBlendFunc;
+	if (pCurView)
+	{
+		pViewTarget = pCurView;
+		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
+		if (pInfo)
+		{
+			if (pInfo->pViewTarget) pViewTarget = pInfo->pViewTarget;
+			fBlendTime = pInfo->fBlendTime;
+			eBlendFunc = pInfo->eBlendFunc;
+		}
+	}
+	pController->SetViewTargetWithBlend(pViewTarget, fBlendTime, eBlendFunc);
+	//FLAGJK 没找到结束绑定
+}
+
 void FGroupCentralData::FlushEnd()
 {
 	if (bMoving)
 		DeleDirectChanged.ExecuteIfBound(pCurDirect);
 
-	if (false/*FLAGJK 正在ViewTargetBlending(此页搜索其他)*/)
+	if (pController && pController->PlayerCameraManager->PendingViewTarget.Target)
 	{
+		AActor* pSelfVT = (pCurView ? pCurView : pCentralViewTarget);
 		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
-		DeleViewChanged.ExecuteIfBound(pCurView, (pInfo ? pInfo->pViewTarget : nullptr));
+		DeleViewChanged.ExecuteIfBound(pCurView, (pInfo ? pInfo->pViewTarget : pSelfVT));
 	}
 }
 
@@ -633,12 +665,14 @@ bool UGroupCentralTargetMgr::GetCentralTarget(const FName& GroupName, FVector& v
 	return false;
 }
 
-void UGroupCentralTargetMgr::SetCentralDirect(const FName& GroupName, float fMoveTime, UCurveFloat* pDynamicMover)
+void UGroupCentralTargetMgr::SetCentralDirect(const FName& GroupName, float fMoveTime, UCurveFloat* pDynamicMover,
+	FGroupCentralDirectChangeDelegate DeleChanged)
 {
 	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
 	if (!pData || pData->IsFloating(FGroupCentralData::Direct) || pData->bToBeResetted)
 		return;
 	pData->SetDirect(fMoveTime, pDynamicMover);
+	pData->DeleDirectChanged = DeleChanged;
 }
 
 void UGroupCentralTargetMgr::AddActorDirect(const FName& GroupName, AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover)
@@ -653,7 +687,7 @@ void UGroupCentralTargetMgr::AddActorDirect(const FName& GroupName, AActor* pAct
 void UGroupCentralTargetMgr::MoveCentralDirect(const FName& GroupName, AActor* pActor)
 {
 	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
-	if (!pData || pData->IsFloating(FGroupCentralData::Direct) || pData->bToBeResetted)
+	if (!pData || !pData->IsFloating(FGroupCentralData::Direct, false) || pData->bToBeResetted)
 		return;
 
 	if (pData->tsetBackActors.Contains(pActor))
@@ -671,6 +705,38 @@ bool UGroupCentralTargetMgr::GetDirectTarget(const FName& GroupName, FVector& vO
 		return true;
 	}
 	return false;
+}
+
+void UGroupCentralTargetMgr::SetCentralView(const FName& GroupName, float fBlendTime, EViewTargetBlendFunction eBlendFunc,
+	AActor* pCentralViewTarget, APlayerController* pController, FGroupCentralViewChangeDelegate DeleChanged)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || pData->IsFloating(FGroupCentralData::View) || pData->bToBeResetted)
+		return;
+	pData->SetView(fBlendTime, eBlendFunc, pCentralViewTarget, pController);
+	pData->DeleViewChanged = DeleChanged;
+}
+
+void UGroupCentralTargetMgr::AddActorView(const FName& GroupName, AActor* pActor, AActor* pViewTarget,
+	float fBlendTime, EViewTargetBlendFunction eBlendFunc)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || pData->IsFloating(FGroupCentralData::View) || pData->bToBeResetted)
+		return;
+	if (pData->tsetBackActors.Contains(pActor))
+		pData->AddActorViewInfo(pActor, pViewTarget, fBlendTime, eBlendFunc);
+}
+
+void UGroupCentralTargetMgr::BlendCentralView(const FName& GroupName, AActor* pActor)
+{
+	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
+	if (!pData || !pData->IsFloating(FGroupCentralData::View, false) || pData->bToBeResetted)
+		return;
+
+	if (pData->tsetBackActors.Contains(pActor))
+		pData->BlendView(pActor);
+	else
+		pData->BlendView(nullptr);
 }
 
 bool UGroupCentralTargetMgr::IsActorFloating(AActor* pActor)

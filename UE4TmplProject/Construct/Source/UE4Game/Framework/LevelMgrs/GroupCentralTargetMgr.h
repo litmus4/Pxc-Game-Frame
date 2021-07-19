@@ -62,7 +62,7 @@ public:
 	FORCEINLINE FVector GetFollowTarget() { return vFollowTarget; }
 
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
-	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT);
+	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT, APlayerController* xController);
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
@@ -71,7 +71,7 @@ public:
 	void MoveDirect(AActor* pActor);
 	int32 UpdateDirect(float fDeltaSeconds);//-1:ÎÞ 0:Ëø¶¨ 1:Moving 2:MoveEnd
 	FORCEINLINE FVector GetDirectTarget() { return vDirectTarget; }
-	//FLAGJK
+	void BlendView(AActor* pActor);
 	void FlushEnd();
 
 	FName GroupName;
@@ -91,6 +91,8 @@ public:
 	EViewTargetBlendFunction eDefaultBlendFunc;
 	UPROPERTY()
 	AActor* pCentralViewTarget;
+	UPROPERTY()
+	APlayerController* pController;
 	UPROPERTY()
 	TMap<AActor*, FGrpCtrActorViewInfo> tmapActorViewInfos;
 
@@ -154,7 +156,8 @@ public:
 	bool GetCentralTarget(const FName& GroupName, FVector& vOut, bool bFollow = true);
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
-	void SetCentralDirect(const FName& GroupName, float fMoveTime, UCurveFloat* pDynamicMover = nullptr);
+	void SetCentralDirect(const FName& GroupName, float fMoveTime, UCurveFloat* pDynamicMover,
+		FGroupCentralDirectChangeDelegate DeleChanged);
 
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void AddActorDirect(const FName& GroupName, AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover = nullptr);
@@ -164,6 +167,17 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = Gameplay)
 	bool GetDirectTarget(const FName& GroupName, FVector& vOut);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void SetCentralView(const FName& GroupName, float fBlendTime, EViewTargetBlendFunction eBlendFunc,
+		AActor* pCentralViewTarget, APlayerController* pController, FGroupCentralViewChangeDelegate DeleChanged);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void AddActorView(const FName& GroupName, AActor* pActor, AActor* pViewTarget,
+		float fBlendTime, EViewTargetBlendFunction eBlendFunc);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void BlendCentralView(const FName& GroupName, AActor* pActor);
 
 	UFUNCTION(BlueprintPure, Category = Gameplay)
 	bool IsActorFloating(AActor* pActor);

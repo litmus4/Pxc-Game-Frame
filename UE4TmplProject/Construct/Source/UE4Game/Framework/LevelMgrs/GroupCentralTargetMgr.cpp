@@ -318,6 +318,9 @@ void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlen
 	pController = xController;
 
 	BlendView(nullptr);//默认看中心
+	DeleBlendHandle = pController->PlayerCameraManager->OnBlendComplete().AddLambda([this]() {
+		OnViewChanged();
+	});
 }
 
 void FGroupCentralData::AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover)
@@ -356,6 +359,9 @@ void FGroupCentralData::ResetFloatings()
 	fDefaultBlendTime = -1.0f;
 	eDefaultBlendFunc = EViewTargetBlendFunction::VTBlend_Linear;
 	pCentralViewTarget = nullptr;
+	if (pController)
+		pController->PlayerCameraManager->OnBlendComplete().Remove(DeleBlendHandle);
+	pController = nullptr;
 	tmapActorViewInfos.Empty();
 }
 
@@ -479,20 +485,15 @@ void FGroupCentralData::BlendView(AActor* pActor)
 		}
 	}
 	pController->SetViewTargetWithBlend(pViewTarget, fBlendTime, eBlendFunc);
-	//FLAGJK 没找到结束绑定
 }
 
 void FGroupCentralData::FlushEnd()
 {
 	if (bMoving)
-		DeleDirectChanged.ExecuteIfBound(pCurDirect);
+		DeleDirectChanged.ExecuteIfBound(pCurDirect);//TODOJK EventCenter
 
 	if (pController && pController->PlayerCameraManager->PendingViewTarget.Target)
-	{
-		AActor* pSelfVT = (pCurView ? pCurView : pCentralViewTarget);
-		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
-		DeleViewChanged.ExecuteIfBound(pCurView, (pInfo ? pInfo->pViewTarget : pSelfVT));
-	}
+		OnViewChanged();
 }
 
 void FGroupCentralData::DetermineDirectTarget(FVector* pvOut)
@@ -505,6 +506,17 @@ void FGroupCentralData::DetermineDirectTarget(FVector* pvOut)
 	}
 	else
 		vTarget = vFollowTarget;
+}
+
+void FGroupCentralData::OnViewChanged()
+{
+	AActor* pViewTarget = pCentralViewTarget;
+	if (pCurView)
+	{
+		FGrpCtrActorViewInfo* pInfo = tmapActorViewInfos.Find(pCurView);
+		if (pInfo && pInfo->pViewTarget) pViewTarget = pInfo->pViewTarget;
+	}
+	DeleViewChanged.ExecuteIfBound(pCurView, pViewTarget);//TODOJK EventCenter
 }
 
 void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,

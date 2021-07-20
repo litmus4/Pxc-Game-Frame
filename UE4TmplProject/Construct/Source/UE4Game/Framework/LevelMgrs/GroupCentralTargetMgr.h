@@ -106,6 +106,7 @@ public:
 
 private:
 	void DetermineDirectTarget(FVector* pvOut = nullptr);
+	void OnViewChanged();
 
 	bool bFollowing;
 	FVector vFollowTarget;
@@ -131,6 +132,7 @@ private:
 
 	UPROPERTY()
 	AActor* pCurView;//用原Actor，为空表示当前在看中心
+	FDelegateHandle DeleBlendHandle;
 };
 
 /**

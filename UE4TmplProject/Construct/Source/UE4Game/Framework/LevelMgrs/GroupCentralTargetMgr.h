@@ -62,16 +62,19 @@ public:
 	FORCEINLINE FVector GetFollowTarget() { return vFollowTarget; }
 
 	void SetDirect(float fMoveTime, UCurveFloat* pDynamicMover);
-	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT, APlayerController* xController);
+	void SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT,
+		APlayerController* xController, UGroupCentralTargetMgr* pMgr);
 	void AddActorDirectInfo(AActor* pActor, float fMoveTime, UCurveFloat* pDynamicMover);
 	void AddActorViewInfo(AActor* pActor, AActor* pViewTarget, float fBlendTime, EViewTargetBlendFunction eBlendFunc);
 	void ResetFloatings();
 	bool IsFloating(uint8 uFloatingFlags = AllCentralFloatings, bool bMovingOrBlending = true);
 	bool IsActorFloating(AActor* pActor, uint8 uFloatingFlags = AllCentralFloatings);
+
 	void MoveDirect(AActor* pActor);
 	int32 UpdateDirect(float fDeltaSeconds);//-1:ÎÞ 0:Ëø¶¨ 1:Moving 2:MoveEnd
 	FORCEINLINE FVector GetDirectTarget() { return vDirectTarget; }
 	void BlendView(AActor* pActor);
+	void UpdateView(float fDeltaSeconds);
 	void FlushEnd();
 
 	FName GroupName;
@@ -106,7 +109,7 @@ public:
 
 private:
 	void DetermineDirectTarget(FVector* pvOut = nullptr);
-	void OnViewChanged();
+	void OnViewChanged(UGroupCentralTargetMgr* pMgr = nullptr);
 
 	bool bFollowing;
 	FVector vFollowTarget;
@@ -186,6 +189,7 @@ public:
 
 	void Tick(float fDeltaSeconds);
 	void Release();
+	void OnCentralViewChanged(FGroupCentralData& Data);
 
 private:
 	struct SLocationHelper

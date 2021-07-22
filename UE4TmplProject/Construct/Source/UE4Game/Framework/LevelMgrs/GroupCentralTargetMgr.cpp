@@ -88,6 +88,7 @@ void FGroupCentralData::RefreshFollowState(bool bInit)
 	if (fDistance < fFollowPrecision)
 	{
 		bFollowing = false;
+		vFollowTarget = vCentralTarget;
 		vFollowVelocity = FVector::ZeroVector;
 		bFollowSpeed = false;
 		bAccelerating = false;
@@ -148,6 +149,7 @@ void FGroupCentralData::UpdateFollow(float fDeltaSeconds)
 	if (fDistance < fFollowPrecision)
 	{
 		bFollowing = false;
+		vFollowTarget = vCentralTarget;
 		vFollowVelocity = FVector::ZeroVector;
 		bFollowSpeed = false;
 		bAccelerating = false;
@@ -307,8 +309,8 @@ void FGroupCentralData::SetDirect(float fMoveTime, UCurveFloat* pDynamicMover)
 	vDirectTarget = vFollowTarget;
 }
 
-void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc,
-	AActor* pCentralVT, APlayerController* xController)
+void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlendFunc, AActor* pCentralVT,
+	APlayerController* xController, UGroupCentralTargetMgr* pMgr)
 {
 	verify(IsValid(pCentralVT));
 	verify(IsValid(xController) && IsValid(xController->PlayerCameraManager));
@@ -318,8 +320,8 @@ void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlen
 	pController = xController;
 
 	BlendView(nullptr);//默认看中心
-	DeleBlendHandle = pController->PlayerCameraManager->OnBlendComplete().AddLambda([this]() {
-		OnViewChanged();
+	DeleBlendHandle = pController->PlayerCameraManager->OnBlendComplete().AddLambda([this, pMgr]() {
+		OnViewChanged(pMgr);
 	});
 }
 
@@ -487,6 +489,13 @@ void FGroupCentralData::BlendView(AActor* pActor)
 	pController->SetViewTargetWithBlend(pViewTarget, fBlendTime, eBlendFunc);
 }
 
+void FGroupCentralData::UpdateView(float fDeltaSeconds)
+{
+	if (fDefaultBlendTime < -0.5f) return;
+	check(pCentralViewTarget);
+	pCentralViewTarget->SetActorLocation(vFollowTarget);
+}
+
 void FGroupCentralData::FlushEnd()
 {
 	if (bMoving)
@@ -508,7 +517,7 @@ void FGroupCentralData::DetermineDirectTarget(FVector* pvOut)
 		vTarget = vFollowTarget;
 }
 
-void FGroupCentralData::OnViewChanged()
+void FGroupCentralData::OnViewChanged(UGroupCentralTargetMgr* pMgr)
 {
 	AActor* pViewTarget = pCentralViewTarget;
 	if (pCurView)
@@ -517,6 +526,9 @@ void FGroupCentralData::OnViewChanged()
 		if (pInfo && pInfo->pViewTarget) pViewTarget = pInfo->pViewTarget;
 	}
 	DeleViewChanged.ExecuteIfBound(pCurView, pViewTarget);//TODOJK EventCenter
+	
+	if (pMgr)
+		pMgr->OnCentralViewChanged(*this);
 }
 
 void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,
@@ -725,7 +737,7 @@ void UGroupCentralTargetMgr::SetCentralView(const FName& GroupName, float fBlend
 	FGroupCentralData* pData = m_tmapCentralDatas.Find(GroupName);
 	if (!pData || pData->IsFloating(FGroupCentralData::View) || pData->bToBeResetted)
 		return;
-	pData->SetView(fBlendTime, eBlendFunc, pCentralViewTarget, pController);
+	pData->SetView(fBlendTime, eBlendFunc, pCentralViewTarget, pController, this);
 	pData->DeleViewChanged = DeleChanged;
 }
 
@@ -780,7 +792,7 @@ void UGroupCentralTargetMgr::Tick(float fDeltaSeconds)
 			}
 		}
 
-		//
+		Data.UpdateView(fDeltaSeconds);
 	}
 }
 
@@ -788,6 +800,15 @@ void UGroupCentralTargetMgr::Release()
 {
 	for (auto& Pair : m_tmapCentralDatas)
 		Pair.Value.FlushEnd();
+}
+
+void UGroupCentralTargetMgr::OnCentralViewChanged(FGroupCentralData& Data)
+{
+	if (Data.bToBeResetted && !Data.IsFloating())
+	{
+		Data.bToBeResetted = false;
+		ResetCentralTarget(Data.GroupName);
+	}
 }
 
 void UGroupCentralTargetMgr::OnActorTransformUpdated(USceneComponent* pUpdatedComponent,

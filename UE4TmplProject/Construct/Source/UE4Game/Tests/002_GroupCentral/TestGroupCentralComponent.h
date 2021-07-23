@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Tests/TestRunningComponent.h"
+#include <vector>
 #include "TestGroupCentralComponent.generated.h"
 
 USTRUCT(BlueprintType)
@@ -44,13 +45,7 @@ protected:
 	TSubclassOf<AActor> m_cSpawnedDirectActor;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FTransform m_transSpawnedDirecting;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AActor> m_cCameraActor;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FTransform m_transCamera;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName m_GroupName;
@@ -64,5 +59,15 @@ protected:
 	UFUNCTION(BlueprintPure)
 	bool CastParameter(const FSharedSignature& ParamSig, FTestGroupCentralParameter& OutParam);
 
-	//FLAGJK
+public:
+	virtual void RunCppTestWithParam(const FSharedSignature& ParamSig) override;
+
+protected:
+	UPROPERTY()
+	AActor* m_pSpawnedDirectActor;
+
+	UPROPERTY()
+	AActor* m_pCameraActor;
+
+	std::vector<FTimerHandle> m_vecTimerCache;
 };

@@ -62,6 +62,8 @@ protected:
 public:
 	virtual void RunCppTestWithParam(const FSharedSignature& ParamSig) override;
 
+	virtual void TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction) override;
+
 protected:
 	UPROPERTY()
 	AActor* m_pSpawnedDirectActor;
@@ -71,3 +73,4 @@ protected:
 
 	std::vector<FTimerHandle> m_vecTimerCache;
 };
+//FLAGJK ÒÆ¶¯

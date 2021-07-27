@@ -56,6 +56,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UCurveFloat* m_pOwnerDynamic;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TMap<int32, float> m_tmapStageTimes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float m_fHalfStageTime;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FVector m_vOwnerRunning;
+
 	UFUNCTION(BlueprintPure)
 	bool CastParameter(const FSharedSignature& ParamSig, FTestGroupCentralParameter& OutParam);
 
@@ -65,12 +74,21 @@ public:
 	virtual void TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction) override;
 
 protected:
+	float GetStageTime(int32 iStage);
+	void Final();
+
 	UPROPERTY()
 	AActor* m_pSpawnedDirectActor;
 
 	UPROPERTY()
 	AActor* m_pCameraActor;
 
+	UPROPERTY()
+	APawn* m_pRunningPawn;
+
 	std::vector<FTimerHandle> m_vecTimerCache;
+	int32 m_iStage;
+	float m_fCurTime;
+	FVector m_vStartLoc;
 };
-//FLAGJK ÒÆ¶¯
+//FLAGJK

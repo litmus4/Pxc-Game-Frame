@@ -12,9 +12,13 @@ UTestGroupCentralComponent::UTestGroupCentralComponent()
 
 	m_pDefaultDynamic = nullptr;
 	m_pOwnerDynamic = nullptr;
+	m_fHalfStageTime = 3.0f;
 
 	m_pSpawnedDirectActor = nullptr;
 	m_pCameraActor = nullptr;
+	m_pRunningPawn = nullptr;
+	m_iStage = 0;
+	m_fCurTime = 0.0f;
 }
 
 void UTestGroupCentralComponent::BeginPlay()
@@ -60,8 +64,14 @@ void UTestGroupCentralComponent::RunCppTestWithParam(const FSharedSignature& Par
 		pGroupMgr->AddActorToGroup(Param.pMainActor, m_GroupName);
 		APawn* pPawn = Cast<APawn>(Param.pMainActor);
 		if (pPawn)
+		{
 			pPawn->DisableInput(Cast<APlayerController>(pPawn->GetController()));
+			m_pRunningPawn = pPawn;
+		}
 	}
+	m_iStage = 1;
+	m_fCurTime = 0.0f;
+	m_vStartLoc = GetOwner()->GetActorLocation();
 
 	UGroupCentralTargetMgr* pManager = pGM->GetGroupCentralTargetMgr();
 	check(pManager);
@@ -104,20 +114,64 @@ void UTestGroupCentralComponent::RunCppTestWithParam(const FSharedSignature& Par
 		}
 
 		pManager->MoveCentralDirect(m_GroupName, GetOwner());
-	}), 3.0f, false);
+	}), m_fHalfStageTime, false);
 	m_vecTimerCache.push_back(Timer1);
 
 	FTimerHandle Timer2;
 	GetWorld()->GetTimerManager().SetTimer(Timer2, FTimerDelegate::CreateLambda([pManager, this, Param]() {
+		m_iStage = 2;
+		m_fCurTime = 0.0f;
 		pManager->MoveCentralDirect(m_GroupName, Param.pMainActor);
 		pManager->BlendCentralView(m_GroupName, Param.pMainActor);
-	}), 6.0f, false);
+	}), GetStageTime(1), false);
 	m_vecTimerCache.push_back(Timer2);
 }
 
 void UTestGroupCentralComponent::TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction)
 {
 	Super::TickComponent(fDeltaTime, eTickType, pThisTickFunction);
+
+	if (m_iStage && IsValid(GetOwner()))
+	{
+		m_fCurTime += fDeltaTime;
+		float fMaxTime = GetStageTime(m_iStage);
+		bool bAllEnd = false;
+
+		if (fMaxTime < -0.5f)
+			bAllEnd = true;
+		else
+		{
+			while (m_fCurTime >= fMaxTime)
+			{
+				m_fCurTime -= fMaxTime;
+				m_iStage++;
+				fMaxTime = GetStageTime(m_iStage);
+				if (fMaxTime < -0.5f)
+				{
+					bAllEnd = true;
+					break;
+				}
+			}
+		}
+
+		if (!bAllEnd)
+		{
+			FVector vStart, vEnd;
+			switch (m_iStage)
+			{
+			case 1:
+				vStart = m_vStartLoc; vEnd = m_vStartLoc + m_vOwnerRunning;
+				break;
+			case 2:
+				vStart = m_vStartLoc + m_vOwnerRunning; vEnd = m_vStartLoc;
+				break;
+			}
+			float fRatio = m_fCurTime / fMaxTime;
+			GetOwner()->SetActorLocation(FMath::Lerp(vStart, vEnd, fRatio));
+		}
+		else
+			Final();
+	}
 
 	if (m_pSpawnedDirectActor)
 	{
@@ -128,5 +182,43 @@ void UTestGroupCentralComponent::TickComponent(float fDeltaTime, ELevelTick eTic
 		FVector vLoc;
 		if (pManager->GetDirectTarget(m_GroupName, vLoc))
 			m_pSpawnedDirectActor->SetActorLocation(vLoc);
+	}
+}
+
+float UTestGroupCentralComponent::GetStageTime(int32 iStage)
+{
+	float* pfTime = m_tmapStageTimes.Find(iStage);
+	return (pfTime ? *pfTime : -1.0f);
+}
+
+void UTestGroupCentralComponent::Final()
+{
+	m_iStage = 0;
+	if (IsValid(GetOwner()))
+		GetOwner()->SetActorLocation(m_vStartLoc);
+
+	APxcGameMode* pGM = GetWorld()->GetAuthGameMode<APxcGameMode>();
+	if (!pGM) return;
+	UGroupCentralTargetMgr* pManager = pGM->GetGroupCentralTargetMgr();
+	check(pManager);
+	pManager->ResetCentralTarget(m_GroupName);
+	UVirtualGroupMgr* pGroupMgr = pGM->GetVirtualGroupMgr();
+	check(pGroupMgr);
+	if (m_pRunningPawn)
+	{
+		pGroupMgr->RemoveActorFromGroup(m_pRunningPawn, m_GroupName);
+		m_pRunningPawn->EnableInput(Cast<APlayerController>(m_pRunningPawn->GetController()));
+		m_pRunningPawn = nullptr;
+	}
+
+	if (m_pSpawnedDirectActor)
+	{
+		m_pSpawnedDirectActor->Destroy();
+		m_pSpawnedDirectActor = nullptr;
+	}
+	if (m_pCameraActor)
+	{
+		m_pCameraActor->Destroy();
+		m_pCameraActor = nullptr;
 	}
 }

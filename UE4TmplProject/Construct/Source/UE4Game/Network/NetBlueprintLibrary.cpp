@@ -3,6 +3,7 @@
 
 #include "Network/NetBlueprintLibrary.h"
 #include "GameFramework/Character.h"
+#include "EngineUtils.h"
 
 int32 UNetBlueprintLibrary::NetPlayerCount = 0;
 
@@ -71,14 +72,13 @@ APawn* UNetBlueprintLibrary::Net_GetAuthControlledPawnNative(UObject* WorldConte
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return nullptr;
 
-	for (FConstPlayerControllerIterator Iter = World->GetPlayerControllerIterator(); Iter; Iter++)
+	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
 	{
-		if (!Iter->Get()) continue;
-		APawn* Pawn = Iter->Get()->GetPawn();
+		APawn* Pawn = *Iter;
 		if (Pawn && ((Pawn->GetLocalRole() == ROLE_Authority && Pawn->GetRemoteRole() == ROLE_SimulatedProxy) ||
 			(Pawn->GetLocalRole() == ROLE_SimulatedProxy && Pawn->GetRemoteRole() == ROLE_Authority)))
 		{
-			if (OutPC) *OutPC = Iter->Get();
+			if (OutPC) *OutPC = Pawn->GetController<APlayerController>();
 			return Pawn;
 		}
 	}
@@ -146,11 +146,10 @@ bool UNetBlueprintLibrary::Net_ForEachPlayerNative(UObject* WorldContextObject, 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return false;
 
-	for (FConstPlayerControllerIterator Iter = World->GetPlayerControllerIterator(); Iter; Iter++)
+	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
 	{
-		if (!Iter->Get()) continue;
-		ACharacter* Player = CastChecked<ACharacter>(Iter->Get()->GetPawn());//APxcCharacterPlayer
-		if (OnEach.Execute(Player))
+		if (!(*Iter)) continue;
+		if (OnEach.Execute(*Iter))
 			return true;
 	}
 	return false;

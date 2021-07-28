@@ -28,6 +28,7 @@ public:
 
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);
+	void OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel);
 
 	UPROPERTY()
 	UPxcInputMappingMgr* m_pInputMappingMgr;

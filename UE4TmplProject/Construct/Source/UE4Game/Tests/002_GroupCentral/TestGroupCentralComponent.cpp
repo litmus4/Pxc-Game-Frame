@@ -127,6 +127,15 @@ void UTestGroupCentralComponent::RunCppTestWithParam(const FSharedSignature& Par
 	m_vecTimerCache.push_back(Timer2);
 }
 
+void UTestGroupCentralComponent::MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig)
+{
+	APawn* pPawn = CastChecked<APawn>(pActor);
+	TSharedPtr<FTestGroupCentralParameter> pParam = MakeShared<FTestGroupCentralParameter>();
+	pParam->pMainActor = pActor;
+	pParam->pController = pPawn->GetController<APlayerController>();
+	OutSig = FSharedSignature(*pParam);
+}
+
 void UTestGroupCentralComponent::TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction)
 {
 	Super::TickComponent(fDeltaTime, eTickType, pThisTickFunction);

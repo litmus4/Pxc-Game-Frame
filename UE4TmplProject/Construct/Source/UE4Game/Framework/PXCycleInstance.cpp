@@ -42,6 +42,7 @@ void UPXCycleInstance::Init()
 	Super::Init();
 
 	FGameModeEvents::GameModeInitializedEvent.AddUObject(this, &UPXCycleInstance::OnGameModeInitialized);
+	NotifyPreClientTravelDelegates.AddUObject(this, &UPXCycleInstance::OnPreClientTravel);
 }
 
 void UPXCycleInstance::Shutdown()
@@ -59,5 +60,12 @@ UPxcInputMappingMgr* UPXCycleInstance::GetInputMappingMgr()
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)
 {
+	//
+}
+
+void UPXCycleInstance::OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel)
+{
+	if (!GetWorld() || GetWorld()->GetNetMode() != NM_Client)
+		return;
 	//
 }

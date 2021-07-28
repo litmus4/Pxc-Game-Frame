@@ -71,6 +71,9 @@ protected:
 public:
 	virtual void RunCppTestWithParam(const FSharedSignature& ParamSig) override;
 
+	virtual bool IsWithParam() override { return true; }
+	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig) override;
+
 	virtual void TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction) override;
 
 protected:

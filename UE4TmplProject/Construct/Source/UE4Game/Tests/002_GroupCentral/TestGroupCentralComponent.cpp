@@ -230,4 +230,5 @@ void UTestGroupCentralComponent::Final()
 		m_pCameraActor->Destroy();
 		m_pCameraActor = nullptr;
 	}
+	m_vecTimerCache.clear();
 }

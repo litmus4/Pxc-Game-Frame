@@ -73,6 +73,7 @@ public:
 
 	virtual bool IsWithParam() override { return true; }
 	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig) override;
+	virtual bool IsRunning() override;
 
 	virtual void TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction) override;
 

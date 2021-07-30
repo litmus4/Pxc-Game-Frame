@@ -136,6 +136,11 @@ void UTestGroupCentralComponent::MakeParameterByOverlappingActor(AActor* pActor,
 	OutSig = FSharedSignature(*pParam);
 }
 
+bool UTestGroupCentralComponent::IsRunning()
+{
+	return (m_iStage > 0);
+}
+
 void UTestGroupCentralComponent::TickComponent(float fDeltaTime, ELevelTick eTickType, FActorComponentTickFunction* pThisTickFunction)
 {
 	Super::TickComponent(fDeltaTime, eTickType, pThisTickFunction);

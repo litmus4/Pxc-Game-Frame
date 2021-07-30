@@ -73,7 +73,7 @@ public:
 	void MoveDirect(AActor* pActor);
 	int32 UpdateDirect(float fDeltaSeconds);//-1:ÎÞ 0:Ëø¶¨ 1:Moving 2:MoveEnd
 	FORCEINLINE FVector GetDirectTarget() { return vDirectTarget; }
-	void BlendView(AActor* pActor);
+	void BlendView(AActor* pActor, bool bForce = false);
 	void UpdateView(float fDeltaSeconds);
 	void FlushEnd();
 

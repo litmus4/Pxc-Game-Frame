@@ -56,4 +56,5 @@ public:
 
 	virtual bool IsWithParam() { return false; }
 	virtual void MakeParameterByOverlappingActor(AActor* pActor, FSharedSignature& OutSig);
+	virtual bool IsRunning() { return false; }
 };

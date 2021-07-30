@@ -45,7 +45,7 @@ void ATestTriggeredActor::OnBoxOverlapped(UPrimitiveComponent* pOverlappedComp, 
 		return;
 
 	UTestRunningComponent* pTestComp = FindComponentByClass<UTestRunningComponent>();
-	if (!IsValid(pTestComp)) return;
+	if (!IsValid(pTestComp) || pTestComp->IsRunning()) return;
 
 	check(pOverlappedComp);
 	FString&& sCompName = pOverlappedComp->GetName();

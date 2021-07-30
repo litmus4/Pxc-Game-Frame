@@ -319,7 +319,7 @@ void FGroupCentralData::SetView(float fBlendTime, EViewTargetBlendFunction eBlen
 	pCentralViewTarget = pCentralVT;
 	pController = xController;
 
-	BlendView(nullptr);//默认看中心
+	BlendView(nullptr, true);//默认看中心
 	DeleBlendHandle = pController->PlayerCameraManager->OnBlendComplete().AddLambda([this, pMgr]() {
 		OnViewChanged(pMgr);
 	});
@@ -465,9 +465,9 @@ int32 FGroupCentralData::UpdateDirect(float fDeltaSeconds)
 	return 1;
 }
 
-void FGroupCentralData::BlendView(AActor* pActor)
+void FGroupCentralData::BlendView(AActor* pActor, bool bForce)
 {
-	if (pActor == pCurView || !pController)
+	if ((pActor == pCurView && !bForce) || !pController)
 		return;
 
 	pCurView = pActor;

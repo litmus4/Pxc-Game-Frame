@@ -55,11 +55,13 @@ void APxcGameMode::Tick(float fDeltaSeconds)
 	Super::Tick(fDeltaSeconds);
 
 	m_pRelTimeDilationMgr->Tick(fDeltaSeconds);
+	m_pGroupCentralTargetMgr->Tick(fDeltaSeconds);
 }
 
 void APxcGameMode::EndPlay(const EEndPlayReason::Type eEndPlayReason)
 {
 	m_pRelTimeDilationMgr->Release();
+	m_pGroupCentralTargetMgr->Release();
 	m_pVirtualGroupMgr->Release();
 
 	Super::EndPlay(eEndPlayReason);

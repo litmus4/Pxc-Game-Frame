@@ -19,6 +19,7 @@ UTestGroupCentralComponent::UTestGroupCentralComponent()
 	m_pRunningPawn = nullptr;
 	m_iStage = 0;
 	m_fCurTime = 0.0f;
+	m_uSpawnCount = 0;
 }
 
 void UTestGroupCentralComponent::BeginPlay()
@@ -87,7 +88,7 @@ void UTestGroupCentralComponent::RunCppTestWithParam(const FSharedSignature& Par
 		pManager->GetDirectTarget(m_GroupName, vLoc);
 		FTransform trans(FRotator::ZeroRotator, vLoc);
 		FActorSpawnParameters SpawnParam;
-		SpawnParam.Name = TEXT("GroupCentralSpawnedDirect");
+		SpawnParam.Name = FName(FString::Printf(TEXT("GroupCentralSpawnedDirect%d"), ++m_uSpawnCount));
 		SpawnParam.Owner = GetOwner();
 		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		m_pSpawnedDirectActor = GetWorld()->SpawnActor(m_cSpawnedDirectActor, &trans, SpawnParam);
@@ -101,7 +102,7 @@ void UTestGroupCentralComponent::RunCppTestWithParam(const FSharedSignature& Par
 			pManager->GetCentralTarget(m_GroupName, vLoc);
 			FTransform trans(FRotator::ZeroRotator, vLoc);
 			FActorSpawnParameters SpawnParam;
-			SpawnParam.Name = TEXT("GroupCentralCamera");
+			SpawnParam.Name = FName(FString::Printf(TEXT("GroupCentralCamera%d"), m_uSpawnCount));
 			SpawnParam.Owner = GetOwner();
 			SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			m_pCameraActor = GetWorld()->SpawnActor(m_cCameraActor, &trans, SpawnParam);

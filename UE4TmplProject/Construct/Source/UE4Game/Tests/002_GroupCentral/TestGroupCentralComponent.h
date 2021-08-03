@@ -94,5 +94,6 @@ protected:
 	int32 m_iStage;
 	float m_fCurTime;
 	FVector m_vStartLoc;
+	uint32 m_uSpawnCount;
 };
 //FLAGJK

@@ -96,4 +96,3 @@ protected:
 	FVector m_vStartLoc;
 	uint32 m_uSpawnCount;
 };
-//FLAGJK

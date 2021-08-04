@@ -361,7 +361,7 @@ void FGroupCentralData::ResetFloatings()
 	fDefaultBlendTime = -1.0f;
 	eDefaultBlendFunc = EViewTargetBlendFunction::VTBlend_Linear;
 	pCentralViewTarget = nullptr;
-	if (pController)
+	if (pController && pController->PlayerCameraManager)
 		pController->PlayerCameraManager->OnBlendComplete().Remove(DeleBlendHandle);
 	pController = nullptr;
 	tmapActorViewInfos.Empty();
@@ -375,7 +375,8 @@ bool FGroupCentralData::IsFloating(uint8 uFloatingFlags, bool bMovingOrBlending)
 			if (bMoving) return true;
 		if (uFloatingFlags & EFloatingType::View)
 		{
-			if (pController && pController->PlayerCameraManager->PendingViewTarget.Target)
+			if (pController && pController->PlayerCameraManager &&
+				pController->PlayerCameraManager->PendingViewTarget.Target)
 				return true;
 		}
 	}
@@ -501,7 +502,8 @@ void FGroupCentralData::FlushEnd()
 	if (bMoving)
 		DeleDirectChanged.ExecuteIfBound(pCurDirect);//TODOJK EventCenter
 
-	if (pController && pController->PlayerCameraManager->PendingViewTarget.Target)
+	if (IsValid(pController) && IsValid(pController->PlayerCameraManager) &&
+		pController->PlayerCameraManager->PendingViewTarget.Target)
 		OnViewChanged();
 }
 

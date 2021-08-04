@@ -76,7 +76,7 @@ void UTestGroupCentralComponent::RunCppTestWithParam(const FSharedSignature& Par
 
 	UGroupCentralTargetMgr* pManager = pGM->GetGroupCentralTargetMgr();
 	check(pManager);
-	pManager->SetCentralTarget(m_GroupName, 5.0f, 1.0f, 50.0f, 0.5f, 0.5f);
+	pManager->SetCentralTarget(m_GroupName, 5.0f, 1.0f, 40.0f, 0.5f, 0.5f);
 	FGroupCentralDirectChangeDelegate DeleDirect;
 	pManager->SetCentralDirect(m_GroupName, 1.0f, m_pDefaultDynamic, DeleDirect);
 	pManager->AddActorDirect(m_GroupName, GetOwner(), 1.0f, m_pOwnerDynamic);

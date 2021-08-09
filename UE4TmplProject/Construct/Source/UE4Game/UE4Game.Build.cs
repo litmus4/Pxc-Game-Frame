@@ -71,5 +71,6 @@ public class UE4Game : ModuleRules
         //FLAGJK 存在编译问题：PxcCore的Debug连接竟然还会出现配置不匹配
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "PublicDefinitions.lib"));
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "DataTables.lib"));
+        PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "MonoControl.lib"));
     }
 }

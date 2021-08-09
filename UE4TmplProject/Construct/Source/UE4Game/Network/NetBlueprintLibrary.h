@@ -64,7 +64,7 @@ public:
 	static bool Net_ForEachPlayerNative(UObject* WorldContextObject, const FNetEachPlayerDelegate& OnEach);
 
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
-	static void Net_ForEachPlayer(UObject* WorldContextObject, FPlayerUniversalOneDelegate OnEach);
+	static void Net_ForEachPlayer(UObject* WorldContextObject, FNetDynOnEachPlayerDelegate OnEach);
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
 	static bool Net_IsAnyPlayer(UObject* WorldContextObject, AActor* Actor);

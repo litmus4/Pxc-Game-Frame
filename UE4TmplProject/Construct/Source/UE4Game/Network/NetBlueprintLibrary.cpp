@@ -155,7 +155,7 @@ bool UNetBlueprintLibrary::Net_ForEachPlayerNative(UObject* WorldContextObject, 
 	return false;
 }
 
-void UNetBlueprintLibrary::Net_ForEachPlayer(UObject* WorldContextObject, FPlayerUniversalOneDelegate OnEach)
+void UNetBlueprintLibrary::Net_ForEachPlayer(UObject* WorldContextObject, FNetDynOnEachPlayerDelegate OnEach)
 {
 	Net_ForEachPlayerNative(WorldContextObject,
 		FNetEachPlayerDelegate::CreateLambda([&OnEach](ACharacter* Player)->bool {//APxcCharacterPlayer

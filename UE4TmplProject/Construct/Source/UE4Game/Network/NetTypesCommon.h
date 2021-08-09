@@ -698,3 +698,4 @@ static void RepNet##MainName##ArrayToMap(FNet##MainName##Array& NetArray, TMap<K
 //============================================================
 
 DECLARE_DELEGATE_RetVal_OneParam(bool, FNetEachPlayerDelegate, /*class APxcCharacterPlayer**/ACharacter*);//TODOJK PlayerÀà
+DECLARE_DYNAMIC_DELEGATE_OneParam(FNetDynOnEachPlayerDelegate, /*class APxcCharacterPlayer**/ACharacter*, Player);

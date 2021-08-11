@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EventArgStructs.h" />
     <ClInclude Include="EventCenter.h" />
   </ItemGroup>
   <ItemGroup>

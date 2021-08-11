@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="AssetsDef.h" />
     <ClInclude Include="CoreConstantsDef.h" />
+    <ClInclude Include="EventKeyDef.h" />
     <ClInclude Include="Globalization.h" />
     <ClInclude Include="SpecialFileDef.h" />
   </ItemGroup>

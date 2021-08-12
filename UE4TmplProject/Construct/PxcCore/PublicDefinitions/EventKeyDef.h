@@ -2,5 +2,5 @@
 
 enum EEventKeyType
 {
-	Unknown = 0,
+	EKUnknown = 0,
 };

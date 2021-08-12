@@ -50,7 +50,9 @@ void UPxcStaticResourceSystem::Initialize(FSubsystemCollectionBase& Collection)
 void UPxcStaticResourceSystem::Deinitialize()
 {
 	CTextTableCenter::GetInstance()->Release();
+	CTextTableCenter::DeleteInstance();
 	COtherTableCenter::GetInstance()->Release();
+	COtherTableCenter::DeleteInstance();
 
 	PxcUtil::zPackRelease();
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PxcStaticResourceSystem deinitialized"));

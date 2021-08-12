@@ -5,6 +5,7 @@
 #include "Misc/Paths.h"
 #include "Containers/StringConv.h"
 #include "GameFramework/GameModeBase.h"
+#include "MonoControl/EventCenter.h"
 #include "Framework/PxcInputMappingMgr.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
@@ -47,6 +48,10 @@ void UPXCycleInstance::Init()
 
 void UPXCycleInstance::Shutdown()
 {
+	CEventCenter::GetInstance()->Release();
+	CEventCenter::DeleteInstance();
+
+	PxcUtil::CLogCenter::GetInstance()->Release();
 	PxcUtil::CLogCenter::DeleteInstance();
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance shutdown end"));

@@ -67,6 +67,25 @@ APlayerCameraManager* UNetBlueprintLibrary::Net_GetLocalPlayerCameraManager(UObj
 	return Controller ? Controller->PlayerCameraManager : nullptr;
 }
 
+APawn* UNetBlueprintLibrary::Net_GetLocalPlayerPawnCli(UObject* WorldContextObject)
+{
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World) return nullptr;
+
+	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
+	{
+		if (*Iter && (*Iter)->GetLocalRole() == ROLE_AutonomousProxy)
+			return *Iter;
+	}
+	return nullptr;
+}
+
+ACharacter* UNetBlueprintLibrary::Net_GetLocalPlayerCharacterCli(UObject* WorldContextObject)
+{
+	APawn* Pawn = Net_GetLocalPlayerPawnCli(WorldContextObject);
+	return Pawn ? Cast<ACharacter>(Pawn) : nullptr;
+}
+
 APawn* UNetBlueprintLibrary::Net_GetAuthControlledPawnNative(UObject* WorldContextObject, APlayerController** OutPC)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);

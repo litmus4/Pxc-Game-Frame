@@ -41,6 +41,12 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
 	static APlayerCameraManager* Net_GetLocalPlayerCameraManager(UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static APawn* Net_GetLocalPlayerPawnCli(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static ACharacter* Net_GetLocalPlayerCharacterCli(UObject* WorldContextObject);
+
 	static APawn* Net_GetAuthControlledPawnNative(UObject* WorldContextObject, APlayerController** OutPC = nullptr);
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")

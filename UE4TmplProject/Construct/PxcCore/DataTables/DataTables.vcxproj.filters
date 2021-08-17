@@ -19,6 +19,9 @@
     <Filter Include="OtherTable">
       <UniqueIdentifier>{db376783-1820-4f38-bcdb-881ac5a263b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="StoryTable">
+      <UniqueIdentifier>{68fc1818-dfb0-49ee-926d-e5a04f46da41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -51,6 +54,12 @@
     <ClInclude Include="OtherTable\InputActionNameRow.h">
       <Filter>OtherTable</Filter>
     </ClInclude>
+    <ClInclude Include="StoryTable\QuestRow.h">
+      <Filter>StoryTable</Filter>
+    </ClInclude>
+    <ClInclude Include="StoryTable\StoryTableCenter.h">
+      <Filter>StoryTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
@@ -79,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="OtherTable\InputActionNameRow.cpp">
       <Filter>OtherTable</Filter>
+    </ClCompile>
+    <ClCompile Include="StoryTable\QuestRow.cpp">
+      <Filter>StoryTable</Filter>
+    </ClCompile>
+    <ClCompile Include="StoryTable\StoryTableCenter.cpp">
+      <Filter>StoryTable</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

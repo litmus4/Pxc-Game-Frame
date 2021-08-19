@@ -47,3 +47,18 @@ CQuestRow* CStoryTableCenter::GetQuestRow(int iID)
 		return iter->second;
 	return NULL;
 }
+
+void CStoryTableCenter::GetQuestRowsByPrev(int iID, std::vector<CQuestRow*>& vecOut)
+{
+	std::map<int, std::vector<int>>::iterator itPrev = m_mapPrevQuests.find(iID);
+	if (itPrev != m_mapPrevQuests.end())
+	{
+		std::vector<int>::iterator itSub = itPrev->second.begin();
+		for (; itSub != itPrev->second.end(); itSub++)
+		{
+			std::map<int, CQuestRow*>::iterator iter = m_mapQuests.find(*itSub);
+			if (iter != m_mapQuests.end())
+				vecOut.push_back(iter->second);
+		}
+	}
+}

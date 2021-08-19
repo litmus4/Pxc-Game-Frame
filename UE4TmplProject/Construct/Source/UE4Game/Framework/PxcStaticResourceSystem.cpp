@@ -10,6 +10,7 @@
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
 #include "DataTables/TextTable/TextTableCenter.h"
+#include "DataTables/StoryTable/StoryTableCenter.h"
 #include "DataTables/OtherTable/OtherTableCenter.h"
 #include "PxcUtil/StringTools.h"
 #include "Windows/PostWindowsApi.h"
@@ -31,6 +32,7 @@ void UPxcStaticResourceSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	//DataTables
 	CTextTableCenter::GetInstance()->Init(strContentDir, GlobalDef::ELanguage_ZH_CN);
+	CStoryTableCenter::GetInstance()->Init(strContentDir);
 	COtherTableCenter::GetInstance()->Init(strContentDir);
 
 	PxcUtil::zPackRelease();
@@ -51,6 +53,8 @@ void UPxcStaticResourceSystem::Deinitialize()
 {
 	CTextTableCenter::GetInstance()->Release();
 	CTextTableCenter::DeleteInstance();
+	CStoryTableCenter::GetInstance()->Release();
+	CStoryTableCenter::DeleteInstance();
 	COtherTableCenter::GetInstance()->Release();
 	COtherTableCenter::DeleteInstance();
 

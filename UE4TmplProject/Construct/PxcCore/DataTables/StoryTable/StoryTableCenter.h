@@ -11,6 +11,7 @@ public:
 	void Release();
 
 	CQuestRow* GetQuestRow(int iID);
+	void GetQuestRowsByPrev(int iID, std::vector<CQuestRow*>& vecOut);
 
 private:
 	std::map<int, CQuestRow*> m_mapQuests;

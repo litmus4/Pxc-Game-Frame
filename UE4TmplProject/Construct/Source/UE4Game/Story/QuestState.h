@@ -6,6 +6,8 @@
 #include "UObject/NoExportTypes.h"
 #include "QuestState.generated.h"
 
+class CQuestRow;
+
 /**
  * 
  */
@@ -14,4 +16,15 @@ class UE4GAME_API UQuestState : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+	UQuestState();
+
+	void Init(int32 iQuestID);
+	void Init(CQuestRow* pQuestRow);
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	int32 m_iQuestID;
+
+	CQuestRow* m_pQuestRow;
 };

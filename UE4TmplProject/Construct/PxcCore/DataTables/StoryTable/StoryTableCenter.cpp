@@ -18,16 +18,11 @@ bool CStoryTableCenter::Init(const std::string& strPath)
 		std::map<int, CQuestRow*>::iterator iter = m_mapQuests.begin();
 		for (; iter != m_mapQuests.end(); iter++)
 		{
-			std::map<int, std::vector<int>>::iterator itPrev =
-				m_mapPrevQuests.find(iter->second->m_iPrevQuestID);
-			if (itPrev == m_mapPrevQuests.end())
-			{
-				std::vector<int> vecIDs;
-				vecIDs.push_back(iter->first);
-				m_mapPrevQuests.insert(std::make_pair(iter->second->m_iPrevQuestID, vecIDs));
-			}
-			else
-				itPrev->second.push_back(iter->first);
+			AddNextQuest(iter->second->m_iPrevQuestID, iter->first);
+
+			std::vector<int>::iterator itSub = iter->second->m_vecSubPrevQuestIDs.begin();
+			for (; itSub != iter->second->m_vecSubPrevQuestIDs.end(); itSub++)
+				AddNextQuest(*itSub, iter->first);
 		}
 	}
 }
@@ -35,7 +30,7 @@ bool CStoryTableCenter::Init(const std::string& strPath)
 void CStoryTableCenter::Release()
 {
 	UNLOADTABLE(Quest, m_mapQuests)
-	m_mapPrevQuests.clear();
+	m_mapNextQuests.clear();
 
 	DeleteInstance();
 }
@@ -48,17 +43,30 @@ CQuestRow* CStoryTableCenter::GetQuestRow(int iID)
 	return NULL;
 }
 
-void CStoryTableCenter::GetQuestRowsByPrev(int iID, std::vector<CQuestRow*>& vecOut)
+void CStoryTableCenter::GetNextQuestRows(int iID, std::vector<CQuestRow*>& vecOut)
 {
-	std::map<int, std::vector<int>>::iterator itPrev = m_mapPrevQuests.find(iID);
-	if (itPrev != m_mapPrevQuests.end())
+	std::map<int, std::vector<int>>::iterator itNext = m_mapNextQuests.find(iID);
+	if (itNext != m_mapNextQuests.end())
 	{
-		std::vector<int>::iterator itSub = itPrev->second.begin();
-		for (; itSub != itPrev->second.end(); itSub++)
+		std::vector<int>::iterator itSub = itNext->second.begin();
+		for (; itSub != itNext->second.end(); itSub++)
 		{
 			std::map<int, CQuestRow*>::iterator iter = m_mapQuests.find(*itSub);
 			if (iter != m_mapQuests.end())
 				vecOut.push_back(iter->second);
 		}
 	}
+}
+
+void CStoryTableCenter::AddNextQuest(int iID, int iNextID)
+{
+	std::map<int, std::vector<int>>::iterator itNext = m_mapNextQuests.find(iID);
+	if (itNext == m_mapNextQuests.end())
+	{
+		std::vector<int> vecIDs;
+		vecIDs.push_back(iNextID);
+		m_mapNextQuests.insert(std::make_pair(iID, vecIDs));
+	}
+	else
+		itNext->second.push_back(iNextID);
 }

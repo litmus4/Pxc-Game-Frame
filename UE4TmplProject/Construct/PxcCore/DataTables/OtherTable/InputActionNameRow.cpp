@@ -14,7 +14,7 @@ void CInputActionNameRow::Read(PxcUtil::CCSVTableOperator& tabop)
 {
 	tabop.GetValue("ID", m_iID);
 	tabop.GetValue("ActionName", m_strActionName);
-	tabop.GetValue("DisplayTextID", m_iDisplayTextID);
+	tabop.GetValue("DisplayText", m_iDisplayTextID);
 
 	int iBool = 0;
 	tabop.GetValue("IsAxis", iBool);

@@ -16,7 +16,13 @@ void CQuestRow::Read(PxcUtil::CCSVTableOperator& tabop)
 	tabop.GetValue("Name", m_iNameTextID);
 	tabop.GetValue("Desc", m_iDescTextID);
 	tabop.GetValue("Content", m_iContentStoryTextID);
-	tabop.GetValue("GroupID", m_iGraphID);
-	tabop.GetValue("ChapterID", m_iChapterID);
-	//
+
+	tabop.GetValue("Group", m_iGraphID);
+	tabop.GetValue("Chapter", m_iChapterID);
+	tabop.GetValue("PrevQuest", m_iPrevQuestID);
+	tabop.GetArray("SubPrevQuests", m_vecSubPrevQuestIDs);
+	tabop.GetValue("IsMainHead", m_bMainHeadMark);
+	tabop.GetValue("TributaryID", m_iTributaryID);
+	tabop.GetValue("IsPrevOR", m_bPrevOR);
+	tabop.GetValue("IsNextSingle", m_bNextSingle);
 }

@@ -12,9 +12,16 @@ public:
 	int m_iNameTextID;
 	int m_iDescTextID;
 	int m_iContentStoryTextID;
+
 	int m_iGraphID;
 	int m_iChapterID;
 	int m_iPrevQuestID;
+	std::vector<int> m_vecSubPrevQuestIDs;
+	bool m_bMainHeadMark;
+	int m_iTributaryID;
+	bool m_bPrevOR;
+	bool m_bNextSingle;
+
 	//接受条件们
 	//是否自动接受
 	//接受分镜们

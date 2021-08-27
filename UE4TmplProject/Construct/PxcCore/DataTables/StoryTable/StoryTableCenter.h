@@ -11,9 +11,11 @@ public:
 	void Release();
 
 	CQuestRow* GetQuestRow(int iID);
-	void GetQuestRowsByPrev(int iID, std::vector<CQuestRow*>& vecOut);
+	void GetNextQuestRows(int iID, std::vector<CQuestRow*>& vecOut);
 
 private:
+	void AddNextQuest(int iID, int iNextID);
+
 	std::map<int, CQuestRow*> m_mapQuests;
-	std::map<int, std::vector<int>> m_mapPrevQuests;
+	std::map<int, std::vector<int>> m_mapNextQuests;
 };

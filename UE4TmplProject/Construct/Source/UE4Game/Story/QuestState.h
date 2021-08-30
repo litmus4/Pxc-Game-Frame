@@ -22,6 +22,8 @@ public:
 	void Init(int32 iQuestID);
 	void Init(CQuestRow* pQuestRow);
 
+	FORCEINLINE int32 GetQuestID() { return m_iQuestID; }
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	int32 m_iQuestID;

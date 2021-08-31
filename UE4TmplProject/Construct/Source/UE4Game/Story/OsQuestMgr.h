@@ -15,6 +15,8 @@
 
 #include "OsQuestMgr.generated.h"
 
+class CQuestRow;
+
 /**
  * 
  */
@@ -28,6 +30,8 @@ public:
 
 	struct SQuestFsmEx
 	{
+		bool operator==(const int32& iOtherID) const;
+
 		tQuestFsm Fsm;
 		int32 iCurStateID;
 		std::vector<SQuestFsmEx> vecTributaries;
@@ -43,6 +47,9 @@ public:
 	//
 
 private:
+	void AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
+		std::map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel);
+
 	UPROPERTY()
 	TMap<int32, UQuestState*> m_tmapQuestStates;
 

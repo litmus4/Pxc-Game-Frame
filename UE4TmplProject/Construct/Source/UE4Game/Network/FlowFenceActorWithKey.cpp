@@ -12,9 +12,10 @@ UFlowFenceActorWithKey::UFlowFenceActorWithKey(const FObjectInitializer& ObjectI
 	//
 }
 
-UFlowFenceActorWithKey* UFlowFenceActorWithKey::StartFlowFence(FName CheckName, float fWaitTime)
+UFlowFenceActorWithKey* UFlowFenceActorWithKey::StartFlowFence(UObject* pWCO, FName CheckName, float fWaitTime)
 {
-	UFlowFenceActorWithKey* pFence = NewObject<UFlowFenceActorWithKey>();
+	UWorld* pWorld = GEngine->GetWorldFromContextObject(pWCO, EGetWorldErrorMode::LogAndReturnNull);
+	UFlowFenceActorWithKey* pFence = NewObject<UFlowFenceActorWithKey>(pWorld);
 	if (pFence)
 	{
 		pFence->m_CheckName = CheckName;

@@ -26,8 +26,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FActorWithKeyDelegate DeleTimeOut;
 
-	UFUNCTION(BlueprintCallable, Category = "Flow Control", meta = (BlueprintInternalUseOnly = "TRUE"))
-	static UFlowFenceActorWithKey* StartFlowFence(FName CheckName, float fWaitTime);
+	UFUNCTION(BlueprintCallable, Category = "Flow Control", meta = (WorldContext = "pWCO", BlueprintInternalUseOnly = "TRUE"))
+	static UFlowFenceActorWithKey* StartFlowFence(UObject* pWCO, FName CheckName, float fWaitTime);
 
 protected:
 	virtual void Activate() override;

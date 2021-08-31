@@ -17,7 +17,8 @@ public:
 	int m_iChapterID;
 	int m_iPrevQuestID;
 	std::vector<int> m_vecSubPrevQuestIDs;
-	bool m_bMainHeadMark;
+	int m_iHeadLevel;
+	int m_iParentHeadQuestID;
 	int m_iTributaryID;//保证与存档对应上
 	bool m_bPrevOR;
 	bool m_bNextSingle;

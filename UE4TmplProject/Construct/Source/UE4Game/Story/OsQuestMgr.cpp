@@ -10,6 +10,11 @@
 #include "Windows/PostWindowsApi.h"
 #include "Windows/HideWindowsPlatformTypes.h"
 
+bool UOsQuestMgr::SQuestFsmEx::operator==(const int32& iOtherID) const
+{
+	return (iCurStateID == iOtherID);
+}
+
 void UOsQuestMgr::InitDefault()
 {
 	//
@@ -27,7 +32,7 @@ void UOsQuestMgr::Init()
 		pState->Init(*iter);
 		m_tmapQuestStates.Add((*iter)->m_iID, pState);
 
-		if ((*iter)->m_bMainHeadMark)//FLAGJK ตÝน้
+		if ((*iter)->m_iHeadLevel == 0)//FLAGJK ตÝน้
 		{
 			verify(m_mapQuestFsms.find((*iter)->m_iGraphID) == m_mapQuestFsms.end());
 			SQuestFsmEx FsmEx;
@@ -114,4 +119,14 @@ void UOsQuestMgr::Release()
 {
 	m_mapQuestFsms.clear();
 	m_tmapQuestStates.Empty();
+}
+
+void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
+	std::map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel)
+{
+	if (pRow->m_iHeadLevel == iLevel)
+	{
+		verify(std::find(vecTributaries.begin(), vecTributaries.end(), pRow->m_iID) == vecTributaries.end());
+		//
+	}
 }

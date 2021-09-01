@@ -23,6 +23,7 @@ public:
 	void Init(CQuestRow* pQuestRow);
 
 	FORCEINLINE int32 GetQuestID() { return m_iQuestID; }
+	FORCEINLINE CQuestRow* GetQuestRow() { return m_pQuestRow; }
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

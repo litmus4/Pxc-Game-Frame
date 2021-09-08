@@ -73,7 +73,8 @@ void UOsQuestMgr::Init()
 		}
 	}
 
-	std::map<int32, std::vector<UQuestState*>>::iterator itGh = mapGraphHeads.begin();//FLAGJK 清理mapTribuHeads
+	verify(mapTribuHeads.empty());//二级支流必须有头
+	std::map<int32, std::vector<UQuestState*>>::iterator itGh = mapGraphHeads.begin();
 	for (; itGh != mapGraphHeads.end(); itGh++)
 	{
 		std::vector<UQuestState*>::iterator itHead = itGh->second.begin();
@@ -103,6 +104,8 @@ void UOsQuestMgr::Init()
 			}
 		}
 	}
+
+	//TODOJK
 }
 
 void UOsQuestMgr::Release()

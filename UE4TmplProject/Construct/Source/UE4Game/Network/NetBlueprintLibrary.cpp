@@ -4,6 +4,7 @@
 #include "Network/NetBlueprintLibrary.h"
 #include "GameFramework/Character.h"
 #include "EngineUtils.h"
+#include "NetTypesWrapper.h"
 
 int32 UNetBlueprintLibrary::NetPlayerCount = 0;
 
@@ -230,4 +231,76 @@ bool UNetBlueprintLibrary::Net_ServerTravel(UObject* WorldContextObject, FName L
 		Cmd += FString(TEXT("?")) + Options;
 
 	return World->ServerTravel(Cmd, bAbsolute);
+}
+
+FSharedSignature UNetBlueprintLibrary::Net_WrapIntegerParam(int32 iData)
+{
+	FNetIntegerParamWrapper Wrapper(iData);
+	return FSharedSignature(Wrapper);
+}
+
+FSharedSignature UNetBlueprintLibrary::Net_WrapBoolParam(bool bData)
+{
+	FNetBoolParamWrapper Wrapper(bData);
+	return FSharedSignature(Wrapper);
+}
+
+FSharedSignature UNetBlueprintLibrary::Net_WrapObjectParam(UObject* pObject)
+{
+	FNetObjectParamWrapper Wrapper(pObject);
+	return FSharedSignature(Wrapper);
+}
+
+FSharedSignature UNetBlueprintLibrary::Net_WrapClassParam(TSubclassOf<UObject> cClass)
+{
+	FNetClassParamWrapper Wrapper(cClass);
+	return FSharedSignature(Wrapper);
+}
+
+FSharedSignature UNetBlueprintLibrary::Net_WrapGameplayTagParam(FGameplayTag Tag)
+{
+	FNetGameplayTagParamWrapper Wrapper(Tag);
+	return FSharedSignature(Wrapper);
+}
+
+FSharedSignature UNetBlueprintLibrary::Net_WrapTreeParam(const TArray<FSharedSignature>& tarrChildren)
+{
+	FNetTreeParamWrapper Wrapper(tarrChildren);
+	return FSharedSignature(Wrapper);
+}
+
+int32 UNetBlueprintLibrary::Net_UnwrapToInteger(FSharedSignature ParamSig)
+{
+	FNetIntegerParamWrapper* pWrapper = ParamSig.GetDerivedPtr<FNetIntegerParamWrapper>();
+	return pWrapper->iData;
+}
+
+bool UNetBlueprintLibrary::Net_UnwrapToBool(FSharedSignature ParamSig)
+{
+	FNetBoolParamWrapper* pWrapper = ParamSig.GetDerivedPtr<FNetBoolParamWrapper>();
+	return pWrapper->bData;
+}
+
+UObject* UNetBlueprintLibrary::Net_UnwrapToObject(FSharedSignature ParamSig)
+{
+	FNetObjectParamWrapper* pWrapper = ParamSig.GetDerivedPtr<FNetObjectParamWrapper>();
+	return pWrapper->pObject;
+}
+
+TSubclassOf<UObject> UNetBlueprintLibrary::Net_UnwrapToClass(FSharedSignature ParamSig)
+{
+	FNetClassParamWrapper* pWrapper = ParamSig.GetDerivedPtr<FNetClassParamWrapper>();
+	return pWrapper->cClass;
+}
+
+FGameplayTag UNetBlueprintLibrary::Net_UnwrapToGameplayTag(FSharedSignature ParamSig)
+{
+	FNetGameplayTagParamWrapper* pWrapper = ParamSig.GetDerivedPtr<FNetGameplayTagParamWrapper>();
+	return pWrapper->Tag;
+}
+
+void UNetBlueprintLibrary::Net_UnwrapToTree(FSharedSignature ParamSig, TArray<FSharedSignature>& tarrOut)
+{
+	FNetTreeParamWrapper* pWrapper = ParamSig.GetDerivedPtr<FNetTreeParamWrapper>();
+	tarrOut = pWrapper->tarrChildren;
 }

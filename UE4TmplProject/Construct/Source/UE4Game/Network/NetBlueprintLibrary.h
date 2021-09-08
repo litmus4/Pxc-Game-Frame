@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "GameplayTagContainer.h"
 #include "Network/NetTypesCommon.h"
+#include "Framework/Structs/SignatureStructs.h"
 #include "PrivateDefinitions/ScatteredDef.h"
 #include "NetBlueprintLibrary.generated.h"
 
@@ -87,6 +89,44 @@ public:
 	/* Ä£·ÂOpenLevelµÄServerTravel */
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
 	static bool Net_ServerTravel(UObject* WorldContextObject, FName LevelName, bool bAbsolute = true, FString Options = FString(TEXT("")));
+
+	//Net Param Wrapping
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FSharedSignature Net_WrapIntegerParam(int32 iData);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FSharedSignature Net_WrapBoolParam(bool bData);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FSharedSignature Net_WrapObjectParam(UObject* pObject);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FSharedSignature Net_WrapClassParam(TSubclassOf<UObject> cClass);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FSharedSignature Net_WrapGameplayTagParam(FGameplayTag Tag);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FSharedSignature Net_WrapTreeParam(const TArray<FSharedSignature>& tarrChildren);
+
+	//Net Param Unwrapping
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static int32 Net_UnwrapToInteger(FSharedSignature ParamSig);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static bool Net_UnwrapToBool(FSharedSignature ParamSig);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static UObject* Net_UnwrapToObject(FSharedSignature ParamSig);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static TSubclassOf<UObject> Net_UnwrapToClass(FSharedSignature ParamSig);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static FGameplayTag Net_UnwrapToGameplayTag(FSharedSignature ParamSig);
+
+	UFUNCTION(BlueprintPure, Category = "Networking|Other")
+	static void Net_UnwrapToTree(FSharedSignature ParamSig, TArray<FSharedSignature>& tarrOut);
 
 private:
 	static int32 NetPlayerCount;

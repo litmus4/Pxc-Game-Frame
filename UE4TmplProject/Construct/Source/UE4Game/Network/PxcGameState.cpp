@@ -20,9 +20,10 @@ void APxcGameState::OnSetToWorld(APxcGameMode* pGameMode)
 	K2_OnSetToWorld(pGameMode);
 }
 
-void APxcGameState::MulticastUniversal_Implementation(const FName& TypeName, UObject* pParamObject, bool bSync)
+void APxcGameState::MulticastUniversal_Implementation(const FName& TypeName,
+	UObject* pParamObject, FSharedSignature ParamSig, bool bSync)
 {
-	OnBroadUniversal(TypeName, pParamObject);
+	OnBroadUniversal(TypeName, pParamObject, ParamSig);
 
 	if (bSync)
 	{//TODOJK Player¿‡Õ¯¬Á∞Ê
@@ -31,7 +32,8 @@ void APxcGameState::MulticastUniversal_Implementation(const FName& TypeName, UOb
 	}
 }
 
-bool APxcGameState::MulticastUniversal_Validate(const FName& TypeName, UObject* pParamObject, bool bSync)
+bool APxcGameState::MulticastUniversal_Validate(const FName& TypeName,
+	UObject* pParamObject, FSharedSignature ParamSig, bool bSync)
 {
 	return true;
 }

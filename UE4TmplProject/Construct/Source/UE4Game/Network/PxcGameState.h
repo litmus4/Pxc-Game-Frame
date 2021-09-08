@@ -26,12 +26,14 @@ public:
 
 public:
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
-	void MulticastUniversal(const FName& TypeName, UObject* pParamObject, bool bSync);
-	virtual void MulticastUniversal_Implementation(const FName& TypeName, UObject* pParamObject, bool bSync);
-	virtual bool MulticastUniversal_Validate(const FName& TypeName, UObject* pParamObject, bool bSync);
+	void MulticastUniversal(const FName& TypeName, UObject* pParamObject, FSharedSignature ParamSig, bool bSync);
+	virtual void MulticastUniversal_Implementation(const FName& TypeName,
+		UObject* pParamObject, FSharedSignature ParamSig, bool bSync);
+	virtual bool MulticastUniversal_Validate(const FName& TypeName,
+		UObject* pParamObject, FSharedSignature ParamSig, bool bSync);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnBroadUniversal(const FName& TypeName, UObject* pParamObject);
+	void OnBroadUniversal(const FName& TypeName, UObject* pParamObject, FSharedSignature ParamSig);
 
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
 	void MulticastFinishFlowFence(const FString& sKey);

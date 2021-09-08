@@ -11,6 +11,7 @@ enum class EPtrModelBaseType : uint8
 {
 	Model = 0,
 	PassiveListener,
+	NetParamWrapper,
 	TestParameter,
 };
 

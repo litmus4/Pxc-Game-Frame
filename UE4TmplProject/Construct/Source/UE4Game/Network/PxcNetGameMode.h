@@ -18,10 +18,11 @@ class UE4GAME_API APxcNetGameMode : public APxcGameMode
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = Networking)
-	void MulticastUniversal(FName TypeName, UObject* pParamObject);
+	void MulticastUniversal(FName TypeName, UObject* pParamObject, FSharedSignature ParamSig);
 
 	UFUNCTION(BlueprintCallable, Category = Networking)
-	void MulticastUniversalSync(FName TypeName, float fWaitTime, FSimpleDynamicDelexPair DelexCompleted, UObject* pParamObject);
+	void MulticastUniversalSync(FName TypeName, float fWaitTime, FSimpleDynamicDelexPair DelexCompleted,
+		UObject* pParamObject, FSharedSignature ParamSig);
 
 	FServerSyncInfo* FindServerSyncInfo(EServerSyncType eType);
 

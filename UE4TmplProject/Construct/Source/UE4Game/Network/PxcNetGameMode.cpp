@@ -5,17 +5,18 @@
 #include "PxcGameState.h"
 #include "NetBlueprintLibrary.h"
 
-void APxcNetGameMode::MulticastUniversal(FName TypeName, UObject* pParamObject)
+void APxcNetGameMode::MulticastUniversal(FName TypeName, UObject* pParamObject, FSharedSignature ParamSig)
 {
 	if (!ensure(GetNetMode() == NM_ListenServer))
 		return;
 
 	APxcGameState* pGS = GetGameState<APxcGameState>();
 	if (pGS)
-		pGS->MulticastUniversal(TypeName, pParamObject, false);
+		pGS->MulticastUniversal(TypeName, pParamObject, ParamSig, false);
 }
 
-void APxcNetGameMode::MulticastUniversalSync(FName TypeName, float fWaitTime, FSimpleDynamicDelexPair DelexCompleted, UObject* pParamObject)
+void APxcNetGameMode::MulticastUniversalSync(FName TypeName, float fWaitTime, FSimpleDynamicDelexPair DelexCompleted,
+	UObject* pParamObject, FSharedSignature ParamSig)
 {
 	if (!ensure(GetNetMode() == NM_ListenServer) ||
 		m_tmapServerSyncInfos.Contains(EServerSyncType::Universal))
@@ -23,7 +24,7 @@ void APxcNetGameMode::MulticastUniversalSync(FName TypeName, float fWaitTime, FS
 
 	APxcGameState* pGS = GetGameState<APxcGameState>();
 	if (pGS)
-		pGS->MulticastUniversal(TypeName, pParamObject, true);
+		pGS->MulticastUniversal(TypeName, pParamObject, ParamSig, true);
 
 	AddWaitingUsedServerSyncInfo(EServerSyncType::Universal, fWaitTime, 0, DelexCompleted);
 }

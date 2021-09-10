@@ -25,7 +25,7 @@ void UOsQuestMgr::Init()
 	std::vector<CQuestRow*> vecHeadRows;
 	CStoryTableCenter::GetInstance()->GetNextQuestRows(-1, vecHeadRows);
 	std::map<int32, std::vector<UQuestState*>> mapGraphHeads;
-	std::map<int32, std::vector<UQuestState*>> mapTribuHeads;
+	std::unordered_map<int32, std::vector<UQuestState*>> mapTribuHeads;
 
 	std::vector<CQuestRow*>::iterator iter = vecHeadRows.begin();
 	for (; iter != vecHeadRows.end(); iter++)
@@ -41,7 +41,7 @@ void UOsQuestMgr::Init()
 			FsmEx.iCurStateID = (*iter)->m_iID;
 			FsmEx.Fsm.AddState(pState);
 			FsmEx.Fsm.SetState(pState, true);
-			std::pair<std::unordered_map<int32, SQuestFsmEx>::iterator, bool> RetPair =
+			std::pair<std::map<int32, SQuestFsmEx>::iterator, bool> RetPair =
 				m_mapQuestFsms.insert(std::make_pair((*iter)->m_iGraphID, FsmEx));
 
 			std::map<int32, std::vector<UQuestState*>>::iterator itGh = mapGraphHeads.find((*iter)->m_iGraphID);
@@ -55,7 +55,7 @@ void UOsQuestMgr::Init()
 		}
 		else
 		{
-			std::unordered_map<int32, SQuestFsmEx>::iterator itQf = m_mapQuestFsms.find((*iter)->m_iGraphID);
+			std::map<int32, SQuestFsmEx>::iterator itQf = m_mapQuestFsms.find((*iter)->m_iGraphID);
 			if (itQf == m_mapQuestFsms.end())
 			{
 				std::map<int32, std::vector<UQuestState*>>::iterator itGh = mapGraphHeads.find((*iter)->m_iGraphID);
@@ -92,7 +92,7 @@ void UOsQuestMgr::Init()
 			}
 			else
 			{
-				std::unordered_map<int32, SQuestFsmEx>::iterator itQf = m_mapQuestFsms.find(itGh->first);
+				std::map<int32, SQuestFsmEx>::iterator itQf = m_mapQuestFsms.find(itGh->first);
 				if (itQf != m_mapQuestFsms.end())
 				{
 					SQuestFsmEx TriFsmEx;
@@ -105,7 +105,60 @@ void UOsQuestMgr::Init()
 		}
 	}
 
-	//TODOJK
+	std::map<int32, SQuestFsmEx>::iterator itQf = m_mapQuestFsms.begin();
+	for (; itQf != m_mapQuestFsms.end(); itQf++)
+	{
+		UQuestState* pPrevState = itQf->second.Fsm.GetCurrentState();
+		while (pPrevState)
+		{
+			std::vector<CQuestRow*> vecNextRows;
+			CStoryTableCenter::GetInstance()->GetNextQuestRows(pPrevState->GetQuestID(), vecNextRows);
+			std::vector<CQuestRow*>::iterator itNext = vecNextRows.begin();
+			for (; itNext != vecNextRows.end(); itNext++)
+			{
+				UQuestState* pState = nullptr;
+
+				std::vector<int>::iterator itNsp =//Next Sub Prev
+					std::find((*itNext)->m_vecSubPrevQuestIDs.begin(), (*itNext)->m_vecSubPrevQuestIDs.end(),
+						pPrevState->GetQuestID());
+				//这个it在下句if的外边，是因为多Next递归时同样需要此判断，但存在“二\二”的情况需要选择主线，保证格式统一
+				if (vecNextRows.size() == 1)
+				{
+					if (itNsp == (*itNext)->m_vecSubPrevQuestIDs.end())
+					{
+						pState = NewObject<UQuestState>();
+						pState->Init(*itNext);
+
+						if (!(*itNext)->m_vecSubPrevQuestIDs.empty() && pPrevState->GetQuestID() == (*itNext)->m_iPrevQuestID)
+						{
+							CQuestRow* pHeadRow = itQf->second.Fsm.GetCurrentState()->GetQuestRow();
+							verify(pHeadRow->m_iHeadLevel == 0);
+						}
+					}
+				}
+				else
+				{
+					pState = pState/*TODOJK 递归结尾确定主线*/;
+					pPrevState = pPrevState/*TODOJK 递归结尾确定主线*/;
+				}
+
+				if (pState)
+				{
+					if (vecNextRows.size() == 1)
+					{
+						m_tmapQuestStates.Add((*itNext)->m_iID, pState);
+						itQf->second.Fsm.AddState(pState);
+						itQf->second.Fsm.AddTransfer(pPrevState, (*itNext)->m_iID, pState);
+					}
+					pPrevState = pState;
+				}
+				else
+					pPrevState = nullptr;
+			}
+		}
+
+		//
+	}
 }
 
 void UOsQuestMgr::Release()
@@ -115,7 +168,7 @@ void UOsQuestMgr::Release()
 }
 
 void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
-	std::map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel)
+	std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel)
 {
 	if (pRow->m_iHeadLevel == iLevel)
 	{
@@ -126,7 +179,7 @@ void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQu
 		vecTributaries.push_back(FsmEx);
 		SQuestFsmEx& FsmPushed = vecTributaries[vecTributaries.size() - 1];
 
-		std::map<int32, std::vector<UQuestState*>>::iterator itTh = mapTribuHeads.find(pRow->m_iID);
+		std::unordered_map<int32, std::vector<UQuestState*>>::iterator itTh = mapTribuHeads.find(pRow->m_iID);
 		if (itTh != mapTribuHeads.end())
 		{
 			std::vector<UQuestState*>::iterator itHead = itTh->second.begin();
@@ -148,7 +201,7 @@ void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQu
 		std::vector<SQuestFsmEx>::iterator iter = std::find(vecTributaries.begin(), vecTributaries.end(), pUpRow->m_iID);
 		if (iter == vecTributaries.end())
 		{
-			std::map<int32, std::vector<UQuestState*>>::iterator itTh = mapTribuHeads.find(pUpRow->m_iID);
+			std::unordered_map<int32, std::vector<UQuestState*>>::iterator itTh = mapTribuHeads.find(pUpRow->m_iID);
 			if (itTh == mapTribuHeads.end())
 			{
 				std::vector<UQuestState*> vecHeads;

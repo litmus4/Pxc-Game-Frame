@@ -48,10 +48,10 @@ public:
 
 private:
 	void AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
-		std::map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel);
+		std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel);
 
 	UPROPERTY()
 	TMap<int32, UQuestState*> m_tmapQuestStates;
 
-	std::unordered_map<int32, SQuestFsmEx> m_mapQuestFsms;
+	std::map<int32, SQuestFsmEx> m_mapQuestFsms;
 };

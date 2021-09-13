@@ -25,5 +25,6 @@ void CQuestRow::Read(PxcUtil::CCSVTableOperator& tabop)
 	tabop.GetValue("ParentHeadQuest", m_iParentHeadQuestID);
 	tabop.GetValue("TributaryID", m_iTributaryID);
 	tabop.GetValue("IsPrevOR", m_bPrevOR);
+	tabop.GetValue("PrevConfluentType", *(int*)&m_ePrevConfType);
 	tabop.GetValue("IsNextSingle", m_bNextSingle);
 }

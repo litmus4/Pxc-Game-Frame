@@ -1,5 +1,6 @@
 #pragma once
 #include "PxcUtil/CSVTableOperator.h"
+#include "PublicDefinitions/StoryDef.h"
 
 class CQuestRow
 {
@@ -21,6 +22,7 @@ public:
 	int m_iParentHeadQuestID;
 	int m_iTributaryID;//保证与存档对应上
 	bool m_bPrevOR;
+	StoryDef::EPrevConfluentType m_ePrevConfType;
 	bool m_bNextSingle;
 
 	//接受条件们

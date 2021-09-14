@@ -113,42 +113,35 @@ void UOsQuestMgr::Init()
 		{
 			std::vector<CQuestRow*> vecNextRows;
 			CStoryTableCenter::GetInstance()->GetNextQuestRows(pPrevState->GetQuestID(), vecNextRows);
+			UQuestState* pConfState = nullptr;
 			std::vector<CQuestRow*>::iterator itNext = vecNextRows.begin();
 			for (; itNext != vecNextRows.end(); itNext++)
 			{
-				UQuestState* pState = nullptr;
-
-				std::vector<int>::iterator itNsp =//Next Sub Prev
-					std::find((*itNext)->m_vecSubPrevQuestIDs.begin(), (*itNext)->m_vecSubPrevQuestIDs.end(),
-					pPrevState->GetQuestID());
+				std::vector<int>::iterator itNsp = std::find((*itNext)->m_vecSubPrevQuestIDs.begin(),//Next Sub Prev
+					(*itNext)->m_vecSubPrevQuestIDs.end(), pPrevState->GetQuestID());
 				//这个it在下句if的外边，是因为多Next递归时同样需要此判断，但存在“二\二”的情况需要选择主干，保证格式统一
 				if (vecNextRows.size() == 1)
 				{
 					if (itNsp == (*itNext)->m_vecSubPrevQuestIDs.end())
 					{
-						pState = NewObject<UQuestState>();
+						UQuestState* pState = NewObject<UQuestState>();
 						pState->Init(*itNext);
+						m_tmapQuestStates.Add((*itNext)->m_iID, pState);
+
+						itQf->second.Fsm.AddState(pState);
+						itQf->second.Fsm.AddTransfer(pPrevState, (*itNext)->m_iID, pState);
 					}
 					else
 						verify(false);//主干的交汇处不能是SubPrev
 				}
 				else
-				{
-					pState = pState/*TODOJK 递归结尾确定主干*/;
-				}
+					ExtendSubNext(itQf->second, pPrevState, *itNext, itNsp, 1, 0, &pConfState);
+			}
 
-				if (pState)
-				{
-					if (vecNextRows.size() == 1)
-					{
-						m_tmapQuestStates.Add((*itNext)->m_iID, pState);
-						itQf->second.Fsm.AddState(pState);
-						itQf->second.Fsm.AddTransfer(pPrevState, (*itNext)->m_iID, pState);
-					}
-					pPrevState = pState;
-				}
-				else
-					pPrevState = nullptr;
+			if (vecNextRows.size() > 1)
+			{
+				//FLAGJK 特殊情况确定pConfState(主干)
+				pPrevState = pConfState;
 			}
 		}
 
@@ -211,107 +204,111 @@ void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQu
 	}
 }
 
-//TODOJK 返回值应该放到参数中，因为需要最终决定，否则外边循环的pPrevState就会错误
-UQuestState* UOsQuestMgr::ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQuestRow* pRow, int32 iLevel, int32 iTriLevel)
+void UOsQuestMgr::ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQuestRow* pRow,
+	std::vector<int>::iterator itFirstNsp, int32 iLevel, int32 iTriLevel, UQuestState** ppConfState)
 {
-	std::vector<int>::iterator itNsp =//Next Sub Prev
-		std::find(pRow->m_vecSubPrevQuestIDs.begin(), pRow->m_vecSubPrevQuestIDs.end(),
-		pPrevState->GetQuestID());
-	if (itNsp == pRow->m_vecSubPrevQuestIDs.end())
+	auto LinkOnce = [this, &FsmEx, &pPrevState, iLevel, iTriLevel]
+		(CQuestRow* pRow, std::vector<int>::iterator itNsp, UQuestState** ppConfState)
 	{
-		UQuestState* pState = NewObject<UQuestState>();
-		pState->Init(pRow);
-		m_tmapQuestStates.Add(pRow->m_iID, pState);//TODOJK 这里应该改为DO模式
+		//Sub不为空则为交汇点
+		//Normal: Sub有-分干到头了，Sub无-主干到头了
+		//FreshLake: Sub有-我是支流的分干到头了，Sub无-正常
+		//Combo: Sub有-若支流则支流的分干到头了 若干流则分干到头了，Sub无-若支流则支流的主干到头了 若干流则主干到头了
+		//Sub为空则正常
+		if (!pRow->m_vecSubPrevQuestIDs.empty())
+		{
+			switch (pRow->m_ePrevConfType)
+			{
+			case StoryDef::EPrevConfluentType::EPrevNormal:
+				if (itNsp != pRow->m_vecSubPrevQuestIDs.end())
+					//DO并置空pPrevState
+					FsmLinkState(FsmEx, &pPrevState, pRow);
+				else
+					//DO并置空pPrevState，确定返回值
+					*ppConfState = FsmLinkState(FsmEx, &pPrevState, pRow, false, true);
+				break;
+			case StoryDef::EPrevConfluentType::EPrevFreshLake:
+				if (itNsp != pRow->m_vecSubPrevQuestIDs.end())
+				{
+					if (iTriLevel > 0)
+						//DO并置空pPrevState(是不是支流的主干暂无法确定)
+						FsmLinkState(FsmEx, &pPrevState, pRow);
+					else
+						verify(false);
+				}
+				else
+					//DO并赋值pPrevState
+					FsmLinkState(FsmEx, &pPrevState, pRow, true);
+				break;
+			case StoryDef::EPrevConfluentType::EPrevCombo:
+				if (itNsp != pRow->m_vecSubPrevQuestIDs.end())
+				{
+					if (iTriLevel > 0)
+						//DO并置空pPrevState(是不是支流的主干暂无法确定)
+						FsmLinkState(FsmEx, &pPrevState, pRow);
+					else
+						//DO并置空pPrevState
+						FsmLinkState(FsmEx, &pPrevState, pRow);
+				}
+				else
+				{
+					if (iTriLevel > 0)
+						//DO并置空pPrevState，确定返回值
+						*ppConfState = FsmLinkState(FsmEx, &pPrevState, pRow, false, true);
+					else
+						//DO并置空pPrevState，确定返回值
+						*ppConfState = FsmLinkState(FsmEx, &pPrevState, pRow, false, true);
+				}
+				break;
+			}
+		}
+		else
+			//DO并赋值pPrevState
+			FsmLinkState(FsmEx, &pPrevState, pRow, true);
+	};
 
-		FsmEx.Fsm.AddState(pState);
-		FsmEx.Fsm.AddTransfer(pPrevState, pRow->m_iID, pState);
-
-		pPrevState = pState;
-	}
-	else if (iTriLevel > 0)
-		pPrevState = nullptr;//"二\二"上支流下干流
-	else if (iLevel > 1)
-		pPrevState = nullptr;
-	else
-		verify(false);//1级分干的第一个依然属于主干，主干的交汇处不能是SubPrev
+	LinkOnce(pRow, itFirstNsp, ppConfState);
 
 	while (pPrevState)
 	{
 		std::vector<CQuestRow*> vecNextRows;
 		CStoryTableCenter::GetInstance()->GetNextQuestRows(pPrevState->GetQuestID(), vecNextRows);
+		UQuestState* pConfState = nullptr;
 		std::vector<CQuestRow*>::iterator itNext = vecNextRows.begin();
 		for (; itNext != vecNextRows.end(); itNext++)
 		{
-			UQuestState* pState = nullptr;
-
-			itNsp = std::find((*itNext)->m_vecSubPrevQuestIDs.begin(),//Next Sub Prev
+			std::vector<int>::iterator itNsp = std::find((*itNext)->m_vecSubPrevQuestIDs.begin(),//Next Sub Prev
 				(*itNext)->m_vecSubPrevQuestIDs.end(), pPrevState->GetQuestID());
 			if (vecNextRows.size() == 1)
-			{
-				//Sub不为空则为交汇点
-				//Normal: Sub有-分干到头了，Sub无-主干到头了
-				//FreshLake: Sub有-我是支流的分干到头了，Sub无-正常
-				//Combo: Sub有-若支流则支流的分干到头了 若干流则分干到头了，Sub无-若支流则支流的主干到头了 若干流则主干到头了
-				//Sub为空则正常
-				if (itNsp == (*itNext)->m_vecSubPrevQuestIDs.end())
-				{
-					switch ((*itNext)->m_ePrevConfType)
-					{
-					case StoryDef::EPrevConfluentType::EPrevNormal:
-						//DO并置空pPrevState
-						break;
-					case StoryDef::EPrevConfluentType::EPrevFreshLake:
-						if (iTriLevel > 0)
-						{
-							//DO并置空pPrevState(是不是支流的主干暂无法确定)
-						}
-						else
-							verify(false);
-						break;
-					case StoryDef::EPrevConfluentType::EPrevCombo:
-						if (iTriLevel > 0)
-						{
-							//DO并置空pPrevState(是不是支流的主干暂无法确定)
-						}
-						else
-						{
-							//DO并置空pPrevState
-						}
-						break;
-					}
-				}
-				else if (!(*itNext)->m_vecSubPrevQuestIDs.empty())
-				{
-					switch ((*itNext)->m_ePrevConfType)
-					{
-					case StoryDef::EPrevConfluentType::EPrevNormal:
-						//DO并置空pPrevState，确定返回值
-						break;
-					case StoryDef::EPrevConfluentType::EPrevFreshLake:
-						//DO并赋值pPrevState
-						break;
-					case StoryDef::EPrevConfluentType::EPrevCombo:
-						if (iTriLevel > 0)
-						{
-							//DO并置空pPrevState，确定返回值
-						}
-						else
-						{
-							//DO并置空pPrevState，确定返回值
-						}
-						break;
-					}
-				}
-				else
-				{
-					//DO并赋值pPrevState
-				}
-			}
+				LinkOnce(*itNext, itNsp, &pConfState);
 			else
-			{
-				//
-			}
+				ExtendSubNext(FsmEx, pPrevState, *itNext, itNsp, iLevel + 1, iTriLevel, &pConfState);
+		}
+
+		if (vecNextRows.size() > 1)
+		{
+			//FLAGJK 特殊情况确定pConfState(主干)
+			pPrevState = pConfState;
 		}
 	}
-	return nullptr;
+}
+
+UQuestState* UOsQuestMgr::FsmLinkState(SQuestFsmEx& FsmEx, UQuestState** ppPrevState, CQuestRow* pRow,
+	bool bSetPrev, bool bRetConfluent)
+{
+	UQuestState* pState = nullptr;
+	UQuestState** ppState = m_tmapQuestStates.Find(pRow->m_iID);
+	if (!ppState)
+	{
+		pState = NewObject<UQuestState>();
+		pState->Init(pRow);
+		m_tmapQuestStates.Add(pRow->m_iID, pState);
+		FsmEx.Fsm.AddState(pState);
+	}
+	else
+		pState = *ppState;
+	FsmEx.Fsm.AddTransfer(*ppPrevState, pRow->m_iID, pState);
+
+	*ppPrevState = (bSetPrev ? pState : nullptr);
+	return (bRetConfluent ? pState : nullptr);
 }

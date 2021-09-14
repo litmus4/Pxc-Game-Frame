@@ -49,7 +49,10 @@ public:
 private:
 	void AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
 		std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel);
-	UQuestState* ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQuestRow* pRow, int32 iLevel, int32 iTriLevel);
+	void ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQuestRow* pRow,
+		std::vector<int>::iterator itFirstNsp, int32 iLevel, int32 iTriLevel, UQuestState** ppConfState);
+	UQuestState* FsmLinkState(SQuestFsmEx& FsmEx, UQuestState** ppPrevState, CQuestRow* pRow,
+		bool bSetPrev = false, bool bRetConfluent = false);
 
 	UPROPERTY()
 	TMap<int32, UQuestState*> m_tmapQuestStates;

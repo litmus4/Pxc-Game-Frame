@@ -164,6 +164,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoadDefines.h" />
+    <ClInclude Include="MultiCostTable\IndustryRow.h" />
+    <ClInclude Include="MultiCostTable\IndustryTypeRow.h" />
+    <ClInclude Include="MultiCostTable\MultiCostTableCenter.h" />
+    <ClInclude Include="MultiCostTable\OccupationRow.h" />
+    <ClInclude Include="MultiCostTable\OccupationTypeRow.h" />
     <ClInclude Include="OtherTable\GlobalParamRow.h" />
     <ClInclude Include="OtherTable\InputActionNameRow.h" />
     <ClInclude Include="OtherTable\InputKeyRow.h" />
@@ -177,6 +182,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LoadDefines.cpp" />
+    <ClCompile Include="MultiCostTable\IndustryRow.cpp" />
+    <ClCompile Include="MultiCostTable\IndustryTypeRow.cpp" />
+    <ClCompile Include="MultiCostTable\MultiCostTableCenter.cpp" />
+    <ClCompile Include="MultiCostTable\OccupationRow.cpp" />
+    <ClCompile Include="MultiCostTable\OccupationTypeRow.cpp" />
     <ClCompile Include="OtherTable\GlobalParamRow.cpp" />
     <ClCompile Include="OtherTable\InputActionNameRow.cpp" />
     <ClCompile Include="OtherTable\InputKeyRow.cpp" />

@@ -22,6 +22,9 @@
     <Filter Include="StoryTable">
       <UniqueIdentifier>{68fc1818-dfb0-49ee-926d-e5a04f46da41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MultiCostTable">
+      <UniqueIdentifier>{949ed498-fa36-4b1c-b718-9c6e15a7990e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -60,6 +63,21 @@
     <ClInclude Include="StoryTable\StoryTableCenter.h">
       <Filter>StoryTable</Filter>
     </ClInclude>
+    <ClInclude Include="MultiCostTable\IndustryRow.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiCostTable\IndustryTypeRow.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiCostTable\OccupationRow.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiCostTable\OccupationTypeRow.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiCostTable\MultiCostTableCenter.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
@@ -94,6 +112,21 @@
     </ClCompile>
     <ClCompile Include="StoryTable\StoryTableCenter.cpp">
       <Filter>StoryTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\IndustryRow.cpp">
+      <Filter>MultiCostTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\IndustryTypeRow.cpp">
+      <Filter>MultiCostTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\OccupationRow.cpp">
+      <Filter>MultiCostTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\OccupationTypeRow.cpp">
+      <Filter>MultiCostTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\MultiCostTableCenter.cpp">
+      <Filter>MultiCostTable</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

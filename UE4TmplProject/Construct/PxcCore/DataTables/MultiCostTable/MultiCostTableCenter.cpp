@@ -14,7 +14,23 @@ CMultiCostTableCenter::~CMultiCostTableCenter()
 bool CMultiCostTableCenter::Init(const std::string& strPath)
 {
 	LOADTABLE(Industry, strPath, "MultiCostTable", m_mapIndustries, m_iID)
+	{
+		std::map<int, CIndustryRow*>::iterator iter = m_mapIndustries.begin();
+		for (; iter != m_mapIndustries.end(); iter++)
+		{
+			std::map<int, std::vector<int>>::iterator itTyped = m_mapTypedIndustries.find(iter->second->m_iTypeID);
+			if (itTyped == m_mapTypedIndustries.end())
+			{
+				std::vector<int> vecIDs;
+				vecIDs.push_back(iter->second->m_iID);
+				m_mapTypedIndustries.insert(std::make_pair(iter->second->m_iTypeID, vecIDs));
+			}
+			else
+				itTyped->second.push_back(iter->second->m_iID);
+		}
+	}
 	LOADTABLE(IndustryType, strPath, "MultiCostTable", m_mapIndustryTypes, m_iID)
+
 	LOADTABLE(Occupation, strPath, "MultiCostTable", m_mapOccupations, m_iID)
 	{
 		std::map<int, COccupationRow*>::iterator iter = m_mapOccupations.begin();
@@ -76,6 +92,30 @@ COccupationTypeRow* CMultiCostTableCenter::GetOccupationTypeRow(int iID)
 	return NULL;
 }
 
+void CMultiCostTableCenter::LoadOccupationToIndustries()
+{
+	std::map<int, CIndustryRow*>::iterator iter = m_mapIndustries.begin();
+	for (; iter != m_mapIndustries.end(); iter++)
+	{
+		std::vector<COccupationRow*> vecOccuRows;
+		GetOccupationRowsByIndustry(iter->first, vecOccuRows);
+
+		std::vector<COccupationRow*>::iterator itOccr = vecOccuRows.begin();
+		for (; itOccr != vecOccuRows.end(); itOccr++)
+		{
+			std::map<int, std::vector<int>>::iterator itTo = m_mapOccuToIndustry.find((*itOccr)->m_iID);
+			if (itTo == m_mapOccuToIndustry.end())
+			{
+				std::vector<int> vecIDs;
+				vecIDs.push_back(iter->first);
+				m_mapOccuToIndustry.insert(std::make_pair((*itOccr)->m_iID, vecIDs));
+			}
+			else
+				itTo->second.push_back(iter->first);
+		}
+	}
+}
+
 void CMultiCostTableCenter::GetOccupationRowsByIndustry(int iIndustryID, std::vector<COccupationRow*>& vecOut)
 {
 	std::map<int, CIndustryRow*>::iterator iter = m_mapIndustries.find(iIndustryID);
@@ -106,5 +146,16 @@ void CMultiCostTableCenter::GetOccupationRowsByIndustry(int iIndustryID, std::ve
 
 void CMultiCostTableCenter::GetIndustryRowsByOccupation(int iOccupationID, std::vector<CIndustryRow*>& vecOut)
 {
-	//FLAGJK
+	std::map<int, std::vector<int>>::iterator iter = m_mapOccuToIndustry.find(iOccupationID);
+	if (iter == m_mapOccuToIndustry.end())
+	{
+		LoadOccupationToIndustries();
+		iter = m_mapOccuToIndustry.find(iOccupationID);
+		if (iter == m_mapOccuToIndustry.end())
+			return;
+	}
+
+	std::vector<int>::iterator itSub = iter->second.begin();
+	for (; itSub != iter->second.end(); itSub++)
+		vecOut.push_back(GetIndustryRow(*itSub));
 }

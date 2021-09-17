@@ -18,6 +18,7 @@ public:
 	COccupationRow* GetOccupationRow(int iID);
 	COccupationTypeRow* GetOccupationTypeRow(int iID);
 
+	void LoadOccupationToIndustries();
 	void GetOccupationRowsByIndustry(int iIndustryID, std::vector<COccupationRow*>& vecOut);
 	void GetIndustryRowsByOccupation(int iOccupationID, std::vector<CIndustryRow*>& vecOut);
 
@@ -27,6 +28,7 @@ private:
 	std::map<int, COccupationRow*> m_mapOccupations;
 	std::map<int, COccupationTypeRow*> m_mapOccupationTypes;
 
+	std::map<int, std::vector<int>> m_mapTypedIndustries;
 	std::map<int, std::vector<int>> m_mapTypedOccupations;
 	std::map<int, std::vector<int>> m_mapOccuToIndustry;
 };

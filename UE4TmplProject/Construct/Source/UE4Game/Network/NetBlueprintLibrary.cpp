@@ -73,10 +73,20 @@ APawn* UNetBlueprintLibrary::Net_GetLocalPlayerPawnCli(UObject* WorldContextObje
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return nullptr;
 
-	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
+	if (World->GetNetMode() != NM_Client)
 	{
-		if (*Iter && (*Iter)->GetLocalRole() == ROLE_AutonomousProxy)
-			return *Iter;
+		for (FConstPlayerControllerIterator Iter1 = World->GetPlayerControllerIterator(); Iter1; Iter1++)
+		{
+			APlayerController* Controller = Iter1->Get();
+			if (Controller && Controller->IsLocalController())
+				return Controller->GetPawnOrSpectator();
+		}
+	}
+
+	for (TActorIterator<ACharacter> Iter2(World); Iter2; ++Iter2)//APxcCharacterPlayer
+	{
+		if (*Iter2 && (*Iter2)->GetLocalRole() == ROLE_AutonomousProxy)
+			return *Iter2;
 	}
 	return nullptr;
 }

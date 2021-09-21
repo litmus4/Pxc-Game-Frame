@@ -34,8 +34,18 @@ public:
 
 		tQuestFsm Fsm;
 		int32 iCurStateID;
+		int32 iHeadStateID;
 		std::vector<SQuestFsmEx> vecTributaries;
 	};
+
+	//*¥Êµµ¡Ÿ ±
+	struct SSavedHead
+	{
+		int32 iID;
+		bool bInit;
+		std::map<int32, SSavedHead> mapSavedTribuHeads;
+	};
+	//*/
 	
 public:
 	void InitDefault();
@@ -48,7 +58,8 @@ public:
 
 private:
 	void AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
-		std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel);
+		std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads,
+		std::map<int32, SSavedHead>* pmapSavedTribuHeads, int32 iLevel);
 	void ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQuestRow* pRow,
 		std::vector<int>::iterator itFirstNsp, int32 iLevel, int32 iTriLevel, UQuestState** ppConfState);
 	UQuestState* FsmLinkState(SQuestFsmEx& FsmEx, UQuestState** ppPrevState, CQuestRow* pRow,
@@ -58,4 +69,8 @@ private:
 	TMap<int32, UQuestState*> m_tmapQuestStates;
 
 	std::map<int32, SQuestFsmEx> m_mapQuestFsms;
+
+	//*¥Êµµ¡Ÿ ±
+	std::map<int32, SSavedHead> m_mapSavedHeads;
+	//*/
 };

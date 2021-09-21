@@ -2,7 +2,6 @@
 
 
 #include "Story/OsQuestMgr.h"
-//#include <map>
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -12,7 +11,7 @@
 
 bool UOsQuestMgr::SQuestFsmEx::operator==(const int32& iOtherID) const
 {
-	return (iCurStateID == iOtherID);
+	return (iHeadStateID == iOtherID);
 }
 
 void UOsQuestMgr::InitDefault()
@@ -37,8 +36,20 @@ void UOsQuestMgr::Init()
 		if ((*iter)->m_iHeadLevel == 0)
 		{
 			verify(m_mapQuestFsms.find((*iter)->m_iGraphID) == m_mapQuestFsms.end());
+
+			CQuestRow* pRow = *iter;
+			std::map<int32, SSavedHead>::iterator itSaved = m_mapSavedHeads.find((*iter)->m_iGraphID);
+			if (itSaved != m_mapSavedHeads.end())
+			{
+				pRow = CStoryTableCenter::GetInstance()->GetQuestRow(itSaved->second.iID);
+				check(pRow);
+				pState->Init(pRow);
+				itSaved->second.bInit = true;
+			}
+
 			SQuestFsmEx FsmEx;
-			FsmEx.iCurStateID = (*iter)->m_iID;
+			FsmEx.iCurStateID = pRow->m_iID;
+			FsmEx.iHeadStateID = (*iter)->m_iID;
 			FsmEx.Fsm.AddState(pState);
 			FsmEx.Fsm.SetState(pState, true);
 			std::pair<std::map<int32, SQuestFsmEx>::iterator, bool> RetPair =
@@ -49,7 +60,10 @@ void UOsQuestMgr::Init()
 			{
 				std::vector<UQuestState*>::iterator itHead = itGh->second.begin();
 				for (; itHead != itGh->second.end(); itHead++)
-					AddTributaryHead(RetPair.first->second.vecTributaries, *itHead, (*itHead)->GetQuestRow(), mapTribuHeads, 1);
+				{
+					AddTributaryHead(RetPair.first->second.vecTributaries, *itHead, (*itHead)->GetQuestRow(),
+						mapTribuHeads, (itSaved != m_mapSavedHeads.end() ? &itSaved->second.mapSavedTribuHeads : nullptr), 1);
+				}
 				mapGraphHeads.erase(itGh);
 			}
 		}
@@ -69,7 +83,11 @@ void UOsQuestMgr::Init()
 					itGh->second.push_back(pState);
 			}
 			else
-				AddTributaryHead(itQf->second.vecTributaries, pState, *iter, mapTribuHeads, 1);
+			{
+				std::map<int32, SSavedHead>::iterator itSaved = m_mapSavedHeads.find((*iter)->m_iGraphID);
+				AddTributaryHead(itQf->second.vecTributaries, pState, *iter,
+					mapTribuHeads, (itSaved != m_mapSavedHeads.end() ? &itSaved->second.mapSavedTribuHeads : nullptr), 1);
+			}
 		}
 	}
 
@@ -81,9 +99,20 @@ void UOsQuestMgr::Init()
 		bool bMain = true;
 		for (; itHead != itGh->second.end(); itHead++)
 		{
+			std::map<int32, SSavedHead>::iterator itSaved = m_mapSavedHeads.find(itGh->first);
 			if (bMain)
 			{
 				SQuestFsmEx FsmEx;
+
+				FsmEx.iHeadStateID = (*itHead)->GetQuestID();
+				if (itSaved != m_mapSavedHeads.end())
+				{
+					CQuestRow* pRow = CStoryTableCenter::GetInstance()->GetQuestRow(itSaved->second.iID);
+					verify(pRow);
+					(*itHead)->Init(pRow);
+					itSaved->second.bInit = true;
+				}
+
 				FsmEx.iCurStateID = (*itHead)->GetQuestID();
 				FsmEx.Fsm.AddState(*itHead);
 				FsmEx.Fsm.SetState(*itHead, true);
@@ -96,6 +125,21 @@ void UOsQuestMgr::Init()
 				if (itQf != m_mapQuestFsms.end())
 				{
 					SQuestFsmEx TriFsmEx;
+
+					TriFsmEx.iHeadStateID = (*itHead)->GetQuestID();
+					if (itSaved != m_mapSavedHeads.end())
+					{
+						std::map<int32, SSavedHead>::iterator itSavedTri =
+							itSaved->second.mapSavedTribuHeads.find((*itHead)->GetQuestID());
+						if (itSavedTri != itSaved->second.mapSavedTribuHeads.end())
+						{
+							CQuestRow* pRow = CStoryTableCenter::GetInstance()->GetQuestRow(itSavedTri->second.iID);
+							verify(pRow);
+							(*itHead)->Init(pRow);
+							itSavedTri->second.bInit = true;
+						}
+					}
+
 					TriFsmEx.iCurStateID = (*itHead)->GetQuestID();
 					TriFsmEx.Fsm.AddState(*itHead);
 					TriFsmEx.Fsm.SetState(*itHead, true);
@@ -104,6 +148,8 @@ void UOsQuestMgr::Init()
 			}
 		}
 	}
+
+	//FLAGJK 递归处理额外未Init的存档（AND分流运行时拆出来的支流）
 
 	std::map<int32, SQuestFsmEx>::iterator itQf = m_mapQuestFsms.begin();
 	for (; itQf != m_mapQuestFsms.end(); itQf++)
@@ -156,11 +202,28 @@ void UOsQuestMgr::Release()
 }
 
 void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
-	std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads, int32 iLevel)
+	std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads,
+	std::map<int32, SSavedHead>* pmapSavedTribuHeads, int32 iLevel)
 {
 	if (pRow->m_iHeadLevel == iLevel)
 	{
 		SQuestFsmEx FsmEx;
+
+		FsmEx.iHeadStateID = pRow->m_iID;
+		std::map<int32, SSavedHead>* pmapSubSavedTriHeads = nullptr;
+		if (pmapSavedTribuHeads)
+		{
+			std::map<int32, SSavedHead>::iterator itSaved = pmapSavedTribuHeads->find(pRow->m_iID);
+			if (itSaved != pmapSavedTribuHeads->end())
+			{
+				pRow = CStoryTableCenter::GetInstance()->GetQuestRow(itSaved->second.iID);
+				check(pRow);
+				pState->Init(pRow);
+				itSaved->second.bInit = true;
+				pmapSubSavedTriHeads = &itSaved->second.mapSavedTribuHeads;
+			}
+		}
+
 		FsmEx.iCurStateID = pRow->m_iID;
 		FsmEx.Fsm.AddState(pState);
 		FsmEx.Fsm.SetState(pState, true);
@@ -172,7 +235,10 @@ void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQu
 		{
 			std::vector<UQuestState*>::iterator itHead = itTh->second.begin();
 			for (; itHead != itTh->second.end(); itHead++)
-				AddTributaryHead(FsmPushed.vecTributaries, *itHead, (*itHead)->GetQuestRow(), mapTribuHeads, iLevel + 1);
+			{
+				AddTributaryHead(FsmPushed.vecTributaries, *itHead, (*itHead)->GetQuestRow(),
+					mapTribuHeads, pmapSubSavedTriHeads, iLevel + 1);
+			}
 			mapTribuHeads.erase(itTh);
 		}
 	}
@@ -200,7 +266,16 @@ void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQu
 				itTh->second.push_back(pState);
 		}
 		else
-			AddTributaryHead(iter->vecTributaries, pState, pRow, mapTribuHeads, iLevel + 1);
+		{
+			std::map<int32, SSavedHead>* pmapSubSavedTriHeads = nullptr;
+			if (pmapSavedTribuHeads)
+			{
+				std::map<int32, SSavedHead>::iterator itSaved = pmapSavedTribuHeads->find(pRow->m_iID);
+				if (itSaved != pmapSavedTribuHeads->end())
+					pmapSubSavedTriHeads = &itSaved->second.mapSavedTribuHeads;
+			}
+			AddTributaryHead(iter->vecTributaries, pState, pRow, mapTribuHeads, pmapSubSavedTriHeads, iLevel + 1);
+		}
 	}
 }
 

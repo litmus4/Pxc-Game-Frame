@@ -42,6 +42,7 @@ public:
 	struct SSavedHead
 	{
 		int32 iID;
+		int32 iHeadID;
 		bool bInit;
 		std::map<int32, SSavedHead> mapSavedTribuHeads;
 	};
@@ -60,6 +61,8 @@ private:
 	void AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
 		std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads,
 		std::map<int32, SSavedHead>* pmapSavedTribuHeads, int32 iLevel);
+	void SupplyExtraTributaryHeads(std::vector<SQuestFsmEx>& vecTributaries,
+		std::map<int32, SSavedHead>& mapSavedTribuHeads);
 	void ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQuestRow* pRow,
 		std::vector<int>::iterator itFirstNsp, int32 iLevel, int32 iTriLevel, UQuestState** ppConfState);
 	UQuestState* FsmLinkState(SQuestFsmEx& FsmEx, UQuestState** ppPrevState, CQuestRow* pRow,

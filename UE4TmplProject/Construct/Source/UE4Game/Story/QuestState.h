@@ -25,6 +25,9 @@ public:
 	FORCEINLINE int32 GetQuestID() { return m_iQuestID; }
 	FORCEINLINE CQuestRow* GetQuestRow() { return m_pQuestRow; }
 
+	UPROPERTY()
+	int32 m_iRuntimeHeadLevel = -1;
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	int32 m_iQuestID;

@@ -184,6 +184,7 @@ void UOsQuestMgr::Init()
 			std::vector<CQuestRow*> vecNextRows;
 			CStoryTableCenter::GetInstance()->GetNextQuestRows(pPrevState->GetQuestID(), vecNextRows);
 			UQuestState* pConfState = nullptr;
+			bool bFindMain = false;
 			std::vector<CQuestRow*>::iterator itNext = vecNextRows.begin();
 			for (; itNext != vecNextRows.end(); itNext++)
 			{
@@ -200,12 +201,26 @@ void UOsQuestMgr::Init()
 
 						itQf->second.Fsm.AddState(pState);
 						itQf->second.Fsm.AddTransfer(pPrevState, (*itNext)->m_iID, pState);
+						pPrevState = pState;
 					}
 					else
 						verify(false);//主干的交汇处不能是SubPrev
 				}
 				else
+				{
 					ExtendSubNext(itQf->second, pPrevState, *itNext, itNsp, 1, 0, &pConfState);
+					UQuestState** ppHeadState = m_tmapQuestStates.Find((*itNext)->m_iID);
+					if (ppHeadState)
+					{
+						if (!bFindMain && pConfState)
+						{
+							(*ppHeadState)->m_iRuntimeHeadLevel = 0;
+							bFindMain = true;
+						}
+						else
+							(*ppHeadState)->m_iRuntimeHeadLevel = 1;
+					}
+				}
 			}
 
 			if (vecNextRows.size() > 1)
@@ -213,9 +228,11 @@ void UOsQuestMgr::Init()
 				//FLAGJK 特殊情况确定pConfState(主干)
 				pPrevState = pConfState;
 			}
+			else if (vecNextRows.empty())
+				pPrevState = nullptr;
 		}
 
-		//
+		ExtendTributaries(itQf->second.vecTributaries, 1);
 	}
 }
 
@@ -401,6 +418,7 @@ void UOsQuestMgr::ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQu
 		std::vector<CQuestRow*> vecNextRows;
 		CStoryTableCenter::GetInstance()->GetNextQuestRows(pPrevState->GetQuestID(), vecNextRows);
 		UQuestState* pConfState = nullptr;
+		bool bFindMain = false;
 		std::vector<CQuestRow*>::iterator itNext = vecNextRows.begin();
 		for (; itNext != vecNextRows.end(); itNext++)
 		{
@@ -409,7 +427,20 @@ void UOsQuestMgr::ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQu
 			if (vecNextRows.size() == 1)
 				LinkOnce(*itNext, itNsp, &pConfState);
 			else
+			{
 				ExtendSubNext(FsmEx, pPrevState, *itNext, itNsp, iLevel + 1, iTriLevel, &pConfState);
+				UQuestState** ppHeadState = m_tmapQuestStates.Find((*itNext)->m_iID);
+				if (ppHeadState)
+				{
+					if (!bFindMain && pConfState)
+					{
+						(*ppHeadState)->m_iRuntimeHeadLevel = iLevel;
+						bFindMain = true;
+					}
+					else
+						(*ppHeadState)->m_iRuntimeHeadLevel = iLevel + 1;
+				}
+			}
 		}
 
 		if (vecNextRows.size() > 1)
@@ -438,4 +469,64 @@ UQuestState* UOsQuestMgr::FsmLinkState(SQuestFsmEx& FsmEx, UQuestState** ppPrevS
 
 	*ppPrevState = (bSetPrev ? pState : nullptr);
 	return (bRetConfluent ? pState : nullptr);
+}
+
+void UOsQuestMgr::ExtendTributaries(std::vector<SQuestFsmEx>& vecTributaries, int32 iLevel)
+{
+	std::vector<SQuestFsmEx>::iterator iter = vecTributaries.begin();
+	for (; iter != vecTributaries.end(); iter++)
+	{
+		UQuestState* pPrevState = iter->Fsm.GetCurrentState();
+		while (pPrevState)
+		{
+			std::vector<CQuestRow*> vecNextRows;
+			CStoryTableCenter::GetInstance()->GetNextQuestRows(pPrevState->GetQuestID(), vecNextRows);
+			UQuestState* pConfState = nullptr;
+			bool bFindMain = false;
+			std::vector<CQuestRow*>::iterator itNext = vecNextRows.begin();
+			for (; itNext != vecNextRows.end(); itNext++)
+			{
+				std::vector<int>::iterator itNsp = std::find((*itNext)->m_vecSubPrevQuestIDs.begin(),//Next Sub Prev
+					(*itNext)->m_vecSubPrevQuestIDs.end(), pPrevState->GetQuestID());
+				if (vecNextRows.size() == 1)
+				{
+					if (itNsp == (*itNext)->m_vecSubPrevQuestIDs.end())
+					{
+						UQuestState* pState = NewObject<UQuestState>();
+						pState->Init(*itNext);
+						m_tmapQuestStates.Add((*itNext)->m_iID, pState);
+
+						iter->Fsm.AddState(pState);
+						iter->Fsm.AddTransfer(pPrevState, (*itNext)->m_iID, pState);
+						pPrevState = pState;
+					}
+				}
+				else
+				{
+					ExtendSubNext(*iter, pPrevState, *itNext, itNsp, 1, iLevel, &pConfState);
+					UQuestState** ppHeadState = m_tmapQuestStates.Find((*itNext)->m_iID);
+					if (ppHeadState)
+					{
+						if (!bFindMain && pConfState)
+						{
+							(*ppHeadState)->m_iRuntimeHeadLevel = iLevel;
+							bFindMain = true;
+						}
+						else
+							(*ppHeadState)->m_iRuntimeHeadLevel = iLevel + 1;
+					}
+				}
+			}
+
+			if (vecNextRows.size() > 1)
+			{
+				//FLAGJK 特殊情况确定pConfState(主干)
+				pPrevState = pConfState;
+			}
+			else if (vecNextRows.empty())
+				pPrevState = nullptr;
+		}
+
+		ExtendTributaries(iter->vecTributaries, iLevel + 1);
+	}
 }

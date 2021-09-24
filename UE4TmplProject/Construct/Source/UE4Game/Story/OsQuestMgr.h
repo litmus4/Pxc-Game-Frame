@@ -67,6 +67,7 @@ private:
 		std::vector<int>::iterator itFirstNsp, int32 iLevel, int32 iTriLevel, UQuestState** ppConfState);
 	UQuestState* FsmLinkState(SQuestFsmEx& FsmEx, UQuestState** ppPrevState, CQuestRow* pRow,
 		bool bSetPrev = false, bool bRetConfluent = false);
+	void ExtendTributaries(std::vector<SQuestFsmEx>& vecTributaries, int32 iLevel);
 
 	UPROPERTY()
 	TMap<int32, UQuestState*> m_tmapQuestStates;

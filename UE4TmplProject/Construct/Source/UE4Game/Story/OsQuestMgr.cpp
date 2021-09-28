@@ -2,6 +2,7 @@
 
 
 #include "Story/OsQuestMgr.h"
+#include "Framework/PxcGameConfig.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -208,6 +209,12 @@ void UOsQuestMgr::Init()
 				}
 				else
 				{
+					if (itQf->second.Fsm.GetStateNum() >= GetDefault<UPxcGameConfig>()->iQuestFsmSubCutStateNum)
+					{
+						vecNextRows.clear();
+						break;
+					}
+
 					ExtendSubNext(itQf->second, pPrevState, *itNext, itNsp, 1, 0, &pConfState);
 					UQuestState** ppHeadState = m_tmapQuestStates.Find((*itNext)->m_iID);
 					if (ppHeadState)
@@ -223,12 +230,17 @@ void UOsQuestMgr::Init()
 				}
 			}
 
-			if (vecNextRows.size() > 1)
+			if (itQf->second.Fsm.GetStateNum() < GetDefault<UPxcGameConfig>()->iQuestFsmMaxStateNum)
 			{
-				//FLAGJK 特殊情况确定pConfState(主干)
-				pPrevState = pConfState;
+				if (vecNextRows.size() > 1)
+				{
+					//FLAGJK 特殊情况确定pConfState(主干)
+					pPrevState = pConfState;
+				}
+				else if (vecNextRows.empty())
+					pPrevState = nullptr;
 			}
-			else if (vecNextRows.empty())
+			else
 				pPrevState = nullptr;
 		}
 
@@ -448,6 +460,8 @@ void UOsQuestMgr::ExtendSubNext(SQuestFsmEx& FsmEx, UQuestState* pPrevState, CQu
 			//FLAGJK 特殊情况确定pConfState(主干)
 			pPrevState = pConfState;
 		}
+		else if (vecNextRows.empty())
+			pPrevState = nullptr;
 	}
 }
 
@@ -503,6 +517,12 @@ void UOsQuestMgr::ExtendTributaries(std::vector<SQuestFsmEx>& vecTributaries, in
 				}
 				else
 				{
+					if (iter->Fsm.GetStateNum() >= GetDefault<UPxcGameConfig>()->iQuestFsmSubCutStateNum)
+					{
+						vecNextRows.clear();
+						break;
+					}
+
 					ExtendSubNext(*iter, pPrevState, *itNext, itNsp, 1, iLevel, &pConfState);
 					UQuestState** ppHeadState = m_tmapQuestStates.Find((*itNext)->m_iID);
 					if (ppHeadState)
@@ -518,12 +538,17 @@ void UOsQuestMgr::ExtendTributaries(std::vector<SQuestFsmEx>& vecTributaries, in
 				}
 			}
 
-			if (vecNextRows.size() > 1)
+			if (iter->Fsm.GetStateNum() < GetDefault<UPxcGameConfig>()->iQuestFsmMaxStateNum)
 			{
-				//FLAGJK 特殊情况确定pConfState(主干)
-				pPrevState = pConfState;
+				if (vecNextRows.size() > 1)
+				{
+					//FLAGJK 特殊情况确定pConfState(主干)
+					pPrevState = pConfState;
+				}
+				else if (vecNextRows.empty())
+					pPrevState = nullptr;
 			}
-			else if (vecNextRows.empty())
+			else
 				pPrevState = nullptr;
 		}
 

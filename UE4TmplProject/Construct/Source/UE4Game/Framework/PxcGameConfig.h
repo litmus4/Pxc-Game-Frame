@@ -37,6 +37,13 @@ public:
 
 	const TMap<FName, TArray<FGamepadCombineMapping>>& GetGamepadCombineMappings() const;
 
+public:
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Story)
+	int32 iQuestFsmMaxStateNum = 10;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Story)
+	int32 iQuestFsmSubCutStateNum = 6;
+
 private:
 	bool bGamepadCombineDirty = false;
 };

@@ -78,6 +78,12 @@
     <ClInclude Include="MultiCostTable\MultiCostTableCenter.h">
       <Filter>MultiCostTable</Filter>
     </ClInclude>
+    <ClInclude Include="MultiCostTable\MajorRow.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiCostTable\MajorTypeRow.h">
+      <Filter>MultiCostTable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextTable\TextTableCenter.cpp">
@@ -126,6 +132,12 @@
       <Filter>MultiCostTable</Filter>
     </ClCompile>
     <ClCompile Include="MultiCostTable\MultiCostTableCenter.cpp">
+      <Filter>MultiCostTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\MajorRow.cpp">
+      <Filter>MultiCostTable</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiCostTable\MajorTypeRow.cpp">
       <Filter>MultiCostTable</Filter>
     </ClCompile>
   </ItemGroup>

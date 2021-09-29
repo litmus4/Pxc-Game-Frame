@@ -48,6 +48,24 @@ bool CMultiCostTableCenter::Init(const std::string& strPath)
 		}
 	}
 	LOADTABLE(OccupationType, strPath, "MultiCostTable", m_mapOccupationTypes, m_iID)
+
+	LOADTABLE(Major, strPath, "MultiCostTable", m_mapMajors, m_iID)
+	{
+		std::map<int, CMajorRow*>::iterator iter = m_mapMajors.begin();
+		for (; iter != m_mapMajors.end(); iter++)
+		{
+			std::map<int, std::vector<int>>::iterator itTyped = m_mapTypedMajors.find(iter->second->m_iTypeID);
+			if (itTyped == m_mapTypedMajors.end())
+			{
+				std::vector<int> vecIDs;
+				vecIDs.push_back(iter->second->m_iID);
+				m_mapTypedMajors.insert(std::make_pair(iter->second->m_iTypeID, vecIDs));
+			}
+			else
+				itTyped->second.push_back(iter->second->m_iID);
+		}
+	}
+	LOADTABLE(MajorType, strPath, "MultiCostTable", m_mapMajorTypes, m_iID)
 }
 
 void CMultiCostTableCenter::Release()
@@ -56,7 +74,12 @@ void CMultiCostTableCenter::Release()
 	UNLOADTABLE(IndustryType, m_mapIndustryTypes)
 	UNLOADTABLE(Occupation, m_mapOccupations)
 	UNLOADTABLE(OccupationType, m_mapOccupationTypes)
+	UNLOADTABLE(Major, m_mapMajors)
+	UNLOADTABLE(MajorType, m_mapMajorTypes)
+
+	m_mapTypedIndustries.clear();
 	m_mapTypedOccupations.clear();
+	m_mapTypedMajors.clear();
 	m_mapOccuToIndustry.clear();
 }
 
@@ -88,6 +111,22 @@ COccupationTypeRow* CMultiCostTableCenter::GetOccupationTypeRow(int iID)
 {
 	std::map<int, COccupationTypeRow*>::iterator iter = m_mapOccupationTypes.find(iID);
 	if (iter != m_mapOccupationTypes.end())
+		return iter->second;
+	return NULL;
+}
+
+CMajorRow* CMultiCostTableCenter::GetMajorRow(int iID)
+{
+	std::map<int, CMajorRow*>::iterator iter = m_mapMajors.find(iID);
+	if (iter != m_mapMajors.end())
+		return iter->second;
+	return NULL;
+}
+
+CMajorTypeRow* CMultiCostTableCenter::GetMajorTypeRow(int iID)
+{
+	std::map<int, CMajorTypeRow*>::iterator iter = m_mapMajorTypes.find(iID);
+	if (iter != m_mapMajorTypes.end())
 		return iter->second;
 	return NULL;
 }

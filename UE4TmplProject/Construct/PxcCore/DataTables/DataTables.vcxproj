@@ -166,6 +166,8 @@
     <ClInclude Include="LoadDefines.h" />
     <ClInclude Include="MultiCostTable\IndustryRow.h" />
     <ClInclude Include="MultiCostTable\IndustryTypeRow.h" />
+    <ClInclude Include="MultiCostTable\MajorRow.h" />
+    <ClInclude Include="MultiCostTable\MajorTypeRow.h" />
     <ClInclude Include="MultiCostTable\MultiCostTableCenter.h" />
     <ClInclude Include="MultiCostTable\OccupationRow.h" />
     <ClInclude Include="MultiCostTable\OccupationTypeRow.h" />
@@ -184,6 +186,8 @@
     <ClCompile Include="LoadDefines.cpp" />
     <ClCompile Include="MultiCostTable\IndustryRow.cpp" />
     <ClCompile Include="MultiCostTable\IndustryTypeRow.cpp" />
+    <ClCompile Include="MultiCostTable\MajorRow.cpp" />
+    <ClCompile Include="MultiCostTable\MajorTypeRow.cpp" />
     <ClCompile Include="MultiCostTable\MultiCostTableCenter.cpp" />
     <ClCompile Include="MultiCostTable\OccupationRow.cpp" />
     <ClCompile Include="MultiCostTable\OccupationTypeRow.cpp" />

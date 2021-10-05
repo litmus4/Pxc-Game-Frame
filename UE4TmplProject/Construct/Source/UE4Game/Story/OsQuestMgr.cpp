@@ -251,8 +251,14 @@ void UOsQuestMgr::Init()
 
 void UOsQuestMgr::Release()
 {
+	m_mapSavedHeads.clear();
 	m_mapQuestFsms.clear();
 	m_tmapQuestStates.Empty();
+
+	std::map<int32, CQuestRow*>::iterator itBr = m_mapBeginningRows.begin();
+	for (; itBr != m_mapBeginningRows.end(); itBr++)
+		SAFE_DELETE(itBr->second)
+	m_mapBeginningRows.clear();
 }
 
 CQuestRow* UOsQuestMgr::NewBeginningRow(CQuestRow* pFirstRow)

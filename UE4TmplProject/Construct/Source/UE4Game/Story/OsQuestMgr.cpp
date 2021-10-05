@@ -30,15 +30,16 @@ void UOsQuestMgr::Init()
 	std::vector<CQuestRow*>::iterator iter = vecHeadRows.begin();
 	for (; iter != vecHeadRows.end(); iter++)
 	{
+		CQuestRow* pBeginningRow = NewBeginningRow(*iter);
 		UQuestState* pState = NewObject<UQuestState>();
-		pState->Init(*iter);
-		m_tmapQuestStates.Add((*iter)->m_iID, pState);
+		pState->Init(pBeginningRow);
+		m_tmapQuestStates.Add(pBeginningRow->m_iID, pState);
 
 		if ((*iter)->m_iHeadLevel == 0)
 		{
 			verify(m_mapQuestFsms.find((*iter)->m_iGraphID) == m_mapQuestFsms.end());
 
-			CQuestRow* pRow = *iter;
+			CQuestRow* pRow = pBeginningRow;
 			std::map<int32, SSavedHead>::iterator itSaved = m_mapSavedHeads.find((*iter)->m_iGraphID);
 			if (itSaved != m_mapSavedHeads.end())
 			{
@@ -50,7 +51,7 @@ void UOsQuestMgr::Init()
 
 			SQuestFsmEx FsmEx;
 			FsmEx.iCurStateID = pRow->m_iID;
-			FsmEx.iHeadStateID = (*iter)->m_iID;
+			FsmEx.iHeadStateID = pBeginningRow->m_iID;
 			FsmEx.Fsm.AddState(pState);
 			FsmEx.Fsm.SetState(pState, true);
 			std::pair<std::map<int32, SQuestFsmEx>::iterator, bool> RetPair =
@@ -86,7 +87,7 @@ void UOsQuestMgr::Init()
 			else
 			{
 				std::map<int32, SSavedHead>::iterator itSaved = m_mapSavedHeads.find((*iter)->m_iGraphID);
-				AddTributaryHead(itQf->second.vecTributaries, pState, *iter,
+				AddTributaryHead(itQf->second.vecTributaries, pState, pBeginningRow,
 					mapTribuHeads, (itSaved != m_mapSavedHeads.end() ? &itSaved->second.mapSavedTribuHeads : nullptr), 1);
 			}
 		}
@@ -254,6 +255,15 @@ void UOsQuestMgr::Release()
 	m_tmapQuestStates.Empty();
 }
 
+CQuestRow* UOsQuestMgr::NewBeginningRow(CQuestRow* pFirstRow)
+{
+	check(pFirstRow);
+	CQuestRow* pRet = new CQuestRow(pFirstRow);
+	pRet->m_iID += StoryDef::g_iBeginningStateBaseID;
+	m_mapBeginningRows.insert(std::make_pair(pRet->m_iID, pRet));
+	return pRet;
+}
+
 void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
 	std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads,
 	std::map<int32, SSavedHead>* pmapSavedTribuHeads, int32 iLevel)
@@ -283,7 +293,7 @@ void UOsQuestMgr::AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQu
 		vecTributaries.push_back(FsmEx);
 		SQuestFsmEx& FsmPushed = vecTributaries[vecTributaries.size() - 1];
 
-		std::unordered_map<int32, std::vector<UQuestState*>>::iterator itTh = mapTribuHeads.find(pRow->m_iID);
+		std::unordered_map<int32, std::vector<UQuestState*>>::iterator itTh = mapTribuHeads.find(FsmEx.iHeadStateID);
 		if (itTh != mapTribuHeads.end())
 		{
 			std::vector<UQuestState*>::iterator itHead = itTh->second.begin();

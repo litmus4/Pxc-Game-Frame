@@ -6,6 +6,7 @@ class CQuestRow
 {
 public:
 	CQuestRow();
+	CQuestRow(CQuestRow* pOtherRow);//Beginning空壳构造函数
 	~CQuestRow();
 	void Read(PxcUtil::CCSVTableOperator& tabop);
 
@@ -20,7 +21,6 @@ public:
 	std::vector<int> m_vecSubPrevQuestIDs;
 	int m_iHeadLevel;
 	int m_iParentHeadQuestID;
-	int m_iTributaryID;//保证与存档对应上
 	bool m_bPrevOR;
 	StoryDef::EPrevConfluentType m_ePrevConfType;
 	bool m_bNextSingle;

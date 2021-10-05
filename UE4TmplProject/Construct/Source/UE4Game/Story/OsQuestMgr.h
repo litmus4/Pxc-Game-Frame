@@ -58,6 +58,7 @@ public:
 	//
 
 private:
+	CQuestRow* NewBeginningRow(CQuestRow* pFirstRow);
 	void AddTributaryHead(std::vector<SQuestFsmEx>& vecTributaries, UQuestState* pState, CQuestRow* pRow,
 		std::unordered_map<int32, std::vector<UQuestState*>>& mapTribuHeads,
 		std::map<int32, SSavedHead>* pmapSavedTribuHeads, int32 iLevel);
@@ -73,6 +74,7 @@ private:
 	TMap<int32, UQuestState*> m_tmapQuestStates;
 
 	std::map<int32, SQuestFsmEx> m_mapQuestFsms;
+	std::map<int32, CQuestRow*> m_mapBeginningRows;
 
 	//*¥Êµµ¡Ÿ ±
 	std::map<int32, SSavedHead> m_mapSavedHeads;

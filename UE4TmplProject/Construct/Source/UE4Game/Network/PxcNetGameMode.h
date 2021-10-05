@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Framework/PxcGameMode.h"
+#include "Framework/Structs/SignatureStructs.h"
 #include "NetStructs.h"
 #include "Utilities/UtilityStructs.h"
 #include "PxcNetGameMode.generated.h"

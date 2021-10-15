@@ -171,6 +171,21 @@ int32 UNetBlueprintLibrary::Net_GetPlayerCount(UObject* WorldContextObject)
 	return NetPlayerCount;
 }
 
+int32 UNetBlueprintLibrary::Net_GetPlayerCountCli(UObject* WorldContextObject)
+{
+	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	if (!World) return 0;
+
+	int32 Ret = 0;
+	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
+	{
+		if (*Iter)
+			Ret++;
+	}
+	return Ret;
+}
+
+
 bool UNetBlueprintLibrary::Net_ForEachPlayerNative(UObject* WorldContextObject, const FNetEachPlayerDelegate& OnEach)
 {
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);

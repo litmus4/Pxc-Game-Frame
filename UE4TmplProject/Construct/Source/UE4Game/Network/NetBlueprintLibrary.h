@@ -69,6 +69,9 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
 	static int32 Net_GetPlayerCount(UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")
+	static int32 Net_GetPlayerCountCli(UObject* WorldContextObject);
+
 	static bool Net_ForEachPlayerNative(UObject* WorldContextObject, const FNetEachPlayerDelegate& OnEach);
 
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = "WorldContextObject"), Category = "Networking|Game")

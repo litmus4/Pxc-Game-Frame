@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "PrivateDefinitions/MainDef.h"
+#include <list>
 #include "PXCycleInstance.generated.h"
 
+class UPXCycleSystem;
 class UPxcInputMappingMgr;
 
 /**
@@ -24,12 +27,18 @@ public:
 	bool m_bKeyboardRuntime = true;
 
 	UFUNCTION(BlueprintPure)
+	UPXCycleSystem* GetCycleSystem(ECycleSystemType eType);
+
+	UFUNCTION(BlueprintPure)
 	UPxcInputMappingMgr* GetInputMappingMgr();
 
 private:
+	void AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem);
 	void OnGameModeInitialized(AGameModeBase* pGM);
 	void OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel);
 
 	UPROPERTY()
-	UPxcInputMappingMgr* m_pInputMappingMgr;
+	TMap<ECycleSystemType, UPXCycleSystem*> m_tmapSystems;
+
+	std::list<UPXCycleSystem*> m_lisSystems;
 };

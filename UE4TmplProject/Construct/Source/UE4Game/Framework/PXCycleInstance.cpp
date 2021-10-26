@@ -6,7 +6,7 @@
 #include "Containers/StringConv.h"
 #include "GameFramework/GameModeBase.h"
 #include "MonoControl/EventCenter.h"
-#include "Framework/PxcInputMappingMgr.h"
+#include "Framework/Systems/PxcInputMappingMgr.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -37,7 +37,7 @@ void UPXCycleInstance::Init()
 	//TODOJK 暂时只有Win64/32平台
 #endif
 
-	m_pInputMappingMgr = NewObject<UPxcInputMappingMgr>();
+	AddSystem(ECycleSystemType::InputMapping, NewObject<UPxcInputMappingMgr>());
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 	Super::Init();
@@ -48,6 +48,8 @@ void UPXCycleInstance::Init()
 
 void UPXCycleInstance::Shutdown()
 {
+	//FLAGJK Tick和Release
+
 	CEventCenter::GetInstance()->Release();
 	CEventCenter::DeleteInstance();
 
@@ -58,9 +60,22 @@ void UPXCycleInstance::Shutdown()
 	Super::Shutdown();
 }
 
+UPXCycleSystem* UPXCycleInstance::GetCycleSystem(ECycleSystemType eType)
+{
+	UPXCycleSystem** ppSystem = m_tmapSystems.Find(eType);
+	return (ppSystem ? *ppSystem : nullptr);
+}
+
 UPxcInputMappingMgr* UPXCycleInstance::GetInputMappingMgr()
 {
-	return m_pInputMappingMgr;
+	UPXCycleSystem** ppSystem = m_tmapSystems.Find(ECycleSystemType::InputMapping);
+	return (ppSystem ? Cast<UPxcInputMappingMgr>(*ppSystem) : nullptr);
+}
+
+void UPXCycleInstance::AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem)
+{
+	m_tmapSystems.Add(eType, pSystem);
+	m_lisSystems.push_back(pSystem);
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

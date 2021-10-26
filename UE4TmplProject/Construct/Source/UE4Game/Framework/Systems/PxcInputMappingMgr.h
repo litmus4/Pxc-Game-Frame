@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "GameFramework/InputSettings.h"
-#include "Structs/ScatteredStructs.h"
+#include "PXCycleSystem.h"
+#include "../Structs/ScatteredStructs.h"
 #include "PxcInputMappingMgr.generated.h"
 
 USTRUCT(BlueprintType)
@@ -36,7 +37,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcInputMappingMgr : public UObject
+class UE4GAME_API UPxcInputMappingMgr : public UPXCycleSystem
 {
 	GENERATED_BODY()
 

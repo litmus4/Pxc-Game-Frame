@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Framework/PxcInputMappingMgr.h"
+#include "PxcInputMappingMgr.h"
 #include "Kismet/KismetInputLibrary.h"
 #include "Framework/PxcGameConfig.h"
 #include "Framework/PxcBlueprintLibrary.h"

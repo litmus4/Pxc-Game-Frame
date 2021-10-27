@@ -21,6 +21,7 @@ class UE4GAME_API UPXCycleInstance : public UGameInstance
 	
 public:
 	virtual void Init() override;
+	virtual bool Tick(float fDeltaSeconds);
 	virtual void Shutdown() override;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -34,6 +35,7 @@ public:
 
 private:
 	void AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem);
+	void ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum);
 	void OnGameModeInitialized(AGameModeBase* pGM);
 	void OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel);
 
@@ -41,4 +43,5 @@ private:
 	TMap<ECycleSystemType, UPXCycleSystem*> m_tmapSystems;
 
 	std::list<UPXCycleSystem*> m_lisSystems;
+	FDelegateHandle DeleTickHandle;
 };

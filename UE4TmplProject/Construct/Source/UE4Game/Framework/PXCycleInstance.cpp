@@ -42,13 +42,23 @@ void UPXCycleInstance::Init()
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 	Super::Init();
 
+	DeleTickHandle = FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UPXCycleInstance::Tick));
 	FGameModeEvents::GameModeInitializedEvent.AddUObject(this, &UPXCycleInstance::OnGameModeInitialized);
 	NotifyPreClientTravelDelegates.AddUObject(this, &UPXCycleInstance::OnPreClientTravel);
 }
 
+bool UPXCycleInstance::Tick(float fDeltaSeconds)
+{
+	std::list<UPXCycleSystem*>::iterator iter = m_lisSystems.begin();
+	for (; iter != m_lisSystems.end(); iter++)
+		(*iter)->Tick(fDeltaSeconds);
+	return true;
+}
+
 void UPXCycleInstance::Shutdown()
 {
-	//FLAGJK TickºÍRelease
+	ECycleSystemType eSysTypes[] = { ECycleSystemType::InputMapping };
+	ReleaseSystems(eSysTypes, 1);
 
 	CEventCenter::GetInstance()->Release();
 	CEventCenter::DeleteInstance();
@@ -58,6 +68,8 @@ void UPXCycleInstance::Shutdown()
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance shutdown end"));
 	Super::Shutdown();
+
+	FTicker::GetCoreTicker().RemoveTicker(DeleTickHandle);
 }
 
 UPXCycleSystem* UPXCycleInstance::GetCycleSystem(ECycleSystemType eType)
@@ -76,6 +88,20 @@ void UPXCycleInstance::AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem
 {
 	m_tmapSystems.Add(eType, pSystem);
 	m_lisSystems.push_back(pSystem);
+}
+
+void UPXCycleInstance::ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum)
+{
+	if (!pTypes) return;
+
+	for (int32 i = iTypeNum; i < iTypeNum; ++i)
+	{
+		UPXCycleSystem** ppSystem = m_tmapSystems.Find(pTypes[i]);
+		if (ppSystem)
+			(*ppSystem)->Release();
+	}
+	m_lisSystems.clear();
+	m_tmapSystems.Empty();
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

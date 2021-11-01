@@ -24,8 +24,9 @@ public:
 	virtual bool Tick(float fDeltaSeconds);
 	virtual void Shutdown() override;
 
-	UPROPERTY(BlueprintReadWrite)
-	bool m_bKeyboardRuntime = true;
+	void AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem, bool bTick = true);
+	void ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum);
+	void SetSystemTick(ECycleSystemType eType, bool bTick, int32 iIndex = -1);//iIndex -1:push_back
 
 	UFUNCTION(BlueprintPure)
 	UPXCycleSystem* GetCycleSystem(ECycleSystemType eType);
@@ -33,9 +34,10 @@ public:
 	UFUNCTION(BlueprintPure)
 	UPxcInputMappingMgr* GetInputMappingMgr();
 
+	UPROPERTY(BlueprintReadWrite)
+	bool m_bKeyboardRuntime = true;
+
 private:
-	void AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem);
-	void ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum);
 	void OnGameModeInitialized(AGameModeBase* pGM);
 	void OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel);
 

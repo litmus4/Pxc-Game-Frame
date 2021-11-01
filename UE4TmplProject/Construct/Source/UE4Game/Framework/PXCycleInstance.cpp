@@ -37,7 +37,7 @@ void UPXCycleInstance::Init()
 	//TODOJK 暂时只有Win64/32平台
 #endif
 
-	AddSystem(ECycleSystemType::InputMapping, NewObject<UPxcInputMappingMgr>());
+	AddSystem(ECycleSystemType::InputMapping, NewObject<UPxcInputMappingMgr>(), false);
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 	Super::Init();
@@ -72,22 +72,11 @@ void UPXCycleInstance::Shutdown()
 	FTicker::GetCoreTicker().RemoveTicker(DeleTickHandle);
 }
 
-UPXCycleSystem* UPXCycleInstance::GetCycleSystem(ECycleSystemType eType)
-{
-	UPXCycleSystem** ppSystem = m_tmapSystems.Find(eType);
-	return (ppSystem ? *ppSystem : nullptr);
-}
-
-UPxcInputMappingMgr* UPXCycleInstance::GetInputMappingMgr()
-{
-	UPXCycleSystem** ppSystem = m_tmapSystems.Find(ECycleSystemType::InputMapping);
-	return (ppSystem ? Cast<UPxcInputMappingMgr>(*ppSystem) : nullptr);
-}
-
-void UPXCycleInstance::AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem)
+void UPXCycleInstance::AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem, bool bTick)
 {
 	m_tmapSystems.Add(eType, pSystem);
-	m_lisSystems.push_back(pSystem);
+	if (bTick)
+		m_lisSystems.push_back(pSystem);
 }
 
 void UPXCycleInstance::ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum)
@@ -102,6 +91,54 @@ void UPXCycleInstance::ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum)
 	}
 	m_lisSystems.clear();
 	m_tmapSystems.Empty();
+}
+
+void UPXCycleInstance::SetSystemTick(ECycleSystemType eType, bool bTick, int32 iIndex)
+{
+	UPXCycleSystem** ppSystem = m_tmapSystems.Find(eType);
+	if (!ppSystem) return;
+
+	if (bTick)
+	{
+		if (iIndex >= 0)
+		{
+			std::list<UPXCycleSystem*>::iterator iter = m_lisSystems.begin();
+			for (int32 i = 0; iter != m_lisSystems.end(); iter++, ++i)
+			{
+				if (i == iIndex)
+				{
+					m_lisSystems.insert(iter, *ppSystem);
+					break;
+				}
+			}
+		}
+		else
+			m_lisSystems.push_back(*ppSystem);
+	}
+	else
+	{
+		std::list<UPXCycleSystem*>::iterator iter = m_lisSystems.begin();
+		for (; iter != m_lisSystems.end(); iter++)
+		{
+			if (*iter == *ppSystem)
+			{
+				m_lisSystems.erase(iter);
+				break;
+			}
+		}
+	}
+}
+
+UPXCycleSystem* UPXCycleInstance::GetCycleSystem(ECycleSystemType eType)
+{
+	UPXCycleSystem** ppSystem = m_tmapSystems.Find(eType);
+	return (ppSystem ? *ppSystem : nullptr);
+}
+
+UPxcInputMappingMgr* UPXCycleInstance::GetInputMappingMgr()
+{
+	UPXCycleSystem** ppSystem = m_tmapSystems.Find(ECycleSystemType::InputMapping);
+	return (ppSystem ? Cast<UPxcInputMappingMgr>(*ppSystem) : nullptr);
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

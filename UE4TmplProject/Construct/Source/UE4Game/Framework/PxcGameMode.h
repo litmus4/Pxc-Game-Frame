@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "PrivateDefinitions/LevelManagersDef.h"
+#include <list>
 #include "PxcGameMode.generated.h"
 
 class UVirtualGroupMgr;
+class USpecialLevelMgrBase;
 class URelativeTimeDilationMgr;
 class UGroupCentralTargetMgr;
 
@@ -25,8 +28,15 @@ public:
 	virtual void Tick(float fDeltaSeconds) override;
 	virtual void EndPlay(const EEndPlayReason::Type eEndPlayReason) override;
 
+	void AddSpecialLevelManager(ESpecialLevelMgrType eType, USpecialLevelMgrBase* pMgr, bool bTick = true);
+	void ReleaseSpecialLevelManagers(ESpecialLevelMgrType* pTypes, int32 iTypeNum);
+	void SetSpecialLevelManagerTick(ESpecialLevelMgrType eType, bool bTick, int32 iIndex = -1);//iIndex -1:push_back
+
 	UFUNCTION(BlueprintPure)
 	UVirtualGroupMgr* GetVirtualGroupMgr();
+
+	UFUNCTION(BlueprintPure)
+	USpecialLevelMgrBase* GetSpecialLevelManager(ESpecialLevelMgrType eType);
 
 	UFUNCTION(BlueprintPure)
 	URelativeTimeDilationMgr* GetRelativeTimeDilationMgr();
@@ -45,8 +55,7 @@ private:
 	UVirtualGroupMgr* m_pVirtualGroupMgr;
 
 	UPROPERTY()
-	URelativeTimeDilationMgr* m_pRelTimeDilationMgr;
+	TMap<ESpecialLevelMgrType, USpecialLevelMgrBase*> m_tmapSpecialMgrs;
 
-	UPROPERTY()
-	UGroupCentralTargetMgr* m_pGroupCentralTargetMgr;
+	std::list<USpecialLevelMgrBase*> m_lisSpecialMgrs;
 };

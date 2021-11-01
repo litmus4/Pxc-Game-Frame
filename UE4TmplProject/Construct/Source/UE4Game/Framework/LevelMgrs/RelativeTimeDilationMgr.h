@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "PrivateDefinitions/LevelManagersDef.h"
+#include "SpecialLevelMgrBase.h"
 #include <map>
 #include <unordered_map>
 #include "RelativeTimeDilationMgr.generated.h"
@@ -78,7 +79,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API URelativeTimeDilationMgr : public UObject
+class UE4GAME_API URelativeTimeDilationMgr : public USpecialLevelMgrBase
 {
 	GENERATED_BODY()
 	
@@ -104,8 +105,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void ResetDilationByActor(AActor* pActor);
 
-	void Tick(float fDeltaSeconds);
-	void Release();
+	virtual void Tick(float fDeltaSeconds) override;
+	virtual void Release() override;
 
 private:
 	struct SGroupPreferred

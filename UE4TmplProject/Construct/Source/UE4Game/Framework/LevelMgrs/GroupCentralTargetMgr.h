@@ -5,10 +5,9 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "VirtualGroupMgr.h"
+#include "SpecialLevelMgrBase.h"
 #include <unordered_map>
 #include "GroupCentralTargetMgr.generated.h"
-
-class UVirtualGroupMgr;
 
 USTRUCT()
 struct FGrpCtrActorDirectInfo
@@ -142,7 +141,7 @@ private:
  * 
  */
 UCLASS()
-class UE4GAME_API UGroupCentralTargetMgr : public UObject
+class UE4GAME_API UGroupCentralTargetMgr : public USpecialLevelMgrBase
 {
 	GENERATED_BODY()
 	
@@ -187,8 +186,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = Gameplay)
 	bool IsActorFloating(AActor* pActor);
 
-	void Tick(float fDeltaSeconds);
-	void Release();
+	virtual void Tick(float fDeltaSeconds) override;
+	virtual void Release() override;
 	void OnCentralViewChanged(FGroupCentralData& Data);
 
 private:

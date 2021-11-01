@@ -23,13 +23,14 @@ APxcGameMode::APxcGameMode()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	m_pVirtualGroupMgr = CreateDefaultSubobject<UVirtualGroupMgr>(TEXT("VirtualGroupMgr"));
-	m_pRelTimeDilationMgr = CreateDefaultSubobject<URelativeTimeDilationMgr>(TEXT("RelativeTimeDilationMgr"));
-	m_pGroupCentralTargetMgr = CreateDefaultSubobject<UGroupCentralTargetMgr>(TEXT("GroupCentralTargetMgr"));
 }
 
 void APxcGameMode::InitGame(const FString& sMapName, const FString& sOptions, FString& sErrorMessage)
 {
 	Super::InitGame(sMapName, sOptions, sErrorMessage);
+
+	AddSpecialLevelManager(ESpecialLevelMgrType::RelativeTimeDilation, NewObject<URelativeTimeDilationMgr>(this));
+	AddSpecialLevelManager(ESpecialLevelMgrType::CentralTarget, NewObject<UGroupCentralTargetMgr>(this));
 
 	//*²âÊÔÁÙÊ±
 	std::string strText5 = "Hello World ";
@@ -54,17 +55,76 @@ void APxcGameMode::Tick(float fDeltaSeconds)
 {
 	Super::Tick(fDeltaSeconds);
 
-	m_pRelTimeDilationMgr->Tick(fDeltaSeconds);
-	m_pGroupCentralTargetMgr->Tick(fDeltaSeconds);
+	std::list<USpecialLevelMgrBase*>::iterator iter = m_lisSpecialMgrs.begin();
+	for (; iter != m_lisSpecialMgrs.end(); iter++)
+		(*iter)->Tick(fDeltaSeconds);
 }
 
 void APxcGameMode::EndPlay(const EEndPlayReason::Type eEndPlayReason)
 {
-	m_pRelTimeDilationMgr->Release();
-	m_pGroupCentralTargetMgr->Release();
+	ESpecialLevelMgrType eMgrTypes[] = { ESpecialLevelMgrType::RelativeTimeDilation,
+									ESpecialLevelMgrType::CentralTarget };
+	ReleaseSpecialLevelManagers(eMgrTypes, 2);
 	m_pVirtualGroupMgr->Release();
 
 	Super::EndPlay(eEndPlayReason);
+}
+
+void APxcGameMode::AddSpecialLevelManager(ESpecialLevelMgrType eType, USpecialLevelMgrBase* pMgr, bool bTick)
+{
+	m_tmapSpecialMgrs.Add(eType, pMgr);
+	if (bTick)
+		m_lisSpecialMgrs.push_back(pMgr);
+}
+
+void APxcGameMode::ReleaseSpecialLevelManagers(ESpecialLevelMgrType* pTypes, int32 iTypeNum)
+{
+	if (!pTypes) return;
+
+	for (int32 i = iTypeNum; i < iTypeNum; ++i)
+	{
+		USpecialLevelMgrBase** ppMgr = m_tmapSpecialMgrs.Find(pTypes[i]);
+		if (ppMgr)
+			(*ppMgr)->Release();
+	}
+	m_lisSpecialMgrs.clear();
+	m_tmapSpecialMgrs.Empty();
+}
+
+void APxcGameMode::SetSpecialLevelManagerTick(ESpecialLevelMgrType eType, bool bTick, int32 iIndex)
+{
+	USpecialLevelMgrBase** ppMgr = m_tmapSpecialMgrs.Find(eType);
+	if (!ppMgr) return;
+
+	if (bTick)
+	{
+		if (iIndex >= 0)
+		{
+			std::list<USpecialLevelMgrBase*>::iterator iter = m_lisSpecialMgrs.begin();
+			for (int32 i = 0; iter != m_lisSpecialMgrs.end(); iter++, ++i)
+			{
+				if (i == iIndex)
+				{
+					m_lisSpecialMgrs.insert(iter, *ppMgr);
+					break;
+				}
+			}
+		}
+		else
+			m_lisSpecialMgrs.push_back(*ppMgr);
+	}
+	else
+	{
+		std::list<USpecialLevelMgrBase*>::iterator iter = m_lisSpecialMgrs.begin();
+		for (; iter != m_lisSpecialMgrs.end(); iter++)
+		{
+			if (*iter == *ppMgr)
+			{
+				m_lisSpecialMgrs.erase(iter);
+				break;
+			}
+		}
+	}
 }
 
 UVirtualGroupMgr* APxcGameMode::GetVirtualGroupMgr()
@@ -72,12 +132,20 @@ UVirtualGroupMgr* APxcGameMode::GetVirtualGroupMgr()
 	return m_pVirtualGroupMgr;
 }
 
+USpecialLevelMgrBase* APxcGameMode::GetSpecialLevelManager(ESpecialLevelMgrType eType)
+{
+	USpecialLevelMgrBase** ppMgr = m_tmapSpecialMgrs.Find(eType);
+	return (ppMgr ? *ppMgr : nullptr);
+}
+
 URelativeTimeDilationMgr* APxcGameMode::GetRelativeTimeDilationMgr()
 {
-	return m_pRelTimeDilationMgr;
+	USpecialLevelMgrBase** ppMgr = m_tmapSpecialMgrs.Find(ESpecialLevelMgrType::RelativeTimeDilation);
+	return (ppMgr ? Cast<URelativeTimeDilationMgr>(*ppMgr) : nullptr);
 }
 
 UGroupCentralTargetMgr* APxcGameMode::GetGroupCentralTargetMgr()
 {
-	return m_pGroupCentralTargetMgr;
+	USpecialLevelMgrBase** ppMgr = m_tmapSpecialMgrs.Find(ESpecialLevelMgrType::CentralTarget);
+	return (ppMgr ? Cast<UGroupCentralTargetMgr>(*ppMgr) : nullptr);
 }

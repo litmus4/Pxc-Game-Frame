@@ -15,6 +15,13 @@ enum class EVirtualGroupUsage : uint8
 };
 
 UENUM(BlueprintType)
+enum class ESpecialLevelMgrType : uint8
+{
+	RelativeTimeDilation,
+	CentralTarget,
+};
+
+UENUM(BlueprintType)
 enum class ERTDilationLevel : uint8
 {
 	Global,

@@ -30,7 +30,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcAbilitySystemGlobals : public UAbilitySystemGlobals
+class UEGAME_API UPxcAbilitySystemGlobals : public UAbilitySystemGlobals
 {
 	GENERATED_BODY()
 	

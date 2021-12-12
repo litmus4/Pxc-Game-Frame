@@ -11,7 +11,7 @@
 /**
  * 
  */
-class UE4GAME_API CReplicatedSynchronizer
+class UEGAME_API CReplicatedSynchronizer
 {
 public:
 	CReplicatedSynchronizer();

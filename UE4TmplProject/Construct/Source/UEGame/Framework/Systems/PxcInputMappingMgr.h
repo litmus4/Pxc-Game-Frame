@@ -37,7 +37,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcInputMappingMgr : public UPXCycleSystem
+class UEGAME_API UPxcInputMappingMgr : public UPXCycleSystem
 {
 	GENERATED_BODY()
 

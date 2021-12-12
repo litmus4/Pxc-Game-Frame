@@ -12,7 +12,7 @@ class APxcGameMode;
  * 
  */
 UCLASS()
-class UE4GAME_API APxcGameState : public AGameStateBase
+class UEGAME_API APxcGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 	

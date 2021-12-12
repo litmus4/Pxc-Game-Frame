@@ -141,7 +141,7 @@ private:
  * 
  */
 UCLASS()
-class UE4GAME_API UGroupCentralTargetMgr : public USpecialLevelMgrBase
+class UEGAME_API UGroupCentralTargetMgr : public USpecialLevelMgrBase
 {
 	GENERATED_BODY()
 	

@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API AUEGameGameModeBase : public AGameModeBase
+class UEGAME_API AUEGameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	

@@ -12,7 +12,7 @@ class CQuestRow;
  * 
  */
 UCLASS()
-class UE4GAME_API UQuestState : public UObject
+class UEGAME_API UQuestState : public UObject
 {
 	GENERATED_BODY()
 	

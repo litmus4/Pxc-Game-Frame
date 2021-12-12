@@ -20,7 +20,7 @@ class UVirtualGroupMgr;
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
+class UEGAME_API UPxcBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	

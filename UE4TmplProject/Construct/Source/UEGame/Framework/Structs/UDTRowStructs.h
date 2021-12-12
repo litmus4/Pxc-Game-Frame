@@ -9,7 +9,7 @@
 #include "UDTRowStructs.generated.h"
 
 USTRUCT(BlueprintInternalUseOnly)
-struct UE4GAME_API FUTRGExContToInst : public FTableRowBase
+struct UEGAME_API FUTRGExContToInst : public FTableRowBase
 {
 	GENERATED_BODY()
 public:

@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API USpecialLevelMgrBase : public UObject
+class UEGAME_API USpecialLevelMgrBase : public UObject
 {
 	GENERATED_BODY()
 	

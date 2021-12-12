@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UNetTypesCommon : public UObject
+class UEGAME_API UNetTypesCommon : public UObject
 {
 	GENERATED_BODY()
 	

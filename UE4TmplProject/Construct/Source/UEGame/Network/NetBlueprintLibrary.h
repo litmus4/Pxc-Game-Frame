@@ -17,7 +17,7 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, /*class APxcChara
  * 
  */
 UCLASS()
-class UE4GAME_API UNetBlueprintLibrary : public UBlueprintFunctionLibrary
+class UEGAME_API UNetBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 	

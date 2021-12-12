@@ -8,7 +8,7 @@
 #include "TestOrbityActor.generated.h"
 
 UCLASS()
-class UE4GAME_API ATestOrbityActor : public AActor
+class UEGAME_API ATestOrbityActor : public AActor
 {
 	GENERATED_BODY()
 	

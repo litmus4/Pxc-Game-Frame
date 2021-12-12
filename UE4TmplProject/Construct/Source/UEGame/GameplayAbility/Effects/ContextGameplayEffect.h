@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UContextGameplayEffect : public UGameplayEffect
+class UEGAME_API UContextGameplayEffect : public UGameplayEffect
 {
 	GENERATED_BODY()
 

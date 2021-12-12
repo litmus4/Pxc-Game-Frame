@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcStaticResourceSystem : public UGameInstanceSubsystem
+class UEGAME_API UPxcStaticResourceSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 	

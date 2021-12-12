@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActorWithKeyDelegate);
  * 
  */
 UCLASS()
-class UE4GAME_API UAsyncWaitActorWithKey : public UBlueprintAsyncActionBase
+class UEGAME_API UAsyncWaitActorWithKey : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 	friend class UPxcAssistantSubsystem;

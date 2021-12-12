@@ -27,7 +27,7 @@ public:
 };
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class UE4GAME_API UTestRunningComponent : public UActorComponent
+class UEGAME_API UTestRunningComponent : public UActorComponent
 {
 	GENERATED_BODY()
 

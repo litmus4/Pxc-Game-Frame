@@ -18,7 +18,7 @@ class UGELevelMapAdditionInterface : public UInterface
 /**
  * 
  */
-class UE4GAME_API IGELevelMapAdditionInterface
+class UEGAME_API IGELevelMapAdditionInterface
 {
 	GENERATED_BODY()
 

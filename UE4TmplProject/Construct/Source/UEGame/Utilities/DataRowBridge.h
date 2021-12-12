@@ -18,7 +18,7 @@ class UDataRowBridge : public UInterface
 /**
  * 
  */
-class UE4GAME_API IDataRowBridge
+class UEGAME_API IDataRowBridge
 {
 	GENERATED_BODY()
 

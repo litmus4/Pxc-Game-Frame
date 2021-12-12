@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcEngineSubsystem : public UEngineSubsystem
+class UEGAME_API UPxcEngineSubsystem : public UEngineSubsystem
 {
 	GENERATED_BODY()
 	

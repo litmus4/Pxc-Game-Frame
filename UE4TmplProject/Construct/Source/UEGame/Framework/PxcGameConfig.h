@@ -12,7 +12,7 @@
  * 
  */
 UCLASS(Config = Game, DefaultConfig, BlueprintType, NotBlueprintable)
-class UE4GAME_API UPxcGameConfig : public UDeveloperSettings
+class UEGAME_API UPxcGameConfig : public UDeveloperSettings
 {
 	GENERATED_BODY()
 	

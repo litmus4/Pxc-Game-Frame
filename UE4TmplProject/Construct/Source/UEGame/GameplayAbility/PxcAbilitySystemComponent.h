@@ -41,7 +41,7 @@ struct SGEExtentionStackMap
  * 
  */
 UCLASS(Blueprintable)
-class UE4GAME_API UPxcAbilitySystemComponent : public UAbilitySystemComponent
+class UEGAME_API UPxcAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
 

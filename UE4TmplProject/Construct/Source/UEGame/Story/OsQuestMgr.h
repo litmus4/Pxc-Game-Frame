@@ -21,7 +21,7 @@ class CQuestRow;
  * 
  */
 UCLASS()
-class UE4GAME_API UOsQuestMgr : public UObject
+class UEGAME_API UOsQuestMgr : public UObject
 {
 	GENERATED_BODY()
 

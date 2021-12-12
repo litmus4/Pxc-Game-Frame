@@ -79,7 +79,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API URelativeTimeDilationMgr : public USpecialLevelMgrBase
+class UEGAME_API URelativeTimeDilationMgr : public USpecialLevelMgrBase
 {
 	GENERATED_BODY()
 	

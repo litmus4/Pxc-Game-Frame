@@ -55,7 +55,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API UVirtualGroupMgr : public UObject
+class UEGAME_API UVirtualGroupMgr : public UObject
 {
 	GENERATED_BODY()
 	

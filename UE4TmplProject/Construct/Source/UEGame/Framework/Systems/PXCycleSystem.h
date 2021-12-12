@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UPXCycleSystem : public UObject
+class UEGAME_API UPXCycleSystem : public UObject
 {
 	GENERATED_BODY()
 	

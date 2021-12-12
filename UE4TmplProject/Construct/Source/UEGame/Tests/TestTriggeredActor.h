@@ -10,7 +10,7 @@ class UStaticMeshComponent;
 class UBoxComponent;
 
 UCLASS()
-class UE4GAME_API ATestTriggeredActor : public AActor
+class UEGAME_API ATestTriggeredActor : public AActor
 {
 	GENERATED_BODY()
 	

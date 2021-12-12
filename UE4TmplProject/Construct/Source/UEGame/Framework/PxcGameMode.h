@@ -17,7 +17,7 @@ class UGroupCentralTargetMgr;
  * 
  */
 UCLASS()
-class UE4GAME_API APxcGameMode : public AGameModeBase
+class UEGAME_API APxcGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	

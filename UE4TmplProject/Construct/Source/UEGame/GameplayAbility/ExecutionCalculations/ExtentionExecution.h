@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UExtentionExecution : public UGameplayEffectExecutionCalculation
+class UEGAME_API UExtentionExecution : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
 	

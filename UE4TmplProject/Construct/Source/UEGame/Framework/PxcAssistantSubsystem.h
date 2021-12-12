@@ -38,7 +38,7 @@ public:
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcAssistantSubsystem : public UGameInstanceSubsystem
+class UEGAME_API UPxcAssistantSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 

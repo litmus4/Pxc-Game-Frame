@@ -11,7 +11,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API UFlowFenceActorWithKey : public UBlueprintAsyncActionBase
+class UEGAME_API UFlowFenceActorWithKey : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 	friend class UPxcAssistantSubsystem;

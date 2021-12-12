@@ -15,7 +15,7 @@ class UPxcInputMappingMgr;
  * 
  */
 UCLASS()
-class UE4GAME_API UPXCycleInstance : public UGameInstance
+class UEGAME_API UPXCycleInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	

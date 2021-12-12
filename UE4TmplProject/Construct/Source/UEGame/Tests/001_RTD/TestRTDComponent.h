@@ -27,7 +27,7 @@ public:
  * 
  */
 UCLASS(Blueprintable)
-class UE4GAME_API UTestRTDComponent : public UTestRunningComponent
+class UEGAME_API UTestRTDComponent : public UTestRunningComponent
 {
 	GENERATED_BODY()
 

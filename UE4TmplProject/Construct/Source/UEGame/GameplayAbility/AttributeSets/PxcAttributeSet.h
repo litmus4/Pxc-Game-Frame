@@ -20,7 +20,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class UE4GAME_API UPxcAttributeSet : public UAttributeSet
+class UEGAME_API UPxcAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 	

@@ -13,7 +13,7 @@
  * 
  */
 UCLASS()
-class UE4GAME_API APxcNetGameMode : public APxcGameMode
+class UEGAME_API APxcNetGameMode : public APxcGameMode
 {
 	GENERATED_BODY()
 	

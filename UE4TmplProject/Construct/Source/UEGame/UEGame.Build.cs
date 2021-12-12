@@ -4,7 +4,7 @@ using System.IO;
 using UnrealBuildTool;
 using System;
 
-public class UE4Game : ModuleRules
+public class UEGame : ModuleRules
 {
     public string PxcLibPath
     {
@@ -30,7 +30,7 @@ public class UE4Game : ModuleRules
         }
     }
 
-	public UE4Game(ReadOnlyTargetRules Target) : base(Target)
+	public UEGame(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

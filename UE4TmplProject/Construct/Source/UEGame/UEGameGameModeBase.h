@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "UE4GameGameModeBase.generated.h"
+#include "UEGameGameModeBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UE4GAME_API AUE4GameGameModeBase : public AGameModeBase
+class UE4GAME_API AUEGameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 public:
-	AUE4GameGameModeBase();
+	AUEGameGameModeBase();
 
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage);
 

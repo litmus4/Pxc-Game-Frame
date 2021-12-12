@@ -3,12 +3,12 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class UE4GameTarget : TargetRules
+public class UEGameTarget : TargetRules
 {
-	public UE4GameTarget( TargetInfo Target) : base(Target)
+	public UEGameTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 
-		ExtraModuleNames.AddRange( new string[] { "UE4Game" } );
+		ExtraModuleNames.AddRange( new string[] { "UEGame" } );
 	}
 }

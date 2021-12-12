@@ -1,7 +1,7 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 
-#include "UE4GameGameModeBase.h"
+#include "UEGameGameModeBase.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -14,12 +14,12 @@
 
 #define USE_ZPACK 2
 
-AUE4GameGameModeBase::AUE4GameGameModeBase()
+AUEGameGameModeBase::AUEGameGameModeBase()
 {
 	//
 }
 
-void AUE4GameGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+void AUEGameGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	AGameModeBase::InitGame(MapName, Options, ErrorMessage);
 

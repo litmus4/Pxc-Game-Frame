@@ -67,11 +67,13 @@ void UPxcAttributeSet::TryTriggerPreGEContModify(const FGameplayAttribute& Attri
 			case EGameplayModOp::Type::Additive:
 				fCheckMagnitude = fDiff; break;
 			case EGameplayModOp::Type::Multiplicitive:
-				check(FMath::Abs(fNewValue - fDiff - 0.0f) > 0.00001f);
-				fCheckMagnitude = fNewValue / (fNewValue - fDiff); break;
+				if (FMath::Abs(fNewValue - fDiff - 0.0f) > 0.00001f)
+					fCheckMagnitude = fNewValue / (fNewValue - fDiff);
+				break;
 			case EGameplayModOp::Type::Division:
-				check(FMath::Abs(fNewValue - 0.0f) > 0.00001f);
-				fCheckMagnitude = (fNewValue - fDiff) / fNewValue; break;
+				if (FMath::Abs(fNewValue - 0.0f) > 0.00001f)
+					fCheckMagnitude = (fNewValue - fDiff) / fNewValue;
+				break;
 			case EGameplayModOp::Type::Override:
 				fCheckMagnitude = fNewValue; break;
 			}

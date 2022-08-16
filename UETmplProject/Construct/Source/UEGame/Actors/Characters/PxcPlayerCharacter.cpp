@@ -27,7 +27,7 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 
 }
 
-void APxcPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* pPlayerInputComponent)
+void APxcPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(pPlayerInputComponent);
 

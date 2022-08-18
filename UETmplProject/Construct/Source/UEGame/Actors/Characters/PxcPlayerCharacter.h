@@ -39,6 +39,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = Animation)
+	void RunLocoMotionEndMoveInput();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* m_pCameraComp;
 
@@ -51,10 +54,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	EAnimBPType m_eAnimBPType;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
 	FVector m_vTurn;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, Category = Animation)
 	EMotionState m_eMotionState;
 
 public:

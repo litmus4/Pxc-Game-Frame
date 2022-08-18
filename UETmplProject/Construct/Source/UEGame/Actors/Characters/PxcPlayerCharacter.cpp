@@ -29,6 +29,14 @@ void APxcPlayerCharacter::BeginPlay()
 
 }
 
+void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
+{
+	if (m_eAnimBPType == EAnimBPType::DirectionTurned)
+		AddMovementInput(GetActorForwardVector() * 1.0f);
+	else
+		AddMovementInput(m_vTurn.GetSafeNormal() * 1.0f);
+}
+
 void APxcPlayerCharacter::Tick(float fDeltaTime)
 {
 	Super::Tick(fDeltaTime);

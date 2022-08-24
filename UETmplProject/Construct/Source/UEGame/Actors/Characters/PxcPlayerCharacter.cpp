@@ -4,6 +4,8 @@
 #include "Actors/Characters/PxcPlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimNode_StateMachine.h"
 #include "Kismet/KismetMathLibrary.h"
 
 APxcPlayerCharacter::APxcPlayerCharacter()
@@ -27,6 +29,27 @@ void APxcPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void APxcPlayerCharacter::CheckMachineStateEnd(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState, float fTimeRemaining)
+{
+	if (!IsValid(pABP)) return;
+
+	int32 iMachineIndex = pABP->GetStateMachineIndex(MachineName);
+	if (iMachineIndex != INDEX_NONE)
+	{
+		const FAnimNode_StateMachine* pMachine = pABP->GetStateMachineInstance(iMachineIndex);
+		if (!pMachine) return;
+
+		FName&& CurStateName = pMachine->GetCurrentStateName();
+		FName&& MotionName = StaticEnum<EMotionState>()->GetNameByIndex((int32)eMotionState);
+		if (CurStateName != NAME_None && CurStateName == MotionName)
+		{
+			float fCurTimeRemaining = pABP->GetRelevantAnimTimeRemaining(iMachineIndex, pMachine->GetCurrentState());
+			if (fCurTimeRemaining <= fTimeRemaining)
+				OnMotionStateEnd(eMotionState);
+		}
+	}
 }
 
 void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
@@ -127,5 +150,18 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 			AddMovementInput(GetActorForwardVector() * 1.0f);
 		else
 			AddMovementInput(GetActorRightVector() * fValue);
+	}
+}
+
+void APxcPlayerCharacter::OnMotionStateEnd(EMotionState eMotionState)
+{
+	switch (eMotionState)
+	{
+	case EMotionState::StartMove:
+		m_eMotionState = EMotionState::Move;
+		break;
+	case EMotionState::EndMove:
+		m_eMotionState = EMotionState::Idle;
+		break;
 	}
 }

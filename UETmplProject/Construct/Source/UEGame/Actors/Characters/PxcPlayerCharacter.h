@@ -24,6 +24,7 @@ enum class EMotionState : uint8
 
 class UCameraComponent;
 class USpringArmComponent;
+class UAnimInstance;
 
 /**
  * 
@@ -38,6 +39,9 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, Category = Animation)
+	void CheckMachineStateEnd(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState, float fTimeRemaining);
 
 	UFUNCTION(BlueprintCallable, Category = Animation)
 	void RunLocoMotionEndMoveInput();
@@ -67,6 +71,7 @@ public:
 protected:
 	void OnMoveForward(float fValue);
 	void OnMoveRight(float fValue);
+	void OnMotionStateEnd(EMotionState eMotionState);
 
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;

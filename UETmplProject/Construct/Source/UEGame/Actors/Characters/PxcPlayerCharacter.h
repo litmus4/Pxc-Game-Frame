@@ -59,7 +59,7 @@ protected:
 	EAnimBPType m_eAnimBPType;
 
 	UPROPERTY(BlueprintReadOnly, Category = Animation)
-	FVector m_vTurn;
+	FVector m_vFocus;
 
 	UPROPERTY(BlueprintReadWrite, Category = Animation)
 	EMotionState m_eMotionState;

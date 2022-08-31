@@ -7,6 +7,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimNode_StateMachine.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 APxcPlayerCharacter::APxcPlayerCharacter()
 {
@@ -19,10 +20,15 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 
 	m_bRootMotion = false;
 	m_eAnimBPType = EAnimBPType::DirectionTurned;
+	m_fFootDownLength = 100.0f;
+
 	m_vFocus = FVector::ZeroVector;
 	m_eMotionState = EMotionState::Idle;
+	m_eFootType = EEndMoveFootType::Any;
+
 	m_v2Axis.Set(0.0, 0.0);
 	m_v2LastAxis.Set(0.0, 0.0);
+	m_bEndMoveStarted = false;
 }
 
 void APxcPlayerCharacter::BeginPlay()
@@ -64,6 +70,11 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 {
 	Super::Tick(fDeltaTime);
 
+	if (m_bEndMoveStarted)
+	{
+		OnEndMoveStarted();
+		m_bEndMoveStarted = false;
+	}
 }
 
 void APxcPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputComponent)
@@ -94,6 +105,7 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 		m_eMotionState = EMotionState::EndMove;
 		if (!m_bRootMotion)
 			m_v2LastAxis = v2LastAxis;
+		m_bEndMoveStarted = true;
 	}
 
 	if (m_v2Axis.IsNearlyZero() && m_v2LastAxis.IsNearlyZero())
@@ -134,6 +146,7 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 		m_eMotionState = EMotionState::EndMove;
 		if (!m_bRootMotion)
 			m_v2LastAxis = v2LastAxis;
+		m_bEndMoveStarted = true;
 	}
 
 	if (m_v2Axis.IsNearlyZero() && m_v2LastAxis.IsNearlyZero())
@@ -169,8 +182,40 @@ void APxcPlayerCharacter::OnMotionStateEnd(EMotionState eMotionState)
 	case EMotionState::EndMove:
 		m_eMotionState = EMotionState::Idle;
 		m_vFocus = FVector::ZeroVector;
+		m_eFootType = EEndMoveFootType::Any;
 		if (!m_bRootMotion)
 			m_v2LastAxis.Set(0.0, 0.0);
 		break;
 	}
+}
+
+void APxcPlayerCharacter::OnEndMoveStarted()
+{
+	if (!IsValid(GetMesh())) return;
+
+	if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::ControllerTurned)
+	{
+		do {
+			FVector&& vLeftFoot = GetMesh()->GetSocketLocation(m_LeftFootSocketName);
+			FVector vLeftDown(vLeftFoot.X, vLeftFoot.Y, vLeftFoot.Z - m_fFootDownLength);
+			FHitResult LeftHitResult;
+			if (!UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), vLeftFoot, vLeftDown, m_tarrFootTraceTypes,
+				false, TArray<AActor*>(), EDrawDebugTrace::Type::None, LeftHitResult, true)) break;
+
+			FVector&& vRightFoot = GetMesh()->GetSocketLocation(m_RightFootSocketName);
+			FVector vRightDown(vRightFoot.X, vRightFoot.Y, vRightFoot.Z - m_fFootDownLength);
+			FHitResult RightHitResult;
+			if (!UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), vRightFoot, vRightDown, m_tarrFootTraceTypes,
+				false, TArray<AActor*>(), EDrawDebugTrace::Type::None, RightHitResult, true)) break;
+
+			if (LeftHitResult.Distance > RightHitResult.Distance)
+				m_eFootType = EEndMoveFootType::Left;
+			else if (LeftHitResult.Distance < RightHitResult.Distance)
+				m_eFootType = EEndMoveFootType::Right;
+			else
+				m_eFootType = EEndMoveFootType::Any;
+		} while (false);
+	}
+
+	DeleEndMoveStarted.Broadcast();
 }

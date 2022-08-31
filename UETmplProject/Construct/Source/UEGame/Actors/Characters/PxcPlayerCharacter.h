@@ -22,6 +22,16 @@ enum class EMotionState : uint8
 	EndMove
 };
 
+UENUM(BlueprintType)
+enum class EEndMoveFootType : uint8
+{
+	Any = 0,
+	Left,
+	Right
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndMoveStartDelegate);
+
 class UCameraComponent;
 class USpringArmComponent;
 class UAnimInstance;
@@ -58,11 +68,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	EAnimBPType m_eAnimBPType;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
+	FName m_LeftFootSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
+	FName m_RightFootSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	float m_fFootDownLength;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
+	TArray<TEnumAsByte<EObjectTypeQuery>> m_tarrFootTraceTypes;
+
 	UPROPERTY(BlueprintReadOnly, Category = Animation)
 	FVector m_vFocus;
 
-	UPROPERTY(BlueprintReadWrite, Category = Animation)
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
 	EMotionState m_eMotionState;
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
+	EEndMoveFootType m_eFootType;
+
+	UPROPERTY(BlueprintAssignable)
+	FEndMoveStartDelegate DeleEndMoveStarted;
 
 public:
 	virtual void Tick(float fDeltaTime) override;
@@ -72,7 +100,9 @@ protected:
 	void OnMoveForward(float fValue);
 	void OnMoveRight(float fValue);
 	void OnMotionStateEnd(EMotionState eMotionState);
+	void OnEndMoveStarted();
 
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;
+	bool m_bEndMoveStarted;
 };

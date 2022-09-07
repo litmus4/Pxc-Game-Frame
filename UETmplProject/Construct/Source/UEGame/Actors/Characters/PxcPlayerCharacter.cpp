@@ -48,7 +48,7 @@ void APxcPlayerCharacter::CheckMachineStateEnd(UAnimInstance* pABP, FName Machin
 		if (!pMachine) return;
 
 		FName&& CurStateName = pMachine->GetCurrentStateName();
-		FName&& MotionName = StaticEnum<EMotionState>()->GetNameByIndex((int32)eMotionState);
+		FName&& MotionName = FName(StaticEnum<EMotionState>()->GetNameByIndex((int32)eMotionState).ToString().RightChop(14));
 		if (CurStateName != NAME_None && CurStateName == MotionName)
 		{
 			float fCurTimeRemaining = pABP->GetRelevantAnimTimeRemaining(iMachineIndex, pMachine->GetCurrentState());
@@ -91,7 +91,7 @@ void APxcPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInpu
 void APxcPlayerCharacter::OnMoveForward(float fValue)
 {
 	FVector2D v2LastAxis = m_v2Axis;
-	m_v2Axis.Y = fValue;
+	m_v2Axis.X = fValue;
 	if (!m_v2Axis.IsNearlyZero() && (m_eMotionState == EMotionState::Idle ||
 		m_eMotionState == EMotionState::EndMove))
 	{
@@ -117,15 +117,15 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 		FVector&& vForward = UKismetMathLibrary::GetForwardVector(FRotator(0.0, rCtrlRot.Yaw, 0.0));
 		FVector&& vRight = UKismetMathLibrary::GetRightVector(FRotator(0.0, rCtrlRot.Yaw, 0.0));
 		if (m_eMotionState == EMotionState::EndMove && !m_bRootMotion)
-			m_vFocus = vForward * m_v2LastAxis.Y + vRight * m_v2LastAxis.X;
+			m_vFocus = vForward * m_v2LastAxis.X + vRight * m_v2LastAxis.Y;
 		else
-			m_vFocus =  vForward * m_v2Axis.Y + vRight * m_v2Axis.X;
+			m_vFocus =  vForward * m_v2Axis.X + vRight * m_v2Axis.Y;
 	}
 
 	if (!m_bRootMotion)
 	{
 		AddMovementInput(GetActorForwardVector(),
-			(m_eAnimBPType == EAnimBPType::DirectionTurned ? 1.0f : fValue));
+			(m_eAnimBPType == EAnimBPType::DirectionTurned ? FMath::Abs(fValue) : fValue));
 	}
 }
 
@@ -158,15 +158,15 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 		FVector&& vForward = UKismetMathLibrary::GetForwardVector(FRotator(0.0, rCtrlRot.Yaw, 0.0));
 		FVector&& vRight = UKismetMathLibrary::GetRightVector(FRotator(0.0, rCtrlRot.Yaw, 0.0));
 		if (m_eMotionState == EMotionState::EndMove && !m_bRootMotion)
-			m_vFocus = vForward * m_v2LastAxis.Y + vRight * m_v2LastAxis.X;
+			m_vFocus = vForward * m_v2LastAxis.X + vRight * m_v2LastAxis.Y;
 		else
-			m_vFocus = vForward * m_v2Axis.Y + vRight * m_v2Axis.X;
+			m_vFocus = vForward * m_v2Axis.X + vRight * m_v2Axis.Y;
 	}
 	
 	if (!m_bRootMotion)
 	{
 		if (m_eAnimBPType == EAnimBPType::DirectionTurned)
-			AddMovementInput(GetActorForwardVector(), 1.0f);
+			AddMovementInput(GetActorForwardVector(), FMath::Abs(fValue));
 		else
 			AddMovementInput(GetActorRightVector(), fValue);
 	}

@@ -387,3 +387,14 @@ UMaterialInstance* UPxcBlueprintLibrary::Key_ParseIconFromAxputMapping(const FPx
 	}
 	return pRetMtlInst;
 }
+
+float UPxcBlueprintLibrary::Math_MagClamp(float fValue, float fMin, float fMax, bool bMidAdsorption, bool bMidToMax, float fPrecision)
+{
+	fValue = FMath::Clamp(fValue, fMin, fMax);
+	float fMid = (fMin + fMax) / 2.0f;
+	if (FMath::Abs(fValue - fMid) > fPrecision)
+		return (fValue > fMid ? fMax : fMin);
+	else if (bMidAdsorption)
+		return (bMidToMax ? fMax : fMin);
+	return fValue;
+}

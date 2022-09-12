@@ -120,6 +120,11 @@ public:
 			//TODOJK  π”√LogCenter
 		}
 	}
+
+public:
+	UFUNCTION(BlueprintPure, Category = "Utility|Math")
+	static float Math_MagClamp(float fValue, float fMin, float fMax,
+		bool bMidAdsorption = false, bool bMidToMax = true, float fPrecision = 0.00001f);
 };
 
 #define LOAD_UDT_TO_TMAP(UDTPtr, RowClass, Container, IDMbr) UPxcBlueprintLibrary::ForEachUDTRowValue<RowClass>(\

@@ -68,6 +68,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	EAnimBPType m_eAnimBPType;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	UCurveFloat* m_pStartMoveCurve;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	UCurveFloat* m_pEndMoveCurve;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
 	FName m_LeftFootSocketName;
 
@@ -87,9 +93,15 @@ protected:
 	EMotionState m_eMotionState;
 
 	UPROPERTY(BlueprintReadOnly, Category = Animation)
+	float m_fStartMoveMaxTime;
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
+	float m_fEndMoveMaxTime;
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
 	EEndMoveFootType m_eFootType;
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = Animation)
 	FEndMoveStartDelegate DeleEndMoveStarted;
 
 public:
@@ -102,7 +114,14 @@ protected:
 	void OnMotionStateEnd(EMotionState eMotionState);
 	void OnEndMoveStarted();
 
+	void ResetLocoMotionStartMoveTime();
+	void ResetLocoMotionEndMoveTime();
+
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;
+	float m_fStartMoveTime;
+	float m_fEndMoveTime;
+	float m_fStartMoveStamp;
+	float m_fEndMoveStamp;
 	bool m_bEndMoveStarted;
 };

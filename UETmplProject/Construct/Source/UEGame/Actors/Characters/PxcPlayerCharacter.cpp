@@ -8,6 +8,7 @@
 #include "Animation/AnimNode_StateMachine.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PxcUtil/DateTime.h"
 
 APxcPlayerCharacter::APxcPlayerCharacter()
 {
@@ -20,14 +21,22 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 
 	m_bRootMotion = false;
 	m_eAnimBPType = EAnimBPType::DirectionTurned;
+	m_pStartMoveCurve = nullptr;
+	m_pEndMoveCurve = nullptr;
 	m_fFootDownLength = 100.0f;
 
 	m_vFocus = FVector::ZeroVector;
 	m_eMotionState = EMotionState::Idle;
+	m_fStartMoveMaxTime = 0.0f;
+	m_fEndMoveMaxTime = 0.0f;
 	m_eFootType = EEndMoveFootType::Any;
 
 	m_v2Axis.Set(0.0, 0.0);
 	m_v2LastAxis.Set(0.0, 0.0);
+	m_fStartMoveTime = -1.0f;
+	m_fEndMoveTime = -1.0f;
+	m_fStartMoveStamp = 0.0f;
+	m_fEndMoveStamp = 0.0f;
 	m_bEndMoveStarted = false;
 }
 
@@ -35,6 +44,11 @@ void APxcPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	float fTempMin = 0.0f;
+	if (IsValid(m_pStartMoveCurve))
+		m_pStartMoveCurve->FloatCurve.GetTimeRange(fTempMin, m_fStartMoveMaxTime);
+	if (IsValid(m_pEndMoveCurve))
+		m_pEndMoveCurve->FloatCurve.GetTimeRange(fTempMin, m_fEndMoveMaxTime);
 }
 
 void APxcPlayerCharacter::CheckMachineStateEnd(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState, float fTimeRemaining)
@@ -60,10 +74,32 @@ void APxcPlayerCharacter::CheckMachineStateEnd(UAnimInstance* pABP, FName Machin
 
 void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
 {
+	float fValue = 1.0f;
+	if (IsValid(m_pEndMoveCurve))
+	{
+		if (m_fEndMoveTime >= -0.5f && m_fEndMoveTime <= m_fEndMoveMaxTime)
+		{
+			float fCurTime = PxcUtil::ExactTime::GetFloatTime();
+			m_fEndMoveTime = fCurTime - m_fEndMoveStamp;
+			fValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(m_fEndMoveTime, m_fEndMoveMaxTime)), 0.0f, 0.1f);
+		}
+		else if (m_fEndMoveTime < -0.5f)
+		{
+			m_fEndMoveTime = 0.0f;
+			m_fEndMoveStamp = PxcUtil::ExactTime::GetFloatTime();
+			fValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(m_fEndMoveTime, m_fEndMoveMaxTime)), 0.0f, 0.1f);
+		}
+		else
+		{
+			ResetLocoMotionEndMoveTime();
+			fValue = 0.0f;
+		}
+	}
+
 	if (m_eAnimBPType == EAnimBPType::DirectionTurned)
-		AddMovementInput(GetActorForwardVector(), 1.0f);
+		AddMovementInput(GetActorForwardVector(), fValue);
 	else
-		AddMovementInput(m_vFocus.GetSafeNormal(), 1.0f);
+		AddMovementInput(m_vFocus.GetSafeNormal(), fValue);
 }
 
 void APxcPlayerCharacter::Tick(float fDeltaTime)
@@ -97,7 +133,14 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 	{
 		m_eMotionState = EMotionState::StartMove;
 		if (!m_bRootMotion)
+		{
 			m_v2LastAxis.Set(0.0, 0.0);
+			if (IsValid(m_pStartMoveCurve))
+			{
+				m_fStartMoveTime = 0.0f;
+				m_fStartMoveStamp = PxcUtil::ExactTime::GetFloatTime();
+			}
+		}
 	}
 	else if (m_v2Axis.IsNearlyZero() && (m_eMotionState == EMotionState::Move ||
 		m_eMotionState == EMotionState::StartMove))
@@ -124,6 +167,18 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 
 	if (!m_bRootMotion)
 	{
+		if (IsValid(m_pStartMoveCurve))
+		{
+			if (m_fStartMoveTime >= -0.5f && m_fStartMoveTime <= m_fStartMoveMaxTime)
+			{
+				float fCurTime = PxcUtil::ExactTime::GetFloatTime();
+				m_fStartMoveTime = fCurTime - m_fStartMoveStamp;
+				if (!m_v2Axis.IsNearlyZero())
+					fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 0.1f);
+			}
+			else
+				ResetLocoMotionStartMoveTime();
+		}
 		AddMovementInput(GetActorForwardVector(),
 			(m_eAnimBPType == EAnimBPType::DirectionTurned ? FMath::Abs(fValue) : fValue));
 	}
@@ -138,7 +193,14 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 	{
 		m_eMotionState = EMotionState::StartMove;
 		if (!m_bRootMotion)
+		{
 			m_v2LastAxis.Set(0.0, 0.0);
+			if (IsValid(m_pStartMoveCurve))
+			{
+				m_fStartMoveTime = 0.0f;
+				m_fStartMoveStamp = PxcUtil::ExactTime::GetFloatTime();
+			}
+		}
 	}
 	else if (m_v2Axis.IsNearlyZero() && (m_eMotionState == EMotionState::Move ||
 		m_eMotionState == EMotionState::StartMove))
@@ -165,6 +227,18 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 	
 	if (!m_bRootMotion)
 	{
+		if (IsValid(m_pStartMoveCurve))
+		{
+			if (m_fStartMoveTime >= -0.5f && m_fStartMoveTime <= m_fStartMoveMaxTime)
+			{
+				float fCurTime = PxcUtil::ExactTime::GetFloatTime();
+				m_fStartMoveTime = fCurTime - m_fStartMoveStamp;
+				if (!m_v2Axis.IsNearlyZero())
+					fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 0.1f);
+			}
+			else
+				ResetLocoMotionStartMoveTime();
+		}
 		if (m_eAnimBPType == EAnimBPType::DirectionTurned)
 			AddMovementInput(GetActorForwardVector(), FMath::Abs(fValue));
 		else
@@ -184,7 +258,11 @@ void APxcPlayerCharacter::OnMotionStateEnd(EMotionState eMotionState)
 		m_vFocus = FVector::ZeroVector;
 		m_eFootType = EEndMoveFootType::Any;
 		if (!m_bRootMotion)
+		{
 			m_v2LastAxis.Set(0.0, 0.0);
+			ResetLocoMotionStartMoveTime();
+			ResetLocoMotionEndMoveTime();
+		}
 		break;
 	}
 }
@@ -218,4 +296,16 @@ void APxcPlayerCharacter::OnEndMoveStarted()
 	}
 
 	DeleEndMoveStarted.Broadcast();
+}
+
+void APxcPlayerCharacter::ResetLocoMotionStartMoveTime()
+{
+	m_fStartMoveTime = -1.0f;
+	m_fStartMoveStamp = 0.0f;
+}
+
+void APxcPlayerCharacter::ResetLocoMotionEndMoveTime()
+{
+	m_fEndMoveTime = -1.0f;
+	m_fEndMoveStamp = 0.0f;
 }

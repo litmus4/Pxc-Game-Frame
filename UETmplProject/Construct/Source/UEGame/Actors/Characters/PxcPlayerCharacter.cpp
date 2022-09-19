@@ -147,7 +147,7 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 	{
 		m_eMotionState = EMotionState::EndMove;
 		if (!m_bRootMotion)
-			m_v2LastAxis = v2LastAxis;
+			m_v2LastAxis = v2LastAxis;//FLAGJK LocoMotion Curve 补充：Start与End互切时的速度时间映射-直线搭桥法
 		m_bEndMoveStarted = true;
 	}
 
@@ -174,7 +174,11 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 				float fCurTime = PxcUtil::ExactTime::GetFloatTime();
 				m_fStartMoveTime = fCurTime - m_fStartMoveStamp;
 				if (!m_v2Axis.IsNearlyZero())
+				{
+					bool bNega = (fValue < 0.0f);
 					fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 0.1f);
+					fValue = (bNega ? -fValue : fValue);
+				}
 			}
 			else
 				ResetLocoMotionStartMoveTime();
@@ -234,7 +238,11 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 				float fCurTime = PxcUtil::ExactTime::GetFloatTime();
 				m_fStartMoveTime = fCurTime - m_fStartMoveStamp;
 				if (!m_v2Axis.IsNearlyZero())
+				{
+					bool bNega = (fValue < 0.0f);
 					fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 0.1f);
+					fValue = (bNega ? -fValue : fValue);
+				}
 			}
 			else
 				ResetLocoMotionStartMoveTime();

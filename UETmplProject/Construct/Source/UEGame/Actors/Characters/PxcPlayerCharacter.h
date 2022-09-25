@@ -114,14 +114,24 @@ protected:
 	void OnMotionStateEnd(EMotionState eMotionState);
 	void OnEndMoveStarted();
 
+	void CheckAndBeginStartToEndBridge();
+	bool BuildStartToEndBridge(float& fValue);
+	void CheckAndBeginEndToStartBridge();
+	bool BuildEndToStartBridge(float& fValue);
+
 	void ResetLocoMotionStartMoveTime();
 	void ResetLocoMotionEndMoveTime();
 
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;
+
 	float m_fStartMoveTime;
 	float m_fEndMoveTime;
 	float m_fStartMoveStamp;
 	float m_fEndMoveStamp;
+
+	float m_fStartToEndValue;
+	float m_fEndToStartValue;
+
 	bool m_bEndMoveStarted;
 };

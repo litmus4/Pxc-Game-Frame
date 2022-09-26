@@ -53,6 +53,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = Animation)
 	void CheckMachineStateEnd(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState, float fTimeRemaining);
 
+	UFUNCTION(BlueprintPure, Category = Animation)
+	float GetMachineStateLength(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState);
+
 	UFUNCTION(BlueprintCallable, Category = Animation)
 	void RunLocoMotionEndMoveInput();
 
@@ -67,6 +70,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	EAnimBPType m_eAnimBPType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
+	FName m_AnimMachineName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
 	UCurveFloat* m_pStartMoveCurve;
@@ -93,10 +99,16 @@ protected:
 	EMotionState m_eMotionState;
 
 	UPROPERTY(BlueprintReadOnly, Category = Animation)
-	float m_fStartMoveMaxTime;
+	float m_fStartMoveMaxTime;//曲线默认时长
 
 	UPROPERTY(BlueprintReadOnly, Category = Animation)
-	float m_fEndMoveMaxTime;
+	float m_fEndMoveMaxTime;//曲线默认时长
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
+	float m_fStartMoveLength;//状态实际时长
+
+	UPROPERTY(BlueprintReadOnly, Category = Animation)
+	float m_fEndMoveLength;//状态实际时长
 
 	UPROPERTY(BlueprintReadOnly, Category = Animation)
 	EEndMoveFootType m_eFootType;

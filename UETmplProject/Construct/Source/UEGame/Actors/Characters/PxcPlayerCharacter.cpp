@@ -29,6 +29,8 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 	m_eMotionState = EMotionState::Idle;
 	m_fStartMoveMaxTime = 0.0f;
 	m_fEndMoveMaxTime = 0.0f;
+	m_fStartMoveLength = -1.0f;
+	m_fEndMoveLength = -1.0f;
 	m_eFootType = EEndMoveFootType::Any;
 
 	m_v2Axis.Set(0.0, 0.0);
@@ -74,30 +76,52 @@ void APxcPlayerCharacter::CheckMachineStateEnd(UAnimInstance* pABP, FName Machin
 	}
 }
 
+float APxcPlayerCharacter::GetMachineStateLength(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState)
+{
+	if (!IsValid(pABP))
+	{
+		check(GetMesh());
+		pABP = GetMesh()->GetAnimInstance();
+	}
+
+	int32 iMachineIndex = pABP->GetStateMachineIndex(MachineName);
+	if (iMachineIndex != INDEX_NONE)
+	{
+		const FAnimNode_StateMachine* pMachine = pABP->GetStateMachineInstance(iMachineIndex);
+		if (!pMachine) return -1.0f;
+
+		FName&& CurStateName = pMachine->GetCurrentStateName();
+		FName&& MotionName = FName(StaticEnum<EMotionState>()->GetNameByIndex((int32)eMotionState).ToString().RightChop(14));
+		if (CurStateName != NAME_None && CurStateName == MotionName)
+			return pABP->GetRelevantAnimLength(iMachineIndex, pMachine->GetCurrentState());
+	}
+	return -1.0f;
+}
+
 void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
 {
 	float fValue = 1.0f;
 	if (IsValid(m_pEndMoveCurve))
 	{
-		if (m_fEndMoveTime >= -0.5f && m_fEndMoveTime <= m_fEndMoveMaxTime)
+		if (m_fEndMoveTime >= -0.5f && m_fEndMoveTime <= m_fEndMoveLength)
 		{
 			float fCurTime = PxcUtil::ExactTime::GetFloatTime();
 			m_fEndMoveTime = fCurTime - m_fEndMoveStamp;
-			fValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(m_fEndMoveTime, m_fEndMoveMaxTime)), 0.0f, 1.0f);
-			BuildStartToEndBridge(fValue);//FLAGJK m_fEndMoveTime没结束时状态机EndMoveState已结束
-			/*
-			UE_LOG(LogTemp, Warning, TEXT("$$$$$$$ EndMoveTime: %.3f, Value: %.3f"), m_fEndMoveTime, fValue);
+			float fScaledMoveTime = m_fEndMoveTime / m_fEndMoveLength * m_fEndMoveMaxTime;
+			fValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(fScaledMoveTime, m_fEndMoveMaxTime)), 0.0f, 1.0f);
+			BuildStartToEndBridge(fValue);//FLAGJK 还存在StartToEnd搭桥后fValue以后永远是搭桥值的问题
+			//*测试临时
+			UE_LOG(LogTemp, Warning, TEXT("$$$$$$$$ Value: %.3f"), fValue);
 			//*/
 		}
 		else if (m_fEndMoveTime < -0.5f)
 		{
 			m_fEndMoveTime = 0.0f;
 			m_fEndMoveStamp = PxcUtil::ExactTime::GetFloatTime();
+			m_fEndMoveLength = GetMachineStateLength(nullptr, m_AnimMachineName, m_eMotionState);
+			//float fScaledMoveTime = m_fEndMoveTime / m_fEndMoveLength * m_fEndMoveMaxTime;
 			fValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(m_fEndMoveTime, m_fEndMoveMaxTime)), 0.0f, 1.0f);
 			BuildStartToEndBridge(fValue);
-			/*
-			UE_LOG(LogTemp, Warning, TEXT("$$$$$$$ EndMoveTime: %.3f, Value: %.3f"), m_fEndMoveTime, fValue);
-			//*/
 		}
 		else
 		{
@@ -183,19 +207,25 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 	{
 		if (IsValid(m_pStartMoveCurve))
 		{
-			if (m_fStartMoveTime >= -0.5f && m_fStartMoveTime <= m_fStartMoveMaxTime)
+			if (m_fStartMoveLength < -0.5f)
+				m_fStartMoveLength = GetMachineStateLength(nullptr, m_AnimMachineName, m_eMotionState);
+
+			if (m_fStartMoveTime >= -0.5f && m_fStartMoveTime <= (m_fStartMoveLength >= -0.5f ? m_fStartMoveLength : m_fStartMoveMaxTime))
 			{
 				float fCurTime = PxcUtil::ExactTime::GetFloatTime();
 				m_fStartMoveTime = fCurTime - m_fStartMoveStamp;
 				if (!m_v2Axis.IsNearlyZero())
 				{
 					bool bNega = (fValue < 0.0f);
-					fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+					if (m_fStartMoveLength >= -0.5f)
+					{
+						float fScaledMoveTime = m_fStartMoveTime / m_fStartMoveLength * m_fStartMoveMaxTime;
+						fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(fScaledMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+					}
+					else
+						fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
 					BuildEndToStartBridge(fValue);
 					fValue = (bNega ? -fValue : fValue);
-					/*
-					UE_LOG(LogTemp, Warning, TEXT("$$$$$$$ StartMoveTime: %.3f, Value: %.3f"), m_fStartMoveTime, fValue);
-					//*/
 				}
 			}
 			else
@@ -255,14 +285,23 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 	{
 		if (IsValid(m_pStartMoveCurve))
 		{
-			if (m_fStartMoveTime >= -0.5f && m_fStartMoveTime <= m_fStartMoveMaxTime)
+			if (m_fStartMoveLength < -0.5f)
+				m_fStartMoveLength = GetMachineStateLength(nullptr, m_AnimMachineName, m_eMotionState);
+
+			if (m_fStartMoveTime >= -0.5f && m_fStartMoveTime <= (m_fStartMoveLength >= -0.5f ? m_fStartMoveLength : m_fStartMoveMaxTime))
 			{
 				float fCurTime = PxcUtil::ExactTime::GetFloatTime();
 				m_fStartMoveTime = fCurTime - m_fStartMoveStamp;
 				if (!m_v2Axis.IsNearlyZero())
 				{
 					bool bNega = (fValue < 0.0f);
-					fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+					if (m_fStartMoveLength >= -0.5f)
+					{
+						float fScaledMoveTime = m_fStartMoveTime / m_fStartMoveLength * m_fStartMoveMaxTime;
+						fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(fScaledMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+					}
+					else
+						fValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
 					BuildEndToStartBridge(fValue);
 					fValue = (bNega ? -fValue : fValue);
 				}
@@ -336,7 +375,16 @@ void APxcPlayerCharacter::CheckAndBeginStartToEndBridge()
 
 	m_fStartToEndValue = 1.0f;
 	if (m_fStartMoveTime >= -0.5f)
-		m_fStartToEndValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+	{
+		if (m_fStartMoveLength >= -0.5f)
+		{
+			float fScaledMoveTime = m_fStartMoveTime / m_fStartMoveLength * m_fStartMoveMaxTime;
+			m_fStartToEndValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(fScaledMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+		}
+		else
+			m_fStartToEndValue = FMath::Clamp(m_pStartMoveCurve->GetFloatValue(FMath::Min(m_fStartMoveTime, m_fStartMoveMaxTime)), 0.0f, 1.0f);
+		ResetLocoMotionStartMoveTime();
+	}
 }
 
 bool APxcPlayerCharacter::BuildStartToEndBridge(float& fValue)
@@ -361,7 +409,16 @@ void APxcPlayerCharacter::CheckAndBeginEndToStartBridge()
 
 	m_fEndToStartValue = 0.0f;
 	if (m_fEndMoveTime >= -0.5f)
-		m_fEndToStartValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(m_fEndMoveTime, m_fEndMoveMaxTime)), 0.0f, 1.0f);
+	{
+		if (m_fEndMoveLength >= -0.5f)
+		{
+			float fScaledMoveTime = m_fEndMoveTime / m_fEndMoveLength * m_fEndMoveMaxTime;
+			m_fEndToStartValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(fScaledMoveTime, m_fEndMoveMaxTime)), 0.0f, 1.0f);
+		}
+		else
+			m_fEndToStartValue = FMath::Clamp(m_pEndMoveCurve->GetFloatValue(FMath::Min(m_fEndMoveTime, m_fEndMoveMaxTime)), 0.0f, 1.0f);
+		ResetLocoMotionEndMoveTime();
+	}
 }
 
 bool APxcPlayerCharacter::BuildEndToStartBridge(float& fValue)
@@ -383,10 +440,12 @@ void APxcPlayerCharacter::ResetLocoMotionStartMoveTime()
 {
 	m_fStartMoveTime = -1.0f;
 	m_fStartMoveStamp = 0.0f;
+	m_fStartMoveLength = -1.0f;
 }
 
 void APxcPlayerCharacter::ResetLocoMotionEndMoveTime()
 {
 	m_fEndMoveTime = -1.0f;
 	m_fEndMoveStamp = 0.0f;
+	m_fEndMoveLength = -1.0f;
 }

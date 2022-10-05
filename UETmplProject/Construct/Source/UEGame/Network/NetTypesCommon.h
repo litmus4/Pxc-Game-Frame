@@ -697,5 +697,5 @@ class UEGAME_API UNetTypesCommon : public UObject
 
 //============================================================
 
-DECLARE_DELEGATE_RetVal_OneParam(bool, FNetEachPlayerDelegate, /*class APxcCharacterPlayer**/ACharacter*);//TODOJK Player¿‡
-DECLARE_DYNAMIC_DELEGATE_OneParam(FNetDynOnEachPlayerDelegate, /*class APxcCharacterPlayer**/ACharacter*, Player);
+DECLARE_DELEGATE_RetVal_OneParam(bool, FNetEachPlayerDelegate, class APxcPlayerCharacter*);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FNetDynOnEachPlayerDelegate, class APxcPlayerCharacter*, Player);

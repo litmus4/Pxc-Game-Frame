@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "EngineUtils.h"
 #include "NetTypesWrapper.h"
+#include "Actors/Characters/PxcPlayerCharacter.h"
 
 int32 UNetBlueprintLibrary::NetPlayerCount = 0;
 
@@ -83,7 +84,7 @@ APawn* UNetBlueprintLibrary::Net_GetLocalPlayerPawnCli(UObject* WorldContextObje
 		}
 	}
 
-	for (TActorIterator<ACharacter> Iter2(World); Iter2; ++Iter2)//APxcCharacterPlayer
+	for (TActorIterator<APxcPlayerCharacter> Iter2(World); Iter2; ++Iter2)
 	{
 		if (*Iter2 && (*Iter2)->GetLocalRole() == ROLE_AutonomousProxy)
 			return *Iter2;
@@ -102,7 +103,7 @@ APawn* UNetBlueprintLibrary::Net_GetAuthControlledPawnNative(UObject* WorldConte
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return nullptr;
 
-	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
+	for (TActorIterator<APxcPlayerCharacter> Iter(World); Iter; ++Iter)
 	{
 		APawn* Pawn = *Iter;
 		if (Pawn && ((Pawn->GetLocalRole() == ROLE_Authority && Pawn->GetRemoteRole() == ROLE_SimulatedProxy) ||
@@ -177,7 +178,7 @@ int32 UNetBlueprintLibrary::Net_GetPlayerCountCli(UObject* WorldContextObject)
 	if (!World) return 0;
 
 	int32 Ret = 0;
-	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
+	for (TActorIterator<APxcPlayerCharacter> Iter(World); Iter; ++Iter)
 	{
 		if (*Iter)
 			Ret++;
@@ -191,7 +192,7 @@ bool UNetBlueprintLibrary::Net_ForEachPlayerNative(UObject* WorldContextObject, 
 	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
 	if (!World) return false;
 
-	for (TActorIterator<ACharacter> Iter(World); Iter; ++Iter)//APxcCharacterPlayer
+	for (TActorIterator<APxcPlayerCharacter> Iter(World); Iter; ++Iter)
 	{
 		if (!(*Iter)) continue;
 		if (OnEach.Execute(*Iter))
@@ -203,7 +204,7 @@ bool UNetBlueprintLibrary::Net_ForEachPlayerNative(UObject* WorldContextObject, 
 void UNetBlueprintLibrary::Net_ForEachPlayer(UObject* WorldContextObject, FNetDynOnEachPlayerDelegate OnEach)
 {
 	Net_ForEachPlayerNative(WorldContextObject,
-		FNetEachPlayerDelegate::CreateLambda([&OnEach](ACharacter* Player)->bool {//APxcCharacterPlayer
+		FNetEachPlayerDelegate::CreateLambda([&OnEach](APxcPlayerCharacter* Player)->bool {
 			OnEach.ExecuteIfBound(Player);
 			return false;
 		}));
@@ -212,7 +213,7 @@ void UNetBlueprintLibrary::Net_ForEachPlayer(UObject* WorldContextObject, FNetDy
 bool UNetBlueprintLibrary::Net_IsAnyPlayer(UObject* WorldContextObject, AActor* Actor)
 {
 	return Net_ForEachPlayerNative(WorldContextObject,
-		FNetEachPlayerDelegate::CreateLambda([Actor](ACharacter* Player)->bool {//APxcCharacterPlayer
+		FNetEachPlayerDelegate::CreateLambda([Actor](APxcPlayerCharacter* Player)->bool {
 			return (Player == Actor);
 		}));
 }
@@ -220,8 +221,8 @@ bool UNetBlueprintLibrary::Net_IsAnyPlayer(UObject* WorldContextObject, AActor* 
 void UNetBlueprintLibrary::Net_BindAllPlayersUniversalEvent(UObject* WorldContextObject, EPlayerUniEventType Type, FPlayerUniversalOneDelegate OnCall)
 {
 	Net_ForEachPlayerNative(WorldContextObject,
-		FNetEachPlayerDelegate::CreateLambda([Type, &OnCall](ACharacter* Player)->bool {//APxcCharacterPlayer
-			//Player->BindUniversalEventByType(Type, OnCall);
+		FNetEachPlayerDelegate::CreateLambda([Type, &OnCall](APxcPlayerCharacter* Player)->bool {
+			Player->BindUniversalEventByType(Type, OnCall);
 			return false;
 		}));
 }
@@ -229,8 +230,8 @@ void UNetBlueprintLibrary::Net_BindAllPlayersUniversalEvent(UObject* WorldContex
 void UNetBlueprintLibrary::Net_UnbindAllPlayersAllUniversalEvents(UObject* WorldContextObject, EPlayerUniEventType Type)
 {
 	Net_ForEachPlayerNative(WorldContextObject,
-		FNetEachPlayerDelegate::CreateLambda([Type](ACharacter* Player)->bool {//APxcCharacterPlayer
-			//Player->UnbindAllUniversalEventsFromType(Type);
+		FNetEachPlayerDelegate::CreateLambda([Type](APxcPlayerCharacter* Player)->bool {
+			Player->UnbindAllUniversalEventsFromType(Type);
 			return false;
 		}));
 }
@@ -240,7 +241,7 @@ bool UNetBlueprintLibrary::Net_IsComponentOverlappingAnyPlayer(UObject* WorldCon
 	if (!IsValid(Component)) return false;
 
 	return Net_ForEachPlayerNative(WorldContextObject,
-		FNetEachPlayerDelegate::CreateLambda([Component](ACharacter* Player)->bool {//APxcCharacterPlayer
+		FNetEachPlayerDelegate::CreateLambda([Component](APxcPlayerCharacter* Player)->bool {
 			return Component->IsOverlappingActor(Player);
 		}));
 }

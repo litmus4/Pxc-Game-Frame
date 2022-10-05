@@ -8,7 +8,8 @@
 #include "PxcPlayerCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndMoveStartDelegate);
-DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, class APxcPlayerCharacter*, Player);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerUniversalEventDelegate, class APxcPlayerCharacter*, pPlayer);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, APxcPlayerCharacter*, pPlayer);
 
 class UCameraComponent;
 class USpringArmComponent;
@@ -24,6 +25,18 @@ class UEGAME_API APxcPlayerCharacter : public APxcGraphCharacter
 	
 public:
 	APxcPlayerCharacter();
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void BindUniversalEventByType(EPlayerUniEventType eType, FPlayerUniversalOneDelegate DeleCall);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void UnbindUniversalEventsFromType(EPlayerUniEventType eType, UObject* pObject);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void UnbindAllUniversalEventsFromType(EPlayerUniEventType eType);
+
+	UFUNCTION(BlueprintCallable, Category = Gameplay)
+	void CallUniversalEventByType(EPlayerUniEventType eType);
 
 protected:
 	virtual void BeginPlay() override;
@@ -111,6 +124,8 @@ protected:
 
 	void ResetLocoMotionStartMoveTime();
 	void ResetLocoMotionEndMoveTime();
+
+	std::unordered_map<EPlayerUniEventType, FPlayerUniversalEventDelegate> m_mapUniversalEvents;
 
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;

@@ -44,6 +44,47 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 	m_bEndMoveStarted = false;
 }
 
+void APxcPlayerCharacter::BindUniversalEventByType(EPlayerUniEventType eType, FPlayerUniversalOneDelegate DeleCall)
+{
+	std::unordered_map<EPlayerUniEventType, FPlayerUniversalEventDelegate>::iterator iter = m_mapUniversalEvents.find(eType);
+	if (iter == m_mapUniversalEvents.end())
+	{
+		FPlayerUniversalEventDelegate DeleList;
+		DeleList.Add(DeleCall);
+		m_mapUniversalEvents.insert(std::make_pair(eType, DeleList));
+	}
+	else
+		iter->second.Add(DeleCall);
+}
+
+void APxcPlayerCharacter::UnbindUniversalEventsFromType(EPlayerUniEventType eType, UObject* pObject)
+{
+	std::unordered_map<EPlayerUniEventType, FPlayerUniversalEventDelegate>::iterator iter = m_mapUniversalEvents.find(eType);
+	if (iter != m_mapUniversalEvents.end())
+	{
+		iter->second.RemoveAll(pObject);
+		if (!iter->second.IsBound())
+			m_mapUniversalEvents.erase(iter);
+	}
+}
+
+void APxcPlayerCharacter::UnbindAllUniversalEventsFromType(EPlayerUniEventType eType)
+{
+	std::unordered_map<EPlayerUniEventType, FPlayerUniversalEventDelegate>::iterator iter = m_mapUniversalEvents.find(eType);
+	if (iter != m_mapUniversalEvents.end())
+	{
+		iter->second.Clear();
+		m_mapUniversalEvents.erase(iter);
+	}
+}
+
+void APxcPlayerCharacter::CallUniversalEventByType(EPlayerUniEventType eType)
+{
+	std::unordered_map<EPlayerUniEventType, FPlayerUniversalEventDelegate>::iterator iter = m_mapUniversalEvents.find(eType);
+	if (iter != m_mapUniversalEvents.end())
+		iter->second.Broadcast(this);
+}
+
 void APxcPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();

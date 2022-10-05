@@ -17,9 +17,3 @@ enum class EGamepadModifierKey : uint8
 {
 	Unknown,//并无Unknown
 };
-
-UENUM(BlueprintType)
-enum class EPlayerUniEventType : uint8//FLAGJK 定义在Character相关的Def
-{
-	Unknown = 0,
-};

@@ -4,33 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Actors/Characters/PxcGraphCharacter.h"
+#include "PrivateDefinitions/CharacterDef.h"
 #include "PxcPlayerCharacter.generated.h"
 
-UENUM(BlueprintType)
-enum class EAnimBPType : uint8
-{
-	DirectionTurned,
-	ControllerTurned
-};
-
-UENUM(BlueprintType)
-enum class EMotionState : uint8
-{
-	Idle = 0,
-	StartMove,
-	Move,
-	EndMove
-};
-
-UENUM(BlueprintType)
-enum class EEndMoveFootType : uint8
-{
-	Any = 0,
-	Left,
-	Right
-};
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndMoveStartDelegate);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, class APxcPlayerCharacter*, Player);
 
 class UCameraComponent;
 class USpringArmComponent;

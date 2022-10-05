@@ -6,12 +6,10 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GameplayTagContainer.h"
 #include "Network/NetTypesCommon.h"
+#include "Actors/Characters/PxcPlayerCharacter.h"
 #include "Framework/Structs/SignatureStructs.h"
-#include "PrivateDefinitions/ScatteredDef.h"
+#include "PrivateDefinitions/CharacterDef.h"
 #include "NetBlueprintLibrary.generated.h"
-
-//TODOJK 定义在Player类
-DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, /*class APxcCharacterPlayer**/ACharacter*, Player);
 
 /**
  * 

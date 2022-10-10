@@ -31,7 +31,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameplayAbility|PassiveListening")
 	static int64 MakePassiveAttackExListenerSignature(float fAttackAdd, float fAttackMulti, FSharedSignature& OutSig);
 
-	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调内部调用
 	UFUNCTION(BlueprintCallable, Category = "GameplayEffects|Extention")
 	static FActiveGameplayEffectHandle ApplyExtentionGESpecWithReturn(UAbilitySystemComponent* pASC, const FGameplayEffectSpecHandle& SpecHandle,
 		FActiveGameplayEffectHandle StackedHandle, TMap<FString, float>& tmapRet);

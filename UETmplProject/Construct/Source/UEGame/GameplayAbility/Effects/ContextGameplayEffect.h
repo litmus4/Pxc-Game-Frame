@@ -22,7 +22,6 @@ public:
 public:
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 
-	//TODOJK 在ASC的OnGameplayEffectAppliedDelegateToSelf回调和OnAnyGameplayEffectRemovedDelegate()回调内部调用
 	void AddContextAndHandle(UAbilitySystemComponent* pASC,
 		const FGameplayEffectContextHandle& xContext, const FActiveGameplayEffectHandle& xHandle);
 	void RemoveContextPair(UAbilitySystemComponent* pASC);

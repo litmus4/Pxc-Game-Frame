@@ -19,7 +19,6 @@ void UPxcAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, f
 	PreRevisedAttributeChange(Attribute, fNewValue, fDiff);
 
 	//TODOJK 通知Pawn
-	//在ASC的OnGameplayEffectAppliedDelegateToSelf回调内部调用UPxcAbilitySystemGlobals::RemoveGEContModify
 }
 
 void UPxcAttributeSet::PreGameplayEffectContModify(const UGameplayEffect* pEffect, int32 iModIndex, float& fNewValue, float& fDiff)

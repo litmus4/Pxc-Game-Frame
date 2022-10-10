@@ -29,6 +29,5 @@ public:
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 		FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 
-	//TODOJK 在ASC的OnAnyGameplayEffectRemovedDelegate()回调内部调用
 	static void Discard(UAbilitySystemComponent* pASC, const FGameplayEffectSpec& Spec, FActiveGameplayEffectHandle Handle);
 };

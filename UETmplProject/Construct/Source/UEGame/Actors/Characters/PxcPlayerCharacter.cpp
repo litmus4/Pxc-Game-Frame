@@ -6,9 +6,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimNode_StateMachine.h"
+#include "Animation/MotionTrajectoryTypes.h"
+#include "MotionTrajectoryCharacterMovement.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "PxcUtil/DateTime.h"
+#include "PxcUtil/Scattered.h"
 
 APxcPlayerCharacter::APxcPlayerCharacter()
 {
@@ -18,6 +21,8 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 
 	m_pCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	m_pCameraComp->SetupAttachment(m_pSpringArmComp);
+
+	m_pTrajectoryComp = nullptr;
 
 	m_bRootMotion = false;
 	m_eAnimBPType = EAnimBPType::DirectionTurned;
@@ -35,6 +40,7 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 
 	m_v2Axis.Set(0.0, 0.0);
 	m_v2LastAxis.Set(0.0, 0.0);
+	m_pTrajectory = nullptr;
 	m_fStartMoveTime = -1.0f;
 	m_fEndMoveTime = -1.0f;
 	m_fStartMoveStamp = 0.0f;
@@ -94,6 +100,20 @@ void APxcPlayerCharacter::BeginPlay()
 		m_pStartMoveCurve->FloatCurve.GetTimeRange(fTempMin, m_fStartMoveMaxTime);
 	if (IsValid(m_pEndMoveCurve))
 		m_pEndMoveCurve->FloatCurve.GetTimeRange(fTempMin, m_fEndMoveMaxTime);
+
+	if (m_eAnimBPType == EAnimBPType::MotionMatchingDT || m_eAnimBPType == EAnimBPType::MotionMatchingCT)
+		m_pTrajectoryComp = FindComponentByClass<UCharacterMovementTrajectoryComponent>();
+}
+
+void APxcPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (m_eAnimBPType == EAnimBPType::MotionMatchingDT || m_eAnimBPType == EAnimBPType::MotionMatchingCT)
+	{
+		m_pTrajectoryComp = nullptr;
+		SAFE_DELETE(m_pTrajectory)
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void APxcPlayerCharacter::CheckMachineStateEnd(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState, float fTimeRemaining)
@@ -171,10 +191,20 @@ void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
 		}
 	}
 
-	if (m_eAnimBPType == EAnimBPType::DirectionTurned)
+	if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::MotionMatchingDT)
 		AddMovementInput(GetActorForwardVector(), fValue);
 	else
 		AddMovementInput(m_vFocus.GetSafeNormal(), fValue);
+}
+
+bool APxcPlayerCharacter::GetMotionTrajectory(FTrajectorySampleRange& OutTrajectory)
+{
+	if (m_pTrajectory)
+	{
+		OutTrajectory = *m_pTrajectory;
+		return true;
+	}
+	return false;
 }
 
 void APxcPlayerCharacter::Tick(float fDeltaTime)
@@ -185,6 +215,14 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 	{
 		OnEndMoveStarted();
 		m_bEndMoveStarted = false;
+	}
+
+	if (IsValid(m_pTrajectoryComp))
+	{
+		if (!m_pTrajectory)
+			m_pTrajectory = new FTrajectorySampleRange();
+		if (m_pTrajectory)
+			*m_pTrajectory = m_pTrajectoryComp->GetTrajectory();
 	}
 }
 
@@ -233,7 +271,7 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 	if (m_v2Axis.IsNearlyZero() && m_v2LastAxis.IsNearlyZero())
 		return;
 
-	if (m_eAnimBPType == EAnimBPType::DirectionTurned)
+	if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::MotionMatchingDT)
 	{
 		FRotator&& rCtrlRot = GetControlRotation();
 		FVector&& vForward = UKismetMathLibrary::GetForwardVector(FRotator(0.0, rCtrlRot.Yaw, 0.0));
@@ -273,7 +311,8 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 				ResetLocoMotionStartMoveTime();
 		}
 		AddMovementInput(GetActorForwardVector(),
-			(m_eAnimBPType == EAnimBPType::DirectionTurned ? FMath::Abs(fValue) : fValue));
+			(m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::MotionMatchingDT ?
+				FMath::Abs(fValue) : fValue));
 	}
 }
 
@@ -311,7 +350,7 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 	if (m_v2Axis.IsNearlyZero() && m_v2LastAxis.IsNearlyZero())
 		return;
 
-	if (m_eAnimBPType == EAnimBPType::DirectionTurned)
+	if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::MotionMatchingDT)
 	{
 		FRotator&& rCtrlRot = GetControlRotation();
 		FVector&& vForward = UKismetMathLibrary::GetForwardVector(FRotator(0.0, rCtrlRot.Yaw, 0.0));
@@ -350,7 +389,7 @@ void APxcPlayerCharacter::OnMoveRight(float fValue)
 			else
 				ResetLocoMotionStartMoveTime();
 		}
-		if (m_eAnimBPType == EAnimBPType::DirectionTurned)
+		if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::MotionMatchingDT)
 			AddMovementInput(GetActorForwardVector(), FMath::Abs(fValue));
 		else
 			AddMovementInput(GetActorRightVector(), fValue);
@@ -382,7 +421,8 @@ void APxcPlayerCharacter::OnEndMoveStarted()
 {
 	if (!IsValid(GetMesh())) return;
 
-	if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::ControllerTurned)
+	if (m_eAnimBPType == EAnimBPType::DirectionTurned || m_eAnimBPType == EAnimBPType::ControllerTurned ||
+		m_eAnimBPType == EAnimBPType::MotionMatchingDT || m_eAnimBPType == EAnimBPType::MotionMatchingCT)
 	{
 		do {
 			FVector&& vLeftFoot = GetMesh()->GetSocketLocation(m_LeftFootSocketName);

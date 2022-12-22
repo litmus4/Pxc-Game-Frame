@@ -14,6 +14,8 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, APxcPlayerCharact
 class UCameraComponent;
 class USpringArmComponent;
 class UAnimInstance;
+class UCharacterMovementTrajectoryComponent;
+struct FTrajectorySampleRange;
 
 /**
  * 
@@ -40,6 +42,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UFUNCTION(BlueprintCallable, Category = Animation)
 	void CheckMachineStateEnd(UAnimInstance* pABP, FName MachineName, EMotionState eMotionState, float fTimeRemaining);
@@ -50,11 +53,17 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = Animation)
 	void RunLocoMotionEndMoveInput();
 
+	UFUNCTION(BlueprintCallable, Category = Animation)
+	bool GetMotionTrajectory(FTrajectorySampleRange& OutTrajectory);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* m_pCameraComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	USpringArmComponent* m_pSpringArmComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
+	UCharacterMovementTrajectoryComponent* m_pTrajectoryComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
 	bool m_bRootMotion;
@@ -129,6 +138,8 @@ protected:
 
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;
+
+	FTrajectorySampleRange* m_pTrajectory;
 
 	float m_fStartMoveTime;
 	float m_fEndMoveTime;

@@ -28,6 +28,10 @@
 				"Mac",
 				"Linux"
 			]
+		},
+		{
+			"Name": "PoseSearch",
+			"Enabled": true
 		}
 	]
 }

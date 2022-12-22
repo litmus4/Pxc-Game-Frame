@@ -16,7 +16,9 @@ UENUM(BlueprintType)
 enum class EAnimBPType : uint8
 {
 	DirectionTurned,
-	ControllerTurned
+	ControllerTurned,
+	MotionMatchingDT,
+	MotionMatchingCT
 };
 
 UENUM(BlueprintType)

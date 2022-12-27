@@ -207,6 +207,11 @@ bool APxcPlayerCharacter::GetMotionTrajectory(FTrajectorySampleRange& OutTraject
 	return false;
 }
 
+bool APxcPlayerCharacter::HasMotionTrajectory()
+{
+	return (bool)m_pTrajectory;
+}
+
 void APxcPlayerCharacter::Tick(float fDeltaTime)
 {
 	Super::Tick(fDeltaTime);

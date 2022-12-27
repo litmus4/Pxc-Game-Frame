@@ -56,6 +56,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = Animation)
 	bool GetMotionTrajectory(FTrajectorySampleRange& OutTrajectory);
 
+	UFUNCTION(BlueprintPure, Category = Animation)
+	bool HasMotionTrajectory();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* m_pCameraComp;
 

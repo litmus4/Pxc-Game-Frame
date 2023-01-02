@@ -11,7 +11,12 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "PxcUtil/DateTime.h"
+
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/PreWindowsApi.h"
 #include "PxcUtil/Scattered.h"
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
 
 APxcPlayerCharacter::APxcPlayerCharacter()
 {
@@ -205,11 +210,6 @@ bool APxcPlayerCharacter::GetMotionTrajectory(FTrajectorySampleRange& OutTraject
 		return true;
 	}
 	return false;
-}
-
-bool APxcPlayerCharacter::HasMotionTrajectory()
-{
-	return (bool)m_pTrajectory;
 }
 
 void APxcPlayerCharacter::Tick(float fDeltaTime)

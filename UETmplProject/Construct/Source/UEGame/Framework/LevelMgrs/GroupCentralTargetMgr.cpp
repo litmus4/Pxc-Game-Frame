@@ -536,7 +536,8 @@ void FGroupCentralData::OnViewChanged(UGroupCentralTargetMgr* pMgr)
 void UGroupCentralTargetMgr::SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,
 	float fFollowSpeed, float fFollowAccTime, float fFollowDecTime)
 {
-	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+	if (!m_pGM) m_pGM = CastChecked<APxcGameMode>(GetOuter());
+	UVirtualGroupMgr* pManager = m_pGM->GetVirtualGroupMgr();
 	check(pManager);
 	FVirtualGroup* pGroup = pManager->GetGroup(GroupName);
 	if (!pGroup || !pGroup->GetFeatureByUsage<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget))
@@ -576,7 +577,8 @@ void UGroupCentralTargetMgr::UpdateCentralTarget(const FName& GroupName, UVirtua
 	{
 		if (!bInit)
 		{
-			pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+			if (!m_pGM) m_pGM = CastChecked<APxcGameMode>(GetOuter());
+			pManager = m_pGM->GetVirtualGroupMgr();
 			check(pManager);
 		}
 		//if (!pManager->GetFeatureFromGroup<FVirtGrpCentralFeature>(EVirtualGroupUsage::CentralTarget, GroupName))

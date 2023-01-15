@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include "RelativeTimeDilationMgr.generated.h"
 
+class APxcGameMode;
+
 USTRUCT()
 struct FTimeDilationInfo
 {
@@ -128,4 +130,6 @@ private:
 
 	std::map<int64, int32> m_mapHashExToUids;
 	std::unordered_map<int64, int32> m_mapHashExnpNums;
+
+	APxcGameMode* m_pGM = nullptr;
 };

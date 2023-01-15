@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include "GroupCentralTargetMgr.generated.h"
 
+class APxcGameMode;
+
 USTRUCT()
 struct FGrpCtrActorDirectInfo
 {
@@ -205,4 +207,6 @@ private:
 	TMap<FName, FGroupCentralData> m_tmapCentralDatas;
 
 	std::unordered_map<USceneComponent*, SLocationHelper> m_mapLocationHelpers;
+
+	APxcGameMode* m_pGM = nullptr;
 };

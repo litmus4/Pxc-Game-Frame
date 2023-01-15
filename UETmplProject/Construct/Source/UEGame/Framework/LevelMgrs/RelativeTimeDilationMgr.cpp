@@ -254,7 +254,8 @@ int32 URelativeTimeDilationMgr::SetGlobalDilation(float fDuration, float fBlendI
 int32 URelativeTimeDilationMgr::SetGroupDilation(const FName& GroupName, float fDuration, float fBlendInTime, float fBlendOutTime,
 	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, bool bIgnoreParent, FTimeDilationEndDelegate DeleEnded)
 {
-	UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+	if (!m_pGM) m_pGM = CastChecked<APxcGameMode>(GetOuter());
+	UVirtualGroupMgr* pManager = m_pGM->GetVirtualGroupMgr();
 	check(pManager);
 	if (!pManager->GetFeatureFromGroup<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation, GroupName))
 		return -1;
@@ -299,8 +300,8 @@ int32 URelativeTimeDilationMgr::SetGroupDilation(const FName& GroupName, float f
 int32 URelativeTimeDilationMgr::SetActorDilation(AActor* pActor, float fDuration, float fBlendInTime, float fBlendOutTime,
 	float fStaticDilation, UCurveFloat* pDynamicDilation, int32 iPriority, bool bIgnoreParent, FTimeDilationEndDelegate DeleEnded)
 {
-	APxcGameMode* pGM = CastChecked<APxcGameMode>(GetOuter());
-	if (!IsValid(pActor) || pActor == pGM)
+	if (!m_pGM) m_pGM = CastChecked<APxcGameMode>(GetOuter());
+	if (!IsValid(pActor) || pActor == m_pGM)
 		return -1;
 	if (iPriority < 1) iPriority = 1;
 
@@ -343,6 +344,7 @@ int32 URelativeTimeDilationMgr::SetActorDilation(AActor* pActor, float fDuration
 void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bool bDisableCallback)
 {
 	if (iUid < 0) return;
+	if (!m_pGM) m_pGM = CastChecked<APxcGameMode>(GetOuter());
 
 	FTimeDilationData* pData = m_tmapTimeDilations.Find(iUid);
 	if (!pData) return;
@@ -367,7 +369,7 @@ void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bo
 				break;
 			case ERTDilationLevel::AffectGroup:
 			{
-				UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+				UVirtualGroupMgr* pManager = m_pGM->GetVirtualGroupMgr();
 				check(pManager);
 				FVirtualGroup* pGroup = pManager->GetGroup(pData->Info.AffectGroupName);
 				if (!pGroup) break;
@@ -403,7 +405,7 @@ void URelativeTimeDilationMgr::ResetDilationByUid(int32 iUid, bool bCanceled, bo
 				if (!IsValid(pData->Info.pAffectActor))
 					break;
 
-				UVirtualGroupMgr* pManager = CastChecked<APxcGameMode>(GetOuter())->GetVirtualGroupMgr();
+				UVirtualGroupMgr* pManager = m_pGM->GetVirtualGroupMgr();
 				check(pManager);
 				if (pManager->ForEachGroupWithActor<FVirtGrpRTDFeature>(pData->Info.pAffectActor,
 					EVirtualGroupUsage::RelativeTimeDilation, [this](FVirtualGroup* pMultiGroup, FVirtGrpRTDFeature* pMultiFeature)->bool {
@@ -453,9 +455,9 @@ void URelativeTimeDilationMgr::ResetDilationByActor(AActor* pActor)
 
 void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 {
-	APxcGameMode* pGM = CastChecked<APxcGameMode>(GetOuter());
-	float fDt = (fDeltaSeconds / pGM->GetWorldSettings()->TimeDilation) / pGM->CustomTimeDilation;
-	UVirtualGroupMgr* pManager = pGM->GetVirtualGroupMgr();
+	if (!m_pGM) m_pGM = CastChecked<APxcGameMode>(GetOuter());
+	float fDt = (fDeltaSeconds / m_pGM->GetWorldSettings()->TimeDilation) / m_pGM->CustomTimeDilation;
+	UVirtualGroupMgr* pManager = m_pGM->GetVirtualGroupMgr();
 	check(pManager);
 
 	SActorPreferred BestGlobal;
@@ -496,7 +498,7 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 			FVirtGrpRTDFeature* pFeature = pGroup->GetFeatureByUsage<FVirtGrpRTDFeature>(EVirtualGroupUsage::RelativeTimeDilation);
 			if (!pFeature) break;
 			if (Info.bIgnoreParent)//bRuntimeActorExclusiveMark为true时才能忽略父级
-				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;
+				fCalcDilation /= m_pGM->GetWorldSettings()->TimeDilation;
 
 			SGroupPreferred* pBest = tmapBestGroups.Find(Info.AffectGroupName);
 			if (!pBest)
@@ -514,7 +516,7 @@ void URelativeTimeDilationMgr::Tick(float fDeltaSeconds)
 		case ERTDilationLevel::AffectActor:
 			check(IsValid(Info.pAffectActor));
 			if (Info.bIgnoreParent)
-				fCalcDilation /= pGM->GetWorldSettings()->TimeDilation;
+				fCalcDilation /= m_pGM->GetWorldSettings()->TimeDilation;
 
 			SActorPreferred* pBest = tmapBestActors.Find(Info.pAffectActor);
 			if (!pBest)

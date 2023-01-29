@@ -6,8 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimNode_StateMachine.h"
-#include "Animation/MotionTrajectoryTypes.h"
 #include "MotionTrajectoryCharacterMovement.h"
+#include "MotionTrajectoryLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "PxcUtil/DateTime.h"
@@ -227,7 +227,15 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 		if (!m_pTrajectory)
 			m_pTrajectory = new FTrajectorySampleRange();
 		if (m_pTrajectory)
-			*m_pTrajectory = m_pTrajectoryComp->GetTrajectory();
+		{
+			if (m_bRootMotion)
+			{
+				FTrajectorySampleRange&& ActorTraj = m_pTrajectoryComp->GetTrajectory();
+				*m_pTrajectory = UMotionTrajectoryBlueprintLibrary::MakeTrajectoryRelativeToComponent(ActorTraj, GetMesh());
+			}
+			else
+				*m_pTrajectory = m_pTrajectoryComp->GetTrajectory();
+		}
 	}
 }
 

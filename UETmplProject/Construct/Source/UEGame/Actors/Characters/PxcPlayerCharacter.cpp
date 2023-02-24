@@ -10,6 +10,7 @@
 #include "MotionTrajectoryLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Actors/Controllers/PxcPlayerController.h"
 #include "PxcUtil/DateTime.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
@@ -210,6 +211,20 @@ bool APxcPlayerCharacter::GetMotionTrajectory(FTrajectorySampleRange& OutTraject
 		return true;
 	}
 	return false;
+}
+
+void APxcPlayerCharacter::PossessedBy(AController* pNewController)
+{
+	Super::PossessedBy(pNewController);
+
+	APxcPlayerController* pController = Cast<APxcPlayerController>(pNewController);
+	if (pController)
+	{
+		FActorSpawnParameters Params;
+		Params.Owner = pController;
+		APxcPlayerRole* pPlayerRole = GetWorld()->SpawnActor<APxcPlayerRole>(Params);
+		pController->SetPlayerRole(pPlayerRole);
+	}
 }
 
 void APxcPlayerCharacter::Tick(float fDeltaTime)

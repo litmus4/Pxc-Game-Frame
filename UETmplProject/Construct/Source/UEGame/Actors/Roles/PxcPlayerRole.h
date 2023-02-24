@@ -6,6 +6,8 @@
 #include "Actors/Roles/PxcLogicRole.h"
 #include "PxcPlayerRole.generated.h"
 
+class APxcPlayerCharacter;
+
 /**
  * 
  */
@@ -14,4 +16,13 @@ class UEGAME_API APxcPlayerRole : public APxcLogicRole
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION(BlueprintPure)
+	APxcPlayerCharacter* GetThePlayerCharacter();
+
+	void SetThePlayerCharacter(APxcPlayerCharacter* pCharacter);
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	APxcPlayerCharacter* m_pPlayerCharacter;
 };

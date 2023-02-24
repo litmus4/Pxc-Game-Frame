@@ -117,6 +117,7 @@ protected:
 	FEndMoveStartDelegate DeleEndMoveStarted;
 
 public:
+	virtual void PossessedBy(AController* pNewController) override;
 	virtual void Tick(float fDeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* pPlayerInputComponent) override;
 

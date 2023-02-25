@@ -20,7 +20,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	APxcPlayerRole* GetPlayerRole();
 
-	void SetPlayerRole(APxcPlayerRole* pRole);
+	void SpawnPlayerRole();
 
 protected:
 	UPROPERTY(BlueprintReadOnly)

@@ -220,10 +220,8 @@ void APxcPlayerCharacter::PossessedBy(AController* pNewController)
 	APxcPlayerController* pController = Cast<APxcPlayerController>(pNewController);
 	if (pController)
 	{
-		FActorSpawnParameters Params;
-		Params.Owner = pController;
-		APxcPlayerRole* pPlayerRole = GetWorld()->SpawnActor<APxcPlayerRole>(Params);
-		pController->SetPlayerRole(pPlayerRole);
+		pController->SpawnPlayerRole();
+		//
 	}
 }
 

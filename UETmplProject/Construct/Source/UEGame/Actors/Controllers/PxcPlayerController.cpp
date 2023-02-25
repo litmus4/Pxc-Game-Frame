@@ -9,9 +9,11 @@ APxcPlayerRole* APxcPlayerController::GetPlayerRole()
 	return m_pPlayerRole;
 }
 
-void APxcPlayerController::SetPlayerRole(APxcPlayerRole* pRole)
+void APxcPlayerController::SpawnPlayerRole()
 {
-	check(IsValid(pRole));
-	m_pPlayerRole = pRole;
-	pRole->SetThePlayerCharacter(GetPawn<APxcPlayerCharacter>());
+	FActorSpawnParameters Param;
+	Param.Owner = this;
+	m_pPlayerRole = GetWorld()->SpawnActor<APxcPlayerRole>(Param);
+	check(IsValid(m_pPlayerRole));
+	m_pPlayerRole->SetThePlayerCharacter(GetPawn<APxcPlayerCharacter>());
 }

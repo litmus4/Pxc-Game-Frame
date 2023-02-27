@@ -52,7 +52,8 @@ public class UEGame : ModuleRules
         PublicIncludePaths.Add(Path.Combine(PxcLibPath, ""));
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
         string CfgStrOut = "Release";
-        string CfgStr = (Target.Configuration == UnrealTargetConfiguration.DebugGame ? "Debug" : "Release");
+        //TODOJK 尽量不要牺牲调试体验，回头还得看看Debug编译连接时的配置不匹配
+        string CfgStr = "Release";//(Target.Configuration == UnrealTargetConfiguration.DebugGame ? "Debug" : "Release");
         string PlatSufStr = "";
         if (Target.Platform == UnrealTargetPlatform.Win64/* ||*/)
         {
@@ -68,7 +69,6 @@ public class UEGame : ModuleRules
             PublicAdditionalLibraries.Add(Path.Combine(PxcLibPath, CfgStrOut, "tinyxml.lib"));
             PlatSufStr = ".win32";
         }
-        //FLAGJK 存在编译问题：PxcCore的Debug连接竟然还会出现配置不匹配
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "PublicDefinitions.lib"));
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "DataTables.lib"));
         PublicAdditionalLibraries.Add(Path.Combine(MidPath, CfgStr + PlatSufStr, "MonoControl.lib"));

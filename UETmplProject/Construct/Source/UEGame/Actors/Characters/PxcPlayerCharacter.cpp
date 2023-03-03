@@ -34,7 +34,7 @@ APxcPlayerCharacter::APxcPlayerCharacter()
 	m_eAnimBPType = EAnimBPType::DirectionTurned;
 	m_pStartMoveCurve = nullptr;
 	m_pEndMoveCurve = nullptr;
-	m_fFootDownLength = 100.0f;
+	m_dFootDownLength = 100.0;
 
 	m_vFocus = FVector::ZeroVector;
 	m_eMotionState = EMotionState::Idle;
@@ -452,13 +452,13 @@ void APxcPlayerCharacter::OnEndMoveStarted()
 	{
 		do {
 			FVector&& vLeftFoot = GetMesh()->GetSocketLocation(m_LeftFootSocketName);
-			FVector vLeftDown(vLeftFoot.X, vLeftFoot.Y, vLeftFoot.Z - m_fFootDownLength);
+			FVector vLeftDown(vLeftFoot.X, vLeftFoot.Y, vLeftFoot.Z - m_dFootDownLength);
 			FHitResult LeftHitResult;
 			if (!UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), vLeftFoot, vLeftDown, m_tarrFootTraceTypes,
 				false, TArray<AActor*>(), EDrawDebugTrace::Type::None, LeftHitResult, true)) break;
 
 			FVector&& vRightFoot = GetMesh()->GetSocketLocation(m_RightFootSocketName);
-			FVector vRightDown(vRightFoot.X, vRightFoot.Y, vRightFoot.Z - m_fFootDownLength);
+			FVector vRightDown(vRightFoot.X, vRightFoot.Y, vRightFoot.Z - m_dFootDownLength);
 			FHitResult RightHitResult;
 			if (!UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), vRightFoot, vRightDown, m_tarrFootTraceTypes,
 				false, TArray<AActor*>(), EDrawDebugTrace::Type::None, RightHitResult, true)) break;

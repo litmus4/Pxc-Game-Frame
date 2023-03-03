@@ -87,7 +87,7 @@ protected:
 	FName m_RightFootSocketName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation)
-	float m_fFootDownLength;
+	double m_dFootDownLength;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
 	TArray<TEnumAsByte<EObjectTypeQuery>> m_tarrFootTraceTypes;

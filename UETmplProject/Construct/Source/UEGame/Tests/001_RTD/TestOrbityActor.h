@@ -31,8 +31,8 @@ protected:
 	FTransform m_transStand;
 	FSimpleDynamicDelegate m_DeleEnded;
 
-	float m_fCamAngle;
-	float m_fCamR;
-	float m_fCamAngleOffset;
-	float m_fCamAngleSpeed;
+	double m_dCamAngle;
+	double m_dCamR;
+	double m_dCamAngleOffset;
+	double m_dCamAngleSpeed;
 };

@@ -54,9 +54,9 @@ public:
 	FGroupCentralData();
 
 	void Init(const FName& xGroupName, float xRecenterPrecision, float xFollowPrecision,
-		float xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
+		double xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
 	void Init(FVirtualGroup* pGroup, float xRecenterPrecision, float xFollowPrecision,
-		float xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
+		double xFollowSpeed, float xFollowAccTime, float xFollowDecTime);
 
 	void RefreshFollowState(bool bInit);
 	void UpdateFollow(float fDeltaSeconds);
@@ -81,7 +81,7 @@ public:
 	FName GroupName;
 	float fRecenterPrecision;
 	float fFollowPrecision;
-	float fFollowSpeed;
+	double dFollowSpeed;
 	float fFollowAccTime;
 	float fFollowDecTime;
 
@@ -117,12 +117,12 @@ private:
 	FVector vFollowVelocity;
 	bool bFollowSpeed;
 	bool bAccelerating;
-	float fAcceleration;
-	float fDeceleration;
-	float fSOfAcc;
-	float fSOfDec;
-	float fAccTemp;
-	float fDecTemp;
+	double dAcceleration;
+	double dDeceleration;
+	double dSOfAcc;
+	double dSOfDec;
+	double dAccTemp;
+	double dDecTemp;
 
 	bool bMoving;
 	UPROPERTY()
@@ -150,7 +150,7 @@ class UEGAME_API UGroupCentralTargetMgr : public USpecialLevelMgrBase
 public:
 	UFUNCTION(BlueprintCallable, Category = Gameplay)
 	void SetCentralTarget(const FName& GroupName, float fRecenterPrecision, float fFollowPrecision,
-		float fFollowSpeed, float fFollowAccTime, float fFollowDecTime);
+		double dFollowSpeed, float fFollowAccTime, float fFollowDecTime);
 
 	//功能内部调用
 	void UpdateCentralTarget(const FName& GroupName, UVirtualGroupMgr* pManager = nullptr, TSet<AActor*>* ptsetActors = nullptr);

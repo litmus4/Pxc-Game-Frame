@@ -9,10 +9,10 @@ ATestOrbityActor::ATestOrbityActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	m_fCamAngle = -1.0f;
-	m_fCamR = 0.0f;
-	m_fCamAngleOffset = 0.0f;
-	m_fCamAngleSpeed = 0.0f;
+	m_dCamAngle = -1.0;
+	m_dCamR = 0.0;
+	m_dCamAngleOffset = 0.0;
+	m_dCamAngleSpeed = 0.0;
 }
 
 // Called when the game starts or when spawned
@@ -27,27 +27,27 @@ void ATestOrbityActor::Tick(float fDeltaTime)
 {
 	Super::Tick(fDeltaTime);
 
-	if (m_fCamAngle >= -0.5f)
+	if (m_dCamAngle >= -0.5)
 	{
-		m_fCamAngle += m_fCamAngleSpeed * fDeltaTime;
+		m_dCamAngle += m_dCamAngleSpeed * fDeltaTime;
 
-		float fFixedCamAngle = m_fCamAngle + m_fCamAngleOffset;
-		fFixedCamAngle = FMath::Fmod(fFixedCamAngle, 360.0f);
-		float fCamRadian = FMath::DegreesToRadians(fFixedCamAngle);
+		double dFixedCamAngle = m_dCamAngle + m_dCamAngleOffset;
+		dFixedCamAngle = FMath::Fmod(dFixedCamAngle, 360.0);
+		double dCamRadian = FMath::DegreesToRadians(dFixedCamAngle);
 		FVector vLoc = GetOwner()->GetActorLocation();
-		vLoc.X += m_fCamR * FMath::Cos(fCamRadian);
-		vLoc.Y += m_fCamR * FMath::Sin(fCamRadian);
+		vLoc.X += m_dCamR * FMath::Cos(dCamRadian);
+		vLoc.Y += m_dCamR * FMath::Sin(dCamRadian);
 		vLoc.Z = m_transStand.GetLocation().Z;
 		SetActorLocation(vLoc);
 
-		float fFixedYaw = m_fCamAngle + m_transStand.Rotator().Yaw + 180.0f;
-		fFixedYaw = FMath::Fmod(fFixedYaw, 360.0f) - 180.0f;
-		FRotator rRot(m_transStand.Rotator().Pitch, fFixedYaw, m_transStand.Rotator().Roll);
+		double dFixedYaw = m_dCamAngle + m_transStand.Rotator().Yaw + 180.0;
+		dFixedYaw = FMath::Fmod(dFixedYaw, 360.0) - 180.0;
+		FRotator rRot(m_transStand.Rotator().Pitch, dFixedYaw, m_transStand.Rotator().Roll);
 		SetActorRotation(rRot);
 
-		if (m_fCamAngle >= 360.0f)
+		if (m_dCamAngle >= 360.0)
 		{
-			m_fCamAngle = -1.0f;
+			m_dCamAngle = -1.0;
 			m_DeleEnded.ExecuteIfBound();
 		}
 	}
@@ -60,9 +60,9 @@ void ATestOrbityActor::Orbit(float fTime, AActor* pBaseActor, const FTransform& 
 	m_DeleEnded = DeleEnded;
 
 	FVector&& vOrbitArm = GetActorLocation() - pBaseActor->GetActorLocation();
-	vOrbitArm.Z = 0.0f;
-	m_fCamR = vOrbitArm.Size();
-	m_fCamAngleOffset = vOrbitArm.Rotation().Yaw;
-	m_fCamAngleSpeed = 360.0f / fTime;
-	m_fCamAngle = 0.0f;
+	vOrbitArm.Z = 0.0;
+	m_dCamR = vOrbitArm.Size();
+	m_dCamAngleOffset = vOrbitArm.Rotation().Yaw;
+	m_dCamAngleSpeed = 360.0 / fTime;
+	m_dCamAngle = 0.0;
 }

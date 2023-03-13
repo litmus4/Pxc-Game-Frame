@@ -3,6 +3,7 @@
 
 #include "Actors/Controllers/PxcPlayerController.h"
 #include "Actors/Roles/PxcPlayerRole.h"
+#include "Actors/Characters/PxcPlayerCharacter.h"
 
 APxcPlayerRole* APxcPlayerController::GetPlayerRole()
 {

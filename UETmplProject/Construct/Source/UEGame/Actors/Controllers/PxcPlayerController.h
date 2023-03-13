@@ -23,6 +23,9 @@ public:
 	void SpawnPlayerRole();
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<APxcPlayerRole> m_cPlayerRole;
+
 	UPROPERTY(BlueprintReadOnly)
-	APxcPlayerRole* m_pPlayerRole;
+	APxcPlayerRole* m_pPlayerRole = nullptr;
 };

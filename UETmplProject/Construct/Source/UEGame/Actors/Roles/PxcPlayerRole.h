@@ -24,5 +24,5 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	APxcPlayerCharacter* m_pPlayerCharacter;
+	APxcPlayerCharacter* m_pPlayerCharacter = nullptr;
 };

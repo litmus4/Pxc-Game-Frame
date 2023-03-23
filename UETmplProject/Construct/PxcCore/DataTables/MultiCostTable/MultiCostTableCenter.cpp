@@ -66,6 +66,8 @@ bool CMultiCostTableCenter::Init(const std::string& strPath)
 		}
 	}
 	LOADTABLE(MajorType, strPath, "MultiCostTable", m_mapMajorTypes, m_iID)
+
+	return true;
 }
 
 void CMultiCostTableCenter::Release()
@@ -81,6 +83,8 @@ void CMultiCostTableCenter::Release()
 	m_mapTypedOccupations.clear();
 	m_mapTypedMajors.clear();
 	m_mapOccuToIndustry.clear();
+
+	DeleteInstance();
 }
 
 CIndustryRow* CMultiCostTableCenter::GetIndustryRow(int iID)

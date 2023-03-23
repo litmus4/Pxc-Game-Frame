@@ -25,13 +25,13 @@ bool CStoryTableCenter::Init(const std::string& strPath)
 				AddNextQuest(*itSub, iter->first);
 		}
 	}
+	return true;
 }
 
 void CStoryTableCenter::Release()
 {
 	UNLOADTABLE(Quest, m_mapQuests)
 	m_mapNextQuests.clear();
-
 	DeleteInstance();
 }
 

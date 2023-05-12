@@ -88,7 +88,7 @@ void UPxcBlueprintLibrary::CutGEExtentionVariable(float fVariable, TArray<int32>
 	for (int32& iDecSplit : tarrDecSplits)
 	{
 		check(iDecSplit > 0);
-		float fDiv = FMath::Pow(10, iDecSplit);
+		float fDiv = FMath::Floor(FMath::Pow(10.0f, (float)iDecSplit));
 		fVariable *= fDiv;
 		int32 iCurValue = ((int32)fVariable) % ((int32)fDiv);
 		tarrOutValues.Add(iCurValue);

@@ -26,5 +26,6 @@ public:
 protected:
 	static UPxcStaticResourceSystem* s_pInst;
 
+	UPROPERTY()
 	TMap<FGameplayTag, FUTRGExContToInst> m_tmapUDTGEExtentionContToInst;
 };

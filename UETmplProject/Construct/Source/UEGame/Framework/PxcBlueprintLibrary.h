@@ -137,3 +137,12 @@ public:
 	check(Container.find(pRow->IDMbr) == Container.end());\
 	Container.insert(std::pair<IDClass, RowClass>(pRow->IDMbr, *pRow));\
 })
+
+#define LOAD_UDT_TO_MAP_ROOT(UDTPtr, RowClass, Container, IDClass, IDMbr, RootFunc) UPxcBlueprintLibrary::ForEachUDTRowValue<RowClass>(\
+	UDTPtr, [this](const RowClass* pRow) {\
+	check(Container.find(pRow->IDMbr) == Container.end());\
+	auto RetPair = Container.insert(std::pair<IDClass, RowClass>(pRow->IDMbr, *pRow));\
+	RootFunc(RetPair.first->second);\
+})
+
+#define DEFINE_UDT_ROW_FNROOT(RowClass) std::function<void(RowClass&)> fnRoot = [](RowClass& Row)

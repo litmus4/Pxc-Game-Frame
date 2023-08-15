@@ -520,6 +520,40 @@ class UEGAME_API UNetTypesCommon : public UObject
 //	NetArray.RemovedIndexes.Empty();\
 //}
 //
+//#define DECLARE_REPNET_ARRAYTOMAP_FUNC_RF1(MainName, KeyClass, ValueClass) static void RepNet##MainName##ArrayToMap1(\
+//	FNet##MainName##Array& NetArray, TMap<KeyClass, ValueClass>& Map,\
+//	std::function<ValueClass(const FNet##MainName&)> NewFunc, std::function<void(ValueClass&, const FNet##MainName&)> ModiFunc,\
+//	std::function<void(const FNet##MainName&)> RemFunc)
+//
+//#define DEFINE_REPNET_ARRAYTOMAP_FUNC_RF1(ClassName, MainName, KeyClass, ValueClass, KeyProp) void ClassName::RepNet##MainName##ArrayToMap1(\
+//	FNet##MainName##Array& NetArray, TMap<KeyClass, ValueClass>& Map,\
+//	std::function<ValueClass(const FNet##MainName&)> NewFunc, std::function<void(ValueClass&, const FNet##MainName&)> ModiFunc,\
+//	std::function<void(const FNet##MainName&)> RemFunc)\
+//{\
+//	if (NetArray.bRealRemoval)\
+//	{\
+//		NetArray.bRealRemoval = false;\
+//		return;\
+//	}\
+//	for (int32 Index : NetArray.Indexes)\
+//	{\
+//		FNet##MainName& NetItem = NetArray.Array[Index];\
+//		ValueClass* Item = Map.Find(NetItem.KeyProp);\
+//		if (Item)\
+//			ModiFunc(*Item, NetItem);\
+//		else\
+//			Map.Add(NetItem.KeyProp, NewFunc(NetItem));\
+//	}\
+//	for (int32 Index : NetArray.RemovedIndexes)\
+//	{\
+//		FNet##MainName& NetItem = NetArray.Array[Index];\
+//		RemFunc(NetItem);\
+//		Map.Remove(NetItem.KeyProp);\
+//	}\
+//	NetArray.Indexes.Empty();\
+//	NetArray.RemovedIndexes.Empty();\
+//}
+//
 ////-----OnRep:ArrayToSet-----
 //
 //#define DECLARE_REPNET_ARRAYTOSET_FUNC(MainName, ElemClass) static void RepNet##MainName##ArrayToSet(\

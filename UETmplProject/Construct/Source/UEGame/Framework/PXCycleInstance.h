@@ -45,5 +45,5 @@ private:
 	TMap<ECycleSystemType, UPXCycleSystem*> m_tmapSystems;
 
 	std::list<UPXCycleSystem*> m_lisSystems;
-	FDelegateHandle DeleTickHandle;
+	FTSTicker::FDelegateHandle DeleTickHandle;
 };

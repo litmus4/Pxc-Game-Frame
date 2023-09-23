@@ -6,8 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimNode_StateMachine.h"
-#include "MotionTrajectoryCharacterMovement.h"
-#include "MotionTrajectoryLibrary.h"
+#include "EngineRelated/Animations/PxcCharacterTrajectoryComponent.h"
+#include "PoseSearchLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Actors/Controllers/PxcPlayerController.h"
@@ -108,7 +108,7 @@ void APxcPlayerCharacter::BeginPlay()
 		m_pEndMoveCurve->FloatCurve.GetTimeRange(fTempMin, m_fEndMoveMaxTime);
 
 	if (m_eAnimBPType == EAnimBPType::MotionMatchingDT || m_eAnimBPType == EAnimBPType::MotionMatchingCT)
-		m_pTrajectoryComp = FindComponentByClass<UCharacterMovementTrajectoryComponent>();
+		m_pTrajectoryComp = FindComponentByClass<UPxcCharacterTrajectoryComponent>();
 }
 
 void APxcPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -203,7 +203,7 @@ void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
 		AddMovementInput(m_vFocus.GetSafeNormal(), fValue);
 }
 
-bool APxcPlayerCharacter::GetMotionTrajectory(FTrajectorySampleRange& OutTrajectory)
+bool APxcPlayerCharacter::GetMotionTrajectory(FPoseSearchQueryTrajectory& OutTrajectory)
 {
 	if (m_pTrajectory)
 	{
@@ -238,13 +238,17 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 	if (IsValid(m_pTrajectoryComp))
 	{
 		if (!m_pTrajectory)
-			m_pTrajectory = new FTrajectorySampleRange();
+			m_pTrajectory = new FPoseSearchQueryTrajectory();
 		if (m_pTrajectory)
 		{
 			if (m_bRootMotion)
 			{
-				FTrajectorySampleRange&& ActorTraj = m_pTrajectoryComp->GetTrajectory();
-				*m_pTrajectory = UMotionTrajectoryBlueprintLibrary::MakeTrajectoryRelativeToComponent(ActorTraj, GetMesh());
+				check(IsValid(GetMesh()));
+				FPoseSearchQueryTrajectory&& ActorTraj = m_pTrajectoryComp->GetTrajectory();
+				//*m_pTrajectory = UMotionTrajectoryBlueprintLibrary::MakeTrajectoryRelativeToComponent(ActorTraj, GetMesh());
+				//FLAGJK UPoseSearchLibrary::ProcessTrajectoryË½ÓÐ
+				//*m_pTrajectory = UPoseSearchLibrary::ProcessTrajectory(ActorTraj, GetMesh()->GetComponentTransform(), 0.0f, 0.0f, 0.0f);
+				*m_pTrajectory = ActorTraj;
 			}
 			else
 				*m_pTrajectory = m_pTrajectoryComp->GetTrajectory();

@@ -38,7 +38,7 @@ public class UEGame : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-        PrivateDependencyModuleNames.AddRange(new string[] { "MotionTrajectory" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "MotionTrajectory", "PoseSearch" });
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

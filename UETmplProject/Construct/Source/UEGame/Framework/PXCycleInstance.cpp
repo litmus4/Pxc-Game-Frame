@@ -42,7 +42,7 @@ void UPXCycleInstance::Init()
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 	Super::Init();
 
-	DeleTickHandle = FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UPXCycleInstance::Tick));
+	DeleTickHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UPXCycleInstance::Tick));
 	FGameModeEvents::GameModeInitializedEvent.AddUObject(this, &UPXCycleInstance::OnGameModeInitialized);
 	NotifyPreClientTravelDelegates.AddUObject(this, &UPXCycleInstance::OnPreClientTravel);
 }
@@ -69,7 +69,7 @@ void UPXCycleInstance::Shutdown()
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance shutdown end"));
 	Super::Shutdown();
 
-	FTicker::GetCoreTicker().RemoveTicker(DeleTickHandle);
+	FTSTicker::GetCoreTicker().RemoveTicker(DeleTickHandle);
 }
 
 void UPXCycleInstance::AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem, bool bTick)

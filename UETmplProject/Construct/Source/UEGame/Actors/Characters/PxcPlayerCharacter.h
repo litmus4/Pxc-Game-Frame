@@ -14,8 +14,8 @@ DECLARE_DYNAMIC_DELEGATE_OneParam(FPlayerUniversalOneDelegate, APxcPlayerCharact
 class UCameraComponent;
 class USpringArmComponent;
 class UAnimInstance;
-class UCharacterMovementTrajectoryComponent;
-struct FTrajectorySampleRange;
+class UPxcCharacterTrajectoryComponent;
+struct FPoseSearchQueryTrajectory;
 
 /**
  * 
@@ -54,7 +54,7 @@ protected:
 	void RunLocoMotionEndMoveInput();
 
 	UFUNCTION(BlueprintCallable, Category = Animation)
-	bool GetMotionTrajectory(FTrajectorySampleRange& OutTrajectory);
+	bool GetMotionTrajectory(FPoseSearchQueryTrajectory& OutTrajectory);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* m_pCameraComp;
@@ -63,7 +63,7 @@ protected:
 	USpringArmComponent* m_pSpringArmComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
-	UCharacterMovementTrajectoryComponent* m_pTrajectoryComp;
+	UPxcCharacterTrajectoryComponent* m_pTrajectoryComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation)
 	bool m_bRootMotion;
@@ -140,7 +140,7 @@ protected:
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;
 
-	FTrajectorySampleRange* m_pTrajectory;
+	FPoseSearchQueryTrajectory* m_pTrajectory;
 
 	float m_fStartMoveTime;
 	float m_fEndMoveTime;

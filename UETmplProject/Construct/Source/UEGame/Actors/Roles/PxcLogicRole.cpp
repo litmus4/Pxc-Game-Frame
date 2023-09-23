@@ -48,7 +48,7 @@ void APxcLogicRole::OnGameplayEffectApplied(UAbilitySystemComponent* pASC, const
 		pPASG->RemoveGEContModify(pASC, Spec.Def);
 
 	const FGameplayTagContainer& UnlockParentTags = GetDefault<UPxcGameConfig>()->UnlockGameplayEffectParentTags;
-	if (Spec.Def->InheritableGameplayEffectTags.CombinedTags.HasAny(UnlockParentTags))//使用的是Parent判断
+	if (Spec.Def->InheritableGameplayEffectTags.CombinedTags.HasAny(UnlockParentTags))//使用的是Parent判断//FLAGJK TagsGameplayEffectComponent
 	{
 		UPxcAbilitySystemComponent* pPASC = Cast<UPxcAbilitySystemComponent>(pASC);
 		if (pPASC) pPASC->UpdateUnlockTags();

@@ -31,7 +31,7 @@ void UPxcAbilitySystemGlobals::SetCurrentAppliedGE(const FGameplayEffectSpec* pS
 	check(pSpec->GetContext().IsValid());
 
 	FGameplayTag ContModTag = FGameplayTag::RequestGameplayTag(TEXT("GEAsset.ContinuousModify"));
-	if (!pSpec->Def->InheritableGameplayEffectTags.CombinedTags.HasTag(ContModTag))
+	if (!pSpec->Def->GetAssetTags().HasTag(ContModTag))
 		return;
 
 	FGEContModifyInfo Info;

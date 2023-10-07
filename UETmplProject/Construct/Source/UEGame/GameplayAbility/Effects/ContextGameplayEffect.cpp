@@ -4,10 +4,10 @@
 #include "GameplayAbility/Effects/ContextGameplayEffect.h"
 #include "AbilitySystemComponent.h"
 
-void UContextGameplayEffect::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+void UContextGameplayEffect::GetGrantedGameplayTags(FGameplayTagContainer& TagContainer) const
 {
-	Super::GetOwnedGameplayTags(TagContainer);
-	TagContainer.AppendTags(InheritableGameplayEffectTags.CombinedTags);
+	TagContainer.AppendTags(GetGrantedTags());
+	TagContainer.AppendTags(GetAssetTags());
 }
 
 void UContextGameplayEffect::AddContextAndHandle(UAbilitySystemComponent* pASC,

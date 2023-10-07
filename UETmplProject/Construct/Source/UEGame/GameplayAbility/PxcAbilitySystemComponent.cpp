@@ -33,7 +33,7 @@ TArray<FActiveGameplayEffectHandle> UPxcAbilitySystemComponent::GetActiveEffects
 		if (!CurEffect.Spec.Def) return false;
 
 		TArray<FGameplayTag> tarrTags;
-		CurEffect.Spec.Def->InheritableGameplayEffectTags.CombinedTags.GetGameplayTagArray(tarrTags);
+		CurEffect.Spec.Def->GetAssetTags().GetGameplayTagArray(tarrTags);
 		for (FGameplayTag& Tag : tarrTags)
 		{
 			if (Tag.MatchesTag(ParentTag) && Tag != ParentTag)

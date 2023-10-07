@@ -48,7 +48,7 @@ void APxcLogicRole::OnGameplayEffectApplied(UAbilitySystemComponent* pASC, const
 		pPASG->RemoveGEContModify(pASC, Spec.Def);
 
 	const FGameplayTagContainer& UnlockParentTags = GetDefault<UPxcGameConfig>()->UnlockGameplayEffectParentTags;
-	if (Spec.Def->InheritableGameplayEffectTags.CombinedTags.HasAny(UnlockParentTags))//使用的是Parent判断//FLAGJK TagsGameplayEffectComponent
+	if (Spec.Def->GetAssetTags().HasAny(UnlockParentTags))//使用的是Parent判断
 	{
 		UPxcAbilitySystemComponent* pPASC = Cast<UPxcAbilitySystemComponent>(pASC);
 		if (pPASC) pPASC->UpdateUnlockTags();
@@ -56,7 +56,7 @@ void APxcLogicRole::OnGameplayEffectApplied(UAbilitySystemComponent* pASC, const
 
 	static const FGameplayTag ExTag = FGameplayTag::RequestGameplayTag(TEXT("Buff.Extention"));
 	TArray<FGameplayTag> tarrGETags;
-	Spec.Def->InheritableOwnedTagsContainer.CombinedTags.GetGameplayTagArray(tarrGETags);
+	Spec.Def->GetGrantedTags().GetGameplayTagArray(tarrGETags);
 	for (FGameplayTag& Tag : tarrGETags)
 	{
 		if (Tag.MatchesTag(ExTag) && Tag != ExTag)
@@ -83,12 +83,12 @@ void APxcLogicRole::OnGameplayEffectRemoved(const FActiveGameplayEffect& ActiveE
 	if (!IsValid(pPASC)) return;
 
 	const FGameplayTagContainer& UnlockParentTags = GetDefault<UPxcGameConfig>()->UnlockGameplayEffectParentTags;
-	if (ActiveEffect.Spec.Def->InheritableGameplayEffectTags.CombinedTags.HasAny(UnlockParentTags))//使用的是Parent判断
+	if (ActiveEffect.Spec.Def->GetAssetTags().HasAny(UnlockParentTags))//使用的是Parent判断
 		pPASC->UpdateUnlockTags();
 
 	const static FGameplayTag ExTag = FGameplayTag::RequestGameplayTag(TEXT("Buff.Extention"));
 	TArray<FGameplayTag> tarrGETags;
-	ActiveEffect.Spec.Def->InheritableOwnedTagsContainer.CombinedTags.GetGameplayTagArray(tarrGETags);
+	ActiveEffect.Spec.Def->GetGrantedTags().GetGameplayTagArray(tarrGETags);
 	for (FGameplayTag& Tag : tarrGETags)
 	{
 		if (Tag.MatchesTag(ExTag) && Tag != ExTag)

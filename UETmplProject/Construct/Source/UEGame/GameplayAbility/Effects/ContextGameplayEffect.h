@@ -20,7 +20,7 @@ public:
 	typedef std::unordered_map<UAbilitySystemComponent*, tPairContext> tMapContext;
 	
 public:
-	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	void GetGrantedGameplayTags(FGameplayTagContainer& TagContainer) const;
 
 	void AddContextAndHandle(UAbilitySystemComponent* pASC,
 		const FGameplayEffectContextHandle& xContext, const FActiveGameplayEffectHandle& xHandle);

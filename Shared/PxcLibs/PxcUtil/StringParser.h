@@ -182,7 +182,7 @@ std::string SetParamToSimpleArea(std::vector<T>& vecParams, char left = '[', cha
 {
 	std::string strRet;
 	strRet += left;
-	std::vector<T>::iterator iter = vecParams.begin();
+	typename std::vector<T>::iterator iter = vecParams.begin();
 	for (; iter != vecParams.end(); iter++)
 	{
 		if (iter != vecParams.begin())

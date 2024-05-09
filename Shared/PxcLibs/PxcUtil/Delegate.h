@@ -81,7 +81,7 @@ public:
 	bool UnRegister(const FuncObj* pFuncObj)
 	{
 		CRI_SEC(m_lock)
-		std::vector<FuncObj*>::iterator iter = m_vecFuncObjs.begin();
+		typename std::vector<FuncObj*>::iterator iter = m_vecFuncObjs.begin();
 		for (; iter != m_vecFuncObjs.end(); iter++)
 		{
 			if (*(*iter) == *pFuncObj)
@@ -96,7 +96,7 @@ public:
 	TRet operator()(TArg arg)
 	{
 		CRI_SEC(m_lock)
-		std::vector<FuncObj*>::iterator iter = m_vecFuncObjs.begin();
+		typename std::vector<FuncObj*>::iterator iter = m_vecFuncObjs.begin();
 		for (; iter != m_vecFuncObjs.end(); iter++)
 		{
 			if (iter + 1 == m_vecFuncObjs.end())
@@ -111,7 +111,7 @@ public:
 		CRI_SEC(m_lock)
 		if (m_bAutoCycle)
 		{
-			std::vector<FuncObj*>::iterator iter = m_vecFuncObjs.begin();
+			typename std::vector<FuncObj*>::iterator iter = m_vecFuncObjs.begin();
 			for (; iter != m_vecFuncObjs.end(); iter++)
 				SAFE_DELETE(*iter)
 		}

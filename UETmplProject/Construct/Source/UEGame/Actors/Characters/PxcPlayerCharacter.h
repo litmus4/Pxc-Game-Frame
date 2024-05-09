@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Actors/Characters/PxcGraphCharacter.h"
 #include "PrivateDefinitions/CharacterDef.h"
+#include <unordered_map>
 #include "PxcPlayerCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndMoveStartDelegate);

@@ -7,7 +7,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimNode_StateMachine.h"
 #include "EngineRelated/Animations/PxcCharacterTrajectoryComponent.h"
-#include "PoseSearchLibrary.h"
+#include "PoseSearch/PoseSearchLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Actors/Controllers/PxcPlayerController.h"

@@ -18,7 +18,7 @@ public:
 	void AddState(TState* pState)
 	{
 		CRI_SEC(m_lock)
-		std::map<TState*, tEventMap>::iterator iter = m_mapStates.find(pState);
+		typename std::map<TState*, tEventMap>::iterator iter = m_mapStates.find(pState);
 		if (iter == m_mapStates.end())
 		{
 			m_mapStates.insert(std::make_pair(pState, tEventMap()));
@@ -28,15 +28,15 @@ public:
 	bool AddTransfer(TState* pSrcState, TEvent event, TState* pDstState)
 	{
 		CRI_SEC(m_lock)
-		std::map<TState*, tEventMap>::iterator itSrc = m_mapStates.find(pSrcState);
+		typename std::map<TState*, tEventMap>::iterator itSrc = m_mapStates.find(pSrcState);
 		if (itSrc == m_mapStates.end())
 			return false;
 
-		std::map<TState*, tEventMap>::iterator itDst = m_mapStates.find(pDstState);
+		typename std::map<TState*, tEventMap>::iterator itDst = m_mapStates.find(pDstState);
 		if (itDst == m_mapStates.end())
 			return false;
 
-		tEventMap::iterator iter = itSrc->second.find(event);
+		typename tEventMap::iterator iter = itSrc->second.find(event);
 		if (iter == itSrc->second.end())
 		{
 			itSrc->second.insert(std::make_pair(event, pDstState));
@@ -53,11 +53,11 @@ public:
 
 		if (!bForce)
 		{
-			std::map<TState*, tEventMap>::iterator itCur = m_mapStates.find(m_pCurrent);
+			typename std::map<TState*, tEventMap>::iterator itCur = m_mapStates.find(m_pCurrent);
 			if (itCur == m_mapStates.end())
 				return false;
 
-			tEventMap::iterator itNext = itCur->second.begin();
+			typename tEventMap::iterator itNext = itCur->second.begin();
 			for (; itNext != itCur->second.end(); itNext++)
 			{
 				if (itNext->second == pState)
@@ -67,7 +67,7 @@ public:
 				return false;
 		}
 
-		std::map<TState*, tEventMap>::iterator iter = m_mapStates.find(pState);
+		typename std::map<TState*, tEventMap>::iterator iter = m_mapStates.find(pState);
 		if (iter != m_mapStates.end())
 		{
 			m_pCurrent = pState;
@@ -79,11 +79,11 @@ public:
 	bool TriggerEvent(TEvent event)
 	{
 		CRI_SEC(m_lock)
-		std::map<TState*, tEventMap>::iterator itCur = m_mapStates.find(m_pCurrent);
+		typename std::map<TState*, tEventMap>::iterator itCur = m_mapStates.find(m_pCurrent);
 		if (itCur == m_mapStates.end())
 			return false;
 
-		tEventMap::iterator itNext = itCur->second.find(event);
+		typename tEventMap::iterator itNext = itCur->second.find(event);
 		if (itNext != itCur->second.end())
 		{
 			return SetState(itNext->second, true);
@@ -106,7 +106,7 @@ public:
 		CRI_SEC(m_lock)
 		if (m_bAutoCycle)
 		{
-			std::map<TState*, tEventMap>::iterator iter = m_mapStates.begin();
+			typename std::map<TState*, tEventMap>::iterator iter = m_mapStates.begin();
 			for (; iter != m_mapStates.end(); iter++)
 			{
 				if (iter->first)

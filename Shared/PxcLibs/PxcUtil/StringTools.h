@@ -1,4 +1,5 @@
 #pragma once
+#include "TempImportantHead.h"
 #include <string>
 
 namespace PxcUtil
@@ -23,6 +24,7 @@ inline std::string BasicToStr(const T& basic)
 	return stream.str().c_str();
 }
 
+#ifndef PXC_ENGINE_UE
 template<typename T>
 inline T StrToBasic(const std::string& str)
 {
@@ -32,6 +34,14 @@ inline T StrToBasic(const std::string& str)
 	stream >> basic;
 	return basic;
 }
+#else
+template<typename T>
+inline T StrToBasic(const std::string& str)
+{
+	T basic = 0;
+	return basic;
+}
+#endif
 
 template<typename T>
 inline std::wstring BasicToWstr(const T& basic)
@@ -41,6 +51,7 @@ inline std::wstring BasicToWstr(const T& basic)
 	return stream.str().c_str();
 }
 
+#ifndef PXC_ENGINE_UE
 template<typename T>
 inline T WstrToBasic(const std::wstring& wstr)
 {
@@ -50,6 +61,14 @@ inline T WstrToBasic(const std::wstring& wstr)
 	stream >> basic;
 	return basic;
 }
+#else
+template<typename T>
+inline T WstrToBasic(const std::wstring& wstr)
+{
+	T basic = 0;
+	return basic;
+}
+#endif
 
 std::string Format(const char* szForm, ...);
 std::wstring Format(const wchar_t* wszForm, ...);

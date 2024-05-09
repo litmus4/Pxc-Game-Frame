@@ -177,6 +177,7 @@
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="StringParser.h" />
     <ClInclude Include="StringTools.h" />
+    <ClInclude Include="TempImportantHead.h" />
     <ClInclude Include="Thread.h" />
     <ClInclude Include="zPackEx.h" />
   </ItemGroup>

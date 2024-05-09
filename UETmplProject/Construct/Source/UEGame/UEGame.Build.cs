@@ -32,9 +32,10 @@ public class UEGame : ModuleRules
 
 	public UEGame(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "DeveloperSettings" });
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+        //PrivatePCHHeaderFile = "GamePCH.h";
+
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "DeveloperSettings" });
         PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks" });
 
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
@@ -49,6 +50,7 @@ public class UEGame : ModuleRules
         // To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
         bUseRTTI = true;
+        PublicIncludePaths.Add(ModuleDirectory);
         PublicIncludePaths.Add(Path.Combine(PxcLibPath, ""));
         PublicIncludePaths.Add(Path.Combine(PxcCorePath, ""));
         string CfgStrOut = "Release";

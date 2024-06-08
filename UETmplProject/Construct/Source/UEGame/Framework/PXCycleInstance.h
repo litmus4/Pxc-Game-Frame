@@ -10,6 +10,7 @@
 
 class UPXCycleSystem;
 class UPxcInputMappingMgr;
+class URandomGameplaySystem;
 
 /**
  * 
@@ -33,6 +34,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	UPxcInputMappingMgr* GetInputMappingMgr();
+
+	UFUNCTION(BlueprintPure)
+	URandomGameplaySystem* GetRandomGameplaySystem();
 
 	UPROPERTY(BlueprintReadWrite)
 	bool m_bKeyboardRuntime = true;

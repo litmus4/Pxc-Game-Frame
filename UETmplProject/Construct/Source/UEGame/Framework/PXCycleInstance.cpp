@@ -7,6 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "MonoControl/EventCenter.h"
 #include "Framework/Systems/PxcInputMappingMgr.h"
+#include "Framework/Systems/RandomGameplaySystem.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -38,6 +39,7 @@ void UPXCycleInstance::Init()
 #endif
 
 	AddSystem(ECycleSystemType::InputMapping, NewObject<UPxcInputMappingMgr>(), false);
+	AddSystem(ECycleSystemType::RandomGameplay, NewObject<URandomGameplaySystem>(), false);
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance top init end"));
 	Super::Init();
@@ -57,7 +59,10 @@ bool UPXCycleInstance::Tick(float fDeltaSeconds)
 
 void UPXCycleInstance::Shutdown()
 {
-	ECycleSystemType eSysTypes[] = { ECycleSystemType::InputMapping };
+	ECycleSystemType eSysTypes[] = {
+		ECycleSystemType::InputMapping,
+		ECycleSystemType::RandomGameplay
+	};
 	ReleaseSystems(eSysTypes, 1);
 
 	CEventCenter::GetInstance()->Release();
@@ -139,6 +144,12 @@ UPxcInputMappingMgr* UPXCycleInstance::GetInputMappingMgr()
 {
 	UPXCycleSystem** ppSystem = m_tmapSystems.Find(ECycleSystemType::InputMapping);
 	return (ppSystem ? Cast<UPxcInputMappingMgr>(*ppSystem) : nullptr);
+}
+
+URandomGameplaySystem* UPXCycleInstance::GetRandomGameplaySystem()
+{
+	UPXCycleSystem** ppSystem = m_tmapSystems.Find(ECycleSystemType::RandomGameplay);
+	return (ppSystem ? Cast<URandomGameplaySystem>(*ppSystem) : nullptr);
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

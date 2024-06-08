@@ -10,4 +10,15 @@ UENUM(BlueprintType)
 enum class ECycleSystemType : uint8
 {
 	InputMapping,
+	RandomGameplay,
+};
+
+UENUM(BlueprintType)
+enum class ERandomZGNRoomType : uint8
+{
+	Entry = 0,
+	Fight,
+	Loot,
+	Story,
+	Shop,
 };

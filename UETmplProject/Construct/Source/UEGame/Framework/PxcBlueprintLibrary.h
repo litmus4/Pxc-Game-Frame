@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "Structs/VirtualGroupStructs.h"
 #include "Structs/SignatureStructs.h"
-#include "Structs/ScatteredStructs.h"
+#include "Structs/SystemStructs.h"
 #include "../Utilities/UtilityStructs.h"
 #include <functional>
 #include "PxcBlueprintLibrary.generated.h"

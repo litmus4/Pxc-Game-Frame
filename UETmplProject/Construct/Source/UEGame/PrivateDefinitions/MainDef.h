@@ -14,11 +14,17 @@ enum class ECycleSystemType : uint8
 };
 
 UENUM(BlueprintType)
+enum class EGamepadModifierKey : uint8
+{
+	Unknown,//²¢ÎÞUnknown
+};
+
+UENUM(BlueprintType)
 enum class ERandomZGNRoomType : uint8
 {
 	Entry = 0,
-	Fight,
-	Loot,
+	Stage,
+	Bonus,
 	Story,
-	Shop,
+	Support,
 };

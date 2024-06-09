@@ -11,9 +11,3 @@ enum class EDynamicAssetsType : uint8
 {
 	InputKeyIcon,
 };
-
-UENUM(BlueprintType)
-enum class EGamepadModifierKey : uint8
-{
-	Unknown,//²¢ÎÞUnknown
-};

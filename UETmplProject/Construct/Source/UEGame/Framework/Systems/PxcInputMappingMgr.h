@@ -6,7 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "GameFramework/InputSettings.h"
 #include "PXCycleSystem.h"
-#include "../Structs/ScatteredStructs.h"
+#include "../Structs/SystemStructs.h"
 #include "PxcInputMappingMgr.generated.h"
 
 USTRUCT(BlueprintType)

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
 #include "GameplayAbility/PxcAbilitySystemComponent.h"
+#include "Framework/Structs/SystemStructs.h"
 #include "Framework/Structs/ScatteredStructs.h"
 #include "PxcGameConfig.generated.h"
 

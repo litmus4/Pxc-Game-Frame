@@ -7,6 +7,8 @@
 #include "../Structs/SystemStructs.h"
 #include "RandomGameplaySystem.generated.h"
 
+class URandomModeComponent;
+
 /**
  * 
  */
@@ -16,12 +18,21 @@ class UEGAME_API URandomGameplaySystem : public UPXCycleSystem
 	GENERATED_BODY()
 	
 public://Zhang Gun Neural
-	//UFUNCTION(BlueprintCallable, Category = RandomGameplay)
-	//void InitZGNLayers();
+	UFUNCTION(BlueprintCallable, Category = RandomGameplay)
+	void GenerateZGNLayers(TSubclassOf<URandomModeComponent> cComponent);
 
-	//UFUNCTION(BlueprintPure, Category = RandomGameplay)
-	//void GetZGNLayers(TArray<FRandomZGNLayer>& tarrOutZGNLayers);
+	UFUNCTION(BlueprintPure, Category = RandomGameplay)
+	void GetZGNLayers(TArray<FRandomZGNLayer>& tarrOutZGNLayers);
+
+	UFUNCTION(BlueprintCallable, Category = RandomGameplay)
+	void ClearZGNLayers();
 
 public:
-	//virtual void Release() override;
+	virtual void Release() override;
+
+private:
+	void VerifyZGNComponent(URandomModeComponent* pComp);
+
+	UPROPERTY()
+	TArray<FRandomZGNLayer> m_tarrZGNLayers;
 };

@@ -35,4 +35,7 @@ private:
 
 	UPROPERTY()
 	TArray<FRandomZGNLayer> m_tarrZGNLayers;
+
+	UPROPERTY()
+	TMap<ERandomZGNRoomType, int32> m_tmapZGNTypedRoomLeftNums;
 };

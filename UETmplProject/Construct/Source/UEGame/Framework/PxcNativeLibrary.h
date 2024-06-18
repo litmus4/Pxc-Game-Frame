@@ -21,6 +21,6 @@ struct FPxcNativeLibrary
 {
 	FPxcNativeLibrary() = delete;
 
-	void GetAllActorsInSubLevel(UWorld* pWorld, ULevelStreaming* pLevelStreaming, TSubclassOf<AActor> Class, TArray<AActor*>& tarrOutActors,
+	static void GetAllActorsInSubLevel(UWorld* pWorld, ULevelStreaming* pLevelStreaming, TSubclassOf<AActor> Class, TArray<AActor*>& tarrOutActors,
 		std::function<bool(AActor*)> fnFilter = [](AActor* pActor) { return true; });
 };

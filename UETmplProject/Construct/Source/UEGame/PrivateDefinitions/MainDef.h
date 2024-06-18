@@ -20,6 +20,13 @@ enum class EGamepadModifierKey : uint8
 };
 
 UENUM(BlueprintType)
+enum class ERandomModeType : uint8
+{
+	Unknown = 0,
+	ZGN,
+};
+
+UENUM(BlueprintType)
 enum class ERandomZGNRoomType : uint8
 {
 	Entry = 0,

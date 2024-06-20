@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ActorStructs.h"
 #include "LevelPreparedActor.generated.h"
 
 UCLASS()
@@ -24,7 +25,7 @@ protected:
 	virtual void OnPreInitializeComponents_Implementation() {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TMap<FName, TSoftObjectPtr<AActor>> m_tmapLevelNameToTeleportDest;
+	TMap<FName, FSubLevelLinkInfo> m_tmapSubLevelLinkInfos;
 
 public:	
 	virtual void PreInitializeComponents() override;

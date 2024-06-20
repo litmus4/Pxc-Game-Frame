@@ -38,9 +38,9 @@ void URandomGameplaySystem::GenerateZGNLayers(TSubclassOf<URandomModeComponent> 
 		int32 iWide = pDefComp->m_iZGNMinWide + iIncWide;
 		iMinNodeNum += iIncWide;
 
+		TArray<TArray<int32>> tarrLinkBacks;
 		if (iLayerIndex > 0)
 		{
-			TArray<TArray<int32>> tarrLinkBacks;
 			for (int32 i = 0; i < iWide; ++i)
 				tarrLinkBacks.Add(TArray<int32>());
 			TArray<int32> tarrLinkLessIndexs;
@@ -100,6 +100,8 @@ void URandomGameplaySystem::GenerateZGNLayers(TSubclassOf<URandomModeComponent> 
 				Node.eType = tarrAllTypes[iTypeIndex];
 			}
 
+			if (iLayerIndex > 0)
+				Node.tarrBackRoomLinks = tarrLinkBacks[i];
 			Layer.tarrNodes.Add(Node);
 			iMinNodeNum--;
 		}

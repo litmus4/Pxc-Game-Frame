@@ -2,6 +2,10 @@
 
 
 #include "Actors/LevelPreparedActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "VT/RuntimeVirtualTextureVolume.h"
+#include "Engine/Texture2D.h"
+#include "LandscapeProxy.h"
 
 // Sets default values
 ALevelPreparedActor::ALevelPreparedActor()
@@ -15,7 +19,21 @@ ALevelPreparedActor::ALevelPreparedActor()
 void ALevelPreparedActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+UTexture2D* ALevelPreparedActor::CreateMaterialRVTVArrayTexture(int32 iSizeX, int32 iSizeY)
+{
+	TArray<AActor*> tarrVolumes;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARuntimeVirtualTextureVolume::StaticClass(), tarrVolumes);
+	//FLAGJK_NOW
+	return nullptr;
+}
+
+void ALevelPreparedActor::PreRegisterAllComponents()
+{
+	Super::PreRegisterAllComponents();
+
+	InitLevelEffects();
 }
 
 void ALevelPreparedActor::PreInitializeComponents()
@@ -32,3 +50,19 @@ void ALevelPreparedActor::Tick(float DeltaTime)
 
 }
 
+void ALevelPreparedActor::InitLevelEffects()
+{
+	//Landscape Material RVTV Array Texture
+	m_pCachedMtlRVTVArrayTex = CreateMaterialRVTVArrayTexture(m_iMtlRVTVArrayTexSizeX, m_iMtlRVTVArrayTexSizeY);
+	if (m_pCachedMtlRVTVArrayTex && IsValid(m_pLandscape))
+	{
+		UMaterialInstance* pMtlInst = Cast<UMaterialInstance>(m_pLandscape->GetLandscapeMaterial());
+		if (IsValid(pMtlInst))
+		{
+			FHashedMaterialParameterInfo ParameterInfo;
+			UTexture* pTempValue = nullptr;
+			if (pMtlInst->GetTextureParameterValue(ParameterInfo, pTempValue))
+				m_pLandscape->SetLandscapeMaterialTextureParameterValue(ParameterInfo.GetName(), m_pCachedMtlRVTVArrayTex);
+		}
+	}
+}

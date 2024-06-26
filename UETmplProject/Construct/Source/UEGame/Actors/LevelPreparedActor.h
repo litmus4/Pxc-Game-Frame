@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 m_iMtlRVTVArrayTexSizeY;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName m_MtlRVTVArrayTexParamName;
+
 	UPROPERTY(BlueprintReadOnly)
 	UTexture2D* m_pCachedMtlRVTVArrayTex;
 

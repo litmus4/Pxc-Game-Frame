@@ -34,16 +34,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<FName, FSubLevelLinkInfo> m_tmapSubLevelLinkInfos;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
 	ALandscapeProxy* m_pLandscape;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
+	FVector2D m_v2RVTVCornerZero;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
+	double m_dRVTVSideLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
 	int32 m_iMtlRVTVArrayTexSizeX;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
 	int32 m_iMtlRVTVArrayTexSizeY;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
 	FName m_MtlRVTVArrayTexParamName;
 
 	UPROPERTY(BlueprintReadOnly)

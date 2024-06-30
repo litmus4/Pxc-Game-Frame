@@ -151,6 +151,7 @@
     <ClInclude Include="CoreConstantsDef.h" />
     <ClInclude Include="EventKeyDef.h" />
     <ClInclude Include="Globalization.h" />
+    <ClInclude Include="ObjectNameDef.h" />
     <ClInclude Include="SpecialFileDef.h" />
     <ClInclude Include="StoryDef.h" />
   </ItemGroup>

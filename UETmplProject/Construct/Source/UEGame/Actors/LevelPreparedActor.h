@@ -10,11 +10,19 @@
 class UTexture2D;
 class UMaterialInstance;
 class ALandscapeProxy;
+class ARuntimeVirtualTextureVolume;
 
 UCLASS()
 class UEGAME_API ALevelPreparedActor : public AActor
 {
 	GENERATED_BODY()
+
+public:
+	struct SRVTVExtension
+	{
+		ARuntimeVirtualTextureVolume* pVolume;
+		uint64 ulRegionCoord;
+	};
 	
 public:	
 	// Sets default values for this actor's properties

@@ -123,5 +123,8 @@ void ALevelPreparedActor::InitLevelEffects()
 	//Landscape Material RVTV Array Texture
 	m_pCachedMtlRVTVArrayTex = CreateMaterialRVTVArrayTexture(m_iMtlRVTVArrayTexSizeX, m_iMtlRVTVArrayTexSizeY);
 	if (m_pCachedMtlRVTVArrayTex && IsValid(m_pLandscape))
+	{
 		m_pLandscape->SetLandscapeMaterialTextureParameterValue(m_MtlRVTVArrayTexParamName, m_pCachedMtlRVTVArrayTex);
+		m_pLandscape->SetLandscapeMaterialScalarParameterValue(m_MtlRVTVSideLengthParamName, m_dRVTVSideLength);
+	}
 }

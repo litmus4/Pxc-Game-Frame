@@ -61,6 +61,9 @@ protected:
 	FName m_MtlRVTVArrayTexParamName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
+	FName m_MtlRVTVCornerZeroParamName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RVTV)
 	FName m_MtlRVTVSideLengthParamName;
 
 	UPROPERTY(BlueprintReadOnly)

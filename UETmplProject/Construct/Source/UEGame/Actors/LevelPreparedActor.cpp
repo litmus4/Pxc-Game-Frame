@@ -125,6 +125,8 @@ void ALevelPreparedActor::InitLevelEffects()
 	if (m_pCachedMtlRVTVArrayTex && IsValid(m_pLandscape))
 	{
 		m_pLandscape->SetLandscapeMaterialTextureParameterValue(m_MtlRVTVArrayTexParamName, m_pCachedMtlRVTVArrayTex);
+		m_pLandscape->SetLandscapeMaterialVectorParameterValue(m_MtlRVTVCornerZeroParamName,
+			FLinearColor(m_v2RVTVCornerZero.X, m_v2RVTVCornerZero.Y, 0.0f, 0.0f));//¾«¶ÈËðÊ§
 		m_pLandscape->SetLandscapeMaterialScalarParameterValue(m_MtlRVTVSideLengthParamName, m_dRVTVSideLength);
 	}
 }

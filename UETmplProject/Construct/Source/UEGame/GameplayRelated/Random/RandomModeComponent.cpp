@@ -28,7 +28,25 @@ void URandomModeComponent::RunRandomTeleport(class AIndexedToAssignActor* pActor
 	if (pActor->m_iAssignedNumber >= 0)
 	{
 		ERandomZGNRoomType eType = (ERandomZGNRoomType)pActor->m_iAssignedNumber;
+		bool bRandomMainUnlockee = false;
+		ResetZGNRoomState();
+		if (eType == ERandomZGNRoomType::Random)
+		{
+			FRandomZGNNode* pNode = static_cast<FRandomZGNNode*>(pActor->m_pAssignedData);
+			m_ZGNRoomState.eRandomType = pNode->tarrRandomTypes[FMath::RandHelper(pNode->tarrRandomTypes.Num())];
+			m_ZGNRoomState.fRandomMultiper = pNode->fRandomMultiper;
+			if (m_ZGNRoomState.eRandomType == m_eZGNMainUnlockeeRoomType)
+			{
+				//TODOJK ConsWait
+				int32 iUnlockedTimes = 0;
+				int32 iRandMax = FMath::Min(iUnlockedTimes, m_tarrZGNUnlockRoomSubTypes.Num());
+				m_ZGNRoomState.eSubType = m_tarrZGNUnlockRoomSubTypes[FMath::RandHelper(iRandMax)];
+				bRandomMainUnlockee = true;
+			}
+			eType = m_ZGNRoomState.eRandomType;
+		}
 		FRandomSubLevelList* pLevelList = m_tmapZGNStaticTypedRooms.Find(eType);
+
 		if (pLevelList)
 		{
 			FString sLevelName;
@@ -38,6 +56,9 @@ void URandomModeComponent::RunRandomTeleport(class AIndexedToAssignActor* pActor
 					sLevelName = pLevelList->tarrResList[iSelectedIndex].GetAssetName();
 				else
 					sLevelName = pLevelList->tarrResList[FMath::RandHelper(pLevelList->tarrResList.Num())].GetAssetName();
+
+				if (eType == m_eZGNMainUnlockeeRoomType && !bRandomMainUnlockee)
+					m_ZGNRoomState.eSubType = static_cast<FRandomZGNNode*>(pActor->m_pAssignedData)->eSubType;
 
 				m_iCurrLayerIndex++;
 				m_iCurrNodeIndex = pActor->m_iIndexInWorld;
@@ -65,8 +86,7 @@ void URandomModeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	ResetZGNRoomState();
 }
 
 // Called every frame
@@ -134,24 +154,34 @@ void URandomModeComponent::SetStreamingLevelInstance(ULevelStreaming* pLSObj)
 
 					UPXCycleInstance* pGI = GetWorld()->GetGameInstance<UPXCycleInstance>();
 					check(pGI);
-					TArray<FRandomZGNLayer> tarrZGNLayers;
-					pGI->GetRandomGameplaySystem()->GetZGNLayers(tarrZGNLayers);
+					TArray<FRandomZGNLayer>* ptarrZGNLayers = nullptr;
+					pGI->GetRandomGameplaySystem()->GetZGNLayersPointer(&ptarrZGNLayers);
 
-					FRandomZGNLayer* pLayer = (tarrZGNLayers.IsValidIndex(m_iCurrLayerIndex + 1) ? &tarrZGNLayers[m_iCurrLayerIndex + 1] : nullptr);
+					FRandomZGNLayer* pLayer = (ptarrZGNLayers->IsValidIndex(m_iCurrLayerIndex + 1) ? &(*ptarrZGNLayers)[m_iCurrLayerIndex + 1] : nullptr);
 					for (int32 j = 0; j < tarrTeleportIActors.Num(); ++j)
 					{
 						AIndexedToAssignActor* pIActor = tarrTeleportIActors[j];
 						if (pLayer && m_iCurrLayerIndex >= 0)//中间层
 						{
-							FRandomZGNLayer& CurrLayer = tarrZGNLayers[m_iCurrLayerIndex];
+							FRandomZGNLayer& CurrLayer = (*ptarrZGNLayers)[m_iCurrLayerIndex];
 							FRandomZGNNode& CurrNode = CurrLayer.tarrNodes[m_iCurrNodeIndex];
 							if (CurrNode.tarrNextRoomLinks.Find(j) != INDEX_NONE && pLayer->tarrNodes.IsValidIndex(j))
+							{
 								pIActor->RunAssignNumber((int32)pLayer->tarrNodes[j].eType);
+								if (pLayer->tarrNodes[j].eType == m_eZGNMainUnlockeeRoomType ||
+									pLayer->tarrNodes[j].eType == ERandomZGNRoomType::Random)
+									pIActor->RunAssignData((void*)&pLayer->tarrNodes[j]);
+							}
 						}
 						else if (pLayer)//入口
 						{
 							if (pLayer->tarrNodes.IsValidIndex(j))
+							{
 								pIActor->RunAssignNumber((int32)pLayer->tarrNodes[j].eType);
+								if (pLayer->tarrNodes[j].eType == m_eZGNMainUnlockeeRoomType ||
+									pLayer->tarrNodes[j].eType == ERandomZGNRoomType::Random)
+									pIActor->RunAssignData((void*)&pLayer->tarrNodes[j]);
+							}
 						}
 						else//最后一层
 							pIActor->RunAssignNumber(0);
@@ -162,4 +192,11 @@ void URandomModeComponent::SetStreamingLevelInstance(ULevelStreaming* pLSObj)
 			}
 		}
 	}
+}
+
+void URandomModeComponent::ResetZGNRoomState()
+{
+	m_ZGNRoomState.eSubType = ERandomZGNRoomSubType::Support_0;
+	m_ZGNRoomState.eRandomType = ERandomZGNRoomType::Entry;
+	m_ZGNRoomState.fRandomMultiper = 0.0f;
 }

@@ -94,6 +94,15 @@ public:
 	ERandomZGNRoomType eType;
 
 	UPROPERTY(BlueprintReadOnly)
+	ERandomZGNRoomSubType eSubType;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<ERandomZGNRoomType> tarrRandomTypes;
+
+	UPROPERTY(BlueprintReadOnly)
+	float fRandomMultiper;
+
+	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> tarrNextRoomLinks;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -107,4 +116,19 @@ struct FRandomZGNLayer
 public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FRandomZGNNode> tarrNodes;
+};
+
+USTRUCT(BlueprintType)
+struct FRandomZGNRoomState
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadOnly)
+	ERandomZGNRoomSubType eSubType;
+
+	UPROPERTY(BlueprintReadOnly)
+	ERandomZGNRoomType eRandomType;
+
+	UPROPERTY(BlueprintReadOnly)
+	float fRandomMultiper;
 };

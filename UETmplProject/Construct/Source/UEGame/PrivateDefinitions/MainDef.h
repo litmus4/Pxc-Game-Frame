@@ -34,4 +34,16 @@ enum class ERandomZGNRoomType : uint8
 	Bonus,
 	Story,
 	Support,
+	Puzzle,
+	Random,
+};
+
+UENUM(BlueprintType)
+enum class ERandomZGNRoomSubType : uint8
+{
+	Support_0,
+	Support_1,
+	Support_2,
+	Support_3,
+	Support_4,
 };

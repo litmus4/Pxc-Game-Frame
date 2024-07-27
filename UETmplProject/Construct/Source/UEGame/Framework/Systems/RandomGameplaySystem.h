@@ -24,8 +24,13 @@ public://Zhang Gun Neural
 	UFUNCTION(BlueprintPure, Category = RandomGameplay)
 	void GetZGNLayers(TArray<FRandomZGNLayer>& tarrOutZGNLayers);
 
+	void GetZGNLayersPointer(TArray<FRandomZGNLayer>** pptarrOutZGNLayers);
+
 	UFUNCTION(BlueprintCallable, Category = RandomGameplay)
 	void ClearZGNLayers();
+
+	UFUNCTION(BlueprintCallable, Category = RandomGameplay)
+	void IncreaseUnlockedTimes();
 
 public:
 	virtual void Release() override;

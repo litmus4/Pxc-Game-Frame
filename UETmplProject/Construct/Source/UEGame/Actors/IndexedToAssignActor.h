@@ -29,6 +29,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int32 m_iAssignedNumber = -1;
 
+	virtual void RunAssignData(void* pData);
+	void* m_pAssignedData;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 m_iIndexInWorld = -1;
 

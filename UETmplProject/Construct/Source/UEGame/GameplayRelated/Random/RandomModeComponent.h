@@ -56,6 +56,33 @@ protected:
 	TMap<ERandomZGNRoomType, FRandomSubLevelList> m_tmapZGNStaticTypedRooms;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<ERandomZGNRoomSubType> m_tarrZGNUnlockRoomSubTypes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float m_fZGNRandomMultipleProb = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float m_fZGNRandomMultiper = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<ERandomZGNRoomType> m_tarrZGNMustMaxRoomTypes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ERandomZGNRoomType m_eZGNUnlockerRoomType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ERandomZGNRoomType m_eZGNMainUnlockeeRoomType;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	ERandomZGNRoomType m_eZGNExtraUnlockeeRoomType;//不能在代码写死的tarrAllTypes中
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 m_iZGNExtraUnlockeeRoomNum;//不能在代码写死的tarrAllTypes中
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<ERandomZGNRoomType> m_tarrZGNMustRandomRoomTypes;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<AIndexedToAssignActor> m_cTeleportActor;
 
 	UPROPERTY()
@@ -64,9 +91,14 @@ protected:
 	UPROPERTY()
 	int32 m_iCurrNodeIndex;
 
+	UPROPERTY(BlueprintReadOnly)
+	FRandomZGNRoomState m_ZGNRoomState;
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SetStreamingLevelInstance(ULevelStreaming* pLSObj);
+
+	void ResetZGNRoomState();
 };

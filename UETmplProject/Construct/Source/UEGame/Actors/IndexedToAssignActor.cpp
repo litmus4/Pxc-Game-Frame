@@ -21,6 +21,11 @@ void AIndexedToAssignActor::RunAssignNumber_Implementation(int32 iNumber)
 	m_iAssignedNumber = iNumber;
 }
 
+void AIndexedToAssignActor::RunAssignData(void* pData)
+{
+	m_pAssignedData = pData;
+}
+
 // Called when the game starts or when spawned
 void AIndexedToAssignActor::BeginPlay()
 {

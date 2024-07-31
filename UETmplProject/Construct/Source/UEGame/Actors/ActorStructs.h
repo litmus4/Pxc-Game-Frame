@@ -7,6 +7,18 @@
 #include "ActorStructs.generated.h"
 
 USTRUCT(BlueprintType)
+struct FSubLevelNeighborInfo
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSoftObjectPtr<AActor> pTeleportDest;
+};
+
+USTRUCT(BlueprintType)
 struct FSubLevelLinkInfo
 {
 	GENERATED_BODY()
@@ -15,5 +27,5 @@ public:
 	TSoftObjectPtr<AActor> pDefaultTeleportDest;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FName> tarrNeighbors;
+	TArray<FSubLevelNeighborInfo> tarrNeighbors;
 };

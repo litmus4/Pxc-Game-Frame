@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actors/PostRegAllComponentsActor.h"
 #include "TestTriggeredActor.generated.h"
 
 class UStaticMeshComponent;
 class UBoxComponent;
 
 UCLASS()
-class UEGAME_API ATestTriggeredActor : public AActor
+class UEGAME_API ATestTriggeredActor : public APostRegAllComponentsActor
 {
 	GENERATED_BODY()
 	

@@ -1862,6 +1862,9 @@ Global
 		{C362F347-D4A4-4D3C-892A-25876EA1BB24} = {DE1F8B53-6C02-3C13-9101-A7C8D96F3FF6}
 		{2317EFE8-D649-46D0-A7FB-443606C644D6} = {DE1F8B53-6C02-3C13-9101-A7C8D96F3FF6}
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEFE48B7-62DD-4DC0-B23C-711290F30697}
+	EndGlobalSection
 	GlobalSection(ddbf523f-7eb6-4887-bd51-85a714ff87eb) = preSolution
 		AvailablePlatforms = Win64
 	EndGlobalSection

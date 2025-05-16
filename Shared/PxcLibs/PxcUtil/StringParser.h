@@ -77,9 +77,9 @@ inline int GetParamFromString(std::string Str, std::vector<std::string>& StringV
 	size_t ipos = 0, ilastpos = 0, iquotpos = std::string::npos;
 	if (ilastpos >= Str.size())
 		return 0;
-	if (Str.at(ilastpos) == '\"')
+	if (Str.at(ilastpos) == '\'')
 	{
-		iquotpos = Str.find_first_of('\"', ilastpos + 1);
+		iquotpos = Str.find_first_of('\'', ilastpos + 1);
 		if (iquotpos != std::string::npos)
 			ipos = Str.find_first_of(Delim, iquotpos);
 		else
@@ -98,9 +98,9 @@ inline int GetParamFromString(std::string Str, std::vector<std::string>& StringV
 		ilastpos = ipos + 1;
 		if (ilastpos >= Str.size())
 			break;
-		if (Str.at(ilastpos) == '\"')
+		if (Str.at(ilastpos) == '\'')
 		{
-			iquotpos = Str.find_first_of('\"', ilastpos + 1);
+			iquotpos = Str.find_first_of('\'', ilastpos + 1);
 			if (iquotpos != std::string::npos)
 				ipos = Str.find_first_of(Delim, iquotpos);
 			else

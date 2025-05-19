@@ -16,15 +16,16 @@ bool CTextTableCenter::Init(const std::string& strPath, GlobalDef::ELanguage eLa
 	std::string strFolder = "TextTable";
 	strFolder += GlobalDef::GetLanguageFolder(eLanguage);
 
-	LOADLANTABLE(Text, strPath, strFolder, m_mapTexts, m_iID, true, m_strText)
-	LOADLANTABLE(Caption, strPath, strFolder, m_mapCaptions, m_iID, true, m_strText)
+	bool bNeedBaseLan = (eLanguage != (GlobalDef::ELanguage)0);
+	LOADLANTABLE(Text, strPath, strFolder, m_mapTexts, m_iID, bNeedBaseLan, m_strText)
+	LOADLANTABLE(Caption, strPath, strFolder, m_mapCaptions, m_iID, bNeedBaseLan, m_strText)
 	if (bUseCaptionTags)
 	{
 		std::map<int, CCaptionRow*>::iterator iter = m_mapCaptions.begin();
 		for (; iter != m_mapCaptions.end(); iter++)
 			m_mapCaptionTags.insert(std::make_pair(iter->second->m_strTag, iter->first));
 	}
-	LOADLANTABLE(StoryText, strPath, strFolder, m_mapStoryTexts, m_iID, true, m_strText)
+	LOADLANTABLE(StoryText, strPath, strFolder, m_mapStoryTexts, m_iID, bNeedBaseLan, m_strText)
 	return true;
 }
 

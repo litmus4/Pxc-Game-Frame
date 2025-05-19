@@ -59,7 +59,10 @@ public:
 		{
 			std::stringstream stream;
 			stream << iter->second.strCurValue;
-			stream >> outValue;
+			if constexpr (std::is_same_v<T, std::string>)
+				outValue = stream.str().c_str();
+			else
+				stream >> outValue;
 			iter->second.bGet = true;
 			if (iter->second.strCurValue.empty())
 				return true;
@@ -128,7 +131,10 @@ public:
 		{
 			std::stringstream stream;
 			stream << iter->second.strCurValue;
-			stream >> outValue;
+			if constexpr (std::is_same_v<T, std::string>)
+				outValue = stream.str().c_str();
+			else
+				stream >> outValue;
 			if (iter->second.strCurValue.empty())
 				return true;
 			else

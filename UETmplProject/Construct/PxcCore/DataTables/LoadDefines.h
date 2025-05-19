@@ -33,6 +33,64 @@
 	}\
 }
 
+//先默认基础语言成员BaseLanMbr为string
+#define LOADLANTABLE(Name, MainPath, Folder, Container, IDMbr, HasBaseLan, BaseLanMbr)\
+{\
+	std::string strFile = "DataTables\\", strFileBase = "DataTables\\";\
+	strFile += Folder;\
+	strFile += "\\";\
+	strFile += #Name;\
+	strFile += ".csv";\
+	PxcUtil::zPackCombinePath(strFile, MainPath.c_str());\
+	strFile = MainPath + strFile;\
+	if (HasBaseLan)\
+	{\
+		size_t ipos = Folder.find_first_of('\\');\
+		if (ipos != std::string::npos)\
+		{\
+			Folder = Folder.substr(0, ipos) + GlobalDef::GetLanguageFolder((GlobalDef::ELanguage)0);\
+			strFileBase += Folder;\
+			strFileBase += "\\";\
+			strFileBase += #Name;\
+			strFileBase += ".csv";\
+			PxcUtil::zPackCombinePath(strFileBase, MainPath.c_str());\
+			strFileBase = MainPath + strFileBase;\
+		}\
+	}\
+	PxcUtil::CCSVTableOperator tabop, tabopb;\
+	if (tabop.Load(strFile.c_str()))\
+	{\
+		if (HasBaseLan && tabopb.Load(strFileBase.c_str()))\
+		{\
+			while (tabop.ReadRow() && tabopb.ReadRow())\
+			{\
+				C##Name##Row* p##Name##Row = new C##Name##Row();\
+				p##Name##Row->Read(tabop);\
+				if (p##Name##Row->BaseLanMbr.empty())\
+					p##Name##Row->Read(tabopb);\
+				Container.insert(std::pair<int, C##Name##Row*>(p##Name##Row->IDMbr, p##Name##Row));\
+			}\
+			tabop.Reset();\
+			tabopb.Reset();\
+		}\
+		else\
+		{\
+			while (tabop.ReadRow())\
+			{\
+				C##Name##Row* p##Name##Row = new C##Name##Row();\
+				p##Name##Row->Read(tabop);\
+				Container.insert(std::pair<int, C##Name##Row*>(p##Name##Row->IDMbr, p##Name##Row));\
+			}\
+			tabop.Reset();\
+		}\
+	}\
+	else\
+	{\
+		PXCU_LOG_ERROR(SpecialFileDef::ELogFile_AssetsTables, "数据表加载失败") << strFile;\
+		return false;\
+	}\
+}
+
 #define UNLOADTABLE(Name, Container)\
 {\
 	std::map<int, C##Name##Row*>::iterator iter = Container.begin();\

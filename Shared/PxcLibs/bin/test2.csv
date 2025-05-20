@@ -3,6 +3,6 @@ ID,Name,Haha,Zu1,Zu2,Zu3
 int,string,float,array[int],array[string],array[float]
 -1,,-1,[],[],[]
 1,A,1.1,[1;1],[a;a],[1.1;1.1]
-2,"B,B",2.2,[2;2],,
+2,'B,B',2.2,[2;2],,
 3,,3.3,[],[c;c],[3.3;3.3]
 4,D,4.4,[4;4],[d;d],[4.4;4.4]

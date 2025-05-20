@@ -128,13 +128,15 @@ inline int GetParamFromStringEx(std::string Str, std::vector<T>& vec, char Delim
 	while (ipos != std::string::npos)
 	{
 		std::string strSub = Str.substr(ilastpos, ipos - ilastpos);
-		std::stringstream stream;
-		stream << strSub;
 		T v;
 		if constexpr (std::is_same_v<T, std::string>)
-			v = stream.str().c_str();
+			v = strSub;
 		else
+		{
+			std::stringstream stream;
+			stream << strSub;
 			stream >> v;
+		}
 		vec.push_back(v);
 		ilastpos = ipos + 1;
 		ipos = Str.find_first_of(Delim, ilastpos);
@@ -142,13 +144,15 @@ inline int GetParamFromStringEx(std::string Str, std::vector<T>& vec, char Delim
 	if (ilastpos < Str.size())
 	{
 		std::string strSub = Str.substr(ilastpos);
-		std::stringstream stream;
-		stream << strSub;
 		T v;
 		if constexpr (std::is_same_v<T, std::string>)
-			v = stream.str().c_str();
+			v = strSub;
 		else
+		{
+			std::stringstream stream;
+			stream << strSub;
 			stream >> v;
+		}
 		vec.push_back(v);
 	}
 	return vec.size();

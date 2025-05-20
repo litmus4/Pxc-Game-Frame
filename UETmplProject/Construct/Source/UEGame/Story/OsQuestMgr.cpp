@@ -30,7 +30,7 @@ void UOsQuestMgr::Init()
 	std::vector<CQuestRow*>::iterator iter = vecHeadRows.begin();
 	for (; iter != vecHeadRows.end(); iter++)
 	{
-		CQuestRow* pBeginningRow = NewBeginningRow(*iter);
+		CQuestRow* pBeginningRow = *iter;//NewBeginningRow(*iter);//目前确定状态在任务前部，不需要“空头任务”
 		UQuestState* pState = NewObject<UQuestState>();
 		pState->Init(pBeginningRow);
 		m_tmapQuestStates.Add(pBeginningRow->m_iID, pState);

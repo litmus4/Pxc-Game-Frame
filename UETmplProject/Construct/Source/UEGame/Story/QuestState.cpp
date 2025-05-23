@@ -27,3 +27,13 @@ void UQuestState::Init(CQuestRow* pQuestRow)
 	m_iQuestID = pQuestRow->m_iID;
 	m_pQuestRow = pQuestRow;
 }
+
+void UQuestState::OnEnter()
+{
+	//
+}
+
+void UQuestState::OnExit()
+{
+	//
+}

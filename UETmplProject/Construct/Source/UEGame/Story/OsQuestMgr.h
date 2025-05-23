@@ -7,12 +7,6 @@
 #include "QuestState.h"
 #include <unordered_map>
 
-#include "Windows/AllowWindowsPlatformTypes.h"
-#include "Windows/PreWindowsApi.h"
-#include "PxcUtil/StateMachine.h"
-#include "Windows/PostWindowsApi.h"
-#include "Windows/HideWindowsPlatformTypes.h"
-
 #include "OsQuestMgr.generated.h"
 
 class CQuestRow;

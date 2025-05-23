@@ -4,6 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/PreWindowsApi.h"
+#include "PxcUtil/StateMachine.h"
+#include "Windows/PostWindowsApi.h"
+#include "Windows/HideWindowsPlatformTypes.h"
+
 #include "QuestState.generated.h"
 
 class CQuestRow;
@@ -12,7 +19,7 @@ class CQuestRow;
  * 
  */
 UCLASS()
-class UEGAME_API UQuestState : public UObject
+class UEGAME_API UQuestState : public UObject, public PxcUtil::IState
 {
 	GENERATED_BODY()
 	
@@ -21,6 +28,9 @@ public:
 
 	void Init(int32 iQuestID);
 	void Init(CQuestRow* pQuestRow);
+
+	virtual void OnEnter() override;
+	virtual void OnExit() override;
 
 	FORCEINLINE int32 GetQuestID() { return m_iQuestID; }
 	FORCEINLINE CQuestRow* GetQuestRow() { return m_pQuestRow; }

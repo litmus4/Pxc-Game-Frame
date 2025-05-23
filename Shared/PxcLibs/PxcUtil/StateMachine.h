@@ -5,6 +5,15 @@
 namespace PxcUtil
 {
 
+class IState
+{
+public:
+	IState() {}
+	virtual ~IState() {}
+	virtual void OnEnter() = 0;
+	virtual void OnExit() = 0;
+};
+
 template<typename TState, typename TEvent>
 class CStateMachine
 {
@@ -70,7 +79,11 @@ public:
 		typename std::map<TState*, tEventMap>::iterator iter = m_mapStates.find(pState);
 		if (iter != m_mapStates.end())
 		{
+			if constexpr (std::is_same_v<TState, IState>)
+				if (m_pCurrent) m_pCurrent->OnExit();
 			m_pCurrent = pState;
+			if constexpr (std::is_same_v<TState, IState>)
+				pState->OnEnter();
 			return true;
 		}
 		return false;

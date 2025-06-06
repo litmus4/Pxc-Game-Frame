@@ -15,5 +15,5 @@ class UEGAME_API UPxcCharacterTrajectoryComponent : public UCharacterTrajectoryC
 	GENERATED_BODY()
 	
 public:
-	FPoseSearchQueryTrajectory GetTrajectory() const;
+	FTransformTrajectory GetTrajectory() const;
 };

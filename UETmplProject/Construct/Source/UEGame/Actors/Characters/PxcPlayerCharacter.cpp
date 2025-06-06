@@ -203,7 +203,7 @@ void APxcPlayerCharacter::RunLocoMotionEndMoveInput()
 		AddMovementInput(m_vFocus.GetSafeNormal(), fValue);
 }
 
-bool APxcPlayerCharacter::GetMotionTrajectory(FPoseSearchQueryTrajectory& OutTrajectory)
+bool APxcPlayerCharacter::GetMotionTrajectory(FTransformTrajectory& OutTrajectory)
 {
 	if (m_pTrajectory)
 	{
@@ -238,13 +238,13 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 	if (IsValid(m_pTrajectoryComp))
 	{
 		if (!m_pTrajectory)
-			m_pTrajectory = new FPoseSearchQueryTrajectory();
+			m_pTrajectory = new FTransformTrajectory();
 		if (m_pTrajectory)
 		{
 			if (m_bRootMotion)
 			{
 				check(IsValid(GetMesh()));
-				FPoseSearchQueryTrajectory&& ActorTraj = m_pTrajectoryComp->GetTrajectory();
+				FTransformTrajectory&& ActorTraj = m_pTrajectoryComp->GetTrajectory();
 				//*m_pTrajectory = UMotionTrajectoryBlueprintLibrary::MakeTrajectoryRelativeToComponent(ActorTraj, GetMesh());
 				//FLAGJK UPoseSearchLibrary::ProcessTrajectoryË½ÓÐ
 				//*m_pTrajectory = UPoseSearchLibrary::ProcessTrajectory(ActorTraj, GetMesh()->GetComponentTransform(), 0.0f, 0.0f, 0.0f);

@@ -3,7 +3,7 @@
 
 #include "EngineRelated/Animations/PxcCharacterTrajectoryComponent.h"
 
-FPoseSearchQueryTrajectory UPxcCharacterTrajectoryComponent::GetTrajectory() const
+FTransformTrajectory UPxcCharacterTrajectoryComponent::GetTrajectory() const
 {
 	return Trajectory;
 }

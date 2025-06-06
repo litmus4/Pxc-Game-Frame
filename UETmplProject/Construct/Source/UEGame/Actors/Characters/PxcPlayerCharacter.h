@@ -16,7 +16,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UAnimInstance;
 class UPxcCharacterTrajectoryComponent;
-struct FPoseSearchQueryTrajectory;
+struct FTransformTrajectory;
 
 /**
  * 
@@ -55,7 +55,7 @@ protected:
 	void RunLocoMotionEndMoveInput();
 
 	UFUNCTION(BlueprintCallable, Category = Animation)
-	bool GetMotionTrajectory(FPoseSearchQueryTrajectory& OutTrajectory);
+	bool GetMotionTrajectory(FTransformTrajectory& OutTrajectory);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Components)
 	UCameraComponent* m_pCameraComp;
@@ -141,7 +141,7 @@ protected:
 	FVector2D m_v2Axis;
 	FVector2D m_v2LastAxis;
 
-	FPoseSearchQueryTrajectory* m_pTrajectory;
+	FTransformTrajectory* m_pTrajectory;
 
 	float m_fStartMoveTime;
 	float m_fEndMoveTime;

@@ -107,4 +107,6 @@ void UFlowFenceActorWithKey::OnEnded(bool bFinish)
 		DeleFinished.Broadcast();
 	else
 		DeleTimeOut.Broadcast();
+
+	SetReadyToDestroy();
 }

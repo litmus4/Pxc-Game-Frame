@@ -55,4 +55,6 @@ void UAsyncWaitActorWithKey::OnEnded(bool bFinish)
 	}
 	else
 		DeleTimeOut.Broadcast();
+
+	SetReadyToDestroy();
 }

@@ -59,17 +59,17 @@ public:
 	bool AddWaitingActorWithKey(AActor* pActor, const FString& sKey, UObject* pObject);
 
 	template<class T>
-	void EndWaitingActorWithKey(AActor* pActor, const FString& sKey, bool bFinish)
+	void EndWaitingActorWithKey(AActor* pActor, const FString& sKey, bool bFinish, bool bMayReverse = false)
 	{
 		FActorWithKey ActorKey(pActor, sKey);
-		auto ppObject = m_tmapWaitingActorKeys.Find(ActorKey);
+		UObject** ppObject = m_tmapWaitingActorKeys.Find(ActorKey);
 		T* pObject = Cast<T>(ppObject ? *ppObject : nullptr);
 		if (IsValid(pObject))
 		{
 			pObject->OnEnded(bFinish);
 			m_tmapWaitingActorKeys.Remove(ActorKey);
 		}
-		else
+		else if (bMayReverse)
 			m_tmapWaitingActorKeys.Add(ActorKey, nullptr);
 
 	}
@@ -84,8 +84,12 @@ public:
 		return Cast<T>(ppObject ? *ppObject : nullptr);
 	}
 
+	//用到CancelAsyncActorWithKey时不要勾选MayReverse
 	UFUNCTION(BlueprintCallable)
-	void FinishAsyncActorWithKey(AActor* pActor, const FString& sKey);
+	void FinishAsyncActorWithKey(AActor* pActor, const FString& sKey, bool bMayReverse = false);
+
+    UFUNCTION(BlueprintCallable)
+	void CancelAsyncActorWithKey(AActor* pActor, const FString& sKey);
 
 	PxcUtil::CIDPool* GetUidPool(EUidPoolType eType);
 	PxcUtil::CIDPool64* GetUidPool64(EUidPoolType eType);

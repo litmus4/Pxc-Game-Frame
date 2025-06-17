@@ -66,9 +66,14 @@ bool UPxcAssistantSubsystem::AddWaitingActorWithKey(AActor* pActor, const FStrin
 	return false;
 }
 
-void UPxcAssistantSubsystem::FinishAsyncActorWithKey(AActor* pActor, const FString& sKey)
+void UPxcAssistantSubsystem::FinishAsyncActorWithKey(AActor* pActor, const FString& sKey, bool bMayReverse)
 {
-	EndWaitingActorWithKey<UAsyncWaitActorWithKey>(pActor, sKey, true);
+	EndWaitingActorWithKey<UAsyncWaitActorWithKey>(pActor, sKey, true, bMayReverse);
+}
+
+void UPxcAssistantSubsystem::CancelAsyncActorWithKey(AActor* pActor, const FString& sKey)
+{
+	EndWaitingActorWithKey<UAsyncWaitActorWithKey>(pActor, sKey, false);
 }
 
 PxcUtil::CIDPool* UPxcAssistantSubsystem::GetUidPool(EUidPoolType eType)

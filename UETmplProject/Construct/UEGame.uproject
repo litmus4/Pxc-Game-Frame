@@ -13,7 +13,8 @@
 				"CoreUObject",
 				"GameplayAbilities",
 				"AIModule",
-				"MotionTrajectory"
+				"MotionTrajectory",
+				"EnhancedInput"
 			]
 		}
 	],

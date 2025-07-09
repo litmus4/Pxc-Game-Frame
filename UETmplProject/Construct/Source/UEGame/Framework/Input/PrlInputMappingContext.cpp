@@ -50,3 +50,38 @@ void UPrlInputMappingContext::RemoveActionMapping(const FEnhancedActionKeyMappin
 		m_pSubsystem->RequestRebuildControlMappings();
 	}
 }
+
+void UPrlInputMappingContext::AddAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps)
+{
+	if (!KeyMapping.Action || KeyMapping.Action->ValueType == EInputActionValueType::Boolean)
+		return;
+
+	Mappings.AddUnique(KeyMapping);
+	if (bForceRebuildKeymaps)
+	{
+		check(IsValid(m_pSubsystem));
+		m_pSubsystem->RequestRebuildControlMappings();
+	}
+}
+
+void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping& InKeyMapping, bool bForceRebuildKeymaps)
+{
+	if (!InKeyMapping.Action || InKeyMapping.Action->ValueType == EInputActionValueType::Boolean)
+		return;
+
+	for (int32 iIndex = Mappings.Num() - 1; iIndex >= 0; --iIndex)
+	{
+		FEnhancedActionKeyMapping& KeyMapping = Mappings[iIndex];
+		if (KeyMapping.Action == InKeyMapping.Action
+			&& KeyMapping.Key == InKeyMapping.Key)
+		{
+			Mappings.RemoveAt(iIndex);
+			// we don't break because the mapping may have been in the array twice
+		}
+	}
+	if (bForceRebuildKeymaps)
+	{
+		check(IsValid(m_pSubsystem));
+		m_pSubsystem->RequestRebuildControlMappings();
+	}
+}

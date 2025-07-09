@@ -26,6 +26,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveActionMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
+    UFUNCTION(BlueprintCallable, Category = Settings)
+	void AddAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
+
+	UFUNCTION(BlueprintCallable, Category = Settings)
+	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
+
 	UPROPERTY(Transient)
 	ULocalPlayer* m_pLocalPlayer = nullptr;
 

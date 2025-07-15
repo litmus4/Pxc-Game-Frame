@@ -9,7 +9,7 @@
 #define LOCTEXT_PRL(InKey, InTextLiteral) FText::AsLocalizable_Advanced(TEXT(""), TEXT(InKey), TEXT(InTextLiteral))
 EDataValidationResult UInputTriggerPrlChordAction::IsDataValid(FDataValidationContext& Context) const
 {
-	EDataValidationResult Result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
+	EDataValidationResult Result = CombineDataValidationResults(UObject::IsDataValid(Context), EDataValidationResult::Valid);
 
 	// You can't evaluate the combo if there are no combo steps!
 	if (!CombinedChordAction)

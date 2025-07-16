@@ -85,3 +85,20 @@ void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping&
 		m_pSubsystem->RequestRebuildControlMappings();
 	}
 }
+//*²âÊÔÁÙÊ±
+void UPrlInputMappingContext::TestMappingEqual()
+{
+	if (Mappings.Num() >= 2)
+	{
+		FEnhancedActionKeyMapping& KeyMapping1 = Mappings[0];
+		FEnhancedActionKeyMapping& KeyMapping2 = Mappings[1];
+		bool bTest = (KeyMapping1 == KeyMapping1);
+		if (KeyMapping1.Triggers.Num() > 0 && KeyMapping2.Triggers.Num() > 0)
+		{
+			bool bTest2 = (KeyMapping1.Triggers[0] == KeyMapping2.Triggers[0]);
+			bool bTest3 = (KeyMapping1.Triggers == KeyMapping2.Triggers);
+			int32 iii = 0;
+		}
+	}
+}
+//*/

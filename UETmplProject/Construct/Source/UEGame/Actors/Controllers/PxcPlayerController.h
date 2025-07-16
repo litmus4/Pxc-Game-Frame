@@ -7,6 +7,7 @@
 #include "PxcPlayerController.generated.h"
 
 class APxcPlayerRole;
+class UPrlInputMappingContext;
 
 /**
  * 
@@ -23,9 +24,15 @@ public:
 	void SpawnPlayerRole();
 
 protected:
+	virtual void OnPossess(APawn* pPawn) override;
+	virtual void OnUnPossess() override;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<APxcPlayerRole> m_cPlayerRole;
 
 	UPROPERTY(BlueprintReadOnly)
 	APxcPlayerRole* m_pPlayerRole = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Input)
+	UPrlInputMappingContext* m_pPrlInputMappingContext;
 };

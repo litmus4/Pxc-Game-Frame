@@ -2,8 +2,10 @@
 
 
 #include "Actors/Controllers/PxcPlayerController.h"
+#include "EnhancedInputSubsystems.h"
 #include "Actors/Roles/PxcPlayerRole.h"
 #include "Actors/Characters/PxcPlayerCharacter.h"
+#include "Framework/Input/PrlInputMappingContext.h"
 
 APxcPlayerRole* APxcPlayerController::GetPlayerRole()
 {
@@ -20,4 +22,24 @@ void APxcPlayerController::SpawnPlayerRole()
 		m_pPlayerRole = GetWorld()->SpawnActor<APxcPlayerRole>(Param);
 	check(IsValid(m_pPlayerRole));
 	m_pPlayerRole->SetThePlayerCharacter(GetPawn<APxcPlayerCharacter>());
+}
+
+void APxcPlayerController::OnPossess(APawn* pPawn)
+{
+	Super::OnPossess(pPawn);
+
+	if (IsValid(m_pPrlInputMappingContext) && m_pPrlInputMappingContext->SetSubsystemFromController(this))
+		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
+	//*²âÊÔÁÙÊ±
+	if (IsValid(m_pPrlInputMappingContext))
+        m_pPrlInputMappingContext->TestMappingEqual();
+	//*/
+}
+
+void APxcPlayerController::OnUnPossess()
+{
+	Super::OnUnPossess();
+
+	if (IsValid(m_pPrlInputMappingContext) && IsValid(m_pPrlInputMappingContext->m_pSubsystem))
+		m_pPrlInputMappingContext->m_pSubsystem->RemoveMappingContext(m_pPrlInputMappingContext);
 }

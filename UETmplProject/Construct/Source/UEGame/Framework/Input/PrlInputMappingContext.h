@@ -15,6 +15,7 @@ UCLASS(Blueprintable, BlueprintType)
 class UEGAME_API UPrlInputMappingContext : public UInputMappingContext
 {
 	GENERATED_BODY()
+	friend class APxcPlayerController;
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = Settings)
@@ -31,7 +32,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
+	//*≤‚ ‘¡Ÿ ±
+	void TestMappingEqual();
+	//*/
 
+private:
 	UPROPERTY(Transient)
 	ULocalPlayer* m_pLocalPlayer = nullptr;
 

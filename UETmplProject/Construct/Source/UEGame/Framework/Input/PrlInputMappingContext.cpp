@@ -31,6 +31,24 @@ void UPrlInputMappingContext::AddActionMapping(const FEnhancedActionKeyMapping& 
 	}
 }
 
+void UPrlInputMappingContext::GetActionMappingByName(const FName ActionName, TArray<FEnhancedActionKeyMapping>& OutMappings) const
+{
+	if (ActionName.IsValid())
+	{
+		for (int32 iIndex = Mappings.Num() - 1; iIndex >= 0; --iIndex)
+		{
+			if (!Mappings[iIndex].Action || Mappings[iIndex].Action->ValueType != EInputActionValueType::Boolean)
+				continue;
+
+			if (Mappings[iIndex].Action->GetName() == ActionName)
+			{
+				OutMappings.Add(Mappings[iIndex]);
+				// we don't break because the mapping may have been in the array twice
+			}
+		}
+	}
+}
+
 void UPrlInputMappingContext::RemoveActionMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps)
 {
 	if (!KeyMapping.Action || KeyMapping.Action->ValueType != EInputActionValueType::Boolean)
@@ -64,6 +82,24 @@ void UPrlInputMappingContext::AddAxisMapping(const FEnhancedActionKeyMapping& Ke
 	}
 }
 
+void UPrlInputMappingContext::GetAxisMappingByName(const FName AxisName, TArray<FEnhancedActionKeyMapping>& OutMappings) const
+{
+	if (AxisName.IsValid())
+	{
+		for (int32 iIndex = Mappings.Num() - 1; iIndex >= 0; --iIndex)
+		{
+			if (!Mappings[iIndex].Action || Mappings[iIndex].Action->ValueType == EInputActionValueType::Boolean)
+				continue;
+
+			if (Mappings[iIndex].Action->GetName() == AxisName)
+			{
+				OutMappings.Add(Mappings[iIndex]);
+				// we don't break because the mapping may have been in the array twice
+			}
+		}
+	}
+}
+
 void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping& InKeyMapping, bool bForceRebuildKeymaps)
 {
 	if (!InKeyMapping.Action || InKeyMapping.Action->ValueType == EInputActionValueType::Boolean)
@@ -85,14 +121,16 @@ void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping&
 		m_pSubsystem->RequestRebuildControlMappings();
 	}
 }
+
 //*测试临时
-void UPrlInputMappingContext::TestMappingEqual()
+void UPrlInputMappingContext::TestMappingEqual(const FEnhancedActionKeyMapping& KeyMapping3)
 {
 	if (Mappings.Num() >= 2)
 	{
 		FEnhancedActionKeyMapping& KeyMapping1 = Mappings[0];
 		FEnhancedActionKeyMapping& KeyMapping2 = Mappings[1];
 		bool bTest = (KeyMapping1 == KeyMapping1);
+		bool bTest4 = (KeyMapping1 == KeyMapping3);//FLAGJK_Now 等于测试失败，自己重写等于函数吧
 		if (KeyMapping1.Triggers.Num() > 0 && KeyMapping2.Triggers.Num() > 0)
 		{
 			bool bTest2 = (KeyMapping1.Triggers[0] == KeyMapping2.Triggers[0]);

@@ -30,10 +30,6 @@ void APxcPlayerController::OnPossess(APawn* pPawn)
 
 	if (IsValid(m_pPrlInputMappingContext) && m_pPrlInputMappingContext->SetSubsystemFromController(this))
 		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
-	//*²âÊÔÁÙÊ±
-	if (IsValid(m_pPrlInputMappingContext))
-        m_pPrlInputMappingContext->TestMappingEqual();
-	//*/
 }
 
 void APxcPlayerController::OnUnPossess()

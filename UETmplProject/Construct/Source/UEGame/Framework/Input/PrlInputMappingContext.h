@@ -24,16 +24,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void AddActionMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
+	UFUNCTION(BlueprintPure, Category = Settings)
+	void GetActionMappingByName(const FName ActionName, TArray<FEnhancedActionKeyMapping>& OutMappings) const;
+
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveActionMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
     UFUNCTION(BlueprintCallable, Category = Settings)
 	void AddAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
+	UFUNCTION(BlueprintPure, Category = Settings)
+	void GetAxisMappingByName(const FName AxisName, TArray<FEnhancedActionKeyMapping>& OutMappings) const;
+
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
+
 	//*≤‚ ‘¡Ÿ ±
-	void TestMappingEqual();
+	UFUNCTION(BlueprintCallable, Category = Test)
+	void TestMappingEqual(const FEnhancedActionKeyMapping& KeyMapping3);
 	//*/
 
 private:

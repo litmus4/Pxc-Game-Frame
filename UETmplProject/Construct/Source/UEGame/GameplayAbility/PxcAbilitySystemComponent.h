@@ -69,7 +69,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = GameplayAbility)
 	void ModifyPassiveListenerByTagUid(const FGameplayTag& Tag, int64 lUid, const FSharedSignature& ModiSig);
 
-	UFUNCTION(BlueprintCallable = Category = GameplayAbility)
+	UFUNCTION(BlueprintCallable, Category = GameplayAbility)
 	void RemovePassiveListenerByTagUid(const FGameplayTag& Tag, int64 lUid = -1);
 
 	UFUNCTION(BlueprintNativeEvent)

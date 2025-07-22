@@ -3,6 +3,7 @@
 
 #include "Framework/Input/PrlInputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
+#include "Framework/PxcNativeLibrary.h"
 
 bool UPrlInputMappingContext::SetSubsystemFromController(APlayerController* pPlayerController)
 {
@@ -23,7 +24,7 @@ void UPrlInputMappingContext::AddActionMapping(const FEnhancedActionKeyMapping& 
 	if (!KeyMapping.Action || KeyMapping.Action->ValueType != EInputActionValueType::Boolean)
 		return;
 
-	Mappings.AddUnique(KeyMapping);
+	FPxcNativeLibrary::EI_AddUniqueMapping(Mappings, KeyMapping);//Mappings.AddUnique(KeyMapping);
 	if (bForceRebuildKeymaps)
 	{
 		check(IsValid(m_pSubsystem));
@@ -31,7 +32,7 @@ void UPrlInputMappingContext::AddActionMapping(const FEnhancedActionKeyMapping& 
 	}
 }
 
-void UPrlInputMappingContext::GetActionMappingByName(const FName ActionName, TArray<FEnhancedActionKeyMapping>& OutMappings) const
+void UPrlInputMappingContext::GetActionMappingByName(const FName ActionName, TArray<FEnhancedActionKeyMapping>& tarrOutMappings) const
 {
 	if (ActionName.IsValid())
 	{
@@ -42,7 +43,7 @@ void UPrlInputMappingContext::GetActionMappingByName(const FName ActionName, TAr
 
 			if (Mappings[iIndex].Action->GetName() == ActionName)
 			{
-				OutMappings.Add(Mappings[iIndex]);
+				tarrOutMappings.Add(Mappings[iIndex]);
 				// we don't break because the mapping may have been in the array twice
 			}
 		}
@@ -56,7 +57,7 @@ void UPrlInputMappingContext::RemoveActionMapping(const FEnhancedActionKeyMappin
 
 	for (int32 iIndex = Mappings.Num() - 1; iIndex >= 0; --iIndex)
 	{
-		if (Mappings[iIndex] == KeyMapping)
+		if (FPxcNativeLibrary::EI_IsMappingEqual(Mappings[iIndex], KeyMapping)/*Mappings[iIndex] == KeyMapping*/)
 		{
 			Mappings.RemoveAt(iIndex);
 			// we don't break because the mapping may have been in the array twice
@@ -74,7 +75,7 @@ void UPrlInputMappingContext::AddAxisMapping(const FEnhancedActionKeyMapping& Ke
 	if (!KeyMapping.Action || KeyMapping.Action->ValueType == EInputActionValueType::Boolean)
 		return;
 
-	Mappings.AddUnique(KeyMapping);
+	FPxcNativeLibrary::EI_AddUniqueMapping(Mappings, KeyMapping);//Mappings.AddUnique(KeyMapping);
 	if (bForceRebuildKeymaps)
 	{
 		check(IsValid(m_pSubsystem));
@@ -82,7 +83,7 @@ void UPrlInputMappingContext::AddAxisMapping(const FEnhancedActionKeyMapping& Ke
 	}
 }
 
-void UPrlInputMappingContext::GetAxisMappingByName(const FName AxisName, TArray<FEnhancedActionKeyMapping>& OutMappings) const
+void UPrlInputMappingContext::GetAxisMappingByName(const FName AxisName, TArray<FEnhancedActionKeyMapping>& tarrOutMappings) const
 {
 	if (AxisName.IsValid())
 	{
@@ -93,7 +94,7 @@ void UPrlInputMappingContext::GetAxisMappingByName(const FName AxisName, TArray<
 
 			if (Mappings[iIndex].Action->GetName() == AxisName)
 			{
-				OutMappings.Add(Mappings[iIndex]);
+				tarrOutMappings.Add(Mappings[iIndex]);
 				// we don't break because the mapping may have been in the array twice
 			}
 		}
@@ -130,7 +131,8 @@ void UPrlInputMappingContext::TestMappingEqual(const FEnhancedActionKeyMapping& 
 		FEnhancedActionKeyMapping& KeyMapping1 = Mappings[0];
 		FEnhancedActionKeyMapping& KeyMapping2 = Mappings[1];
 		bool bTest = (KeyMapping1 == KeyMapping1);
-		bool bTest4 = (KeyMapping1 == KeyMapping3);//FLAGJK_Now 等于测试失败，自己重写等于函数吧
+		bool bTest4 = (KeyMapping1 == KeyMapping3);
+		bool bTest5 = FPxcNativeLibrary::EI_IsMappingEqual(KeyMapping1, KeyMapping3);
 		if (KeyMapping1.Triggers.Num() > 0 && KeyMapping2.Triggers.Num() > 0)
 		{
 			bool bTest2 = (KeyMapping1.Triggers[0] == KeyMapping2.Triggers[0]);

@@ -25,7 +25,7 @@ public:
 	void AddActionMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
 	UFUNCTION(BlueprintPure, Category = Settings)
-	void GetActionMappingByName(const FName ActionName, TArray<FEnhancedActionKeyMapping>& OutMappings) const;
+	void GetActionMappingByName(const FName ActionName, TArray<FEnhancedActionKeyMapping>& tarrOutMappings) const;
 
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveActionMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
@@ -34,7 +34,7 @@ public:
 	void AddAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
 	UFUNCTION(BlueprintPure, Category = Settings)
-	void GetAxisMappingByName(const FName AxisName, TArray<FEnhancedActionKeyMapping>& OutMappings) const;
+	void GetAxisMappingByName(const FName AxisName, TArray<FEnhancedActionKeyMapping>& tarrOutMappings) const;
 
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);

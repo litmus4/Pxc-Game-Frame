@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "EnhancedActionKeyMapping.h"
 #include <functional>
 #include "PxcNativeLibrary.generated.h"
 
@@ -23,4 +24,8 @@ struct FPxcNativeLibrary
 
 	static void GetAllActorsInSubLevel(UWorld* pWorld, ULevelStreaming* pLevelStreaming, TSubclassOf<AActor> Class, TArray<AActor*>& tarrOutActors,
 		std::function<bool(AActor*)> fnFilter = [](AActor* pActor) { return true; });
+
+	static bool EI_IsMappingEqual(const FEnhancedActionKeyMapping& Mapping1, const FEnhancedActionKeyMapping& Mapping2);
+
+	static int32 EI_AddUniqueMapping(TArray<FEnhancedActionKeyMapping>& tarrMappings, const FEnhancedActionKeyMapping& Mapping);
 };

@@ -34,22 +34,26 @@ bool FPxcNativeLibrary::EI_IsMappingEqual(const FEnhancedActionKeyMapping& Mappi
 				return true;
 			else if (Mapping1.Triggers.Num() == 1)
 			{
-				UInputTriggerChordAction* pTriggerChord1 = Cast<UInputTriggerChordAction>(Mapping1.Triggers[0]);
-				UInputTriggerChordAction* pTriggerChord2 = Cast<UInputTriggerChordAction>(Mapping2.Triggers[0]);
-				if (pTriggerChord1 && pTriggerChord2 &&
-					pTriggerChord1->ChordAction == pTriggerChord2->ChordAction)
+				UInputTriggerPrlChordAction* pTriggerPrlChord1 = Cast<UInputTriggerPrlChordAction>(Mapping1.Triggers[0]);
+				UInputTriggerPrlChordAction* pTriggerPrlChord2 = Cast<UInputTriggerPrlChordAction>(Mapping2.Triggers[0]);
+				if (pTriggerPrlChord1 && pTriggerPrlChord2 &&
+					pTriggerPrlChord1->CombinedChordAction == pTriggerPrlChord2->CombinedChordAction)
 					return true;
 				else
 				{
-					UInputTriggerPrlChordAction* pTriggerPrlChord1 = Cast<UInputTriggerPrlChordAction>(Mapping1.Triggers[0]);
-					UInputTriggerPrlChordAction* pTriggerPrlChord2 = Cast<UInputTriggerPrlChordAction>(Mapping2.Triggers[0]);
-					if (pTriggerPrlChord1 && pTriggerPrlChord2 &&
-						pTriggerPrlChord1->CombinedChordAction == pTriggerPrlChord2->CombinedChordAction)
-						return true;
+					UInputTriggerChordAction* pTriggerChord1 = Cast<UInputTriggerChordAction>(Mapping1.Triggers[0]);
+					UInputTriggerChordAction* pTriggerChord2 = Cast<UInputTriggerChordAction>(Mapping2.Triggers[0]);
+					if (pTriggerChord1 && pTriggerChord2)
+					{
+						if (pTriggerChord1->ChordAction == pTriggerChord2->ChordAction)
+							return true;
+					}
 					else
 						checkNoEntry();
 				}
 			}
+			else
+				checkNoEntry();
 		}
 	}
 	return false;

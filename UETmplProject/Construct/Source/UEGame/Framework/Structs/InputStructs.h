@@ -29,3 +29,49 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger Settings", meta = (DisplayThumbnail = "false"))
 	TObjectPtr<const UInputAction> CombinedChordAction = nullptr;
 };
+
+USTRUCT()
+struct FPrlActionMappingConfig
+{
+	GENERATED_BODY()
+
+	FPrlActionMappingConfig(const FName& xActionName = NAME_None, const FKey& xKey = EKeys::Invalid, const FName& xChordActionName = NAME_None)
+		: ActionName(xActionName), Key(xKey), ChordActionName(xChordActionName)
+	{
+	}
+
+	UPROPERTY()
+	FName ActionName;
+
+	UPROPERTY()
+	FKey Key;
+
+	UPROPERTY()
+	FName ChordActionName;
+
+	bool operator==(const FPrlActionMappingConfig& Other) const;
+	bool operator<(const FPrlActionMappingConfig& Other) const;
+};
+
+USTRUCT()
+struct FPrlAxisMappingConfig
+{
+    GENERATED_BODY()
+
+	FPrlAxisMappingConfig(const FName& xAxisName = NAME_None, const FKey& xKey = EKeys::Invalid, bool xNegative = false)
+		: AxisName(xAxisName), Key(xKey), bNegative(xNegative)
+	{
+	}
+
+	UPROPERTY()
+	FName AxisName;
+
+	UPROPERTY()
+	FKey Key;
+
+	UPROPERTY()
+	bool bNegative = false;
+
+	bool operator==(const FPrlAxisMappingConfig& Other) const;
+	bool operator<(const FPrlAxisMappingConfig& Other) const;
+};

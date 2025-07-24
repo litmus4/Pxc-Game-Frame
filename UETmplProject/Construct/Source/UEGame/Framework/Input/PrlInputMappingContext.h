@@ -7,6 +7,7 @@
 #include "PrlInputMappingContext.generated.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
+class UPrlEnhancedInputConfig;
 
 /**
  * 
@@ -18,6 +19,8 @@ class UEGAME_API UPrlInputMappingContext : public UInputMappingContext
 	friend class APxcPlayerController;
 	
 public:
+    UPrlInputMappingContext();
+
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	bool SetSubsystemFromController(APlayerController* pPlayerController);
 
@@ -39,6 +42,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
+    UFUNCTION(BlueprintCallable, Category = Settings)
+	void SaveKeyMappings();
+
 	//*≤‚ ‘¡Ÿ ±
 	UFUNCTION(BlueprintCallable, Category = Test)
 	void TestMappingEqual(const FEnhancedActionKeyMapping& KeyMapping3);
@@ -50,4 +56,7 @@ private:
 
 	UPROPERTY(Transient)
 	UEnhancedInputLocalPlayerSubsystem* m_pSubsystem = nullptr;
+
+	UPROPERTY()
+	UPrlEnhancedInputConfig* m_pConfig = nullptr;
 };

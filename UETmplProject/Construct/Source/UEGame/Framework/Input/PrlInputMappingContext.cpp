@@ -4,6 +4,13 @@
 #include "Framework/Input/PrlInputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "Framework/PxcNativeLibrary.h"
+#include "PrlEnhancedInputConfig.h"
+
+UPrlInputMappingContext::UPrlInputMappingContext()
+{
+	m_pConfig = NewObject<UPrlEnhancedInputConfig>();
+	//Read
+}
 
 bool UPrlInputMappingContext::SetSubsystemFromController(APlayerController* pPlayerController)
 {
@@ -120,6 +127,15 @@ void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping&
 	{
 		check(IsValid(m_pSubsystem));
 		m_pSubsystem->RequestRebuildControlMappings();
+	}
+}
+
+void UPrlInputMappingContext::SaveKeyMappings()
+{
+	if (IsValid(m_pConfig))
+	{
+		//Write
+        m_pConfig->SaveConfigMappings();
 	}
 }
 

@@ -8,8 +8,7 @@
 
 UPrlInputMappingContext::UPrlInputMappingContext()
 {
-	m_pConfig = NewObject<UPrlEnhancedInputConfig>();
-	//Read
+	//
 }
 
 bool UPrlInputMappingContext::SetSubsystemFromController(APlayerController* pPlayerController)
@@ -127,6 +126,15 @@ void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping&
 	{
 		check(IsValid(m_pSubsystem));
 		m_pSubsystem->RequestRebuildControlMappings();
+	}
+}
+
+void UPrlInputMappingContext::LoadKeyMappings()
+{
+	if (!IsValid(m_pConfig))
+	{
+		m_pConfig = NewObject<UPrlEnhancedInputConfig>();
+		//Read
 	}
 }
 

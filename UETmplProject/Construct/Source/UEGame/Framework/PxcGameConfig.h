@@ -9,6 +9,8 @@
 #include "Framework/Structs/ScatteredStructs.h"
 #include "PxcGameConfig.generated.h"
 
+class UInputAction;
+
 /**
  * 
  */
@@ -32,6 +34,12 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = Input)
 	TArray<FGamepadCombineMapping> tarrGamepadCombineMappings;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Input|Parallel")
+	TArray<TSoftObjectPtr<UInputAction>> tarrPrlChordActions;
+
+    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Input|Parallel")
+	int32 iPrlKeyboardChordMax = 4;
 
 	void AddGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);
 	void RemoveGamepadCombineMapping(const FGamepadCombineMapping& CombineMapping);

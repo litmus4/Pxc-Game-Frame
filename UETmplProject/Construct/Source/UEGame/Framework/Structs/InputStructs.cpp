@@ -32,7 +32,7 @@ bool FPrlActionMappingConfig::operator==(const FPrlActionMappingConfig& Other) c
 {
 	return (ActionName == Other.ActionName &&
 		Key == Other.Key &&
-		ChordActionName == Other.ChordActionName);
+		uChordCode == Other.uChordCode);
 }
 
 bool FPrlActionMappingConfig::operator<(const FPrlActionMappingConfig& Other) const

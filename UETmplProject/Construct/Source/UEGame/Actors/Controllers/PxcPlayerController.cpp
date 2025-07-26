@@ -29,7 +29,10 @@ void APxcPlayerController::OnPossess(APawn* pPawn)
 	Super::OnPossess(pPawn);
 
 	if (IsValid(m_pPrlInputMappingContext) && m_pPrlInputMappingContext->SetSubsystemFromController(this))
+	{
+		m_pPrlInputMappingContext->LoadKeyMappings();
 		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
+	}
 }
 
 void APxcPlayerController::OnUnPossess()

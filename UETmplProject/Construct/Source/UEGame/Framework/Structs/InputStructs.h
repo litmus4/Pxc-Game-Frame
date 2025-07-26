@@ -35,8 +35,8 @@ struct FPrlActionMappingConfig
 {
 	GENERATED_BODY()
 
-	FPrlActionMappingConfig(const FName& xActionName = NAME_None, const FKey& xKey = EKeys::Invalid, const FName& xChordActionName = NAME_None)
-		: ActionName(xActionName), Key(xKey), ChordActionName(xChordActionName)
+	FPrlActionMappingConfig(const FName& xActionName = NAME_None, const FKey& xKey = EKeys::Invalid, uint8 xChordCode = 0)
+		: ActionName(xActionName), Key(xKey), uChordCode(xChordCode)
 	{
 	}
 
@@ -47,7 +47,7 @@ struct FPrlActionMappingConfig
 	FKey Key;
 
 	UPROPERTY()
-	FName ChordActionName;
+	uint8 uChordCode;
 
 	bool operator==(const FPrlActionMappingConfig& Other) const;
 	bool operator<(const FPrlActionMappingConfig& Other) const;

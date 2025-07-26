@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Settings)
 	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
+	UFUNCTION(BlueprintCallable, Category = Settings)
+	void LoadKeyMappings();
+
     UFUNCTION(BlueprintCallable, Category = Settings)
 	void SaveKeyMappings();
 

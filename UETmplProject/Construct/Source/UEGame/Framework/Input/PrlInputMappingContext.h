@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputMappingContext.h"
+#include <functional>
 #include "PrlInputMappingContext.generated.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
@@ -47,6 +48,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = Settings)
 	void SaveKeyMappings();
+
+	void AddMappingQuickly(const FEnhancedActionKeyMapping& KeyMapping);
+	void ForEachKeyMappings(std::function<void(const FEnhancedActionKeyMapping&)>&& fnOnEach) const;
 
 	//*≤‚ ‘¡Ÿ ±
 	UFUNCTION(BlueprintCallable, Category = Test)

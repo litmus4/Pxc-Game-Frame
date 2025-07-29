@@ -7,6 +7,8 @@
 #include "../Structs/InputStructs.h"
 #include "PrlEnhancedInputConfig.generated.h"
 
+class UPrlInputMappingContext;
+
 /**
  * 
  */
@@ -21,6 +23,9 @@ public:
 
 	UPROPERTY(Config)
     TArray<FPrlAxisMappingConfig> m_tarrAxisMappings;
+
+	void ReadTo(UPrlInputMappingContext* pPrlIMC) const;
+	void WriteFrom(const UPrlInputMappingContext* pPrlIMC);
 
 	void SaveConfigMappings();
 

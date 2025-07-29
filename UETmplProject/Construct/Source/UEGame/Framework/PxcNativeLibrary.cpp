@@ -71,6 +71,16 @@ uint8 FPxcNativeLibrary::EI_GetModifierCodeFromTriggers(const TArray<UInputTrigg
 	return uRet;
 }
 
+bool FPxcNativeLibrary::EI_IsPositiveFromModifiers(const TArray<UInputModifier*>& tarrModifiers)
+{
+	for (UInputModifier* pModifier : tarrModifiers)
+	{
+		if (pModifier->IsA<UInputModifierNegate>())
+			return false;
+	}
+	return true;
+}
+
 bool FPxcNativeLibrary::EI_IsMappingEqual(const FEnhancedActionKeyMapping& Mapping1, const FEnhancedActionKeyMapping& Mapping2)
 {
 	if (Mapping1.Action == Mapping2.Action && Mapping1.Key == Mapping2.Key)

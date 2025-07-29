@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Framework/Input/PrlInputMappingContext.h"
+#include "PrlInputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "Framework/PxcNativeLibrary.h"
 #include "PrlEnhancedInputConfig.h"
@@ -47,7 +47,7 @@ void UPrlInputMappingContext::GetActionMappingByName(const FName ActionName, TAr
 			if (!Mappings[iIndex].Action || Mappings[iIndex].Action->ValueType != EInputActionValueType::Boolean)
 				continue;
 
-			if (Mappings[iIndex].Action->GetName() == ActionName)
+			if (Mappings[iIndex].Action->GetFName() == ActionName)
 			{
 				tarrOutMappings.Add(Mappings[iIndex]);
 				// we don't break because the mapping may have been in the array twice
@@ -98,7 +98,7 @@ void UPrlInputMappingContext::GetAxisMappingByName(const FName AxisName, TArray<
 			if (!Mappings[iIndex].Action || Mappings[iIndex].Action->ValueType == EInputActionValueType::Boolean)
 				continue;
 
-			if (Mappings[iIndex].Action->GetName() == AxisName)
+			if (Mappings[iIndex].Action->GetFName() == AxisName)
 			{
 				tarrOutMappings.Add(Mappings[iIndex]);
 				// we don't break because the mapping may have been in the array twice
@@ -134,7 +134,8 @@ void UPrlInputMappingContext::LoadKeyMappings()
 	if (!IsValid(m_pConfig))
 	{
 		m_pConfig = NewObject<UPrlEnhancedInputConfig>();
-		//Read
+		Mappings.Empty();
+		m_pConfig->ReadTo(this);
 	}
 }
 
@@ -142,9 +143,20 @@ void UPrlInputMappingContext::SaveKeyMappings()
 {
 	if (IsValid(m_pConfig))
 	{
-		//Write
+		m_pConfig->WriteFrom(this);
         m_pConfig->SaveConfigMappings();
 	}
+}
+
+void UPrlInputMappingContext::AddMappingQuickly(const FEnhancedActionKeyMapping& KeyMapping)
+{
+	Mappings.Add(KeyMapping);
+}
+
+void UPrlInputMappingContext::ForEachKeyMappings(std::function<void(const FEnhancedActionKeyMapping&)>&& fnOnEach) const
+{
+	for (int32 i = 0; i < Mappings.Num(); ++i)
+		fnOnEach(Mappings[i]);
 }
 
 //*²âÊÔÁÙÊ±

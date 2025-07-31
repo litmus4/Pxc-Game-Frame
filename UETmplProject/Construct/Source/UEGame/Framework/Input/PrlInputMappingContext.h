@@ -18,6 +18,7 @@ class UEGAME_API UPrlInputMappingContext : public UInputMappingContext
 {
 	GENERATED_BODY()
 	friend class APxcPlayerController;
+	friend class UPXCycleInstance;
 	
 public:
     UPrlInputMappingContext();
@@ -44,7 +45,7 @@ public:
 	void RemoveAxisMapping(const FEnhancedActionKeyMapping& KeyMapping, bool bForceRebuildKeymaps = true);
 
 	UFUNCTION(BlueprintCallable, Category = Settings)
-	void LoadKeyMappings();
+	bool LoadKeyMappings();
 
     UFUNCTION(BlueprintCallable, Category = Settings)
 	void SaveKeyMappings();

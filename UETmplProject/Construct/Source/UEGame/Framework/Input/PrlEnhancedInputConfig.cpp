@@ -39,6 +39,11 @@ void UPrlEnhancedInputConfig::WriteFrom(const UPrlInputMappingContext* pPrlIMC)
 	});
 }
 
+bool UPrlEnhancedInputConfig::IsValidConfig() const
+{
+	return (!m_tarrActionMappings.IsEmpty() || !m_tarrAxisMappings.IsEmpty());
+}
+
 void UPrlEnhancedInputConfig::SaveConfigMappings()
 {
 	m_tarrActionMappings.Sort();

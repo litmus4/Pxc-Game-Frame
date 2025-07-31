@@ -129,14 +129,20 @@ void UPrlInputMappingContext::RemoveAxisMapping(const FEnhancedActionKeyMapping&
 	}
 }
 
-void UPrlInputMappingContext::LoadKeyMappings()
+bool UPrlInputMappingContext::LoadKeyMappings()
 {
 	if (!IsValid(m_pConfig))
 	{
-		m_pConfig = NewObject<UPrlEnhancedInputConfig>();
-		Mappings.Empty();
-		m_pConfig->ReadTo(this);
+		m_pConfig = GetMutableDefault<UPrlEnhancedInputConfig>();
+		check(m_pConfig);
+		if (m_pConfig->IsValidConfig())
+		{
+			Mappings.Empty();
+			m_pConfig->ReadTo(this);
+			return true;
+		}
 	}
+	return (IsValid(m_pConfig) && m_pConfig->IsValidConfig());
 }
 
 void UPrlInputMappingContext::SaveKeyMappings()

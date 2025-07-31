@@ -6,6 +6,7 @@
 #include "Actors/Roles/PxcPlayerRole.h"
 #include "Actors/Characters/PxcPlayerCharacter.h"
 #include "Framework/Input/PrlInputMappingContext.h"
+#include "Framework/PXCycleInstance.h"
 
 APxcPlayerRole* APxcPlayerController::GetPlayerRole()
 {
@@ -30,7 +31,26 @@ void APxcPlayerController::OnPossess(APawn* pPawn)
 
 	if (IsValid(m_pPrlInputMappingContext) && m_pPrlInputMappingContext->SetSubsystemFromController(this))
 	{
-		m_pPrlInputMappingContext->LoadKeyMappings();
+		UPXCycleInstance* pGI = GetWorld()->GetGameInstance<UPXCycleInstance>();
+		check(pGI);
+#if WITH_EDITOR
+		if (!m_bUseDefaultPIMCOnFirstPossess)
+		{
+#endif
+			if (!pGI->m_bPIMCConfigLoaded)
+			{
+                pGI->SetAndCacheDefaultPIMC(m_pPrlInputMappingContext);
+				pGI->m_bPIMCConfigLoaded = m_pPrlInputMappingContext->LoadKeyMappings();
+			}
+#if WITH_EDITOR
+		}
+		else
+		{
+			m_bUseDefaultPIMCOnFirstPossess = false;
+			if (!pGI->m_pPrlIMC)
+				pGI->m_pPrlIMC = m_pPrlInputMappingContext;
+		}
+#endif
 		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
 	}
 }

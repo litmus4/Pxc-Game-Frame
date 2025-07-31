@@ -26,6 +26,7 @@ public:
 
 	void ReadTo(UPrlInputMappingContext* pPrlIMC) const;
 	void WriteFrom(const UPrlInputMappingContext* pPrlIMC);
+	bool IsValidConfig() const;
 
 	void SaveConfigMappings();
 

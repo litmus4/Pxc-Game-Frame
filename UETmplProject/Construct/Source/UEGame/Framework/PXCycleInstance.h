@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "EnhancedActionKeyMapping.h"
 #include "PrivateDefinitions/MainDef.h"
 #include <list>
 #include "PXCycleInstance.generated.h"
@@ -11,6 +12,7 @@
 class UPXCycleSystem;
 class UPxcInputMappingMgr;
 class URandomGameplaySystem;
+class UPrlInputMappingContext;
 
 /**
  * 
@@ -41,12 +43,24 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool m_bKeyboardRuntime = true;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool m_bPIMCConfigLoaded = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	UPrlInputMappingContext* m_pPrlIMC;
+
+	void SetAndCacheDefaultPIMC(UPrlInputMappingContext* pPrlIMC);
+	void ResetDefaultPIMC() const;
+
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);
 	void OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel);
 
 	UPROPERTY()
 	TMap<ECycleSystemType, UPXCycleSystem*> m_tmapSystems;
+
+    UPROPERTY()
+	TArray<FEnhancedActionKeyMapping> m_tarrDefaultPIMCached;
 
 	std::list<UPXCycleSystem*> m_lisSystems;
 	FTSTicker::FDelegateHandle DeleTickHandle;

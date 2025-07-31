@@ -8,6 +8,7 @@
 #include "MonoControl/EventCenter.h"
 #include "Framework/Systems/PxcInputMappingMgr.h"
 #include "Framework/Systems/RandomGameplaySystem.h"
+#include "Input/PrlInputMappingContext.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -63,13 +64,15 @@ void UPXCycleInstance::Shutdown()
 		ECycleSystemType::InputMapping,
 		ECycleSystemType::RandomGameplay
 	};
-	ReleaseSystems(eSysTypes, 1);
+	ReleaseSystems(eSysTypes, 2);
 
 	CEventCenter::GetInstance()->Release();
 	CEventCenter::DeleteInstance();
 
 	PxcUtil::CLogCenter::GetInstance()->Release();
 	PxcUtil::CLogCenter::DeleteInstance();
+
+	ResetDefaultPIMC();
 
 	UE_LOG(LogTemp, Log, TEXT("@@@@@ PXCycleInstance shutdown end"));
 	Super::Shutdown();
@@ -150,6 +153,28 @@ URandomGameplaySystem* UPXCycleInstance::GetRandomGameplaySystem()
 {
 	UPXCycleSystem** ppSystem = m_tmapSystems.Find(ECycleSystemType::RandomGameplay);
 	return (ppSystem ? Cast<URandomGameplaySystem>(*ppSystem) : nullptr);
+}
+
+void UPXCycleInstance::SetAndCacheDefaultPIMC(UPrlInputMappingContext* pPrlIMC)
+{
+	m_pPrlIMC = pPrlIMC;
+	if (m_tarrDefaultPIMCached.IsEmpty())
+	{
+		pPrlIMC->ForEachKeyMappings([this](const FEnhancedActionKeyMapping& KeyMapping) {
+			m_tarrDefaultPIMCached.Add(KeyMapping);
+		});
+	}
+}
+
+void UPXCycleInstance::ResetDefaultPIMC() const
+{
+	if (m_bPIMCConfigLoaded && !m_tarrDefaultPIMCached.IsEmpty())
+	{
+		check(IsValid(m_pPrlIMC));
+		m_pPrlIMC->Mappings.Empty();
+		for (const FEnhancedActionKeyMapping& KeyMapping : m_tarrDefaultPIMCached)
+			m_pPrlIMC->AddMappingQuickly(KeyMapping);
+	}
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

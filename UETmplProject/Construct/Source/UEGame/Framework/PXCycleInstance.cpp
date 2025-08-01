@@ -166,7 +166,7 @@ void UPXCycleInstance::SetAndCacheDefaultPIMC(UPrlInputMappingContext* pPrlIMC)
 	}
 }
 
-void UPXCycleInstance::ResetDefaultPIMC() const
+void UPXCycleInstance::ResetDefaultPIMC()
 {
 	if (m_bPIMCConfigLoaded && !m_tarrDefaultPIMCached.IsEmpty())
 	{

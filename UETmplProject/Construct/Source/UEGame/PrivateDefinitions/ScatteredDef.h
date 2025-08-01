@@ -10,4 +10,5 @@ UENUM(BlueprintType)
 enum class EDynamicAssetsType : uint8
 {
 	InputKeyIcon,
+	Input,
 };

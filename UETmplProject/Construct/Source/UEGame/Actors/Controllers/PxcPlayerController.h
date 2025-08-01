@@ -34,8 +34,11 @@ protected:
 	APxcPlayerRole* m_pPlayerRole = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Input)
-	UPrlInputMappingContext* m_pPrlInputMappingContext;
+	UPrlInputMappingContext* m_pPrlInputMappingContext = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Editor")
 	bool m_bUseDefaultPIMCOnFirstPossess = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Editor")
+	bool m_bUseDefaultPIMCAlways = false;
 };

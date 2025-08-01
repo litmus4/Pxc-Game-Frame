@@ -3,4 +3,5 @@
 #define UASSETREF_CLASS "%s'/Game/%s/%s.%s_C'"
 #define UASSETREF_OBJECT "%s'/Game/%s/%s.%s'"
 
-#define UASSETREFHEAD_MTLINST "MaterialInstanceConstant"
+#define UASSETREFHEAD_MTLINST "MaterialInstanceConstant"///Script/Engine.MaterialInstanceConstant'
+#define UASSETREFHEAD_IA "InputAction"///Script/EnhancedInput.InputAction

@@ -47,10 +47,10 @@ public:
 	bool m_bPIMCConfigLoaded = false;
 
 	UPROPERTY(BlueprintReadOnly)
-	UPrlInputMappingContext* m_pPrlIMC;
+	UPrlInputMappingContext* m_pPrlIMC = nullptr;
 
 	void SetAndCacheDefaultPIMC(UPrlInputMappingContext* pPrlIMC);
-	void ResetDefaultPIMC() const;
+	void ResetDefaultPIMC();
 
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);

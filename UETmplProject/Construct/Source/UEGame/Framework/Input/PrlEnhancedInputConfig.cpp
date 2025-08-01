@@ -4,15 +4,28 @@
 #include "PrlEnhancedInputConfig.h"
 #include "PrlInputMappingContext.h"
 #include "../PxcNativeLibrary.h"
+#include "../PxcGameConfig.h"
+#include "PublicDefinitions/AssetsDef.h"
 
 void UPrlEnhancedInputConfig::ReadTo(UPrlInputMappingContext* pPrlIMC) const
 {
 	check(IsValid(pPrlIMC));
+	const FString* pInputPath = GetDefault<UPxcGameConfig>()->tmapDynamicAssetsPathes.Find(EDynamicAssetsType::Input);
+	check(pInputPath);
 
-	for (const FPrlAxisMappingConfig& ActionConfig : m_tarrAxisMappings)
+	for (const FPrlAxisMappingConfig& AxisConfig : m_tarrAxisMappings)
 	{
 		FEnhancedActionKeyMapping KeyMapping;
-		//KeyMapping.Action = NewObject<UInputAction>();//FLAGJK_Now 搜索LoadObject
+
+		FString&& sAxisName = AxisConfig.AxisName.ToString();
+		FString&& sActionPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_IA), **pInputPath, *sAxisName, *sAxisName);
+		KeyMapping.Action = LoadObject<UInputAction>(nullptr, *sActionPath);
+
+		KeyMapping.Key = AxisConfig.Key;
+
+		//FLAGJK_Now 先想办法测试上边的LoadObject，然后bNegative to Modifiers
+
+		pPrlIMC->AddMappingQuickly(KeyMapping);
 	}
 }
 

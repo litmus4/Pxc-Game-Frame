@@ -27,32 +27,33 @@ void APxcPlayerController::SpawnPlayerRole()
 
 void APxcPlayerController::OnPossess(APawn* pPawn)
 {
-	Super::OnPossess(pPawn);
-
 	if (IsValid(m_pPrlInputMappingContext) && m_pPrlInputMappingContext->SetSubsystemFromController(this))
 	{
 		UPXCycleInstance* pGI = GetWorld()->GetGameInstance<UPXCycleInstance>();
 		check(pGI);
 #if WITH_EDITOR
-		if (!m_bUseDefaultPIMCOnFirstPossess)
+		if (!m_bUseDefaultPIMCOnFirstPossess && !m_bUseDefaultPIMCAlways)
 		{
 #endif
 			if (!pGI->m_bPIMCConfigLoaded)
 			{
-                pGI->SetAndCacheDefaultPIMC(m_pPrlInputMappingContext);
+				pGI->SetAndCacheDefaultPIMC(m_pPrlInputMappingContext);
 				pGI->m_bPIMCConfigLoaded = m_pPrlInputMappingContext->LoadKeyMappings();
 			}
 #if WITH_EDITOR
 		}
 		else
 		{
-			m_bUseDefaultPIMCOnFirstPossess = false;
+			if (!m_bUseDefaultPIMCAlways)
+				m_bUseDefaultPIMCOnFirstPossess = false;
 			if (!pGI->m_pPrlIMC)
 				pGI->m_pPrlIMC = m_pPrlInputMappingContext;
 		}
 #endif
 		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
 	}
+
+	Super::OnPossess(pPawn);
 }
 
 void APxcPlayerController::OnUnPossess()

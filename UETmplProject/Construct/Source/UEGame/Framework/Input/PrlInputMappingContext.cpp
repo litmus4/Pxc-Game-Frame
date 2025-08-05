@@ -135,6 +135,12 @@ bool UPrlInputMappingContext::LoadKeyMappings()
 	{
 		m_pConfig = GetMutableDefault<UPrlEnhancedInputConfig>();
 		check(m_pConfig);
+
+		FString sConfigName = m_pConfig->GetName();
+		sConfigName.RemoveAt(7, 2);
+		FString sConfigPath = FPaths::ProjectConfigDir() + sConfigName + TEXT(".ini");
+		//FLAGJK_Now 参考最新知乎收藏文章读写文件
+
 		if (m_pConfig->IsValidConfig())
 		{
 			Mappings.Empty();

@@ -23,7 +23,22 @@ void UPrlEnhancedInputConfig::ReadTo(UPrlInputMappingContext* pPrlIMC) const
 
 		KeyMapping.Key = AxisConfig.Key;
 
-		//FLAGJK_Now 先想办法测试上边的LoadObject，然后bNegative to Modifiers
+		//FLAGJK_Now 先想办法测试下边的LoadObject，然后bNegative to Modifiers
+
+		pPrlIMC->AddMappingQuickly(KeyMapping);
+	}
+
+	for (const FPrlActionMappingConfig& ActionConfig : m_tarrActionMappings)
+	{
+		FEnhancedActionKeyMapping KeyMapping;
+
+		FString&& sActionName = ActionConfig.ActionName.ToString();
+		FString&& sActionPath = FString::Printf(TEXT(UASSETREF_OBJECT), TEXT(UASSETREFHEAD_IA), **pInputPath, *sActionName, *sActionName);
+		KeyMapping.Action = LoadObject<UInputAction>(nullptr, *sActionPath);
+
+        KeyMapping.Key = ActionConfig.Key;
+
+		//uChordCode to Triggers
 
 		pPrlIMC->AddMappingQuickly(KeyMapping);
 	}

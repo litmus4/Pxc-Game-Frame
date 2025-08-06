@@ -138,8 +138,9 @@ bool UPrlInputMappingContext::LoadKeyMappings()
 
 		FString sConfigName = m_pConfig->GetName();
 		sConfigName.RemoveAt(7, 2);
+		sConfigName.RemoveAt(sConfigName.Find(TEXT("Config")), 6);
 		FString sConfigPath = FPaths::ProjectConfigDir() + sConfigName + TEXT(".ini");
-		//FLAGJK_Now 参考最新知乎收藏文章读写文件
+		m_pConfig->LoadConfigMappings(sConfigPath);
 
 		if (m_pConfig->IsValidConfig())
 		{

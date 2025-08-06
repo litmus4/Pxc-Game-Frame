@@ -28,7 +28,8 @@ public:
 	void WriteFrom(const UPrlInputMappingContext* pPrlIMC);
 	bool IsValidConfig() const;
 
+	void LoadConfigMappings(const FString& sConfigPath);
 	void SaveConfigMappings();
 
-	//FLAGJK_Now Read Write
+	FString m_sConfigPath;
 };

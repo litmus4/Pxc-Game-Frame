@@ -81,6 +81,28 @@ bool FPxcNativeLibrary::EI_IsPositiveFromModifiers(const TArray<UInputModifier*>
 	return true;
 }
 
+void FPxcNativeLibrary::EI_GetTriggersFromModifierCode(uint8 uModifierCode, TArray<TObjectPtr<UInputTrigger>>& tarrOutTriggers)
+{
+	const TArray<TSoftObjectPtr<UInputAction>>& tarrPrlChordActions = GetDefault<UPxcGameConfig>()->tarrPrlChordActions;
+	int32 iKbChordMax = GetDefault<UPxcGameConfig>()->iPrlKeyboardChordMax;
+	for (int i = 0, iMax = FMath::Min(tarrPrlChordActions.Num(), iKbChordMax); i < iMax; ++i)
+    {
+		if (uModifierCode & (1 << i))
+		{
+			UInputTriggerChordAction* pTriggerChord = NewObject<UInputTriggerChordAction>();
+			pTriggerChord->ChordAction = tarrPrlChordActions[i].Get();
+			tarrOutTriggers.Add(pTriggerChord);
+		}
+    }
+}
+
+void FPxcNativeLibrary::EI_GetModifiersFromPositive(bool bPositive, TArray<TObjectPtr<UInputModifier>>& tarrOutModifiers)
+{
+	if (bPositive) return;
+	UInputModifierNegate* pModifierNegate = NewObject<UInputModifierNegate>();
+	tarrOutModifiers.Add(pModifierNegate);
+}
+
 bool FPxcNativeLibrary::EI_IsMappingEqual(const FEnhancedActionKeyMapping& Mapping1, const FEnhancedActionKeyMapping& Mapping2)
 {
 	if (Mapping1.Action == Mapping2.Action && Mapping1.Key == Mapping2.Key)

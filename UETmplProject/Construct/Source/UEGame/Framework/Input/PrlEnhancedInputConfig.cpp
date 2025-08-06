@@ -23,7 +23,7 @@ void UPrlEnhancedInputConfig::ReadTo(UPrlInputMappingContext* pPrlIMC) const
 
 		KeyMapping.Key = AxisConfig.Key;
 
-		//FLAGJK_Now 先想办法测试下边的LoadObject，然后bNegative to Modifiers
+		FPxcNativeLibrary::EI_GetModifiersFromPositive(!AxisConfig.bNegative, KeyMapping.Modifiers);//FLAGJK_EI 完善增强输入New出来的Trigger和Modifier对象.png
 
 		pPrlIMC->AddMappingQuickly(KeyMapping);
 	}
@@ -38,7 +38,7 @@ void UPrlEnhancedInputConfig::ReadTo(UPrlInputMappingContext* pPrlIMC) const
 
         KeyMapping.Key = ActionConfig.Key;
 
-		//uChordCode to Triggers
+		FPxcNativeLibrary::EI_GetTriggersFromModifierCode(ActionConfig.uChordCode, KeyMapping.Triggers);
 
 		pPrlIMC->AddMappingQuickly(KeyMapping);
 	}
@@ -72,9 +72,25 @@ bool UPrlEnhancedInputConfig::IsValidConfig() const
 	return (!m_tarrActionMappings.IsEmpty() || !m_tarrAxisMappings.IsEmpty());
 }
 
+void UPrlEnhancedInputConfig::LoadConfigMappings(const FString& sConfigPath)
+{
+	if (sConfigPath != m_sConfigPath)
+		m_sConfigPath = sConfigPath;
+
+	if (!m_sConfigPath.IsEmpty())
+	{
+		GConfig->Flush(true, m_sConfigPath);
+		LoadConfig(ThisClass::StaticClass(), *m_sConfigPath);
+	}
+}
+
 void UPrlEnhancedInputConfig::SaveConfigMappings()
 {
 	m_tarrActionMappings.Sort();
 	m_tarrAxisMappings.Sort();
-	SaveConfig();
+	if (!m_sConfigPath.IsEmpty())
+	{
+		SaveConfig(CPF_Config, *m_sConfigPath);
+		GConfig->Flush(false, m_sConfigPath);
+	}
 }

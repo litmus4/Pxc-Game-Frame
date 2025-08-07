@@ -37,8 +37,5 @@ protected:
 	UPrlInputMappingContext* m_pPrlInputMappingContext = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Editor")
-	bool m_bUseDefaultPIMCOnFirstPossess = false;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Editor")
 	bool m_bUseDefaultPIMCAlways = false;
 };

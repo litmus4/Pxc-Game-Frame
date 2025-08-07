@@ -32,7 +32,7 @@ void APxcPlayerController::OnPossess(APawn* pPawn)
 		UPXCycleInstance* pGI = GetWorld()->GetGameInstance<UPXCycleInstance>();
 		check(pGI);
 #if WITH_EDITOR
-		if (!m_bUseDefaultPIMCOnFirstPossess && !m_bUseDefaultPIMCAlways)
+		if (!m_bUseDefaultPIMCAlways)
 		{
 #endif
 			if (!pGI->m_bPIMCConfigLoaded)
@@ -43,12 +43,7 @@ void APxcPlayerController::OnPossess(APawn* pPawn)
 #if WITH_EDITOR
 		}
 		else
-		{
-			if (!m_bUseDefaultPIMCAlways)
-				m_bUseDefaultPIMCOnFirstPossess = false;
-			if (!pGI->m_pPrlIMC)
-				pGI->m_pPrlIMC = m_pPrlInputMappingContext;
-		}
+			pGI->m_pPrlIMC = m_pPrlInputMappingContext;
 #endif
 		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
 	}

@@ -12,3 +12,8 @@ void UPXCycleSystem::Release()
 {
 	//
 }
+
+void UPXCycleSystem::SetCycleGameInstance(UPXCycleInstance* pGI)
+{
+	m_pGI = pGI;
+}

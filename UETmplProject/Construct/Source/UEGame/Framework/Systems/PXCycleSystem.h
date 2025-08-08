@@ -6,6 +6,8 @@
 #include "UObject/NoExportTypes.h"
 #include "PXCycleSystem.generated.h"
 
+class UPXCycleInstance;
+
 /**
  * 
  */
@@ -17,4 +19,10 @@ class UEGAME_API UPXCycleSystem : public UObject
 public:
 	virtual void Tick(float fDeltaSeconds);
 	virtual void Release();
+
+	void SetCycleGameInstance(UPXCycleInstance* pGI);
+
+protected:
+	UPROPERTY()
+    UPXCycleInstance* m_pGI = nullptr;
 };

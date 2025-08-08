@@ -50,8 +50,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = Settings)
 	void SaveKeyMappings();
 
-	void AddMappingQuickly(const FEnhancedActionKeyMapping& KeyMapping);
-	void ForEachKeyMappings(std::function<void(const FEnhancedActionKeyMapping&)>&& fnOnEach) const;
+	FORCEINLINE void AddMappingQuickly(const FEnhancedActionKeyMapping& KeyMapping);
+	FORCEINLINE void ForEachKeyMappings(std::function<void(const FEnhancedActionKeyMapping&)>&& fnOnEach) const;
 
 	//*≤‚ ‘¡Ÿ ±
 	UFUNCTION(BlueprintCallable, Category = Test)

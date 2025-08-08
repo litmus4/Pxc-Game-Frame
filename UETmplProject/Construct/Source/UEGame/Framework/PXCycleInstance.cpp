@@ -82,9 +82,11 @@ void UPXCycleInstance::Shutdown()
 
 void UPXCycleInstance::AddSystem(ECycleSystemType eType, UPXCycleSystem* pSystem, bool bTick)
 {
+	check(IsValid(pSystem));
 	m_tmapSystems.Add(eType, pSystem);
 	if (bTick)
 		m_lisSystems.push_back(pSystem);
+	pSystem->SetCycleGameInstance(this);
 }
 
 void UPXCycleInstance::ReleaseSystems(ECycleSystemType* pTypes, int32 iTypeNum)

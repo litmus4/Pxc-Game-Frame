@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "EnhancedActionKeyMapping.h"
 #include "PrivateDefinitions/MainDef.h"
+#include "Structs/InputStructs.h"
 #include <list>
 #include "PXCycleInstance.generated.h"
 
@@ -49,8 +50,15 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	UPrlInputMappingContext* m_pPrlIMC = nullptr;
 
+	//如果运行时更换了PIMC，那么请主动先从PxcPlayerController那边赋值过来，然后调用此函数并传入true来rebuild
+	UFUNCTION(BlueprintCallable)
+	void BuildQuickActionMap(bool bRebuild = false);
+
 	void SetAndCacheDefaultPIMC(UPrlInputMappingContext* pPrlIMC);
 	void ResetDefaultPIMC();
+
+	FORCEINLINE const UInputAction* GetQuickAction(const FName& ActionName) const;
+	FORCEINLINE bool IsQuickActionBindTriggered(const FName& ActionName) const;
 
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);
@@ -61,6 +69,9 @@ private:
 
     UPROPERTY()
 	TArray<FEnhancedActionKeyMapping> m_tarrDefaultPIMCached;
+
+	UPROPERTY()
+	TMap<FName, FPrlInputActionEx> m_tmapQuickActions;
 
 	std::list<UPXCycleSystem*> m_lisSystems;
 	FTSTicker::FDelegateHandle DeleTickHandle;

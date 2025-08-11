@@ -34,7 +34,7 @@ USTRUCT()
 struct FPrlActionMappingConfig
 {
 	GENERATED_BODY()
-
+public:
 	FPrlActionMappingConfig(const FName& xActionName = NAME_None, const FKey& xKey = EKeys::Invalid, uint8 xChordCode = 0)
 		: ActionName(xActionName), Key(xKey), uChordCode(xChordCode)
 	{
@@ -57,7 +57,7 @@ USTRUCT()
 struct FPrlAxisMappingConfig
 {
     GENERATED_BODY()
-
+public:
 	FPrlAxisMappingConfig(const FName& xAxisName = NAME_None, const FKey& xKey = EKeys::Invalid, bool xNegative = false)
 		: AxisName(xAxisName), Key(xKey), bNegative(xNegative)
 	{
@@ -74,4 +74,15 @@ struct FPrlAxisMappingConfig
 
 	bool operator==(const FPrlAxisMappingConfig& Other) const;
 	bool operator<(const FPrlAxisMappingConfig& Other) const;
+};
+
+USTRUCT()
+struct FPrlInputActionEx
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+	const UInputAction* pAction = nullptr;
+
+	bool bBindTriggered;
 };

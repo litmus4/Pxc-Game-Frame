@@ -46,6 +46,7 @@ void APxcPlayerController::OnPossess(APawn* pPawn)
 			pGI->m_pPrlIMC = m_pPrlInputMappingContext;
 #endif
 		m_pPrlInputMappingContext->m_pSubsystem->AddMappingContext(m_pPrlInputMappingContext, 0);
+		pGI->BuildQuickActionMap();
 	}
 
 	Super::OnPossess(pPawn);

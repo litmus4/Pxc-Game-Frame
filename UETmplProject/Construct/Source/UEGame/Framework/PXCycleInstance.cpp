@@ -9,6 +9,7 @@
 #include "Framework/Systems/PxcInputMappingMgr.h"
 #include "Framework/Systems/RandomGameplaySystem.h"
 #include "Input/PrlInputMappingContext.h"
+#include "PxcNativeLibrary.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include "Windows/PreWindowsApi.h"
@@ -157,6 +158,22 @@ URandomGameplaySystem* UPXCycleInstance::GetRandomGameplaySystem()
 	return (ppSystem ? Cast<URandomGameplaySystem>(*ppSystem) : nullptr);
 }
 
+void UPXCycleInstance::BuildQuickActionMap(bool bRebuild)
+{
+	if (!m_tmapQuickActions.IsEmpty() && !bRebuild)
+		return;
+	check(IsValid(m_pPrlIMC));
+
+	m_pPrlIMC->ForEachKeyMappings([this](const FEnhancedActionKeyMapping& KeyMapping) {
+		check(KeyMapping.Action);
+		FPrlInputActionEx ActionEx;
+		ActionEx.pAction = KeyMapping.Action;
+		ActionEx.bBindTriggered = (FPxcNativeLibrary::EI_GetModifierCodeFromTriggers(KeyMapping.Triggers) > 0 ||
+			ActionEx.pAction->ValueType != EInputActionValueType::Boolean);
+		m_tmapQuickActions.Add(ActionEx.pAction->GetFName(), ActionEx);
+	});
+}
+
 void UPXCycleInstance::SetAndCacheDefaultPIMC(UPrlInputMappingContext* pPrlIMC)
 {
 	m_pPrlIMC = pPrlIMC;
@@ -177,6 +194,18 @@ void UPXCycleInstance::ResetDefaultPIMC()
 		for (const FEnhancedActionKeyMapping& KeyMapping : m_tarrDefaultPIMCached)
 			m_pPrlIMC->AddMappingQuickly(KeyMapping);
 	}
+}
+
+const UInputAction* UPXCycleInstance::GetQuickAction(const FName& ActionName) const
+{
+	const FPrlInputActionEx* pActionEx = m_tmapQuickActions.Find(ActionName);
+	return (pActionEx ? pActionEx->pAction : nullptr);
+}
+
+bool UPXCycleInstance::IsQuickActionBindTriggered(const FName& ActionName) const
+{
+	const FPrlInputActionEx* pActionEx = m_tmapQuickActions.Find(ActionName);
+	return (pActionEx ? pActionEx->bBindTriggered : false);
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

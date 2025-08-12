@@ -33,7 +33,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	APxcPlayerRole* m_pPlayerRole = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Input)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
 	UPrlInputMappingContext* m_pPrlInputMappingContext = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input|Editor")

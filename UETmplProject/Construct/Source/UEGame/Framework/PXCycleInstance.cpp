@@ -168,8 +168,11 @@ void UPXCycleInstance::BuildQuickActionMap(bool bRebuild)
 		check(KeyMapping.Action);
 		FPrlInputActionEx ActionEx;
 		ActionEx.pAction = KeyMapping.Action;
-		ActionEx.bBindTriggered = (FPxcNativeLibrary::EI_GetModifierCodeFromTriggers(KeyMapping.Triggers) > 0 ||
-			ActionEx.pAction->ValueType != EInputActionValueType::Boolean);
+		if (ActionEx.pAction->ValueType != EInputActionValueType::Boolean ||
+			FPxcNativeLibrary::EI_GetModifierCodeFromTriggers(KeyMapping.Triggers) > 0)
+			ActionEx.eMainBindedEvent = ETriggerEvent::Triggered;
+		else
+			ActionEx.eMainBindedEvent = ETriggerEvent::Started;
 		m_tmapQuickActions.Add(ActionEx.pAction->GetFName(), ActionEx);
 	});
 }
@@ -202,10 +205,10 @@ const UInputAction* UPXCycleInstance::GetQuickAction(const FName& ActionName) co
 	return (pActionEx ? pActionEx->pAction : nullptr);
 }
 
-bool UPXCycleInstance::IsQuickActionBindTriggered(const FName& ActionName) const
+ETriggerEvent UPXCycleInstance::GetQuickActionMainBindedEvent(const FName& ActionName) const
 {
 	const FPrlInputActionEx* pActionEx = m_tmapQuickActions.Find(ActionName);
-	return (pActionEx ? pActionEx->bBindTriggered : false);
+	return (pActionEx ? pActionEx->eMainBindedEvent : ETriggerEvent::None);
 }
 
 void UPXCycleInstance::OnGameModeInitialized(AGameModeBase* pGM)

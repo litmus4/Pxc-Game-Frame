@@ -50,7 +50,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	UPrlInputMappingContext* m_pPrlIMC = nullptr;
 
-	//如果运行时更换了PIMC，那么请主动先从PxcPlayerController那边赋值过来，然后调用此函数并传入true来rebuild
+	//如果运行时对PIMC进行了单纯增删，那么请主动调用此函数并传入true来rebuild
 	UFUNCTION(BlueprintCallable)
 	void BuildQuickActionMap(bool bRebuild = false);
 
@@ -58,7 +58,7 @@ public:
 	void ResetDefaultPIMC();
 
 	FORCEINLINE const UInputAction* GetQuickAction(const FName& ActionName) const;
-	FORCEINLINE bool IsQuickActionBindTriggered(const FName& ActionName) const;
+	FORCEINLINE ETriggerEvent GetQuickActionMainBindedEvent(const FName& ActionName) const;
 
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);

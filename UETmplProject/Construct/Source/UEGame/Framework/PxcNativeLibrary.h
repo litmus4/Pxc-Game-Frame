@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "EnhancedActionKeyMapping.h"
+#include "PXCycleInstance.h"
 #include <functional>
 #include "PxcNativeLibrary.generated.h"
 
@@ -32,4 +33,18 @@ struct FPxcNativeLibrary
 
 	static bool EI_IsMappingEqual(const FEnhancedActionKeyMapping& Mapping1, const FEnhancedActionKeyMapping& Mapping2);
 	static int32 EI_AddUniqueMapping(TArray<FEnhancedActionKeyMapping>& tarrMappings, const FEnhancedActionKeyMapping& Mapping);
+
+	//GetQuickAction
+	FORCEINLINE static const UInputAction* EI_GetQA(const FName ActionName)
+	{
+		return UPXCycleInstance::GetInstance()->GetQuickAction(ActionName);
+	}
+	//GetQuickActionMainBindedEvent
+	FORCEINLINE static ETriggerEvent EI_GetQAMBE(const FName ActionName)
+	{
+		return UPXCycleInstance::GetInstance()->GetQuickActionMainBindedEvent(ActionName);
+	}
 };
+
+#define EI_GETQA(ActionName) FPxcNativeLibrary::EI_GetQA(ActionName)
+#define EI_GETQAMBE(ActionName) FPxcNativeLibrary::EI_GetQAMBE(ActionName)

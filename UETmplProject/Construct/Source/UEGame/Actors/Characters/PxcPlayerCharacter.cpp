@@ -6,11 +6,13 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimNode_StateMachine.h"
-#include "EngineRelated/Animations/PxcCharacterTrajectoryComponent.h"
 #include "PoseSearch/PoseSearchLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "EnhancedInputComponent.h"
+#include "EngineRelated/Animations/PxcCharacterTrajectoryComponent.h"
 #include "Actors/Controllers/PxcPlayerController.h"
+#include "Framework/PxcNativeLibrary.h"
 #include "PxcUtil/DateTime.h"
 
 #include "Windows/AllowWindowsPlatformTypes.h"
@@ -259,12 +261,22 @@ void APxcPlayerCharacter::Tick(float fDeltaTime)
 void APxcPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(pPlayerInputComponent);
+	UEnhancedInputComponent* pEnhancedInputComponent = Cast<UEnhancedInputComponent>(pPlayerInputComponent);
+	check(pEnhancedInputComponent);
 
 	pPlayerInputComponent->BindAxis("MoveForward", this, &APxcPlayerCharacter::OnMoveForward);
 	pPlayerInputComponent->BindAxis("MoveRight", this, &APxcPlayerCharacter::OnMoveRight);
 
 	pPlayerInputComponent->BindAxis("PitchDown", this, &APxcPlayerCharacter::AddControllerPitchInput);
 	pPlayerInputComponent->BindAxis("YawRight", this, &APxcPlayerCharacter::AddControllerYawInput);
+
+	//pEnhancedInputComponent->BindAction(EI_GETQA("IA_MoveForward"), EI_GETQAMBE("IA_MoveForward"), this, &APxcPlayerCharacter::OnMoveForward);
+	//pEnhancedInputComponent->BindAction(EI_GETQA("IA_MoveRight"), EI_GETQAMBE("IA_MoveRight"), this, &APxcPlayerCharacter::OnMoveRight);
+
+	//pEnhancedInputComponent->BindActionValueLambda(EI_GETQA("IA_PitchDown"), EI_GETQAMBE("IA_PitchDown"),
+	//	[this](const FInputActionValue& Value) { AddControllerPitchInput(Value.Get<float>()); });
+	//pEnhancedInputComponent->BindActionValueLambda(EI_GETQA("IA_YawRight"), EI_GETQAMBE("IA_YawRight"),
+	//	[this](const FInputActionValue& Value) { AddControllerYawInput(Value.Get<float>()); });
 }
 
 void APxcPlayerCharacter::OnMoveForward(float fValue)

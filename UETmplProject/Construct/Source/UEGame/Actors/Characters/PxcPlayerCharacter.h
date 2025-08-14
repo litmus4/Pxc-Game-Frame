@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Actors/Characters/PxcGraphCharacter.h"
 #include "PrivateDefinitions/CharacterDef.h"
 #include <unordered_map>
@@ -124,7 +125,9 @@ public:
 
 protected:
 	void OnMoveForward(float fValue);
+	void OnMoveForward(const FInputActionValue& Instance) {}
 	void OnMoveRight(float fValue);
+	void OnMoveRight(const FInputActionValue& Instance) {}
 	void OnMotionStateEnd(EMotionState eMotionState);
 	void OnEndMoveStarted();
 

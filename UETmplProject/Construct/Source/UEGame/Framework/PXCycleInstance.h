@@ -24,6 +24,8 @@ class UEGAME_API UPXCycleInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+	static UPXCycleInstance* GetInstance();
+
 	virtual void Init() override;
 	virtual bool Tick(float fDeltaSeconds);
 	virtual void Shutdown() override;
@@ -63,6 +65,8 @@ public:
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);
 	void OnPreClientTravel(const FString& sPendingURL, ETravelType eTravelType, bool bIsSeamlessTravel);
+
+	static UPXCycleInstance* s_pInst;
 
 	UPROPERTY()
 	TMap<ECycleSystemType, UPXCycleSystem*> m_tmapSystems;

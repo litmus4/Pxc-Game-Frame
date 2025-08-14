@@ -21,8 +21,18 @@
 
 #define USE_ZPACK 2
 
+UPXCycleInstance* UPXCycleInstance::s_pInst = nullptr;
+
+UPXCycleInstance* UPXCycleInstance::GetInstance()
+{
+	check(s_pInst);
+	return s_pInst;
+}
+
 void UPXCycleInstance::Init()
 {
+	s_pInst = this;
+
 	std::string strSavedDir = TCHAR_TO_ANSI(*FPaths::ProjectSavedDir());
 	std::string strContentDir = TCHAR_TO_ANSI(*FPaths::ProjectContentDir());
 

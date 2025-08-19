@@ -124,10 +124,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* pPlayerInputComponent) override;
 
 protected:
-	void OnMoveForward(float fValue);
-	void OnMoveForward(const FInputActionValue& Instance) {}
-	void OnMoveRight(float fValue);
-	void OnMoveRight(const FInputActionValue& Instance) {}
+	void OnMoveForward(const FInputActionValue& IAValue);
+	//void OnMoveForward(float fValue) {}
+	void OnMoveRight(const FInputActionValue& IAValue);
+	//void OnMoveRight(float fValue) {}
 	void OnMotionStateEnd(EMotionState eMotionState);
 	void OnEndMoveStarted();
 

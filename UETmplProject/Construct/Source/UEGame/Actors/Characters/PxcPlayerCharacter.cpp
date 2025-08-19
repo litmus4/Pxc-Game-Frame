@@ -264,23 +264,28 @@ void APxcPlayerCharacter::SetupPlayerInputComponent(UInputComponent* pPlayerInpu
 	UEnhancedInputComponent* pEnhancedInputComponent = Cast<UEnhancedInputComponent>(pPlayerInputComponent);
 	check(pEnhancedInputComponent);
 
-	pPlayerInputComponent->BindAxis("MoveForward", this, &APxcPlayerCharacter::OnMoveForward);
-	pPlayerInputComponent->BindAxis("MoveRight", this, &APxcPlayerCharacter::OnMoveRight);
+	//pPlayerInputComponent->BindAxis("MoveForward", this, &APxcPlayerCharacter::OnMoveForward);
+	//pPlayerInputComponent->BindAxis("MoveRight", this, &APxcPlayerCharacter::OnMoveRight);
 
-	pPlayerInputComponent->BindAxis("PitchDown", this, &APxcPlayerCharacter::AddControllerPitchInput);
-	pPlayerInputComponent->BindAxis("YawRight", this, &APxcPlayerCharacter::AddControllerYawInput);
+	//pPlayerInputComponent->BindAxis("PitchDown", this, &APxcPlayerCharacter::AddControllerPitchInput);
+	//pPlayerInputComponent->BindAxis("YawRight", this, &APxcPlayerCharacter::AddControllerYawInput);
 
-	//pEnhancedInputComponent->BindAction(EI_GETQA("IA_MoveForward"), EI_GETQAMBE("IA_MoveForward"), this, &APxcPlayerCharacter::OnMoveForward);
-	//pEnhancedInputComponent->BindAction(EI_GETQA("IA_MoveRight"), EI_GETQAMBE("IA_MoveRight"), this, &APxcPlayerCharacter::OnMoveRight);
+	pEnhancedInputComponent->BindAction(EI_GETQA("IA_MoveForward"), EI_GETQAMBE("IA_MoveForward"), this, &APxcPlayerCharacter::OnMoveForward);
+	pEnhancedInputComponent->BindAction(EI_GETQA("IA_MoveRight"), EI_GETQAMBE("IA_MoveRight"), this, &APxcPlayerCharacter::OnMoveRight);
 
-	//pEnhancedInputComponent->BindActionValueLambda(EI_GETQA("IA_PitchDown"), EI_GETQAMBE("IA_PitchDown"),
-	//	[this](const FInputActionValue& Value) { AddControllerPitchInput(Value.Get<float>()); });
-	//pEnhancedInputComponent->BindActionValueLambda(EI_GETQA("IA_YawRight"), EI_GETQAMBE("IA_YawRight"),
-	//	[this](const FInputActionValue& Value) { AddControllerYawInput(Value.Get<float>()); });
+	pEnhancedInputComponent->BindActionValueLambda(EI_GETQA("IA_PitchDown"), EI_GETQAMBE("IA_PitchDown"),
+		[this](const FInputActionValue& Value) { AddControllerPitchInput(Value.Get<float>()); });
+	pEnhancedInputComponent->BindActionValueLambda(EI_GETQA("IA_YawRight"), EI_GETQAMBE("IA_YawRight"),
+		[this](const FInputActionValue& Value) { AddControllerYawInput(Value.Get<float>()); });
 }
 
-void APxcPlayerCharacter::OnMoveForward(float fValue)
+void APxcPlayerCharacter::OnMoveForward(const FInputActionValue& IAValue)
 {
+	float fValue = IAValue.Get<float>();
+	//*测试临时//FLAGJK_Now 需要一个归零的结束机制
+	UE_LOG(LogTemp, Warning, TEXT("&&&&&& OnMoveForward Value: %.3f"), fValue);
+	//*/
+	//==================================
 	FVector2D v2LastAxis = m_v2Axis;
 	m_v2Axis.X = fValue;
 	if (!m_v2Axis.IsNearlyZero() && (m_eMotionState == EMotionState::Idle ||
@@ -358,8 +363,13 @@ void APxcPlayerCharacter::OnMoveForward(float fValue)
 	}
 }
 
-void APxcPlayerCharacter::OnMoveRight(float fValue)
+void APxcPlayerCharacter::OnMoveRight(const FInputActionValue& IAValue)
 {
+	float fValue = IAValue.Get<float>();
+	//*测试临时
+	UE_LOG(LogTemp, Warning, TEXT("&&&&&& OnMoveRight Value: %.3f"), fValue);
+	//*/
+	//==================================
 	FVector2D v2LastAxis = m_v2Axis;
 	m_v2Axis.Y = fValue;
 	if (!m_v2Axis.IsNearlyZero() && (m_eMotionState == EMotionState::Idle ||

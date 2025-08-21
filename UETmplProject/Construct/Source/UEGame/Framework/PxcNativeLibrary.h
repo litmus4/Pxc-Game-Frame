@@ -44,7 +44,13 @@ struct FPxcNativeLibrary
 	{
 		return UPXCycleInstance::GetInstance()->GetQuickActionMainBindedEvent(ActionName);
 	}
+	//GetQuickActionExtraBindedEvent
+	FORCEINLINE static ETriggerEvent EI_GetQAEBE(const FName ActionName)
+	{
+		return UPXCycleInstance::GetInstance()->GetQuickActionExtraBindedEvent(ActionName);
+	}
 };
 
 #define EI_GETQA(ActionName) FPxcNativeLibrary::EI_GetQA(ActionName)
 #define EI_GETQAMBE(ActionName) FPxcNativeLibrary::EI_GetQAMBE(ActionName)
+#define EI_GETQAEBE(ActionName) FPxcNativeLibrary::EI_GetQAEBE(ActionName)

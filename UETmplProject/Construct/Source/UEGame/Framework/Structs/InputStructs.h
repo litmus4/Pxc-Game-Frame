@@ -84,5 +84,6 @@ public:
 	UPROPERTY()
 	const UInputAction* pAction = nullptr;
 
-	ETriggerEvent eMainBindedEvent;
+	ETriggerEvent eMainBindedEvent = ETriggerEvent::None;
+	ETriggerEvent eExtraBindedEvent = ETriggerEvent::None;
 };

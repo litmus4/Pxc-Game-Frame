@@ -61,6 +61,7 @@ public:
 
 	FORCEINLINE const UInputAction* GetQuickAction(const FName& ActionName) const;
 	FORCEINLINE ETriggerEvent GetQuickActionMainBindedEvent(const FName& ActionName) const;
+	FORCEINLINE ETriggerEvent GetQuickActionExtraBindedEvent(const FName& ActionName) const;
 
 private:
 	void OnGameModeInitialized(AGameModeBase* pGM);
